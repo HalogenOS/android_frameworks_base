@@ -18748,4 +18748,24 @@ public class DevicePolicyManager {
         // TODO(b/434920631): Remove this method and use {@link #setPolicy} in tests directly.
         setPolicy(new PolicyIdentifier<Integer>(key), scope, Integer.valueOf(value));
     }
+
+    /**
+     * Lineage: check if secure keyguard is required
+     * @hide
+     */
+    public boolean requireSecureKeyguard() {
+        return requireSecureKeyguard(UserHandle.myUserId());
+    }
+
+    /** @hide */
+    public boolean requireSecureKeyguard(int userHandle) {
+        if (mService != null) {
+            try {
+                return mService.requireSecureKeyguard(userHandle);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed to get secure keyguard requirement");
+            }
+        }
+        return true;
+    }
 }
