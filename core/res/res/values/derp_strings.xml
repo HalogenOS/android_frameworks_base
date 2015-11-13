@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-/*
+**
 ** Copyright 2022, DerpFest
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,7 @@
 ** limitations under the License.
 */
 -->
-<resources>
-
-  <!-- Device keyhandlers -->
-  <java-symbol type="array" name="config_deviceKeyHandlerLibs" />
-  <java-symbol type="array" name="config_deviceKeyHandlerClasses" />
-
-  <!-- Vendor mismatch fingerprint warning -->
-  <java-symbol type="string" name="system_error_vendorprint" />
-
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Vendor mismatch fingerprint warning [CHAR LIMIT=NONE] -->
+    <string name="system_error_vendorprint">It appears your vendor image may be out of date. Please flash the latest vendor image for your device.</string>
 </resources>
