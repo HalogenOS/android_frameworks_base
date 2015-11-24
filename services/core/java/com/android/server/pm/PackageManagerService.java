@@ -2243,7 +2243,8 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
             if (mIsUpgrade) {
                 PackageManagerServiceUtils.logCriticalInfo(Log.INFO,
                         "Upgrading from " + ver.fingerprint + " (" + ver.buildFingerprint + ") to "
-                                + PackagePartitions.FINGERPRINT + " (" + Build.FINGERPRINT + ")");
+                                + PackagePartitions.FINGERPRINT
+                                + " (" + Build.VERSION.INCREMENTAL + ")");
             }
             mPriorSdkVersion = mIsUpgrade ? ver.sdkVersion : -1;
             mPriorSdkVersionFull = mIsUpgrade ? ver.sdkVersionFull : -1;
@@ -2402,7 +2403,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
                                         | Installer.FLAG_CLEAR_APP_DATA_KEEP_ART_PROFILES);
                     }
                 }
-                ver.buildFingerprint = Build.FINGERPRINT;
+                ver.buildFingerprint = Build.VERSION.INCREMENTAL;
                 ver.fingerprint = PackagePartitions.FINGERPRINT;
             }
 
