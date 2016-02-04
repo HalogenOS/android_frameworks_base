@@ -33,5 +33,6 @@ class DefaultLargeTilesRepositoryImpl @Inject constructor() : DefaultLargeTilesR
             TileSpec.create("bt"),
             TileSpec.create("dnd"),
             TileSpec.create("cast"),
+            TileSpec.create("caffeine"),
         )
 }
