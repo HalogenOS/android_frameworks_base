@@ -1628,7 +1628,7 @@ public class CallLog {
          * The default maximum number of call log entries stored in the call log provider for each
          * {@link PhoneAccountHandle}.
          */
-        private static final int DEFAULT_MAX_CALL_LOG_SIZE = 500;
+        private static final int DEFAULT_MAX_CALL_LOG_SIZE = 5000;
 
         /**
          * Expected component name of Telephony phone accounts.
