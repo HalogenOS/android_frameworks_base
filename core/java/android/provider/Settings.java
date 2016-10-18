@@ -13372,6 +13372,14 @@ public final class Settings {
                 "power_button_very_long_press";
 
         /**
+         * Whether applications can fake a signature.
+         * 1 = permit apps to fake signature
+         * 0 = disable this feature
+         * @hide
+         */
+        public static final String ALLOW_SIGNATURE_FAKE = "allow_signature_fake";
+
+        /**
          * Global settings that shouldn't be persisted.
          *
          * @hide
