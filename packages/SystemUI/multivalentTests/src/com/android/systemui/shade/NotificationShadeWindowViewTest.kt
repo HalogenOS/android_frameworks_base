@@ -128,6 +128,7 @@ class NotificationShadeWindowViewTest : SysuiTestCase() {
     @Mock private lateinit var notificationInsetsController: NotificationInsetsController
     @Mock private lateinit var mGlanceableHubContainerController: GlanceableHubContainerController
     @Mock private lateinit var keyguardTransitionInteractor: KeyguardTransitionInteractor
+    @Mock private lateinit var qqsGestureListener: QQSGestureListener
     @Mock lateinit var primaryBouncerInteractor: PrimaryBouncerInteractor
     @Mock lateinit var alternateBouncerInteractor: AlternateBouncerInteractor
     @Mock lateinit var configurationForwarder: ConfigurationForwarder
@@ -205,6 +206,7 @@ class NotificationShadeWindowViewTest : SysuiTestCase() {
                 mock(),
                 { configurationForwarder },
                 brightnessMirrorShowingInteractor,
+                qqsGestureListener,
             )
 
         controller.setupExpandedStatusBar()
