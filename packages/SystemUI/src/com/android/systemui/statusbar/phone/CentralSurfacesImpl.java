@@ -146,6 +146,7 @@ import com.android.systemui.keyguard.ScreenLifecycle;
 import com.android.systemui.keyguard.WakefulnessLifecycle;
 import com.android.systemui.keyguard.ui.binder.LightRevealScrimViewBinder;
 import com.android.systemui.keyguard.ui.viewmodel.LightRevealScrimViewModel;
+import com.android.systemui.model.SysUiState;
 import com.android.systemui.navigationbar.NavigationBarController;
 import com.android.systemui.navigationbar.views.NavigationBarView;
 import com.android.systemui.notetask.NoteTaskController;
