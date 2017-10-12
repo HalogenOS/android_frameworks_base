@@ -7441,5 +7441,7 @@ message MetricsEvent {
     // CustomSettings constant
     CUSTOM_SETTINGS = 1999;
 
+    // XOS custom constants
+    XOS = 2022;
   }
 }
