@@ -26,4 +26,8 @@
     <!-- Content description indicating that tapping the element will allow deleting the screenshot [CHAR LIMIT=NONE] -->
     <string name="screenshot_delete_description">Screenshot löschen</string>
 
+    <!-- Reboot/Recovery QS tile -->
+    <string name="quick_settings_reboot_label">Neustart</string>
+    <string name="quick_settings_reboot_recovery_label">Recovery</string>
+
 </resources>
