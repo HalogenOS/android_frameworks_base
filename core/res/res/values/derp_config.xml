@@ -40,4 +40,6 @@
   <integer name="config_proximityCheckTimeout">250</integer>
   <bool name="config_proximityCheckOnWakeEnabledByDefault">false</bool>
 
+  <!-- Whether device has physical tri state switch -->
+  <bool name="config_hasAlertSlider">false</bool>
 </resources>
