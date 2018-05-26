@@ -31,6 +31,7 @@ cc_defaults_for_libandroid_runtime {
     name: "libandroid_runtime_defaults",
     host_supported: true,
     cflags: [
+        "-O3",
         "-Wno-cast-function-type-mismatch",
         "-Wno-unused-parameter",
         "-Wno-non-virtual-dtor",
@@ -54,7 +55,7 @@ cc_defaults_for_libandroid_runtime {
         "-Wunreachable-code",
     ],
 
-    cppflags: ["-Wno-conversion-null"],
+    cppflags: ["-Wno-conversion-null", "-O3"],
     header_libs: [
         "libhwui_internal_headers",
     ],
