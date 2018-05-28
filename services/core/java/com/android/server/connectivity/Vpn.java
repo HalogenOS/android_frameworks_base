@@ -138,8 +138,6 @@ import com.android.server.LocalServices;
 import com.android.server.net.BaseNetworkObserver;
 import com.android.server.vcn.util.PersistableBundleUtils;
 
-import libcore.io.IoUtils;
-
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -175,6 +173,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import libcore.io.IoUtils;
 
 /**
  * @hide
