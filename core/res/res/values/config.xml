@@ -3221,7 +3221,7 @@
          on the device (at least for testing purposes, even if in practice the UI really only allows
          other switchable types, such as restricted profiles or guests, to be created).
          -->
-    <integer name="config_multiuserMaximumUsers">1</integer>
+    <integer name="config_multiuserMaximumUsers">32</integer>
 
     <!-- Maximum number of users we allow to be running at a time. -->
     <integer name="config_multiuserMaxRunningUsers">3</integer>
