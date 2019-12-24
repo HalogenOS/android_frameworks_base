@@ -398,7 +398,7 @@ public class BatteryMeterView extends LinearLayout implements
         // TODO(b/140051051)
         final boolean systemSetting = 0 != whitelistIpcs(() -> Settings.System
                 .getIntForUser(getContext().getContentResolver(),
-                SHOW_BATTERY_PERCENT, 0, mUser));
+                SHOW_BATTERY_PERCENT, 1, mUser));
         boolean shouldShow =
                 (mShowPercentAvailable && systemSetting && mShowPercentMode != MODE_OFF)
                 || mShowPercentMode == MODE_ON
