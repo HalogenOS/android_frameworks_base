@@ -51,4 +51,7 @@
           <item>2047,46</item>
           <item>4095,0</item>
     </string-array>
+
+    <!-- Whether usage of the proximity sensor during doze is supported -->
+    <bool name="doze_proximity_sensor_supported">true</bool>
 </resources>
