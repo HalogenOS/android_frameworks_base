@@ -591,6 +591,7 @@ android_library {
         "kairos",
         "displaylib",
         "aconfig_settings_flags_lib",
+        "vendor.lineage.powershare-V1.0-java",
     ],
     javacflags: [
         "-Aroom.schemaLocation=frameworks/base/packages/SystemUI/schemas",
@@ -807,6 +808,7 @@ android_library {
         "aconfig_settings_flags_lib",
         "kairos",
         "displaylib",
+        "vendor.lineage.powershare-V1.0-java",
     ],
 }
 
