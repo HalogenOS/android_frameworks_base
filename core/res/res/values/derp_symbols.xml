@@ -27,4 +27,8 @@
 
   <!-- Whether or not we should show vendor mismatch message -->
   <java-symbol type="bool" name="config_show_vendor_mismatch_message" />
+
+  <!-- Vendor platform signatures -->
+  <java-symbol type="array" name="config_vendorPlatformSignatures" />
+
 </resources>
