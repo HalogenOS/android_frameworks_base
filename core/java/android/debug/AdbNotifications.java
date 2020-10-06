@@ -93,7 +93,7 @@ public final class AdbNotifications {
 
 
         return new Notification.Builder(context, SystemNotificationChannels.DEVELOPER_IMPORTANT)
-                .setSmallIcon(com.android.internal.R.drawable.stat_sys_adb)
+                .setSmallIcon(com.android.internal.R.drawable.stat_sys_data_usb)
                 .setWhen(0)
                 .setOngoing(true)
                 .setTicker(title)
