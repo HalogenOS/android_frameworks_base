@@ -24,4 +24,5 @@ data class ScreenRecordingParameters(
     val audioSource: ScreenRecordingAudioSource,
     val displayId: Int,
     val shouldShowTaps: Boolean,
+    val lowQuality: Boolean,
 )

@@ -135,6 +135,7 @@ constructor(
     private fun startRecording() {
         val audioSource = recordDetailsParametersViewModel.audioSource ?: return
         val target = recordDetailsTargetViewModel.currentTarget?.screenCaptureTarget ?: return
+        val lowQuality = recordDetailsParametersViewModel.lowQuality ?: return
         when (target) {
             is ScreenCaptureTarget.Fullscreen -> {
                 val shouldShowTaps = recordDetailsParametersViewModel.shouldShowTaps ?: return
@@ -144,6 +145,7 @@ constructor(
                         displayId = target.displayId,
                         shouldShowTaps = shouldShowTaps,
                         audioSource = audioSource,
+                        lowQuality = lowQuality,
                     )
                 )
             }
@@ -169,6 +171,7 @@ constructor(
                         displayId = target.displayId,
                         shouldShowTaps = false,
                         audioSource = audioSource,
+                        lowQuality = lowQuality,
                     )
                 )
             }

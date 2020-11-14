@@ -36,6 +36,7 @@ class ScreenCaptureRecordParametersRepository @Inject constructor() {
                 audioSource = ScreenRecordingAudioSource.NONE,
                 shouldShowTaps = false,
                 shouldShowFrontCamera = false,
+                lowQuality = false,
             )
         )
     val parameters = _parameters.asStateFlow()

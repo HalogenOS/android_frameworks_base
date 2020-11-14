@@ -44,4 +44,8 @@ constructor(private val repository: ScreenCaptureRecordParametersRepository) {
     fun setShouldShowFrontCamera(shouldShowFrontCamera: Boolean) {
         repository.updateParameters { it.copy(shouldShowFrontCamera = shouldShowFrontCamera) }
     }
+
+    fun setLowQuality(lowQuality: Boolean) {
+        repository.updateParameters { it.copy(lowQuality = lowQuality) }
+    }
 }
