@@ -51,4 +51,7 @@
           <item>2047,46</item>
           <item>4095,0</item>
     </string-array>
+
+    <!-- If not zero, limits the internal screen recorder's framerate to the set value. -->
+    <integer name="config_screenRecorderMaxFramerate">0</integer>
 </resources>
