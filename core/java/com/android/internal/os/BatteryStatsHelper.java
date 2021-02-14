@@ -485,26 +485,28 @@ public class BatteryStatsHelper {
             }
         }
 
-        for (int i = 0; i < mUserSippers.size(); i++) {
-            List<BatterySipper> user = mUserSippers.valueAt(i);
-            for (int j = 0; j < user.size(); j++) {
-                BatterySipper bs = user.get(j);
-                bs.computeMobilemspp();
-                if (bs.mobilemspp != 0) {
-                    mMobilemsppList.add(bs);
+        synchronized (mMobilemsppList) {
+            for (int i = 0; i < mUserSippers.size(); i++) {
+                List<BatterySipper> user = mUserSippers.valueAt(i);
+                for (int j = 0; j < user.size(); j++) {
+                    BatterySipper bs = user.get(j);
+                    bs.computeMobilemspp();
+                    if (bs.mobilemspp != 0) {
+                        mMobilemsppList.add(bs);
+                    }
                 }
             }
-        }
-        try {
-          Collections.sort(mMobilemsppList, new Comparator<BatterySipper>() {
-              @Override
-              public int compare(BatterySipper lhs, BatterySipper rhs) {
-                  return Double.compare(rhs.mobilemspp, lhs.mobilemspp);
-              }
-          });
-        }
-        catch (Exception e) {
-          // nothing to do
+            try {
+              Collections.sort(mMobilemsppList, new Comparator<BatterySipper>() {
+                  @Override
+                  public int compare(BatterySipper lhs, BatterySipper rhs) {
+                      return Double.compare(rhs.mobilemspp, lhs.mobilemspp);
+                  }
+              });
+            }
+            catch (Exception e) {
+              // nothing to do
+            }
         }
 
         processMiscUsage();
