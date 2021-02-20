@@ -1054,7 +1054,7 @@
     <!-- The default intensity level for haptic feedback. See
          Settings.System.HAPTIC_FEEDBACK_INTENSITY more details on the constant values and
          meanings. -->
-    <integer name="config_defaultHapticFeedbackIntensity">2</integer>
+    <integer name="config_defaultHapticFeedbackIntensity">1</integer>
     <!-- The default intensity level for notification vibrations. See
          Settings.System.NOTIFICATION_VIBRATION_INTENSITY more details on the constant values and
          meanings. -->
