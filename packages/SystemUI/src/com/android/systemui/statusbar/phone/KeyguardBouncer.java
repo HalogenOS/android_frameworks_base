@@ -199,7 +199,7 @@ public class KeyguardBouncer {
     private void onFullyShown() {
         mFalsingManager.onBouncerShown();
         if (mKeyguardView == null) {
-            Log.wtf(TAG, "onFullyShown when view was null");
+            Log.w(TAG, "onFullyShown when view was null");
         } else {
             mKeyguardView.onResume();
             if (mRoot != null) {
