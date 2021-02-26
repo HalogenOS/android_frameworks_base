@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.internal.util.aosip;
+package com.aosip.support.utils;
 
 import android.util.Log;
 
