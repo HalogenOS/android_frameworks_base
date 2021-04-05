@@ -3210,6 +3210,10 @@ public class NotificationPanelViewController extends PanelViewController {
                     mDoubleTapGesture.onTouchEvent(event);
                 }
 
+                if (mBarState == StatusBarState.KEYGUARD) {
+                    mDoubleTapGestureListener.onTouchEvent(event);
+                }
+
                 // Make sure the next touch won't the blocked after the current ends.
                 if (event.getAction() == MotionEvent.ACTION_UP
                         || event.getAction() == MotionEvent.ACTION_CANCEL) {
