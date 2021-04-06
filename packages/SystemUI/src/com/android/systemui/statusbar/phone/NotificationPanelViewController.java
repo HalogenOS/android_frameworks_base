@@ -3210,10 +3210,8 @@ public class NotificationPanelViewController extends PanelViewController {
                         && mDoubleTapToSleepEnabled
                         && event.getY() < mStatusBarHeaderHeight) {
                     mDoubleTapGesture.onTouchEvent(event);
-                }
-
-                if (mBarState == StatusBarState.KEYGUARD) {
-                    mDoubleTapGestureListener.onTouchEvent(event);
+                } else if (mBarState == StatusBarState.KEYGUARD) {
+                    mDoubleTapGesture.onTouchEvent(event);
                 }
 
                 // Make sure the next touch won't the blocked after the current ends.
