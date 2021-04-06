@@ -1255,24 +1255,14 @@ public abstract class LayoutInflater {
     // Some of the views included here are deprecated, but apps still use them.
     @SuppressWarnings("deprecation")
     private static View tryCreateViewDirect(String name, Context context, AttributeSet attributeSet) {
-        // This contains all the framework views used in a set of 113 real-world apps, sorted by
-        // number of occurrences. While views with only 1 occurrence are unlikely to be worth
-        // optimizing, it doesn't hurt to include them because switch-case is compiled into a table
-        // lookup after calling String#hashCode().
         switch (name) {
             case "android.widget.LinearLayout": // 13486 occurrences
                 return new android.widget.LinearLayout(context, attributeSet);
-            case "android.widget.View": // 6930 occurrences
-            case "android.webkit.View": // 63 occurrences
             case "android.view.View": // 63 occurrences
-            case "android.app.View": // 62 occurrences
                 return new android.view.View(context, attributeSet);
             case "android.widget.FrameLayout": // 6447 occurrences
                 return new android.widget.FrameLayout(context, attributeSet);
-            case "android.widget.ViewStub": // 5613 occurrences
             case "android.view.ViewStub": // 228 occurrences
-            case "android.app.ViewStub": // 227 occurrences
-            case "android.webkit.ViewStub": // 226 occurrences
                 return new android.view.ViewStub(context, attributeSet);
             case "android.widget.TextView": // 4722 occurrences
                 return new android.widget.TextView(context, attributeSet);
@@ -1298,13 +1288,20 @@ public abstract class LayoutInflater {
                 return new android.widget.HorizontalScrollView(context, attributeSet);
             case "android.widget.ScrollView": // 67 occurrences
                 return new android.widget.ScrollView(context, attributeSet);
-            case "android.widget.NotificationHeaderView": // 65 occurrences
-            case "android.webkit.NotificationHeaderView": // 65 occurrences
             case "android.view.NotificationHeaderView": // 65 occurrences
-            case "android.app.NotificationHeaderView": // 65 occurrences
                 return new android.view.NotificationHeaderView(context, attributeSet);
             case "android.widget.ListView": // 58 occurrences
                 return new android.widget.ListView(context, attributeSet);
+            case "android.widget.SeekBar": // 40 occurrences
+                return new android.widget.SeekBar(context, attributeSet);
+            case "android.widget.CheckBox": // 38 occurrences
+                return new android.widget.CheckBox(context, attributeSet);
+            case "android.widget.GridLayout": // 16 occurrences
+                return new android.widget.GridLayout(context, attributeSet);
+            case "android.widget.TableRow": // 15 occurrences
+                return new android.widget.TableRow(context, attributeSet);
+            case "android.widget.Spinner": // 9 occurrences
+                return new android.widget.Spinner(context, attributeSet);
         }
 
         return null;
