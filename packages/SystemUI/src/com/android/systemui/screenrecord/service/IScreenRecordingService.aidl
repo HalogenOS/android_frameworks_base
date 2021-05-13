@@ -28,6 +28,7 @@ interface IScreenRecordingService {
         int audioSource,
         int displayId,
         boolean shouldShowTaps,
-        boolean lowQuality
+        boolean lowQuality,
+        boolean longerDuration
     );
 }

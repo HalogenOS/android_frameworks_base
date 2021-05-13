@@ -26,4 +26,5 @@ data class ScreenCaptureRecordParametersModel(
     val shouldShowTaps: Boolean,
     val shouldShowFrontCamera: Boolean,
     val lowQuality: Boolean,
+    val longerDuration: Boolean,
 )

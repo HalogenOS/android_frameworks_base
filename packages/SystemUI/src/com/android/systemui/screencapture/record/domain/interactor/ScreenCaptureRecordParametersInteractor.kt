@@ -48,4 +48,8 @@ constructor(private val repository: ScreenCaptureRecordParametersRepository) {
     fun setLowQuality(lowQuality: Boolean) {
         repository.updateParameters { it.copy(lowQuality = lowQuality) }
     }
+
+    fun setLongerDuration(longerDuration: Boolean) {
+        repository.updateParameters { it.copy(longerDuration = longerDuration) }
+    }
 }

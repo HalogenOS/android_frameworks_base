@@ -219,6 +219,7 @@ protected constructor(
             displayId: Int,
             shouldShowTaps: Boolean,
             lowQuality: Boolean,
+            longerDuration: Boolean,
         ) {
             val screenRecordingAudioSource = ScreenRecordingAudioSource.entries[audioSource]
             RecordingContext(
@@ -238,6 +239,7 @@ protected constructor(
                             displayId,
                             screenMediaRecorderListener,
                             lowQuality,
+                            longerDuration,
                         ),
                 )
                 .also { context ->

@@ -239,6 +239,7 @@ constructor(
                     displayId = displayId,
                     shouldShowTaps = false,
                     lowQuality = false,
+                    longerDuration = false,
                 )
             )
         }

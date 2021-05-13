@@ -186,7 +186,14 @@ constructor(
 
 private fun IScreenRecordingService.startRecording(status: Status.Started) {
     with(status.parameters) {
-        startRecording(captureTarget, audioSource.ordinal, displayId, shouldShowTaps, lowQuality)
+        startRecording(
+            captureTarget,
+            audioSource.ordinal,
+            displayId,
+            shouldShowTaps,
+            lowQuality,
+            longerDuration,
+        )
     }
 }
 
