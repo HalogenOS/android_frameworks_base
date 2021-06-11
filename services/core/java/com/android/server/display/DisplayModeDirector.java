@@ -1143,7 +1143,6 @@ public class DisplayModeDirector {
             }
 
             mRefreshRateInZone = mDeviceConfigDisplaySettings.getRefreshRateInZone();
-            restartObserver();
             mDeviceConfigDisplaySettings.startListening();
         }
 
@@ -1187,13 +1186,11 @@ public class DisplayModeDirector {
                 mAmbientBrightnessThresholds = mContext.getResources().getIntArray(
                         R.array.config_ambientThresholdsOfPeakRefreshRate);
             }
-            restartObserver();
         }
 
         public void onDeviceConfigRefreshRateInZoneChanged(int refreshRate) {
             if (refreshRate != mRefreshRateInZone) {
                 mRefreshRateInZone = refreshRate;
-                restartObserver();
             }
         }
 
@@ -1201,13 +1198,11 @@ public class DisplayModeDirector {
             pw.println("  BrightnessObserver");
             pw.println("    mAmbientLux: " + mAmbientLux);
             pw.println("    mRefreshRateInZone: " + mRefreshRateInZone);
-            pw.println("    mBrightness: " + mBrightness);
             pw.println("    mDefaultDisplayState: " + mDefaultDisplayState);
             pw.println("    mLowPowerModeEnabled: " + mLowPowerModeEnabled);
             pw.println("    mRefreshRateChangeable: " + mRefreshRateChangeable);
             pw.println("    mShouldObserveDisplayLowChange: " + mShouldObserveDisplayLowChange);
             pw.println("    mShouldObserveAmbientLowChange: " + mShouldObserveAmbientLowChange);
-            pw.println("    mRefreshRateInLowZone: " + mRefreshRateInLowZone);
 
             for (int d: mDisplayBrightnessThresholds) {
                 pw.println("    mDisplayBrightnessThreshold: " + d);
@@ -1231,81 +1226,6 @@ public class DisplayModeDirector {
             synchronized (mLock) {
                 onBrightnessChangedLocked();
             }
-        }
-
-        private void restartObserver() {
-            mShouldObserveDisplayChange = checkShouldObserve(mDisplayBrightnessThresholds);
-            mShouldObserveAmbientChange = checkShouldObserve(mAmbientBrightnessThresholds);
-
-            final ContentResolver cr = mContext.getContentResolver();
-            if (mShouldObserveDisplayChange) {
-                // Content Service does not check if an listener has already been registered.
-                // To ensure only one listener is registered, force an unregistration first.
-                cr.unregisterContentObserver(this);
-                cr.registerContentObserver(mDisplayBrightnessSetting,
-                        false /*notifyDescendants*/, this, UserHandle.USER_SYSTEM);
-            } else {
-                cr.unregisterContentObserver(this);
-            }
-
-            if (mShouldObserveAmbientChange) {
-                Resources resources = mContext.getResources();
-                String lightSensorType = resources.getString(
-                        com.android.internal.R.string.config_displayLightSensorType);
-
-                Sensor lightSensor = null;
-                if (!TextUtils.isEmpty(lightSensorType)) {
-                    List<Sensor> sensors = mSensorManager.getSensorList(Sensor.TYPE_ALL);
-                    for (int i = 0; i < sensors.size(); i++) {
-                        Sensor sensor = sensors.get(i);
-                        if (lightSensorType.equals(sensor.getStringType())) {
-                            lightSensor = sensor;
-                            break;
-                        }
-                    }
-                }
-
-                if (lightSensor == null) {
-                    lightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-                }
-
-                if (lightSensor != null) {
-                    final Resources res = mContext.getResources();
-
-                    mAmbientFilter = AmbientFilterFactory.createBrightnessFilter(TAG, res);
-                    mLightSensor = lightSensor;
-
-                    onScreenOn(isDefaultDisplayOn());
-                }
-            } else {
-                mAmbientFilter = null;
-                mLightSensor = null;
-            }
-
-            if (mRefreshRateChangeable) {
-                updateSensorStatus();
-                synchronized (mLock) {
-                    onBrightnessChangedLocked();
-                }
-            }
-        }
-
-        /**
-         * Checks to see if at least one value is positive, in which case it is necessary to listen
-         * to value changes.
-         */
-        private boolean checkShouldObserve(int[] a) {
-            if (mRefreshRateInZone <= 0) {
-                return false;
-            }
-
-            for (int d: a) {
-                if (d >= 0) {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         private boolean isInsideZone(int brightness, float lux) {
@@ -1341,10 +1261,6 @@ public class DisplayModeDirector {
                 vote = Vote.forRefreshRates(mRefreshRateInZone, mRefreshRateInZone);
             }
 
-            if (mLoggingEnabled) {
-                Slog.d(TAG, "Display brightness " + mBrightness + ", ambient lux " +  mAmbientLux
-                        + ", Vote " + vote);
-            }
             updateVoteLocked(Vote.PRIORITY_LOW_BRIGHTNESS, vote);
         }
 
