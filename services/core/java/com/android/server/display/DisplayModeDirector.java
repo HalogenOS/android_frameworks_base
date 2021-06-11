@@ -48,6 +48,7 @@ import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.os.BackgroundThread;
 import com.android.server.display.utils.AmbientFilter;
 import com.android.server.display.utils.AmbientFilterFactory;
+import com.android.server.wm.utils.DeviceConfigInterface;
 
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
