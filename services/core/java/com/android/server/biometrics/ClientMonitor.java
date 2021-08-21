@@ -299,7 +299,7 @@ public abstract class ClientMonitor extends LoggableMonitor implements IBinder.D
 
     public final void vibrateSuccess() {
         boolean FingerprintVib = Settings.System.getIntForUser(mContext.getContentResolver(),
-            Settings.System.FP_SUCCESS_VIBRATE, 1, UserHandle.USER_CURRENT) == 1;
+            Settings.System.FP_SUCCESS_VIBRATE, 0, UserHandle.USER_CURRENT) == 1;
         if (!FingerprintVib)
             return;
 
@@ -311,7 +311,7 @@ public abstract class ClientMonitor extends LoggableMonitor implements IBinder.D
 
     public final void vibrateError() {
         boolean FingerprintVib = Settings.System.getIntForUser(mContext.getContentResolver(),
-            Settings.System.FP_ERROR_VIBRATE, 1, UserHandle.USER_CURRENT) == 1;
+            Settings.System.FP_ERROR_VIBRATE, 0, UserHandle.USER_CURRENT) == 1;
         if (!FingerprintVib)
             return;
 
