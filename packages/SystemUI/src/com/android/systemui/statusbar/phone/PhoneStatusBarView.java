@@ -19,6 +19,7 @@ package com.android.systemui.statusbar.phone;
 import android.annotation.Nullable;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -42,6 +43,7 @@ import com.android.systemui.res.R;
 import com.android.systemui.shade.ShadeExpandsOnStatusBarLongPress;
 import com.android.systemui.shade.StatusBarLongPressGestureDetector;
 import com.android.systemui.statusbar.phone.userswitcher.StatusBarUserSwitcherContainer;
+import com.android.systemui.statusbar.policy.Offset;
 import com.android.systemui.statusbar.window.StatusBarWindowControllerStore;
 import com.android.systemui.user.ui.binder.StatusBarUserChipViewBinder;
 import com.android.systemui.user.ui.viewmodel.StatusBarUserChipViewModel;
@@ -67,6 +69,8 @@ public class PhoneStatusBarView extends FrameLayout {
     private HasCornerCutoutFetcher mHasCornerCutoutFetcher;
     @Nullable
     private InsetsFetcher mInsetsFetcher;
+    @Nullable
+    private ViewGroup mStatusBarContents = null;
     private int mDensity;
     private float mFontScale;
     private StatusBarLongPressGestureDetector mStatusBarLongPressGestureDetector;
@@ -111,6 +115,7 @@ public class PhoneStatusBarView extends FrameLayout {
     public void onFinishInflate() {
         super.onFinishInflate();
         mCutoutSpace = findViewById(R.id.cutout_space_view);
+        mStatusBarContents = (ViewGroup) findViewById(R.id.status_bar_contents);
 
         updateResources();
     }
@@ -153,6 +158,15 @@ public class PhoneStatusBarView extends FrameLayout {
             requestLayout();
         }
         return super.onApplyWindowInsets(insets);
+    }
+
+    public void offsetStatusBar(Offset offset) {
+        if (mStatusBarContents == null) {
+            return;
+        }
+        mStatusBarContents.setTranslationX(offset.getX());
+        mStatusBarContents.setTranslationY(offset.getY());
+        invalidate();
     }
 
     /**
@@ -269,7 +283,7 @@ public class PhoneStatusBarView extends FrameLayout {
         int statusBarPaddingStart = getResources().getDimensionPixelSize(
                 R.dimen.status_bar_padding_start);
 
-        findViewById(R.id.status_bar_contents).setPaddingRelative(
+        mStatusBarContents.setPaddingRelative(
                 statusBarPaddingStart,
                 getResources().getDimensionPixelSize(R.dimen.status_bar_padding_top),
                 getResources().getDimensionPixelSize(R.dimen.status_bar_padding_end),
