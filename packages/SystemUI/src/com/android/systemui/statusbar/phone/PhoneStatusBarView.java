@@ -19,6 +19,7 @@ package com.android.systemui.statusbar.phone;
 import android.annotation.Nullable;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -40,6 +41,8 @@ import com.android.systemui.Flags;
 import com.android.systemui.Gefingerpoken;
 import com.android.systemui.res.R;
 import com.android.systemui.statusbar.phone.userswitcher.StatusBarUserSwitcherContainer;
+import com.android.systemui.statusbar.policy.Clock;
+import com.android.systemui.statusbar.policy.Offset;
 import com.android.systemui.statusbar.window.StatusBarWindowController;
 import com.android.systemui.user.ui.binder.StatusBarUserChipViewBinder;
 import com.android.systemui.user.ui.viewmodel.StatusBarUserChipViewModel;
@@ -67,6 +70,8 @@ public class PhoneStatusBarView extends FrameLayout {
     private InsetsFetcher mInsetsFetcher;
     private int mDensity;
     private float mFontScale;
+    @Nullable
+    private ViewGroup mStatusBarContents = null;
 
     /**
      * Draw this many pixels into the left/right side of the cutout to optimally use the space
@@ -97,10 +102,20 @@ public class PhoneStatusBarView extends FrameLayout {
         StatusBarUserChipViewBinder.bind(container, viewModel);
     }
 
+    public void offsetStatusBar(Offset offset) {
+        if (mStatusBarContents == null) {
+            return;
+        }
+        mStatusBarContents.setTranslationX(offset.getX());
+        mStatusBarContents.setTranslationY(offset.getY());
+        invalidate();
+    }
+
     @Override
     public void onFinishInflate() {
         super.onFinishInflate();
         mCutoutSpace = findViewById(R.id.cutout_space_view);
+        mStatusBarContents = (ViewGroup) findViewById(R.id.status_bar_contents);
 
         updateResources();
     }
@@ -255,7 +270,7 @@ public class PhoneStatusBarView extends FrameLayout {
         int statusBarPaddingStart = getResources().getDimensionPixelSize(
                 R.dimen.status_bar_padding_start);
 
-        findViewById(R.id.status_bar_contents).setPaddingRelative(
+        mStatusBarContents.setPaddingRelative(
                 statusBarPaddingStart,
                 getResources().getDimensionPixelSize(R.dimen.status_bar_padding_top),
                 getResources().getDimensionPixelSize(R.dimen.status_bar_padding_end),
