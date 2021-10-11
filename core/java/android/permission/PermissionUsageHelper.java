@@ -90,6 +90,11 @@ public class PermissionUsageHelper implements AppOpsManager.OnOpActiveChangedLis
     private static final String PROPERTY_CAMERA_MIC_ICONS_ENABLED = "camera_mic_icons_enabled";
 
     /**
+     * Whether to show location indicators.
+     */
+    private static final String PROPERTY_LOCATION_INDICATORS_ENABLED = "location_indicators_enabled";
+
+    /**
      * How long after an access to show it as "recent"
      */
     private static final String RECENT_ACCESS_TIME_MS = "recent_access_time_ms";
@@ -112,6 +117,11 @@ public class PermissionUsageHelper implements AppOpsManager.OnOpActiveChangedLis
         return DeviceConfig.getBoolean(DeviceConfig.NAMESPACE_PRIVACY,
                 PROPERTY_CAMERA_MIC_ICONS_ENABLED, true)
                 || android.location.flags.Flags.locationIndicatorsEnabled();
+    }
+
+    private static boolean shouldShowLocationIndicator() {
+        return DeviceConfig.getBoolean(DeviceConfig.NAMESPACE_PRIVACY,
+                PROPERTY_LOCATION_INDICATORS_ENABLED, true);
     }
 
     private static long getRecentThreshold(Long now) {
