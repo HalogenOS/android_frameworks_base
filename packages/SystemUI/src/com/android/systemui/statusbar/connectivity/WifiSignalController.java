@@ -137,13 +137,9 @@ public class WifiSignalController extends SignalController<WifiState, IconGroup>
         IconState statusIcon =
                 new IconState(sbVisible, getCurrentIconIdForCarrierWifi(), contentDescription);
         int typeIcon = sbVisible ? icons.dataType : 0;
-        int qsTypeIcon = 0;
-        IconState qsIcon = null;
-        if (sbVisible) {
-            qsTypeIcon = icons.dataType;
-            qsIcon = new IconState(mCurrentState.connected, getQsCurrentIconIdForCarrierWifi(),
-                    contentDescription);
-        }
+        int qsTypeIcon = icons.dataType;
+        IconState qsIcon = new IconState(mCurrentState.connected, getQsCurrentIconIdForCarrierWifi(),
+                contentDescription);
         CharSequence description =
                 mNetworkController.getNetworkNameForCarrierWiFi(mCurrentState.subId);
         MobileDataIndicators mobileDataIndicators = new MobileDataIndicators(
