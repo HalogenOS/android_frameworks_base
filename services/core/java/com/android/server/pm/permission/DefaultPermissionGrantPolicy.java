@@ -975,6 +975,11 @@ final class DefaultPermissionGrantPolicy {
         // Etar (calendar app)
         grantPermissionsToSystemPackage(pm, "org.lineageos.etar", userId,
                 CALENDAR_PERMISSIONS, ADDITIONAL_CALENDAR_PERMISSIONS);
+
+        // Google App
+        grantPermissionsToPackage(pm, "com.google.android.googlequicksearchbox", userId,
+                false /* ignoreSystemPackage */, true /*whitelistRestrictedPermissions*/,
+                PHONE_PERMISSIONS);
     }
 
     private String getDefaultSystemHandlerActivityPackageForCategory(PackageManagerWrapper pm,
