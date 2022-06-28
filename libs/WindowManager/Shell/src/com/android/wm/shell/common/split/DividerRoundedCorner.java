@@ -166,7 +166,8 @@ public class DividerRoundedCorner extends View {
 
             final RoundedCorner roundedCorner = getDisplay().getRoundedCorner(cornerPosition);
             if (mIsSplitScreen) {
-                mRadius = roundedCorner == null ? 0 : roundedCorner.getRadius();
+                mRadius = roundedCorner == null ? 0 :
+                    getResources().getDimensionPixelSize(R.dimen.split_divider_corner_size);
             } else {
                 mRadius = mContext
                         .getResources()
