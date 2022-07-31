@@ -92,6 +92,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.ComponentInfo;
+import android.content.pm.GosPackageState;
 import android.content.pm.IPackageManager;
 import android.content.pm.InstrumentationInfo;
 import android.content.pm.PackageInfo;
@@ -2304,6 +2305,12 @@ public final class ActivityThread extends ClientTransactionHandler
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
+        }
+
+        @Override
+        public void onGosPackageStateChanged(GosPackageState state) {
+            // this is a oneway method, caller (ActivityManager) will not be blocked
+            ActivityThreadHooks.onGosPackageStateChanged(mInitialApplication, state, false);
         }
     }
 

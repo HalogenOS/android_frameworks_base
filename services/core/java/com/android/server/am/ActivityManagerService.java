@@ -287,6 +287,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ActivityPresentationInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.ApplicationInfo.HiddenApiEnforcementPolicy;
+import android.content.pm.GosPackageState;
 import android.content.pm.IPackageDataObserver;
 import android.content.pm.IPackageManager;
 import android.content.pm.IncrementalStatesInfo;
@@ -18139,6 +18140,13 @@ public class ActivityManagerService extends IActivityManager.Stub
         @Override
         public void addCreatorToken(Intent intent, String creatorPackage) {
             ActivityManagerService.this.addCreatorToken(intent, creatorPackage);
+        }
+
+        @Override
+        public void onGosPackageStateChanged(int uid, GosPackageState state) {
+            synchronized (mProcLock) {
+                mProcessList.onGosPackageStateChangedLOSP(uid, state);
+            }
         }
     }
 

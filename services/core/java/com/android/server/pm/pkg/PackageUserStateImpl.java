@@ -21,6 +21,7 @@ import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ComponentName;
+import android.content.pm.GosPackageState;
 import android.content.pm.PackageManager;
 import android.content.pm.UserPackage;
 import android.content.pm.overlay.OverlayPaths;
@@ -129,6 +130,9 @@ public class PackageUserStateImpl extends WatchableImpl implements PackageUserSt
 
     private @CurrentTimeMillisLong long mFirstInstallTimeMillis;
 
+    @NonNull
+    private GosPackageState mGosPackageState = GosPackageState.DEFAULT;
+
     // TODO(b/239050028): Remove, enforce notifying parent through PMS commit method
     @Nullable
     private Watchable mWatchable;
@@ -164,6 +168,7 @@ public class PackageUserStateImpl extends WatchableImpl implements PackageUserSt
     }
 
     public PackageUserStateImpl(@NonNull Watchable watchable, PackageUserStateImpl other) {
+        mGosPackageState = other.mGosPackageState;
         mWatchable = watchable;
         mBooleans = other.mBooleans;
         mDisabledComponentsWatched = other.mDisabledComponentsWatched == null
@@ -607,6 +612,12 @@ public class PackageUserStateImpl extends WatchableImpl implements PackageUserSt
         return this;
     }
 
+    public @NonNull PackageUserStateImpl setGosPackageState(@NonNull GosPackageState gosPackageState) {
+        mGosPackageState = gosPackageState;
+        onChanged();
+        return this;
+    }
+
     /**
      * Sets the value for {@link #getArchiveState()}.
      */
@@ -802,6 +813,11 @@ public class PackageUserStateImpl extends WatchableImpl implements PackageUserSt
     @DataClass.Generated.Member
     public @Nullable ArchiveState getArchiveState() {
         return mArchiveState;
+    }
+
+    @DataClass.Generated.Member
+    public @NonNull GosPackageState getGosPackageState() {
+        return mGosPackageState;
     }
 
     @DataClass.Generated.Member

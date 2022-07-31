@@ -19,6 +19,7 @@ package com.android.server.pm.pkg;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ComponentName;
+import android.content.pm.GosPackageState;
 import android.content.pm.UserPackage;
 import android.content.pm.pkg.FrameworkPackageUserState;
 import android.util.Pair;
@@ -49,4 +50,7 @@ public interface PackageUserStateInternal extends PackageUserState, FrameworkPac
 
     @Nullable
     Pair<String, Integer> getOverrideLabelIconForComponent(@NonNull ComponentName componentName);
+
+    @NonNull
+    GosPackageState getGosPackageState();
 }
