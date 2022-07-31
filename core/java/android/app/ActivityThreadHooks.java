@@ -9,6 +9,8 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.android.internal.app.StorageScopesAppHooks;
+
 import java.util.Objects;
 
 class ActivityThreadHooks {
@@ -62,6 +64,7 @@ class ActivityThreadHooks {
 
     // called from both main and worker threads
     static void onGosPackageStateChanged(Context ctx, GosPackageState state, boolean fromBind) {
+        StorageScopesAppHooks.maybeEnable(state);
     }
 
     static Service instantiateService(String className) {
