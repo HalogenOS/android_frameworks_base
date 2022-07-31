@@ -189,5 +189,8 @@ oneway interface IApplicationThread {
     void schedulePing(in RemoteCallback pong);
     void getExecutableMethodFileOffsets(in MethodDescriptor methodDescriptor,
             in IOffsetCallback resultCallback);
+
+    void onGosPackageStateChanged(in android.content.pm.GosPackageState state);
+
     void requestHandoffActivityData(in IBinder requestToken, in List<IBinder> activityTokens);
 }
