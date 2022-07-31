@@ -42,6 +42,7 @@ import android.app.ApplicationExitInfo;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.Flags;
+import android.content.pm.GosPackageState;
 import android.content.pm.IPackageDeleteObserver2;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
@@ -619,6 +620,15 @@ final class DeletePackageHelper {
                     ? 0
                     : ps.getUserStateOrDefault(nextUserId).getFirstInstallTimeMillis();
 
+            // Preserve GosPackageState if archiving an app.
+            final android.content.pm.GosPackageState gosPackageState;
+            if ((flags & (PackageManager.DELETE_KEEP_DATA | PackageManager.DELETE_ARCHIVE))
+                    == (PackageManager.DELETE_KEEP_DATA | PackageManager.DELETE_ARCHIVE)) {
+                gosPackageState = ps.getUserStateOrDefault(nextUserId).getGosPackageState();
+            } else {
+                gosPackageState = GosPackageState.DEFAULT;
+            }
+
             ps.setUserState(nextUserId,
                     ps.getCeDataInode(nextUserId),
                     ps.getDeDataInode(nextUserId),
@@ -627,6 +637,7 @@ final class DeletePackageHelper {
                     true /*stopped*/,
                     true /*notLaunched*/,
                     false /*hidden*/,
+                    gosPackageState,
                     0 /*distractionFlags*/,
                     null /*suspendParams*/,
                     false /*instantApp*/,
