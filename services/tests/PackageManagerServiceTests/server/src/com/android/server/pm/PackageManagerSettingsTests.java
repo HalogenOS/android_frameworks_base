@@ -47,6 +47,7 @@ import android.app.PropertyInvalidatedCache;
 import android.content.ComponentName;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.Flags;
+import android.content.pm.GosPackageState;
 import android.content.pm.PackageManager;
 import android.content.pm.SharedLibraryInfo;
 import android.content.pm.SuspendDialogInfo;
@@ -109,7 +110,9 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HexFormat;
 import java.util.List;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.UUID;
@@ -1419,7 +1422,7 @@ public class PackageManagerSettingsTests {
                 .setPrimaryCpuAbi("x86_64")
                 .setSecondaryCpuAbi("x86")
                 .setLongVersionCode(INITIAL_VERSION_CODE);
-        origPkgSetting01.setUserState(0, 100, 100, 1, true, false, false, false, 0, null, false,
+        origPkgSetting01.setUserState(0, 100, 100, 1, true, false, false, false, createTestGosPackageState(), 0, null, false,
                 false, "lastDisabledCaller", new ArraySet<>(new String[]{"enabledComponent1"}),
                 new ArraySet<>(new String[]{"disabledComponent1"}), 0, 0, "harmfulAppWarning",
                 "splashScreenTheme", 1000L, PackageManager.USER_MIN_ASPECT_RATIO_UNSET, null);
@@ -1452,6 +1455,15 @@ public class PackageManagerSettingsTests {
                 origPkgSetting01.getStateForUser(UserHandle.of(0)));
         verifyUserStatesCopy(origPkgSetting01.readUserState(0),
                 testPkgSetting01.readUserState(0));
+    }
+
+    private static GosPackageState createTestGosPackageState() {
+        var hf = HexFormat.ofDelimiter(" ");
+        // argument values are random
+        return new GosPackageState(0xf0_bc_06_f1_f1_67_2e_b8L, 0xf4_93_53_00_98_c8_f0_0cL,
+                hf.parseHex("2d f6 37 f2 90 39 da ef"),
+                hf.parseHex("8b 9d 61 a3 3e 45 12")
+        );
     }
 
     /** Update package */
@@ -2191,6 +2203,8 @@ public class PackageManagerSettingsTests {
         SuspendParams testSuspendParams = testPus.getSuspendParams().valueAt(0);
         assertThat(origSuspendParams.getDialogInfo().equals(testSuspendParams.getDialogInfo()),
                 is(true));
+        assertEquals(origPus.getGosPackageState(), createTestGosPackageState());
+        assertEquals(testPus.getGosPackageState(), createTestGosPackageState());
         assertThat(BaseBundle.kindofEquals(
                 origSuspendParams.getAppExtras(), testSuspendParams.getAppExtras()), is(true));
         assertThat(BaseBundle.kindofEquals(origSuspendParams.getLauncherExtras(),
@@ -2223,6 +2237,7 @@ public class PackageManagerSettingsTests {
                 && userState.getCeDataInode() == oldUserState.getCeDataInode()
                 && userState.getDistractionFlags() == oldUserState.getDistractionFlags()
                 && userState.getFirstInstallTimeMillis() == oldUserState.getFirstInstallTimeMillis()
+                && Objects.equals(userState.getGosPackageState(), oldUserState.getGosPackageState())
                 && userState.getEnabledState() == oldUserState.getEnabledState()
                  && userState.getHarmfulAppWarning().equals(oldUserState.getHarmfulAppWarning())
                 && userState.getInstallReason() == oldUserState.getInstallReason()

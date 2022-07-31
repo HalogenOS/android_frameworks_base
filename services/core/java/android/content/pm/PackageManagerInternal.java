@@ -1442,4 +1442,7 @@ public abstract class PackageManagerInternal {
      * Returns true if the device is upgrading from an SDK version lower than the one specified.
      */
     public abstract boolean isUpgradingFromLowerThan(int sdkVersion);
+
+    @NonNull
+    public abstract GosPackageState getGosPackageState(String packageName, int userId);
 }
