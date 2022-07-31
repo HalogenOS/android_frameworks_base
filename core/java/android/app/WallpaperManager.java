@@ -99,6 +99,7 @@ import android.window.DesktopExperienceFlags;
 
 import com.android.internal.R;
 import com.android.internal.annotations.Keep;
+import com.android.internal.app.StorageScopesAppHooks;
 
 import libcore.io.IoUtils;
 
@@ -792,6 +793,11 @@ public class WallpaperManager {
                             && !CompatChanges.isChangeEnabled(THROW_ON_SECURITY_EXCEPTION)) {
                         Log.w(TAG, "No permission to access wallpaper, returning default"
                                 + " wallpaper to avoid crashing legacy app.");
+                        return getDefaultWallpaper(context, FLAG_SYSTEM);
+                    }
+
+                    if (StorageScopesAppHooks.isEnabled()) {
+                        Log.d("StorageScopes", "returning default wallpaper");
                         return getDefaultWallpaper(context, FLAG_SYSTEM);
                     }
 
@@ -2009,6 +2015,12 @@ public class WallpaperManager {
                             + " wallpaper file to avoid crashing legacy app.");
                     return getDefaultSystemWallpaperFile();
                 }
+
+                if (StorageScopesAppHooks.isEnabled()) {
+                    Log.d("StorageScopes", "returning default wallpaper file");
+                    return getDefaultSystemWallpaperFile();
+                }
+
                 if (mContext.getApplicationInfo().targetSdkVersion < Build.VERSION_CODES.O_MR1) {
                     Log.w(TAG, "No permission to access wallpaper, suppressing"
                             + " exception to avoid crashing legacy app.");
