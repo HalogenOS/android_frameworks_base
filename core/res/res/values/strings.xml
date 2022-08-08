@@ -6873,4 +6873,7 @@ ul.</string>
     <!-- Fingerprint failed rate too high notification msg -->
     <string name="fingerprint_frr_notification_msg">Tap to review tips to improve your unlocking experience</string>
 
+    <!-- Button that opens the screen with details of an application error -->
+    <string name="aerr_show_details">Show details</string>
+    <java-symbol type="string" name="aerr_show_details" />
 </resources>
