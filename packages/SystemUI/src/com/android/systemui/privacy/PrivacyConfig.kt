@@ -50,6 +50,7 @@ constructor(
         private const val MEDIA_PROJECTION =
             SystemUiDeviceConfigFlags.PROPERTY_MEDIA_PROJECTION_INDICATORS_ENABLED
         private const val DEFAULT_MIC_CAMERA = true
+        private const val DEFAULT_LOCATION = true
         private const val DEFAULT_MEDIA_PROJECTION = true
 
         fun getPrivacyColor(locationOnly: Boolean): Int {
