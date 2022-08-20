@@ -24,11 +24,9 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
-import android.view.Surface
 import android.widget.FrameLayout
 import com.android.systemui.biometrics.shared.model.UdfpsOverlayParams
 import com.android.systemui.doze.DozeReceiver
-import com.android.systemui.res.R
 
 private const val TAG = "UdfpsView"
 
@@ -43,14 +41,28 @@ class UdfpsView(
     // overlayParams.sensorBounds
     var sensorRect = Rect()
     private var mUdfpsDisplayMode: UdfpsDisplayModeProvider? = null
-
-    private var ghbmView: UdfpsSurfaceView? = null
+    private val debugTextPaint = Paint().apply {
+        isAntiAlias = true
+        color = Color.BLUE
+        textSize = 32f
+    }
 
     /** View controller (can be different for enrollment, BiometricPrompt, Keyguard, etc.). */
     var animationViewController: UdfpsAnimationViewController<*>? = null
 
     /** Parameters that affect the position and size of the overlay. */
     var overlayParams = UdfpsOverlayParams()
+
+    /** Debug message. */
+    var debugMessage: String? = null
+        set(value) {
+            field = value
+            postInvalidate()
+        }
+
+    /** True after the call to [configureDisplay] and before the call to [unconfigureDisplay]. */
+    var isDisplayConfigured: Boolean = false
+        private set
 
     fun setUdfpsDisplayModeProvider(udfpsDisplayModeProvider: UdfpsDisplayModeProvider?) {
         mUdfpsDisplayMode = udfpsDisplayModeProvider
@@ -59,10 +71,6 @@ class UdfpsView(
     // Don't propagate any touch events to the child views.
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
         return (animationViewController == null || !animationViewController!!.shouldPauseAuth())
-    }
-
-    override fun onFinishInflate() {
-        ghbmView = findViewById(R.id.hbm_view)
     }
 
     override fun dozeTimeTick() {
@@ -88,19 +96,22 @@ class UdfpsView(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        if (!isDisplayConfigured) {
+            if (!debugMessage.isNullOrEmpty()) {
+                canvas.drawText(debugMessage!!, 0f, 160f, debugTextPaint)
+            }
+        }
     }
 
-    fun illuminate() {
-        ghbmView?.visibility = VISIBLE
-        doIlluminate(null /* surface */)
+    fun configureDisplay(onDisplayConfigured: Runnable) {
+        isDisplayConfigured = true
+        animationViewController?.onDisplayConfiguring()
+        mUdfpsDisplayMode?.enable(onDisplayConfigured)
     }
 
-    private fun doIlluminate(surface: Surface?) {
-        ghbmView?.drawIlluminationDot(RectF(sensorRect))
-    }
-
-    fun stopIlluminating() {
+    fun unconfigureDisplay() {
+        isDisplayConfigured = false
         animationViewController?.onDisplayUnconfigured()
-        ghbmView?.visibility = INVISIBLE
+        mUdfpsDisplayMode?.disable(null /* onDisabled */)
     }
 }
