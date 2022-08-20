@@ -1125,7 +1125,6 @@ public class UdfpsController implements DozeReceiver, Dumpable {
             } else {
                 if (DeviceEntryUdfpsRefactor.isEnabled()) {
                     mUdfpsDisplayMode.enable(() -> dispatchOnUiReady(requestId));
-                    ((UdfpsTouchOverlay) view).configureDisplay(() -> dispatchOnUiReady(requestId));
                 } else {
                     ((UdfpsView) view).configureDisplay(() -> dispatchOnUiReady(requestId));
                 }

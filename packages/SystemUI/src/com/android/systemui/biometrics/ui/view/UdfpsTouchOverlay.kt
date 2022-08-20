@@ -19,7 +19,6 @@ import android.content.Context
 import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Surface
 import android.widget.FrameLayout
 
@@ -32,40 +31,50 @@ import com.android.systemui.res.R
  * for fingerprint authentication.
  */
 class UdfpsTouchOverlay(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
-    var udfpsDisplayModeProvider: UdfpsDisplayModeProvider? = null
+    private var ghbmView: UdfpsSurfaceView? = null
+    private var udfpsDisplayMode: UdfpsDisplayModeProvider? = null
 
+    // sensorRect may be bigger than the sensor. True sensor dimensions are defined in
+    // overlayParams.sensorBounds
+    var sensorRect = Rect()
+
+    /** True after the call to [configureDisplay] and before the call to [unconfigureDisplay]. */
     var isDisplayConfigured: Boolean = false
         private set
 
-    private val TAG = this::class.simpleName
-    private var sensorRect = Rect()
-
     override fun onFinishInflate() {
+        ghbmView = findViewById(R.id.hbm_view)
     }
 
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-        sensorRect.let {
-            it.left = left
-            it.top = top
-            it.right = right
-            it.bottom = bottom
-        }
+   fun setUdfpsDisplayModeProvider(udfpsDisplayModeProvider: UdfpsDisplayModeProvider?) {
+        udfpsDisplayMode = udfpsDisplayModeProvider
     }
 
     fun configureDisplay(onDisplayConfigured: Runnable) {
-        isDisplayConfigured = false
-        doIlluminate(onDisplayConfigured)
+        isDisplayConfigured = true
+        val gView = ghbmView
+        if (gView != null) {
+            gView.setGhbmIlluminationListener(this::doIlluminate)
+            gView.visibility = VISIBLE
+            gView.startGhbmIllumination(onDisplayConfigured)
+        } else {
+            doIlluminate(null /* surface */, onDisplayConfigured)
+        }
+    }
+
+    private fun doIlluminate(surface: Surface?, onDisplayConfigured: Runnable?) {
+        udfpsDisplayMode?.enable {
+            onDisplayConfigured?.run()
+            ghbmView?.drawIlluminationDot(RectF(sensorRect))
+        }
     }
 
     fun unconfigureDisplay() {
         isDisplayConfigured = false
-    }
-
-    private fun doIlluminate(onDisplayConfigured: Runnable?) {
-
-        udfpsDisplayModeProvider?.enable {
-            onDisplayConfigured?.run()
-        } ?: Log.w(TAG, "udfpsDisplayModeProvider not set!")
+        ghbmView?.let { view ->
+            view.setGhbmIlluminationListener(null)
+            view.visibility = INVISIBLE
+        }
+        udfpsDisplayMode?.disable(null /* onDisabled */)
     }
 }
