@@ -51,6 +51,7 @@ import android.os.storage.StorageManager;
 import android.permission.PermissionManager;
 import android.permission.flags.Flags;
 import android.print.PrintManager;
+import android.provider.AlarmClock;
 import android.provider.CalendarContract;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
@@ -1004,6 +1005,19 @@ final class DefaultPermissionGrantPolicy {
         // Etar (calendar app)
         grantPermissionsToSystemPackage(pm, "org.lineageos.etar", userId,
                 CALENDAR_PERMISSIONS, ADDITIONAL_CALENDAR_PERMISSIONS);
+
+        String clockAppPackage = getDefaultSystemHandlerActivityPackage(pm, AlarmClock.ACTION_SET_ALARM, userId);
+        grantPermissionsToSystemPackage(pm, clockAppPackage, userId, NOTIFICATION_PERMISSIONS);
+
+        String[] notifPackages = {
+            "com.android.contacts",
+            android.util.PackageUtils.getFirstPartyAppSourcePackageName(mContext),
+            "app.grapheneos.camera",
+            "com.stevesoltys.seedvault",
+        };
+        for (String pkg : notifPackages) {
+            grantPermissionsToSystemPackage(pm, pkg, userId, NOTIFICATION_PERMISSIONS);
+        }
     }
 
     private String getDefaultSystemHandlerActivityPackageForCategory(PackageManagerWrapper pm,
