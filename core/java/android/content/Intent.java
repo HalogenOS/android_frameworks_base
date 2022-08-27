@@ -6495,7 +6495,6 @@ public class Intent implements Parcelable, Cloneable {
 
     /**
      * Broadcast action: notify system apps that the battery charge level has changed
-     * Requires {@link Manifest.permission#RECEIVE_BATTERY_CHARGE_UPDATES} permission.
      * @hide
      */
     public static final String ACTION_BATTERY_CHARGE_CHANGED =

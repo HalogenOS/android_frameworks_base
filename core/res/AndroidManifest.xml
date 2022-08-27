@@ -6579,17 +6579,8 @@
     <attribution android:tag="DevicePolicyManagerService"
         android:label="@string/device_policy_manager_service"/>
 
-
     <!-- Receive battery status change directly -->
     <protected-broadcast android:name="custom.intent.action.BATTERY_CHARGE_CHANGED" />
-
-    <!--
-        Allows a system app to receive notifications about battery charge change
-        @hide
-    -->
-    <permission android:name="custom.permission.RECEIVE_BATTERY_CHARGE_UPDATES"
-                android:protectionLevel="signature|privileged" />
-
 
     <application android:process="system"
                  android:persistent="true"
