@@ -1718,18 +1718,18 @@ public final class BroadcastQueue {
                             + r.intent + " to "
                             + component.flattenToShortString());
                     skip = true;
-                } else if (((r.intent.getFlags()&Intent.FLAG_RECEIVER_EXCLUDE_BACKGROUND) != 0)
-                        || (r.intent.getComponent() == null
-                            && r.intent.getPackage() == null
-                            && ((r.intent.getFlags()
-                                    & Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND) == 0)
-                            && !isSignaturePerm(r.requiredPermissions))) {
-                    mService.addBackgroundCheckViolationLocked(r.intent.getAction(),
-                            component.getPackageName());
-                    Slog.w(TAG, "Background execution not allowed: receiving "
-                            + r.intent + " to "
-                            + component.flattenToShortString());
-                    skip = true;
+                } else if (r.intent.getAction() != Intent.ACTION_BATTERY_CHARGE_CHANGED &&(((r.intent.getFlags()&Intent.FLAG_RECEIVER_EXCLUDE_BACKGROUND) != 0)
+                || (r.intent.getComponent() == null
+                    && r.intent.getPackage() == null
+                    && ((r.intent.getFlags()
+                            & Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND) == 0)
+                    && !isSignaturePerm(r.requiredPermissions)))) {
+                mService.addBackgroundCheckViolationLocked(r.intent.getAction(),
+                    component.getPackageName());
+                Slog.w(TAG, "Background execution not allowed: receiving "
+                    + r.intent + " to "
+                    + component.flattenToShortString());
+                skip = true;
                 }
             }
         }

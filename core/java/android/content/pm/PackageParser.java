@@ -255,6 +255,7 @@ public class PackageParser {
     public static final Set<String> SAFE_BROADCASTS = new ArraySet<>();
     static {
         SAFE_BROADCASTS.add(Intent.ACTION_BOOT_COMPLETED);
+        SAFE_BROADCASTS.add(Intent.ACTION_BATTERY_CHARGE_CHANGED);
     }
 
     /** @hide */
