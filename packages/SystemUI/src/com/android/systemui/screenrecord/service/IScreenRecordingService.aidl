@@ -29,6 +29,7 @@ interface IScreenRecordingService {
         int displayId,
         boolean shouldShowTaps,
         boolean lowQuality,
-        boolean longerDuration
+        boolean longerDuration,
+        boolean hevc
     );
 }

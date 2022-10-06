@@ -240,6 +240,7 @@ constructor(
                     shouldShowTaps = false,
                     lowQuality = false,
                     longerDuration = false,
+                    hevc = false,
                 )
             )
         }

@@ -52,4 +52,8 @@ constructor(private val repository: ScreenCaptureRecordParametersRepository) {
     fun setLongerDuration(longerDuration: Boolean) {
         repository.updateParameters { it.copy(longerDuration = longerDuration) }
     }
+
+    fun setHevc(hevc: Boolean) {
+        repository.updateParameters { it.copy(hevc = hevc) }
+    }
 }

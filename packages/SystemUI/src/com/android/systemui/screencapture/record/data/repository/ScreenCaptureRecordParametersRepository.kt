@@ -38,6 +38,7 @@ class ScreenCaptureRecordParametersRepository @Inject constructor() {
                 shouldShowFrontCamera = false,
                 lowQuality = false,
                 longerDuration = false,
+                hevc = false,
             )
         )
     val parameters = _parameters.asStateFlow()

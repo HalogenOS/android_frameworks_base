@@ -60,6 +60,11 @@ constructor(private val interactor: ScreenCaptureRecordParametersInteractor) :
             .map { it.longerDuration }
             .hydratedStateOf("ScreenCaptureAudioSourceViewModel#longerDuration", null)
 
+    val hevc: Boolean? by
+        interactor.parameters
+            .map { it.hevc }
+            .hydratedStateOf("ScreenCaptureAudioSourceViewModel#hevc", null)
+
     var shouldRecordDevice: Boolean
         get() =
             audioSource == ScreenRecordingAudioSource.MIC_AND_INTERNAL ||
@@ -122,6 +127,10 @@ constructor(private val interactor: ScreenCaptureRecordParametersInteractor) :
 
     fun setLongerDuration(longerDuration: Boolean) {
         interactor.setLongerDuration(longerDuration)
+    }
+
+    fun setHevc(hevc: Boolean) {
+        interactor.setHevc(hevc)
     }
 
     @AssistedFactory

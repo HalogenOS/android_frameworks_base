@@ -193,6 +193,7 @@ private fun IScreenRecordingService.startRecording(status: Status.Started) {
             shouldShowTaps,
             lowQuality,
             longerDuration,
+            hevc,
         )
     }
 }

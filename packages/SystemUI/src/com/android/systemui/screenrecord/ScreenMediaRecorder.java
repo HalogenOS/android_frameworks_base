@@ -101,6 +101,7 @@ public class ScreenMediaRecorder extends MediaProjection.Callback {
 
     private boolean mLowQuality;
     private boolean mLongerDuration;
+    private boolean mHEVC;
 
     private Context mContext;
     ScreenMediaRecorderListener mListener;
@@ -114,7 +115,7 @@ public class ScreenMediaRecorder extends MediaProjection.Callback {
             int displayId,
             ScreenMediaRecorderListener listener) {
         this(context, handler, uid, audioSource, captureRegion,
-                displayId, listener, false, false);
+                displayId, listener, false, false, false);
     }
 
     public ScreenMediaRecorder(
@@ -126,7 +127,8 @@ public class ScreenMediaRecorder extends MediaProjection.Callback {
             int displayId,
             ScreenMediaRecorderListener listener,
             boolean lowQuality,
-            boolean longerDuration) {
+            boolean longerDuration,
+            boolean hevc) {
         mContext = context;
         mHandler = handler;
         mUid = uid;
@@ -136,6 +138,7 @@ public class ScreenMediaRecorder extends MediaProjection.Callback {
         mDisplayId = displayId;
         mLowQuality = lowQuality;
         mLongerDuration = longerDuration;
+        mHEVC = hevc;
         mMaxRefreshRate = mContext.getResources().getInteger(
                 com.android.systemui.res.R.integer.config_screenRecorderMaxFramerate);
         mAvcProfileLevel = mContext.getResources().getString(
@@ -148,6 +151,10 @@ public class ScreenMediaRecorder extends MediaProjection.Callback {
 
     public void setLongerDuration(boolean longer) {
         mLongerDuration = longer;
+    }
+
+    public void setHEVC(boolean hevc) {
+        mHEVC = hevc;
     }
 
     private void prepare() throws IOException, RemoteException, RuntimeException {
@@ -201,11 +208,19 @@ public class ScreenMediaRecorder extends MediaProjection.Callback {
                 : VIDEO_FRAME_RATE_TO_RESOLUTION_RATIO;
         int vidBitRate = width * height * refreshRate / VIDEO_FRAME_RATE * resRatio;
         long maxFilesize = mLongerDuration ? MAX_FILESIZE_BYTES_LONGER : MAX_FILESIZE_BYTES;
-        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-        mMediaRecorder.setVideoEncodingProfileLevel(
-                MediaCodecInfo.CodecProfileLevel.AVCProfileMain,
-                mLowQuality ? MediaCodecInfo.CodecProfileLevel.AVCLevel32
-                : getAvcProfileLevelCodeByName(mAvcProfileLevel));
+        if (!mHEVC) {
+            mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+            mMediaRecorder.setVideoEncodingProfileLevel(
+                    MediaCodecInfo.CodecProfileLevel.AVCProfileMain,
+                    mLowQuality ? MediaCodecInfo.CodecProfileLevel.AVCLevel32
+                    : getAvcProfileLevelCodeByName(mAvcProfileLevel));
+        } else {
+            mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.HEVC);
+            mMediaRecorder.setVideoEncodingProfileLevel(
+                    MediaCodecInfo.CodecProfileLevel.HEVCProfileMain,
+                    mLowQuality ? MediaCodecInfo.CodecProfileLevel.HEVCHighTierLevel31
+                    : MediaCodecInfo.CodecProfileLevel.HEVCHighTierLevel41);
+        }
         mMediaRecorder.setVideoSize(width, height);
         mMediaRecorder.setVideoFrameRate(refreshRate);
         mMediaRecorder.setVideoEncodingBitRate(vidBitRate);
