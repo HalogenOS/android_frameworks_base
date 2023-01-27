@@ -5842,7 +5842,13 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
                         if (mShowDialogs) {
                             String buildfingerprint = SystemProperties.get("ro.build.fingerprint");
                             String[] splitfingerprint = buildfingerprint.split("/");
-                            String vendorid = splitfingerprint[3];
+                            String vendorid = "";
+                            if (splitfingerprint.length < 4) {
+                                Slog.w(TAG, "Build fingerprint is not consistent, but the"
+                                        + " fingerprint is not long enough to be parsed");
+                            } else {
+                                vendorid = splitfingerprint[3];
+                            }
                             AlertDialog d = new BaseErrorDialog(mUiContext);
                             d.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ERROR);
                             d.setCancelable(false);
