@@ -185,27 +185,21 @@ public class SystemUIToast implements ToastPlugin.Toast {
                     + " user=" + mUserId);
         }
 
-        if (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.TOAST_ICON, 1) == 0) {
-            // no app icon
-            toastView.findViewById(com.android.systemui.R.id.icon).setVisibility(View.GONE);
+        Drawable icon = getBadgedIcon(mContext, mPackageName, mUserId);
+        if (icon == null) {
+            iconView.setVisibility(View.GONE);
         } else {
-            Drawable icon = getBadgedIcon(mContext, mPackageName, mUserId);
-            if (icon == null) {
-                iconView.setVisibility(View.GONE);
-            } else {
-                iconView.setImageDrawable(icon);
-                if (appInfo == null) {
-                    Log.d(TAG, "No appInfo for pkg=" + mPackageName + " usr=" + mUserId);
-                } else if (appInfo.labelRes != 0) {
-                    try {
-                        Resources res = mContext.getPackageManager().getResourcesForApplication(
-                                appInfo,
-                                new Configuration(mContext.getResources().getConfiguration()));
-                        iconView.setContentDescription(res.getString(appInfo.labelRes));
-                    } catch (PackageManager.NameNotFoundException e) {
-                        Log.d(TAG, "Cannot find application resources for icon label.");
-                    }
+            iconView.setImageDrawable(icon);
+            if (appInfo == null) {
+                Log.d(TAG, "No appInfo for pkg=" + mPackageName + " usr=" + mUserId);
+            } else if (appInfo.labelRes != 0) {
+                try {
+                    Resources res = mContext.getPackageManager().getResourcesForApplication(
+                            appInfo,
+                            new Configuration(mContext.getResources().getConfiguration()));
+                    iconView.setContentDescription(res.getString(appInfo.labelRes));
+                } catch (PackageManager.NameNotFoundException e) {
+                    Log.d(TAG, "Cannot find application resources for icon label.");
                 }
             }
         }
