@@ -67,7 +67,7 @@ public class PackageCacher implements IPackageCacher {
     }
 
     public PackageCacher(File cacheDir, @Nullable PackageParser2.Callback callback) {
-        this.mCacheDir = cacheDir;
+        this.mCacheDir = java.util.Objects.requireNonNull(cacheDir);
         this.mCallback = callback;
     }
 
