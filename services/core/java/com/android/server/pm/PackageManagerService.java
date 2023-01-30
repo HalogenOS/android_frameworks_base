@@ -1722,7 +1722,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
                         () -> LocalServices.getService(UserManagerInternal.class)),
                 (i, pm) -> new DisplayMetrics(),
                 (i, pm) -> new PackageParser2(pm.mSeparateProcesses, i.getDisplayMetrics(),
-                        new PackageCacher(pm.mCacheDir, pm.mPackageParserCallback),
+                        pm.hasCacheDir() ? new PackageCacher(pm.mCacheDir, pm.mPackageParserCallback) : null,
                         pm.mPackageParserCallback) /* scanningCachingPackageParserProducer */,
                 (i, pm) -> new PackageParser2(pm.mSeparateProcesses, i.getDisplayMetrics(), null,
                         pm.mPackageParserCallback) /* scanningPackageParserProducer */,
@@ -2281,8 +2281,14 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
                 t.traceEnd();
             }
 
-            mCacheDir = PackageManagerServiceUtils.preparePackageParserCache(
+            File cacheDir = PackageManagerServiceUtils.preparePackageParserCache(
                     mIsEngBuild, mIsUserDebugBuild, mIncrementalVersion, mIsUpgrade);
+            if (cacheDir == null) {
+                // several places don't expect mCacheDir to be null, despite it being nullable
+                // upstream
+                cacheDir = new File("/dev/null");
+            }
+            mCacheDir = cacheDir;
 
             mInitialNonStoppedSystemPackages = mInjector.getSystemConfig()
                     .getInitialNonStoppedSystemPackages();
@@ -8007,6 +8013,10 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
 
     File getCacheDir() {
         return mCacheDir;
+    }
+
+    boolean hasCacheDir() {
+        return !"/dev/null".equals(mCacheDir.getPath());
     }
 
     PackageProperty getPackageProperty() {
