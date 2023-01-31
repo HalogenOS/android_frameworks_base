@@ -4352,7 +4352,14 @@ final class InstallPackageHelper {
         try {
             final boolean scanSystemPartition =
                 (parseFlags & ParsingPackageUtils.PARSE_IS_SYSTEM_DIR) != 0;
-            final ScanRequest initialScanRequest = prepareInitialScanRequest(parsedPackage,
+            if ((scanFlags & SCAN_BOOTING) != 0) {
+            if (scanSystemPartition) {
+                PackageVerityExt.addSystemPackage(parsedPackage);
+            } else {
+                PackageVerityExt.checkSystemPackageUpdate(parsedPackage);
+            }
+        }
+        final ScanRequest initialScanRequest = prepareInitialScanRequest(parsedPackage,
                     parseFlags, scanFlags, user, null /*cpuAbiOverride*/, null /*installSource*/);
             final PackageSetting installedPkgSetting = initialScanRequest.mPkgSetting;
             final PackageSetting originalPkgSetting = initialScanRequest.mOriginalPkgSetting;
