@@ -57,8 +57,6 @@ import android.view.WindowManagerGlobal;
 
 import com.android.internal.content.ReferrerIntent;
 
-import com.android.internal.gmscompat.AttestationHooks;
-
 import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -1244,7 +1242,6 @@ public class Instrumentation {
         Application app = getFactory(context.getPackageName())
                 .instantiateApplication(cl, className);
         app.attach(context);
-        AttestationHooks.initApplicationBeforeOnCreate(app);
         return app;
     }
     
@@ -1262,7 +1259,6 @@ public class Instrumentation {
             ClassNotFoundException {
         Application app = (Application)clazz.newInstance();
         app.attach(context);
-        AttestationHooks.initApplicationBeforeOnCreate(app);
         return app;
     }
 
