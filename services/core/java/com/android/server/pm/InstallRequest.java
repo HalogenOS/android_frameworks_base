@@ -594,10 +594,6 @@ final class InstallRequest {
         return mScanResult.mRequest.mRealPkgName;
     }
 
-    public boolean isApplicationEnabledSettingPersistent() {
-        return mInstallArgs == null ? false : mInstallArgs.mApplicationEnabledSettingPersistent;
-    }
-
     public boolean isForceQueryableOverride() {
         return mInstallArgs != null && mInstallArgs.mForceQueryableOverride;
     }
