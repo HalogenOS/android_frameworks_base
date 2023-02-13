@@ -1806,6 +1806,8 @@ public class SystemConfig {
                 addFeature(PackageManager.FEATURE_EROFS_LEGACY, 0);
             }
         }
+
+        addFeature("grapheneos.package_update_preserves_package_enabled_setting", 0);
     }
 
     private @Nullable SignedPackage parseEnhancedConfirmationTrustedPackage(XmlPullParser parser,
