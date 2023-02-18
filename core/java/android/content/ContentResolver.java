@@ -3963,6 +3963,11 @@ public abstract class ContentResolver implements ContentInterface {
     @UnsupportedAppUsage
     private final Context mContext;
 
+    /** @hide */
+    public Context getContext() {
+        return mContext;
+    }
+
     @Deprecated
     @UnsupportedAppUsage
     final String mPackageName;
