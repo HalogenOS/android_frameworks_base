@@ -4285,6 +4285,18 @@ public class ApplicationPackageManager extends PackageManager {
         }
     }
 
+    @UnsupportedAppUsage
+    public boolean updateListOfBusyPackages(boolean locked, List<String> packageNames) {
+        // used for automatically removing packages after our process dies
+        android.os.Binder callerBinder = ActivityThread.currentActivityThread().getApplicationThread();
+
+        try {
+            return mPM.updateListOfBusyPackages(locked, packageNames, callerBinder);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
     private static final class IntentActivitiesQuery {
         final Intent mIntent;
         final String mResolvedType;
