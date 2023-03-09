@@ -75,7 +75,7 @@ public final class NotificationPanelView extends FrameLayout {
     }
 
     void setPanelAlphaInternal(float alpha) {
-        mCurrentPanelAlpha = 1.0f;
+        mCurrentPanelAlpha = 255;
         mAlphaPaint.setARGB(mCurrentPanelAlpha, 255, 255, 255);
         invalidate();
     }
