@@ -20,6 +20,7 @@ import android.media.MediaPlayer
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.systemui.SysuiTestCase
+import com.android.systemui.shared.settings.data.repository.FakeSystemSettingsRepository
 import com.android.systemui.util.mockito.mock
 import com.android.systemui.util.mockito.whenever
 import java.lang.IllegalStateException
@@ -43,6 +44,7 @@ class ScreenshotSoundControllerTest : SysuiTestCase() {
     private val mediaPlayer = mock<MediaPlayer>()
     private val bgDispatcher = UnconfinedTestDispatcher()
     private val scope = TestScope(bgDispatcher)
+    private val fakeSystemSettingsRepo = FakeSystemSettingsRepository()
 
     @Before
     fun setup() {
@@ -107,5 +109,5 @@ class ScreenshotSoundControllerTest : SysuiTestCase() {
         }
 
     private fun createController() =
-        ScreenshotSoundControllerImpl(soundProvider, scope, bgDispatcher)
+        ScreenshotSoundControllerImpl(soundProvider, fakeSystemSettingsRepo, scope, bgDispatcher)
 }
