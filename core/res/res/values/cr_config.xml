@@ -13,5 +13,5 @@
 -->
 <resources>
     <!-- Whether to use old mobile type icons as default -->
-    <bool name="config_useOldMobileIcons">false</bool>
+    <bool name="config_useOldMobileIcons">true</bool>
 </resources>
