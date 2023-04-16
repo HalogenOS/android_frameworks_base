@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2024 DerpFest
+     Copyright (C) 2024 The halogenOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <!-- PowerOffAlarmService -->
+    <java-symbol type="string" name="notification_channel_poweroff_alarm" />
+    <java-symbol type="string" name="poweroff_alarm_title" />
+    <java-symbol type="string" name="poweroff_alarm_body" />
+    <java-symbol type="drawable" name="ic_alarm_on" />
+</resources>
