@@ -276,7 +276,6 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
 
     // Volume panel placement left or right
     private boolean mVolumePanelOnLeft;
-    private CustomSettingsObserver mCustomSettingsObserver;
 
     private final boolean mUseBackgroundBlur;
     private Consumer<Boolean> mCrossWindowBlurEnabledListener;
@@ -334,8 +333,9 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
             };
         }
 
-        mCustomSettingsObserver = new CustomSettingsObserver();
-        mCustomSettingsObserver.observe();
+        if (!mShowActiveStreamOnly) {
+            mVolumePanelOnLeft = mContext.getResources().getBoolean(R.bool.config_audioPanelOnLeftSide);
+        }
 
         initDimens();
     }
@@ -361,7 +361,6 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
         mController.removeCallback(mControllerCallbackH);
         mHandler.removeCallbacksAndMessages(null);
         mConfigurationController.removeCallback(this);
-        mCustomSettingsObserver.stop();
     }
 
     @Override
@@ -2469,44 +2468,6 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
                 mRingerDrawerNewSelectionBg.animate()
                         .translationX(getTranslationInDrawerForRingerMode(mClickedRingerMode))
                         .start();
-            }
-        }
-    }
-
-    private class CustomSettingsObserver extends ContentObserver {
-
-        private final Uri VOLUME_PANEL_ON_LEFT_URI = Settings.System.getUriFor(
-                Settings.System.VOLUME_PANEL_ON_LEFT);
-
-        CustomSettingsObserver() {
-            super(new Handler(Looper.getMainLooper()));
-        }
-
-        void observe() {
-            final ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(VOLUME_PANEL_ON_LEFT_URI,
-                    false, this, UserHandle.USER_ALL);
-            updateVolumeDialog();
-        }
-
-        void stop() {
-            mContext.getContentResolver().unregisterContentObserver(this);
-        }
-
-        void updateVolumeDialog() {
-            mVolumePanelOnLeft = Settings.System.getIntForUser(
-                    mContext.getContentResolver(),
-                    Settings.System.VOLUME_PANEL_ON_LEFT,
-                    1, UserHandle.USER_CURRENT) == 1;
-            mHandler.post(() -> {
-                    mConfigChanged = true;
-            });
-        }
-
-        @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            if (uri.equals(VOLUME_PANEL_ON_LEFT_URI)) {
-                updateVolumeDialog();
             }
         }
     }

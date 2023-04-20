@@ -809,4 +809,6 @@
         <item>bottom_end:wallet</item>
     </string-array>
 
+    <bool name="config_audioPanelOnLeftSide">false</bool>
+
 </resources>
