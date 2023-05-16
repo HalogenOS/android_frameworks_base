@@ -852,4 +852,6 @@ interface IPackageManager {
     String getPageSizeCompatWarningMessage(in String packageName);
 
     List<String> getAllApexDirectories();
+
+    @nullable Bundle getExtraAppBindArgs(String packageName);
 }
