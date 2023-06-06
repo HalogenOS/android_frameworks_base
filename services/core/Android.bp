@@ -43,6 +43,15 @@ filegroup {
     ],
 }
 
+filegroup {
+    name: "LocationFudger-sources",
+    srcs: ["java/com/android/server/location/fudger/LocationFudger.java"],
+    path: "java",
+    visibility: [
+        "//packages/apps/GmsCompat",
+    ],
+}
+
 java_library_static {
     name: "services-config-update",
     srcs: [

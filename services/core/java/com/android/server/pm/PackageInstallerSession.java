@@ -145,6 +145,7 @@ import android.content.res.ApkAssets;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.ext.PackageId;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.util.ULocale;
@@ -219,6 +220,7 @@ import com.android.server.Watchdog;
 import com.android.server.art.ArtManagedInstallFileHelper;
 import com.android.server.art.model.ValidationResult;
 import com.android.server.pm.Installer.InstallerException;
+import com.android.server.pm.ext.PackageExt;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.pm.pkg.PackageStateInternal;
 import com.android.server.pm.verify.developer.DeveloperVerificationStatusInternal;
@@ -4919,6 +4921,64 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
         // {@link PackageLite#getTargetSdk()}
         mValidatedTargetSdk = packageLite.getTargetSdk();
 
+        if (mPackageName.equals(PackageId.GSF_NAME)) {
+            // Installation of GSF is not needed for GmsCompat. However, other apps might use
+            // package that holds the GSF package name without permission checks since GSF is a
+            // preinstalled package on GMS Android.
+            throw new PackageManagerException(INSTALL_FAILED_SESSION_INVALID, "GSF installation is not allowed");
+        }
+
+        final String initiatingPackageName = mInstallSource.mInitiatingPackageName;
+        if (initiatingPackageName != null && !isInstallerShell
+                && !android.util.PackageUtils.getFirstPartyAppSourcePackageName(mContext)
+                        .equals(initiatingPackageName)) {
+            final int errorCode = PackageManager.INSTALL_FAILED_SESSION_INVALID;
+
+            boolean isInstallerPlayStore = false;
+            if (PackageId.PLAY_STORE_NAME.equals(initiatingPackageName)) {
+                AndroidPackage pkg = pmi.getPackage(PackageId.PLAY_STORE_NAME);
+                isInstallerPlayStore = pkg != null && PackageExt.get(pkg).getPackageId() == PackageId.PLAY_STORE;
+            }
+
+            boolean skipExtraChecks = isInstallerPlayStore &&
+                     com.android.internal.gmscompat.PlayStoreHooks.isInstallAllowed(mPackageName,
+                             mContext.getContentResolver());
+
+            if (!skipExtraChecks) {
+                switch (mPackageName) {
+                    case PackageId.GMS_CORE_NAME:
+                    case PackageId.PLAY_STORE_NAME: {
+                        if (isInstallerPlayStore) {
+                            if (mVersionCode <= params.maxAllowedVersion) {
+                                break;
+                            }
+
+                            // lock that is held at this point is per-session lock, call into
+                            // PackageManager is safe
+                            AndroidPackage pkg = pmi.getPackage(mPackageName);
+                            if (pkg != null && pkg.getLongVersionCode() == mVersionCode) {
+                                break;
+                            }
+
+                            String msg = "Installation of " + mPackageName + " version " + mVersionCode
+                                        + " is blocked to prevent breaking gmscompat. " +
+                                        "Max allowed version is " + params.maxAllowedVersion;
+                            throw new PackageManagerException(errorCode, msg);
+                        }
+
+                        String msg = "Installation of " + mPackageName
+                                + " is blocked to prevent breaking gmscompat";
+                        throw new PackageManagerException(errorCode, msg);
+                    }
+                    case PackageId.ANDROID_AUTO_NAME:
+                    case PackageId.PIXEL_HEALTH_NAME:
+                        throw new PackageManagerException(errorCode,
+                                "Only the first-party package source and shell are allowed " +
+                                        "to install " + PackageId.PIXEL_HEALTH_NAME);
+                }
+            }
+        }
+
         return packageLite;
     }
 
@@ -6169,6 +6229,11 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
         synchronized (mLock) {
             return mParentSessionId != SessionInfo.INVALID_ID;
         }
+    }
+
+    @Override
+    public int getId() {
+        return sessionId;
     }
 
     @Override
