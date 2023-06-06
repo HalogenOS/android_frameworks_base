@@ -22,14 +22,20 @@ import static java.util.Objects.requireNonNull;
 
 import android.annotation.NonNull;
 import android.annotation.SuppressLint;
+import android.app.compat.gms.GmsCompat;
 import android.content.ComponentName;
+import android.content.Context;
+import android.ext.PackageId;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.RemoteException;
 import android.util.ArraySet;
+import android.util.Log;
 
 import androidx.annotation.RequiresPermission;
 
+import com.android.internal.gmscompat.GmsCompatApp;
 import com.android.internal.util.AnnotationValidations;
 import com.android.internal.util.Preconditions;
 
@@ -284,6 +290,23 @@ public final class CredentialOption implements Parcelable {
         @SuppressLint("MissingGetterMatchingBuilder")
         @NonNull
         public Builder setIsSystemProviderRequired(boolean isSystemProviderRequired) {
+            String typeGoogleId = "com.google.android.libraries.identity.googleid.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL";
+            if (isSystemProviderRequired && mType.equals(typeGoogleId)) {
+                Context appContext = GmsCompat.appContext();
+                String gmscorePkg = PackageId.GMS_CORE_NAME;
+                if (appContext != null && GmsCompat.isEnabledFor(gmscorePkg, appContext.getUserId())) {
+                    Log.d("GmsCompat", "ignored CredentialOption.setIsSystemProviderRequired(true) for " +
+                            "TYPE_GOOGLE_ID_TOKEN_CREDENTIAL", new Throwable());
+                    mIsSystemProviderRequired = false;
+
+                    try {
+                        GmsCompatApp.iClientOfGmsCore2Gca().onGoogleIdCredentialOptionInit();
+                    } catch (RemoteException e) {
+                        throw GmsCompatApp.callFailed(e);
+                    }
+                    return this;
+                }
+            }
             mIsSystemProviderRequired = isSystemProviderRequired;
             return this;
         }
