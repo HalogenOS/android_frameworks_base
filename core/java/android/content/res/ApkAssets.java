@@ -27,6 +27,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.internal.annotations.GuardedBy;
+import com.android.internal.gmscompat.dynamite.GmsDynamiteClientHooks;
 import com.android.internal.pm.pkg.parsing.ParsingPackageUtils;
 
 import dalvik.annotation.optimization.CriticalNative;
@@ -167,7 +168,7 @@ public final class ApkAssets {
      */
     public static @NonNull ApkAssets loadFromPath(@NonNull String path, @PropertyFlags int flags)
             throws IOException {
-        return new ApkAssets(FORMAT_APK, path, flags, null /* assets */);
+        return loadFromPath(path, flags, null);
     }
 
     /**
@@ -181,6 +182,13 @@ public final class ApkAssets {
      */
     public static @NonNull ApkAssets loadFromPath(@NonNull String path, @PropertyFlags int flags,
             @Nullable AssetsProvider assets) throws IOException {
+        if (GmsDynamiteClientHooks.enabled()) {
+            ApkAssets apkAssets = GmsDynamiteClientHooks.loadAssetsFromPath(path, flags, assets);
+            if (apkAssets != null) {
+                return apkAssets;
+            }
+        }
+
         return new ApkAssets(FORMAT_APK, path, flags, assets);
     }
 

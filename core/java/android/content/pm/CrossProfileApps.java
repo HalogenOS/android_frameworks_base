@@ -35,6 +35,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AppOpsManager.Mode;
 import android.app.admin.DevicePolicyManager;
+import android.app.compat.gms.GmsCompat;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -315,6 +316,10 @@ public class CrossProfileApps {
      * @see UserManager#getUserProfiles()
      */
     public @NonNull List<UserHandle> getTargetUserProfiles() {
+        if (GmsCompat.isEnabled()) {
+            return java.util.Collections.emptyList();
+        }
+
         try {
             return mService.getTargetUserProfiles(mContext.getPackageName());
         } catch (RemoteException ex) {
@@ -484,6 +489,10 @@ public class CrossProfileApps {
      * @return true if the calling package can request to interact across profiles.
      */
     public boolean canRequestInteractAcrossProfiles() {
+        if (GmsCompat.isEnabled()) {
+            return false;
+        }
+
         try {
             return mService.canRequestInteractAcrossProfiles(mContext.getPackageName());
         } catch (RemoteException ex) {
@@ -515,6 +524,10 @@ public class CrossProfileApps {
      * calling UID.
      */
     public boolean canInteractAcrossProfiles() {
+        if (GmsCompat.isEnabled()) {
+            return false;
+        }
+
         try {
             return mService.canInteractAcrossProfiles(mContext.getPackageName());
         } catch (RemoteException ex) {

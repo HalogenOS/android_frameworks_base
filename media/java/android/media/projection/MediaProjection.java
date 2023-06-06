@@ -23,6 +23,7 @@ import static com.android.media.projection.flags.Flags.mediaProjectionConnectedD
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.compat.CompatChanges;
+import android.app.compat.gms.GmsCompat;
 import android.compat.annotation.ChangeId;
 import android.compat.annotation.EnabledSince;
 import android.content.Context;
@@ -40,6 +41,7 @@ import android.util.Slog;
 import android.view.Surface;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.internal.gmscompat.GmcMediaProjectionService;
 
 import java.util.Map;
 import java.util.Objects;
@@ -85,6 +87,10 @@ public final class MediaProjection {
     /** @hide */
     @VisibleForTesting
     public MediaProjection(Context context, IMediaProjection impl, DisplayManager displayManager) {
+        if (GmsCompat.isGmsCore()) {
+            GmcMediaProjectionService.start();
+        }
+
         mContext = context;
         mImpl = impl;
         mDisplayManager = displayManager;
@@ -242,6 +248,10 @@ public final class MediaProjection {
       @Nullable Surface surface,
       @Nullable VirtualDisplay.Callback callback,
       @Nullable Handler handler) {
+        if (GmsCompat.isGmsCore()) {
+            // requires the privileged CAPTURE_SECURE_VIDEO_OUTPUT permission
+            flags &= ~DisplayManager.VIRTUAL_DISPLAY_FLAG_SECURE;
+        }
         if (shouldMediaProjectionRequireCallback()) {
             if (mCallbacks.isEmpty()) {
                 final IllegalStateException e = new IllegalStateException(
@@ -434,6 +444,9 @@ public final class MediaProjection {
         @Override
         public void onStop() {
             Slog.v(TAG, "Dispatch stop to " + mCallbacks.size() + " callbacks.");
+            if (GmsCompat.isGmsCore()) {
+                GmcMediaProjectionService.stop();
+            }
             for (CallbackRecord cbr : mCallbacks.values()) {
                 cbr.onStop();
             }
