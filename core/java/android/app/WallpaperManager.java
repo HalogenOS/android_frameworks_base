@@ -42,6 +42,7 @@ import android.annotation.SystemService;
 import android.annotation.TestApi;
 import android.annotation.UiContext;
 import android.app.compat.CompatChanges;
+import android.app.compat.gms.GmsCompat;
 import android.app.wallpaper.WallpaperDescription;
 import android.app.wallpaper.WallpaperInstance;
 import android.compat.annotation.ChangeId;
@@ -776,6 +777,11 @@ public class WallpaperManager {
                             && !CompatChanges.isChangeEnabled(THROW_ON_SECURITY_EXCEPTION)) {
                         Log.w(TAG, "No permission to access wallpaper, returning default"
                                 + " wallpaper to avoid crashing legacy app.");
+                        return getDefaultWallpaper(context, FLAG_SYSTEM);
+                    }
+
+                    if (GmsCompat.isEnabled()) {
+                        Log.d("GmsCompat", "", e);
                         return getDefaultWallpaper(context, FLAG_SYSTEM);
                     }
 
@@ -1960,6 +1966,11 @@ public class WallpaperManager {
                         && !CompatChanges.isChangeEnabled(THROW_ON_SECURITY_EXCEPTION)) {
                     Log.w(TAG, "No permission to access wallpaper, returning default"
                             + " wallpaper file to avoid crashing legacy app.");
+                    return getDefaultSystemWallpaperFile();
+                }
+
+                if (GmsCompat.isEnabled()) {
+                    Log.d("GmsCompat", "", e);
                     return getDefaultSystemWallpaperFile();
                 }
 
