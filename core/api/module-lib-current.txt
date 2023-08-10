@@ -156,6 +156,16 @@ package android.content.pm {
     method @NonNull public String getPackageName();
   }
 
+}
+
+package android.ext.settings {
+
+  public class RemoteKeyProvisioningSettings {
+    method @Nullable public static String getServerUrlOverride(@NonNull android.content.Context);
+    field public static final int GRAPHENEOS_PROXY = 0; // 0x0
+    field public static final int STANDARD_SERVER = 1; // 0x1
+  }
+
   public class WidevineProvisioningSettings {
     method @Nullable public static String getServerHostnameOverride(@NonNull android.content.Context);
   }

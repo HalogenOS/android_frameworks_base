@@ -14019,6 +14019,10 @@ public final class Settings {
         @Protected(restrictReads = false, readWrite = KnownSystemPackage.SETTINGS)
         public static final String WIDEVINE_PROVISIONING_SERVER = "widevine_provisioner_server";
 
+        /** @hide */
+        @Protected(restrictReads = false, readWrite = KnownSystemPackage.SETTINGS)
+        public static final String REMOTE_KEY_PROVISIONING_SERVER = "attest_remote_provisioner_server";
+
         // ExtSettings END
 
         // NOTE: If you add new settings here, be sure to add them to
