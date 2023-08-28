@@ -217,5 +217,7 @@ message Configuration {
 
   string product = 25;
 
-  reserved 28 to max;  // Next IDs
+  string stringified = 28;
+
+  reserved 29 to max;  // Next IDs
 }
