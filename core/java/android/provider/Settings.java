@@ -14015,6 +14015,10 @@ public final class Settings {
         public static final String ALLOW_DISABLING_HARDENING_VIA_APP_COMPAT_CONFIG =
                 "allow_automatic_pkg_hardening_config"; // historical name
 
+        /** @hide */
+        @Protected(restrictReads = false, readWrite = KnownSystemPackage.SETTINGS)
+        public static final String WIDEVINE_PROVISIONING_SERVER = "widevine_provisioner_server";
+
         // ExtSettings END
 
         // NOTE: If you add new settings here, be sure to add them to

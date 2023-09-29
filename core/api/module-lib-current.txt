@@ -156,6 +156,10 @@ package android.content.pm {
     method @NonNull public String getPackageName();
   }
 
+  public class WidevineProvisioningSettings {
+    method @Nullable public static String getServerHostnameOverride(@NonNull android.content.Context);
+  }
+
 }
 
 package android.hardware.usb {
