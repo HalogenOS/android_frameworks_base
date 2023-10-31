@@ -59,6 +59,7 @@ import com.android.systemui.complication.dagger.ComplicationComponent;
 import com.android.systemui.compose.ComposeModule;
 import com.android.systemui.controls.dagger.ControlsModule;
 import com.android.systemui.dagger.qualifiers.Application;
+import com.android.systemui.custom.CustomModule;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dagger.qualifiers.SystemUser;
 import com.android.systemui.dagger.qualifiers.UiBackground;
@@ -226,6 +227,7 @@ import javax.inject.Named;
         ConfigurationControllerModule.class,
         ConnectivityModule.class,
         ControlsModule.class,
+        CustomModule.class,
         DemoModeModule.class,
         DeviceEntryModule.class,
         DisableFlagsModule.class,
