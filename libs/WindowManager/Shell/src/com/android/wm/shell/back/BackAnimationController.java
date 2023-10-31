@@ -110,7 +110,7 @@ public class BackAnimationController implements RemoteCallable<BackAnimationCont
     /**
      * Max duration to wait for an animation to finish before triggering the real back.
      */
-    private static final long MAX_ANIMATION_DURATION = 2000;
+    private static final long MAX_ANIMATION_DURATION = 1750;
     private long mMaxAnimationDuration = MAX_ANIMATION_DURATION;
     // Note: Must keep a reference when register to ValueAnimator.
     private final ValueAnimator.DurationScaleChangeListener mAnimationScaleChangeListener;
