@@ -141,9 +141,12 @@ public final class NativeTombstoneManager {
         final boolean isProtoFile = filename.endsWith(".pb");
         File protoPath = isProtoFile ? path : new File(path.getAbsolutePath() + ".pb");
 
-        Optional<TombstoneFile> parsedTombstone = handleProtoTombstone(protoPath, isProtoFile);
-        if (parsedTombstone.isPresent()) {
-            processName = parsedTombstone.get().getProcessName();
+        String[] outProcessName = new String[1];
+        handleProtoTombstone(protoPath, isProtoFile, outProcessName);
+
+        String protoProcessName = outProcessName[0];
+        if (protoProcessName != null) {
+            processName = protoProcessName;
         }
         BootReceiver.addTombstoneToDropBox(mContext, path, isProtoFile, processName, mTmpFileLock);
 
@@ -156,7 +159,7 @@ public final class NativeTombstoneManager {
         Reference.reachabilityFence(mWatcher);
     }
 
-    private Optional<TombstoneFile> handleProtoTombstone(File path, boolean addToList) {
+    private Optional<TombstoneFile> handleProtoTombstone(File path, boolean addToList, String[] outProcessName) {
         final String filename = path.getName();
         if (!filename.endsWith(".pb")) {
             Slog.w(TAG, "unexpected tombstone name: " + path);
@@ -186,7 +189,7 @@ public final class NativeTombstoneManager {
             return Optional.empty();
         }
 
-        final Optional<TombstoneFile> parsedTombstone = TombstoneFile.parse(pfd);
+        final Optional<TombstoneFile> parsedTombstone = TombstoneFile.parse(pfd, outProcessName);
         if (!parsedTombstone.isPresent()) {
             IoUtils.closeQuietly(pfd);
             return Optional.empty();
@@ -429,7 +432,7 @@ public final class NativeTombstoneManager {
             }
         }
 
-        static Optional<TombstoneFile> parse(ParcelFileDescriptor pfd) {
+        static Optional<TombstoneFile> parse(ParcelFileDescriptor pfd, String[] outProcessName) {
             final FileInputStream is = new FileInputStream(pfd.getFileDescriptor());
             final ProtoInputStream stream = new ProtoInputStream(is);
 
@@ -453,6 +456,7 @@ public final class NativeTombstoneManager {
                         case (int) Tombstone.COMMAND_LINE:
                             if (processName == null) {
                                 processName = stream.readString(Tombstone.COMMAND_LINE);
+                                outProcessName[0] = processName;
                             }
                             break;
 
