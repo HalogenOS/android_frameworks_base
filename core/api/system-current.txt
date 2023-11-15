@@ -4817,6 +4817,28 @@ package android.debug {
 
 }
 
+package android.ext {
+
+  public interface KnownSystemPackage {
+    field public static final int SETTINGS = 0; // 0x0
+    field public static final int SHELL = 1; // 0x1
+    field public static final int SYSTEM_UI = 2; // 0x2
+  }
+
+  public final class KnownSystemPackages {
+    method @NonNull public static android.ext.KnownSystemPackages get(@NonNull android.content.Context);
+    method @NonNull public String getById(int);
+    field @NonNull public final String contactsProvider;
+    field @NonNull public final String launcher;
+    field @NonNull public final String mediaProvider;
+    field @NonNull public final String permissionController;
+    field @NonNull public final String settings;
+    field @NonNull public final String shell;
+    field @NonNull public final String systemUi;
+  }
+
+}
+
 package android.graphics.fonts {
 
   public final class FontFamilyUpdateRequest {
