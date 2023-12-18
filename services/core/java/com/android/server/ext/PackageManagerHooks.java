@@ -18,6 +18,7 @@ import android.util.ArraySet;
 import com.android.server.pm.Computer;
 import com.android.server.pm.GosPackageStatePmHooks;
 import com.android.server.pm.PackageManagerService;
+import com.android.server.pm.ext.PackageHooks;
 import com.android.server.pm.permission.Permission;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.pm.pkg.PackageStateInternal;
@@ -109,6 +110,14 @@ public class PackageManagerHooks {
                 }
             }
         }
+
+        if (PackageHooks.shouldBlockAppsFilterVisibility(
+                callingPkgSetting, callingSharedPkgSettings, callingUserId,
+                targetPkgSetting, targetUserId)
+        ) {
+            return true;
+        }
+
         return false;
     }
 
