@@ -145,6 +145,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.function.Function;
 
 /**
  * TODO(b/135203078): Differentiate between parse_ methods and some add_ method for whether it
@@ -658,9 +659,22 @@ public class ParsingPackageUtils {
 
             pkg.setVolumeUuid(volumeUuid);
 
+            PackageExtInitIface pkgExtInit = null;
+            PackageExtInitSupplier pkgExtInitSupplier = packageExtInitSupplier;
+            if (pkgExtInitSupplier != null) {
+                pkgExtInit = pkgExtInitSupplier.invoke(input, pkg, (flags & PARSE_IS_SYSTEM_DIR) != 0);
+                if (pkgExtInit != null) {
+                    pkgExtInit.run();
+                }
+            }
+
             if ((flags & PARSE_COLLECT_CERTIFICATES) != 0) {
-                final ParseResult<SigningDetails> ret =
-                        getSigningDetails(input, pkg, false /*skipVerify*/);
+                // skip reparsing certificates if they were already parsed by PackageExtInit
+                ParseResult<SigningDetails> ret = pkgExtInit != null ?
+                        pkgExtInit.getSigningDetailsParseResult() : null;
+                if (ret == null) {
+                    ret = parseSigningDetails(input, pkg);
+                }
                 if (ret.isError()) {
                     return input.error(ret);
                 }
@@ -674,6 +688,22 @@ public class ParsingPackageUtils {
             return input.error(INSTALL_PARSE_FAILED_UNEXPECTED_EXCEPTION,
                     "Failed to read manifest from " + apkPath, e);
         }
+    }
+
+    public interface PackageExtInitSupplier {
+        PackageExtInitIface invoke(ParseInput input, ParsingPackage pkg, boolean isSystem);
+    }
+
+    @Nullable
+    public static PackageExtInitSupplier packageExtInitSupplier;
+
+    public interface PackageExtInitIface {
+        void run();
+        ParseResult<SigningDetails> getSigningDetailsParseResult();
+    }
+
+    public static ParseResult<SigningDetails> parseSigningDetails(ParseInput input, ParsingPackage pkg) {
+        return getSigningDetails(input, pkg, false /*skipVerify*/);
     }
 
     private ParseResult<ParsingPackage> parseSplitApk(ParseInput input,
@@ -1078,6 +1108,21 @@ public class ParsingPackageUtils {
             );
         }
 
+        List<ParsedUsesPermissionImpl> extraUsesPerms = pkg.getPackageParsingHooks().addUsesPermissions();
+
+        if (extraUsesPerms != null) {
+            for (ParsedUsesPermission p : extraUsesPerms) {
+                String name = p.getName();
+                if (pkg.getUsesPermissionMapping().containsKey(name)) {
+                    Slog.w(TAG, "PackageParsingHooks.addUsesPermissions() " +
+                            "tried to add duplicate uses-permission " + name
+                            + " to pkg " + pkg.getPackageName());
+                    continue;
+                }
+                pkg.addUsesPermission(p);
+            }
+        }
+
         convertCompatPermissions(pkg);
 
         convertSplitPermissions(pkg);
@@ -1370,7 +1415,9 @@ public class ParsingPackageUtils {
         }
         ParsedPermission permission = result.getResult();
         if (permission != null) {
-            pkg.addPermission(permission);
+            if (!pkg.getPackageParsingHooks().shouldSkipPermissionDefinition(permission)) {
+                pkg.addPermission(permission);
+            }
         }
         return input.success(pkg);
     }
@@ -1535,8 +1582,10 @@ public class ParsingPackageUtils {
             }
 
             if (!found) {
-                pkg.addUsesPermission(
-                        new ParsedUsesPermissionImpl(name, usesPermissionFlags, purposes));
+                var p = new ParsedUsesPermissionImpl(name, usesPermissionFlags, purposes);
+                if (!pkg.getPackageParsingHooks().shouldSkipUsesPermission(p)) {
+                    pkg.addUsesPermission(p);
+                }
             }
             return success;
         } finally {
@@ -2431,6 +2480,15 @@ public class ParsingPackageUtils {
         if (hasReceiverOrder) {
             pkg.sortReceivers();
         }
+
+        List<ParsedService> extraServices = pkg.getPackageParsingHooks().addServices(pkg);
+        if (extraServices != null) {
+            for (var s : extraServices) {
+                hasServiceOrder |= (s.getOrder() != 0);
+                pkg.addService(s);
+            }
+        }
+
         if (hasServiceOrder) {
             pkg.sortServices();
         }
@@ -2540,6 +2598,14 @@ public class ParsingPackageUtils {
 
        // CHECKSTYLE:on
         //@formatter:on
+
+        var hooks = pkg.getPackageParsingHooks();
+        int enabledOverride = hooks.overrideDefaultPackageEnabledState();
+        if (enabledOverride == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
+            pkg.setEnabled(false);
+        } else if (enabledOverride == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
+            pkg.setEnabled(true);
+        }
     }
 
     /**
