@@ -12112,4 +12112,17 @@ public abstract class PackageManager {
     public static int maybeGetSdkFeatureIndex(String featureName) {
         return com.android.internal.pm.SystemFeaturesMetadata.maybeGetSdkFeatureIndex(featureName);
     }
+
+    /** @hide */
+    @RequiresPermission(Manifest.permission.GRANT_RUNTIME_PERMISSIONS)
+    @SystemApi
+    public void sendBootCompletedBroadcastToPackage(@NonNull String packageName, boolean includeStopped,
+                                                    int userId) {
+        try {
+            ActivityThread.getPackageManager().sendBootCompletedBroadcastToPackage(
+                    packageName, includeStopped, userId);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
 }
