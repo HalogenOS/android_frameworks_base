@@ -45,6 +45,7 @@ import android.service.textservice.SpellCheckerService;
 import android.text.TextUtils;
 import android.util.Slog;
 import android.util.SparseArray;
+import android.view.inputmethod.InputMethodManagerGlobal;
 import android.view.inputmethod.InputMethodSubtype;
 import android.view.textservice.SpellCheckerInfo;
 import android.view.textservice.SpellCheckerSubtype;
@@ -509,7 +510,6 @@ public class TextServicesManagerService extends ITextServicesManager.Stub {
 
         final int subtypeHashCode;
         final SpellCheckerInfo sci;
-        final Locale systemLocale;
 
         synchronized (mLock) {
             final TextServicesData tsd = getDataFromCallingUserIdLocked(userId);
@@ -521,7 +521,6 @@ public class TextServicesManagerService extends ITextServicesManager.Stub {
                 Slog.w(TAG, "getCurrentSpellCheckerSubtype: " + subtypeHashCode);
             }
             sci = tsd.getCurrentSpellChecker();
-            systemLocale = mContext.getResources().getConfiguration().locale;
         }
         if (sci == null || sci.getSubtypeCount() == 0) {
             if (DBG) {
@@ -570,12 +569,13 @@ public class TextServicesManagerService extends ITextServicesManager.Stub {
 
         if (candidateLocale == null) {
             // 2. Use System locale if available in the spell checker
-            candidateLocale = systemLocale;
+            candidateLocale = mContext.getResources().getConfiguration().locale;
         }
 
         if (candidateLocale == null) {
             return null;
         }
+
         SpellCheckerSubtype firstLanguageMatchingSubtype = null;
         for (int i = 0; i < sci.getSubtypeCount(); ++i) {
             final SpellCheckerSubtype scs = sci.getSubtypeAt(i);
