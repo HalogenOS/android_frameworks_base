@@ -36,6 +36,7 @@ import static com.android.server.pm.AppsFilterUtils.canQueryAsUpdateOwner;
 import static com.android.server.pm.AppsFilterUtils.canQueryViaComponents;
 import static com.android.server.pm.AppsFilterUtils.canQueryViaPackage;
 import static com.android.server.pm.AppsFilterUtils.canQueryViaUsesLibrary;
+import static com.android.server.pm.ComputerEngine.isMicrogSigned;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -601,6 +602,7 @@ public final class AppsFilterImpl extends AppsFilterLocked implements Watchable,
                             /* shared user that is already force queryable */
                             || newPkgSetting.isForceQueryableOverride() /* adb override */
                             || isGmsApp
+                            || (newPkg.isForceQueryable() && isMicrogSigned(newPkg))
                             || (newPkgSetting.isSystem() && (mSystemAppsQueryable
                             || newPkg.isForceQueryable()
                             || ArrayUtils.contains(mForceQueryableByDevicePackageNames,
