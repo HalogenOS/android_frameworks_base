@@ -22,6 +22,7 @@ import com.android.systemui.kosmos.Kosmos
 import com.android.systemui.kosmos.applicationCoroutineScope
 import com.android.systemui.qs.external.tileServiceRequestControllerBuilder
 import com.android.systemui.qs.pipeline.domain.interactor.currentTilesInteractor
+import com.android.systemui.statusbar.policy.keyguardStateController
 
 val Kosmos.qsHostAdapter by
     Kosmos.Fixture {
@@ -30,6 +31,7 @@ val Kosmos.qsHostAdapter by
             applicationContext,
             tileServiceRequestControllerBuilder,
             applicationCoroutineScope,
+            keyguardStateController,
             dumpManager,
         )
     }
