@@ -436,7 +436,7 @@ public final class AppHibernationService extends SystemService {
                         || !userPackageStates.containsKey(pkgName)) {
                     Slog.w(TAG, TextUtils.formatSimple(
                             "No hibernation state associated with package %s user %d. Maybe"
-                                    + "the package was uninstalled? ", pkgName, userId));
+                                    + " the package was uninstalled? ", pkgName, userId));
                     continue;
                 }
                 long diskBytesSaved = mGlobalHibernationStates.get(pkgName).savedByte
@@ -617,7 +617,7 @@ public final class AppHibernationService extends SystemService {
                 if (pkgInfo == null) {
                     Slog.w(TAG, TextUtils.formatSimple(
                             "No hibernation state associated with package %s user %d. Maybe"
-                                    + "the package was uninstalled? ", packageName, userId));
+                                    + " the package was uninstalled? ", packageName, userId));
                     continue;
                 }
                 if (pkgInfo.applicationInfo != null
