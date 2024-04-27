@@ -44,6 +44,7 @@ class ModernStatusBarMobileView(context: Context, attrs: AttributeSet?) :
     ModernStatusBarView(context, attrs) {
 
     var subId: Int = -1
+    private lateinit var mobileGroup: AlphaOptimizedLinearLayout
 
     override fun toString(): String {
         return "ModernStatusBarMobileView(" +
@@ -52,6 +53,17 @@ class ModernStatusBarMobileView(context: Context, attrs: AttributeSet?) :
             "isCollecting=${binding.isCollecting()}, " +
             "visibleState=${getVisibleStateString(visibleState)}); " +
             "viewString=${super.toString()}"
+    }
+
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        mobileGroup = requireViewById(R.id.mobile_group)
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        mobileGroup.measure(widthMeasureSpec, heightMeasureSpec)
+        setMeasuredDimension(mobileGroup.measuredWidth, mobileGroup.measuredHeight)
     }
 
     public override fun onConfigurationChanged(newConfig: Configuration?) {
