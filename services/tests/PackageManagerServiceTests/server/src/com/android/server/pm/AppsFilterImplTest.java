@@ -1277,7 +1277,7 @@ public class AppsFilterImplTest {
         watcher.verifyNoChangeReported("getVisibility");
 
         // provider read
-        appsFilter.grantImplicitAccess(hasProviderAppId, queriesProviderAppId,
+        appsFilter.grantImplicitAccess2(hasProviderAppId, queriesProviderAppId,
                 false /* retainOnUpdate */);
         watcher.verifyChangeReported("grantImplicitAccess");
 
@@ -1349,7 +1349,7 @@ public class AppsFilterImplTest {
         watcher.verifyNoChangeReported("get");
 
         // provider read
-        appsFilter.grantImplicitAccess(
+        appsFilter.grantImplicitAccess2(
                 hasProviderAppId, queriesProviderAppId, false /* retainOnUpdate */);
         watcher.verifyChangeReported("grantImplicitAccess");
 
@@ -1412,7 +1412,7 @@ public class AppsFilterImplTest {
         PackageSetting queriesProvider = simulateAddPackage(appsFilter,
                 pkgQueriesProvider("com.yet.some.other.package", "com.some.authority"),
                 queriesProviderAppId);
-        appsFilter.grantImplicitAccess(
+        appsFilter.grantImplicitAccess2(
                 hasProviderAppId, queriesProviderAppId, false /* retainOnUpdate */);
 
         AppsFilterSnapshot snapshot = appsFilter.snapshot();
@@ -1508,7 +1508,7 @@ public class AppsFilterImplTest {
                 appsFilter.shouldFilterApplication(mSnapshot, callingUid,
                         null /* callingSetting */, target, SYSTEM_USER));
 
-        appsFilter.grantImplicitAccess(callingUid, target.getAppId(), false /* retainOnUpdate */);
+        appsFilter.grantImplicitAccess2(callingUid, target.getAppId(), false /* retainOnUpdate */);
         watcher.verifyChangeReported("grantImplicitAccess");
 
         // After implicit access was granted the app should be visible to the sdk sandbox uid.
