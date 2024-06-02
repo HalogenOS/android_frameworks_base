@@ -72,6 +72,8 @@ class AndroidPackageTest : ParcelableComponentTest(AndroidPackage::class, Packag
 
     override val excludedMethods = listOf(
         // Internal methods
+        "initPackageParsingHooks", "getPackageParsingHooks",
+        "setPackageExt", "ext",
         "toAppInfoToString",
         "toAppInfoWithoutState",
         "toAppInfoWithoutStateWithoutFlags",
