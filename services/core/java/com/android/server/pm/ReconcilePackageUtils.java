@@ -158,16 +158,9 @@ final class ReconcilePackageUtils {
                     // We just determined the app is signed correctly, so bring
                     // over the latest parsed certs.
                 } else {
-                    if (!isSystemPackage) {
-                        throw new ReconcileFailure(INSTALL_FAILED_UPDATE_INCOMPATIBLE,
-                                "Package " + parsedPackage.getPackageName()
-                                        + " upgrade keys do not match the previously installed"
-                                        + " version");
-                    } else {
-                        String msg = "System package " + parsedPackage.getPackageName()
-                                + " signature changed; retaining data.";
-                        PackageManagerService.reportSettingsProblem(Log.WARN, msg);
-                    }
+                    String msg = "System package " + parsedPackage.getPackageName()
+                            + " signature changed; retaining data.";
+                    PackageManagerService.reportSettingsProblem(Log.WARN, msg);
                 }
             } else {
                 try {
