@@ -16641,6 +16641,14 @@ public final class Settings {
         public static final String LOW_POWER_MODE = "low_power";
 
         /**
+         * Whether to force allow HBM in cases when HBM would usually be prevented.
+         * This may cause permanent damage to the display and will consume more energy.
+         * @hide
+         */
+        @Readable
+        public static final String FORCE_ALLOW_HBM = "force_allow_hbm";
+
+        /**
          * If 1 extra low power mode is enabled.
          * @hide
          */
