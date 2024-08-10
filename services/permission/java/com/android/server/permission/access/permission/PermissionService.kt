@@ -92,6 +92,8 @@ import com.android.server.pm.PackageManagerService
 import com.android.server.pm.PackageMetrics
 import com.android.server.pm.UserManagerInternal
 import com.android.server.pm.UserManagerService
+import com.android.server.pm.ext.PackageExt
+import com.android.server.pm.ext.PackageHooks
 import com.android.server.pm.permission.LegacyPermission
 import com.android.server.pm.permission.LegacyPermissionSettings
 import com.android.server.pm.permission.LegacyPermissionState
@@ -887,6 +889,11 @@ class PermissionService(private val service: AccessCheckingService) :
             if (PackageManagerHooks.shouldBlockGrantRuntimePermission(packageManagerInternal,
                     permissionName, packageName, userId)) {
                 return
+            }
+        } else {
+            if (PackageExt.get(androidPackage).hooks().overridePermissionState(
+                    permissionName, userId) == PackageHooks.PERMISSION_OVERRIDE_GRANT) {
+                throw IllegalArgumentException("$permissionName is granted by PackageHooks for $packageName")
             }
         }
 
