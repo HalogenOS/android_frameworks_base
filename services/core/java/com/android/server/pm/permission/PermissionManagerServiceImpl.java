@@ -4020,7 +4020,12 @@ public class PermissionManagerServiceImpl implements PermissionManagerServiceInt
     }
 
     @Override
-    public void updatePermissions(@NonNull AndroidPackage pkg, int userId) {
+    public void updatePermissions(@NonNull PackageState pkgState, int userId) {
+        AndroidPackage pkg = pkgState.getAndroidPackage();
+        if (pkg == null) {
+            Slog.w(TAG, "no AndroidPackage for " + pkgState.getPackageName());
+            return;
+        }
         restorePermissionState(pkg, false, null, null, userId);
     }
 
