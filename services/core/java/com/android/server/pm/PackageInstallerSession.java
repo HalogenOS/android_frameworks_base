@@ -7302,4 +7302,22 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
                 initialVerificationPolicy, currentVerificationPolicy, installDependencyHelper,
                 /* restoredOnReboot= */ true);
     }
+
+    void updatePermissionStates(String[] permissionNames, int[] states) {
+        int num = permissionNames.length;
+        if (num != states.length) {
+            throw new IllegalArgumentException("array length mismatch");
+        }
+
+        synchronized (mLock) {
+            ArrayMap<String, Integer> updatedStates = new ArrayMap<>(params.getPermissionStates());
+            for (int i = 0; i < num; ++i) {
+                PackageInstaller.SessionParams.setPermissionState(updatedStates,
+                        permissionNames[i], states[i]);
+            }
+            params.replacePermissionStates(updatedStates);
+        }
+
+        mCallback.onSessionChanged(this);
+    }
 }
