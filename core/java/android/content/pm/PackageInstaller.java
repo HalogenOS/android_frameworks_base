@@ -1196,6 +1196,16 @@ public class PackageInstaller {
         }
     }
 
+    /** @hide */
+    @RequiresPermission(Manifest.permission.INSTALL_GRANT_RUNTIME_PERMISSIONS)
+    public void updatePermissionStates(int sessionId, String[] permissionNames, int[] states) {
+        try {
+            mInstaller.updatePermissionStates(sessionId, permissionNames, states);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
     /**
      * Check if install constraints are satisfied for the given packages.
      *
@@ -2849,7 +2859,7 @@ public class PackageInstaller {
         /** {@hide} */
         public boolean isAutoInstallDependenciesEnabled = true;
 
-        private final ArrayMap<String, Integer> mPermissionStates;
+        private volatile ArrayMap<String, Integer> mPermissionStates;
         /**
          * {@hide}
          *
@@ -3116,6 +3126,13 @@ public class PackageInstaller {
         @NonNull
         public SessionParams setPermissionState(@NonNull String permissionName,
                 @PermissionState int state) {
+            setPermissionState(mPermissionStates, permissionName, state);
+            return this;
+        }
+
+        /** @hide */
+        public static void setPermissionState(ArrayMap<String, Integer> states,
+                  @NonNull String permissionName, @PermissionState int state) {
             if (TextUtils.isEmpty(permissionName)) {
                 throw new IllegalArgumentException("Provided permissionName cannot be "
                         + (permissionName == null ? "null" : "empty"));
@@ -3123,17 +3140,15 @@ public class PackageInstaller {
 
             switch (state) {
                 case PERMISSION_STATE_DEFAULT:
-                    mPermissionStates.remove(permissionName);
+                    states.remove(permissionName);
                     break;
                 case PERMISSION_STATE_GRANTED:
                 case PERMISSION_STATE_DENIED:
-                    mPermissionStates.put(permissionName, state);
+                    states.put(permissionName, state);
                     break;
                 default:
                     throw new IllegalArgumentException("Unexpected permission state int: " + state);
             }
-
-            return this;
         }
 
         /** @hide */
@@ -3638,6 +3653,11 @@ public class PackageInstaller {
         @NonNull
         public ArrayMap<String, Integer> getPermissionStates() {
             return mPermissionStates;
+        }
+
+        /** @hide */
+        public void replacePermissionStates(ArrayMap<String, Integer> states) {
+            mPermissionStates = states;
         }
 
         /** @hide */
