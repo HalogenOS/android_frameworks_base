@@ -19,4 +19,8 @@
 <resources>
     <!-- SimplePropImitation -->
     <java-symbol type="array" name="config_certifiedBuildProperties" />
+
+    <!-- KeyboxImitationHooks -->
+    <java-symbol type="array" name="config_certifiedKeybox" />
+
 </resources>
