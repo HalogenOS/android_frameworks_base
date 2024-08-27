@@ -144,4 +144,6 @@ class UdfpsView(
         }
         mUdfpsDisplayMode?.disable(null /* onDisabled */)
     }
+
+    fun setEnrolling(enrolling: Boolean) = ghbmView?.setEnrolling(enrolling)
 }
