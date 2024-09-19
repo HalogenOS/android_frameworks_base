@@ -364,7 +364,7 @@ class MediaDataProcessor(
             val flag =
                 secureSettings.getBoolForUser(
                     Settings.Secure.MEDIA_CONTROLS_RECOMMENDATION,
-                    true,
+                    false,
                     UserHandle.USER_CURRENT
                 )
 

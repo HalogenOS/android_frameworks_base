@@ -163,7 +163,7 @@ private fun allowMediaRecommendations(context: Context): Boolean {
         Settings.Secure.getInt(
             context.contentResolver,
             Settings.Secure.MEDIA_CONTROLS_RECOMMENDATION,
-            1
+            0
         )
     return Utils.useQsMediaPlayer(context) && flag > 0
 }
