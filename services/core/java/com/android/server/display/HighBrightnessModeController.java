@@ -365,7 +365,7 @@ class HighBrightnessModeController {
         // the MAX. HDR also needs to work under manual brightness which never adjusts the
         // brightness maximum; so we implement HDR-HBM in a way that doesn't adjust the max.
         // See {@link #getHdrBrightnessValue}.
-        return mForceAllowHDM || ( !mIsHdrLayerPresent
+        return mForceAllowHBM || ( !mIsHdrLayerPresent
                 && (mIsAutoBrightnessEnabled && mIsTimeAvailable && mIsInAllowedAmbientRange
                 && !mIsBlockedByLowPowerMode) );
     }
