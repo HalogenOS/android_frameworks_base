@@ -33,6 +33,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackagePartitions;
 import android.content.pm.UserInfo;
 import android.content.pm.VersionedPackage;
+import android.os.Build;
 import android.os.Environment;
 import android.os.FileUtils;
 import android.os.UserHandle;
@@ -208,7 +209,7 @@ public final class StorageEventHelper extends StorageEventListener {
         }
 
         synchronized (mPm.mLock) {
-            final boolean isUpgrade = !PackagePartitions.FINGERPRINT.equals(ver.fingerprint);
+            final boolean isUpgrade = !PackagePartitions.FINGERPRINT.equals(ver.fingerprint) || Build.VERSION.INCREMENTAL.startsWith("eng.");
             if (isUpgrade) {
                 logCriticalInfo(Log.INFO, "Partitions fingerprint changed from " + ver.fingerprint
                         + " to " + PackagePartitions.FINGERPRINT + "; regranting permissions for "

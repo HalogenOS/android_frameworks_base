@@ -2579,7 +2579,8 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
         // allow instant applications
         // The system property allows testing ota flow when upgraded to the same image.
         return mIsUpgrade || SystemProperties.getBoolean(
-                "persist.pm.mock-upgrade", false /* default */);
+                "persist.pm.mock-upgrade", false /* default */) ||
+                Build.VERSION.INCREMENTAL.startsWith("eng.");
     }
 
     @NonNull
