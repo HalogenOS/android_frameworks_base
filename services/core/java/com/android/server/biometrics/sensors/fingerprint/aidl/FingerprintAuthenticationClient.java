@@ -253,7 +253,7 @@ public class FingerprintAuthenticationClient
         }
         // For UDFPS, notify SysUI with acquiredInfo, so that the illumination can be turned off
         // for most ACQUIRED messages. See BiometricFingerprintConstants#FingerprintAcquired
-        mSensorOverlays.ifUdfps(controller -> controller.onAcquired(getSensorId(), acquiredInfo, vendorCode));
+        mSensorOverlays.ifUdfps(controller -> controller.onAcquired(getSensorId(), acquiredInfo));
         super.onAcquired(acquiredInfo, vendorCode);
         PerformanceTracker pt = PerformanceTracker.getInstanceForSensorId(getSensorId());
         pt.incrementAcquireForUser(getTargetUserId(), isCryptoOperation());

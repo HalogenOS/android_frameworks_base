@@ -19,7 +19,6 @@ package com.android.systemui.biometrics;
 import static android.app.StatusBarManager.SESSION_BIOMETRIC_PROMPT;
 import static android.app.StatusBarManager.SESSION_KEYGUARD;
 import static android.hardware.biometrics.BiometricFingerprintConstants.FINGERPRINT_ACQUIRED_GOOD;
-import static android.hardware.biometrics.BiometricFingerprintConstants.FINGERPRINT_ACQUIRED_VENDOR;
 import static android.hardware.biometrics.BiometricRequestConstants.REASON_AUTH_BP;
 import static android.hardware.biometrics.BiometricRequestConstants.REASON_AUTH_KEYGUARD;
 import static android.hardware.biometrics.BiometricRequestConstants.REASON_ENROLL_ENROLLING;
@@ -33,8 +32,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.biometrics.BiometricFingerprintConstants;
 import android.hardware.biometrics.BiometricPrompt;
@@ -54,7 +51,6 @@ import android.os.PowerManager;
 import android.os.Trace;
 import android.os.VibrationAttributes;
 import android.os.VibrationEffect;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
@@ -67,6 +63,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.OptIn;
 
+import com.android.internal.R;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.logging.InstanceId;
 import com.android.internal.util.LatencyTracker;
@@ -98,7 +95,6 @@ import com.android.systemui.log.SessionTracker;
 import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.power.domain.interactor.PowerInteractor;
-import com.android.systemui.res.R;
 import com.android.systemui.shade.domain.interactor.ShadeInteractor;
 import com.android.systemui.shared.system.SysUiStatsLog;
 import com.android.systemui.statusbar.LockscreenShadeTransitionController;
@@ -125,7 +121,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 
@@ -227,10 +222,6 @@ public class UdfpsController implements DozeReceiver, Dumpable {
     private boolean mOnFingerDown;
     private boolean mAttemptedToDismissKeyguard;
     private final Set<Callback> mCallbacks = new HashSet<>();
-
-    private boolean mUseFrameworkDimming;
-    private int[][] mBrightnessAlphaArray;
-    private final int mUdfpsVendorCode;
 
     @VisibleForTesting
     public static final VibrationAttributes UDFPS_VIBRATION_ATTRIBUTES =
@@ -336,7 +327,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         @Override
         public void onAcquired(
                 int sensorId,
-                @BiometricFingerprintConstants.FingerprintAcquired int acquiredInfo, int vendorCode
+                @BiometricFingerprintConstants.FingerprintAcquired int acquiredInfo
         ) {
             if (BiometricFingerprintConstants.shouldDisableUdfpsDisplayMode(acquiredInfo)) {
                 boolean acquiredGood = acquiredInfo == FINGERPRINT_ACQUIRED_GOOD;
@@ -351,16 +342,6 @@ public class UdfpsController implements DozeReceiver, Dumpable {
                     unconfigureDisplay(view);
                     tryAodSendFingerUp();
                 });
-            } else {
-                boolean acquiredVendor = acquiredInfo == FINGERPRINT_ACQUIRED_VENDOR;
-                if (!acquiredVendor || (!mStatusBarStateController.isDozing() && mScreenOn)) {
-                    return;
-                }
-                if (vendorCode == mUdfpsVendorCode) {
-                    mPowerManager.wakeUp(mSystemClock.uptimeMillis(),
-                            PowerManager.WAKE_REASON_GESTURE, TAG);
-                    onAodInterrupt(0, 0, 0, 0);
-                }
             }
         }
 
@@ -756,7 +737,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         mVibrator = vibrator;
         mInflater = inflater;
         mIgnoreRefreshRate = mContext.getResources()
-                    .getBoolean(com.android.internal.R.bool.config_ignoreUdfpsVote);
+                    .getBoolean(R.bool.config_ignoreUdfpsVote);
         // The fingerprint manager is queried for UDFPS before this class is constructed, so the
         // fingerprint manager should never be null.
         mFingerprintManager = checkNotNull(fingerprintManager);
@@ -822,8 +803,6 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         final UdfpsOverlayController mUdfpsOverlayController = new UdfpsOverlayController();
         mFingerprintManager.setUdfpsOverlayController(mUdfpsOverlayController);
 
-        initUdfpsFrameworkDimming();
-
         final IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         context.registerReceiver(mBroadcastReceiver, filter,
@@ -831,7 +810,6 @@ public class UdfpsController implements DozeReceiver, Dumpable {
 
         udfpsHapticsSimulator.setUdfpsController(this);
         udfpsShell.setUdfpsOverlayController(mUdfpsOverlayController);
-        mUdfpsVendorCode = mContext.getResources().getInteger(R.integer.config_udfpsVendorCode);
     }
 
     /**
@@ -1046,64 +1024,6 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         return mSensorProps.sensorType == FingerprintSensorProperties.TYPE_UDFPS_OPTICAL;
     }
 
-    private void initUdfpsFrameworkDimming() {
-        mUseFrameworkDimming = mContext.getResources().getBoolean(
-                com.android.systemui.res.R.bool.config_udfpsFrameworkDimming);
-
-        if (mUseFrameworkDimming) {
-            String[] array = mContext.getResources().getStringArray(
-                    com.android.systemui.res.R.array.config_udfpsDimmingBrightnessAlphaArray);
-            mBrightnessAlphaArray = new int[array.length][2];
-            for (int i = 0; i < array.length; i++) {
-                String[] s = array[i].split(",");
-                mBrightnessAlphaArray[i][0] = Integer.parseInt(s[0]);
-                mBrightnessAlphaArray[i][1] = Integer.parseInt(s[1]);
-            }
-        }
-    }
-
-    private static int interpolate(int x, int xa, int xb, int ya, int yb) {
-        return ya - (ya - yb) * (x - xa) / (xb - xa);
-    }
-
-    private int getBrightness() {
-        int brightness = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SCREEN_BRIGHTNESS, 100);
-        // Since the brightness is taken from the system settings, we need to interpolate it
-        final int brightnessMin = mContext.getResources().getInteger(
-                com.android.systemui.res.R.integer.config_udfpsDimmingBrightnessMin);
-        final int brightnessMax = mContext.getResources().getInteger(
-                com.android.systemui.res.R.integer.config_udfpsDimmingBrightnessMax);
-        if (brightnessMax > 0) {
-            brightness = interpolate(brightness, 0, 255, brightnessMin, brightnessMax);
-        }
-        return brightness;
-    }
-
-    private void updateViewDimAmount(UdfpsControllerOverlay overlay) {
-        if (overlay == null || !mUseFrameworkDimming) {
-            return;
-        } else if (isFingerDown()) {
-            int curBrightness = getBrightness();
-            int i, dimAmount;
-            for (i = 0; i < mBrightnessAlphaArray.length; i++) {
-                if (mBrightnessAlphaArray[i][0] >= curBrightness) break;
-            }
-            if (i == 0) {
-                dimAmount = mBrightnessAlphaArray[i][1];
-            } else if (i == mBrightnessAlphaArray.length) {
-                dimAmount = mBrightnessAlphaArray[i-1][1];
-            } else {
-                dimAmount = interpolate(curBrightness,
-                        mBrightnessAlphaArray[i][0], mBrightnessAlphaArray[i-1][0],
-                        mBrightnessAlphaArray[i][1], mBrightnessAlphaArray[i-1][1]);
-            }
-            overlay.setDimAmount(dimAmount / 255.0f);
-        } else {
-            overlay.setDimAmount(0.0f);
-        }
-    }
-
     public boolean isFingerDown() {
         return mOnFingerDown;
     }
@@ -1112,7 +1032,6 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         mFingerprintManager.onUdfpsUiEvent(FingerprintManager.UDFPS_UI_READY, requestId,
                 mSensorProps.sensorId);
         mLatencyTracker.onActionEnd(LatencyTracker.ACTION_UDFPS_ILLUMINATE);
-        updateViewDimAmount(mOverlay);
     }
 
     private void onFingerDown(
@@ -1231,36 +1150,6 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         mOnFingerDown = false;
         unconfigureDisplay(view);
         cancelAodSendFingerUpAction();
-
-        // Add a delay to ensure that the dim amount is updated after the display has had chance
-        // to switch out of HBM mode. The delay, in ms is stored in config_udfpsDimmingDisableDelay.
-        // If the delay is 0, the dim amount will be updated immediately.
-        int delay = 0;
-        if (mOverlay.getRequestReason() == REASON_AUTH_KEYGUARD) {
-            delay = mContext.getResources().getInteger(
-                        com.android.systemui.res.R.integer.config_udfpsDimmingDisableDelay);
-        } else if ((mOverlay.getRequestReason() == REASON_ENROLL_ENROLLING) ||
-                (mOverlay.getRequestReason() == REASON_ENROLL_FIND_SENSOR)) {
-            delay = mContext.getResources().getInteger(
-                        com.android.systemui.res.R.integer.config_udfpsEnrollingDimmingDisableDelay);
-        }
-        final AtomicInteger delayCounter = new AtomicInteger(delay);
-
-        UdfpsControllerOverlay overlay = mOverlay;
-        final Runnable dimmingDisableRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (delayCounter.getAndDecrement() <= 0) {
-                    updateViewDimAmount(overlay);
-                } else {
-                    View view = overlay.getFrame();
-                    if (view != null) {
-                        view.postOnAnimation(this);
-                    }
-                }
-            }
-        };
-        dimmingDisableRunnable.run();
     }
 
     /**
