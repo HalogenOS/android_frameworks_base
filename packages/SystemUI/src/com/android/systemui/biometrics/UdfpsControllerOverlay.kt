@@ -259,7 +259,7 @@ constructor(
         addViewRunnable =
             kotlinx.coroutines.Runnable {
                 Trace.setCounter("UdfpsAddView", 1)
-                if (Build.IS_DEBUGGABLE) {
+                if (Build.IS_ENG) {
                     Log.d(TAG, "adding view=$view")
                 }
                 windowManager.addView(view, coreLayoutParams.updateDimensions(animation))
@@ -312,7 +312,7 @@ constructor(
         udfpsHelper?.removeDimLayer()
         getTouchOverlay()?.apply {
             if (this.parent != null) {
-                if (Build.IS_DEBUGGABLE) {
+                if (Build.IS_ENG) {
                     Log.d(TAG, "removing view=$this")
                 }
                 windowManager.removeView(this)
