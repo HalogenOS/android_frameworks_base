@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.internal.util.crdroid;
+package com.android.internal.util.custom;
 
 import android.os.SystemProperties;
 import android.security.keystore.KeyProperties;
