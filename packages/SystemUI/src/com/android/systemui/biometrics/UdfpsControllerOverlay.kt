@@ -114,7 +114,7 @@ class UdfpsControllerOverlay @JvmOverloads constructor(
         private val activityTransitionAnimator: ActivityTransitionAnimator,
         private val primaryBouncerInteractor: PrimaryBouncerInteractor,
         private val alternateBouncerInteractor: AlternateBouncerInteractor,
-        private val isDebuggable: Boolean = Build.IS_DEBUGGABLE,
+        private val isDebuggable: Boolean = Build.IS_ENG,
         private val udfpsKeyguardAccessibilityDelegate: UdfpsKeyguardAccessibilityDelegate,
         private val transitionInteractor: KeyguardTransitionInteractor,
         private val selectedUserInteractor: SelectedUserInteractor,
