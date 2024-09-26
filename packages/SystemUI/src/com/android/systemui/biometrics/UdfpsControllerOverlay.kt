@@ -225,7 +225,7 @@ class UdfpsControllerOverlay @JvmOverloads constructor(
                     overlayTouchView = (inflater.inflate(
                             R.layout.udfps_touch_overlay, null, false
                     ) as UdfpsTouchOverlay).apply {
-                        udfpsDisplayModeProvider = this@UdfpsControllerOverlay.udfpsDisplayModeProvider
+                        this@apply.udfpsDisplayModeProvider = this@UdfpsControllerOverlay.udfpsDisplayModeProvider
 
                         // This view overlaps the sensor area
                         // prevent it from being selectable during a11y
