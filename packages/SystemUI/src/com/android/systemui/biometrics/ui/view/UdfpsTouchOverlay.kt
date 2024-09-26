@@ -38,11 +38,9 @@ class UdfpsTouchOverlay(context: Context, attrs: AttributeSet?) : FrameLayout(co
         private set
 
     private val TAG = this::class.simpleName
-    private var ghbmView: UdfpsSurfaceView? = null
     private var sensorRect = Rect()
 
     override fun onFinishInflate() {
-        ghbmView = findViewById(R.id.hbm_view_refactored)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -57,30 +55,17 @@ class UdfpsTouchOverlay(context: Context, attrs: AttributeSet?) : FrameLayout(co
 
     fun configureDisplay(onDisplayConfigured: Runnable) {
         isDisplayConfigured = false
-
-        ghbmView?.also { gView ->
-            gView.setGhbmIlluminationListener(this::doIlluminate)
-            gView.visibility = VISIBLE
-            gView.startGhbmIllumination(onDisplayConfigured)
-        } ?: doIlluminate(null /* surface */, onDisplayConfigured)
+        doIlluminate(onDisplayConfigured)
     }
 
     fun unconfigureDisplay() {
         isDisplayConfigured = false
-        ghbmView?.let { view ->
-            view.setGhbmIlluminationListener(null)
-            view.visibility = INVISIBLE
-        }
     }
 
-    private fun doIlluminate(surface: Surface?, onDisplayConfigured: Runnable?) {
-        if (ghbmView != null && surface == null) {
-            Log.e(TAG, "doIlluminate | surface must be non-null for GHBM")
-        }
+    private fun doIlluminate(onDisplayConfigured: Runnable?) {
 
         udfpsDisplayModeProvider?.enable {
             onDisplayConfigured?.run()
-            ghbmView?.drawIlluminationDot(RectF(sensorRect))
-        }
+        } ?: Log.w(TAG, "udfpsDisplayModeProvider not set!")
     }
 }
