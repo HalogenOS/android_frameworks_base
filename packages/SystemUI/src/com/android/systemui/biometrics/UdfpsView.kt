@@ -43,11 +43,6 @@ class UdfpsView(
     // overlayParams.sensorBounds
     var sensorRect = Rect()
     private var mUdfpsDisplayMode: UdfpsDisplayModeProvider? = null
-    private val debugTextPaint = Paint().apply {
-        isAntiAlias = true
-        color = Color.BLUE
-        textSize = 32f
-    }
 
     private var ghbmView: UdfpsSurfaceView? = null
 
@@ -56,17 +51,6 @@ class UdfpsView(
 
     /** Parameters that affect the position and size of the overlay. */
     var overlayParams = UdfpsOverlayParams()
-
-    /** Debug message. */
-    var debugMessage: String? = null
-        set(value) {
-            field = value
-            postInvalidate()
-        }
-
-    /** True after the call to [configureDisplay] and before the call to [unconfigureDisplay]. */
-    var isDisplayConfigured: Boolean = false
-        private set
 
     fun setUdfpsDisplayModeProvider(udfpsDisplayModeProvider: UdfpsDisplayModeProvider?) {
         mUdfpsDisplayMode = udfpsDisplayModeProvider
@@ -104,44 +88,19 @@ class UdfpsView(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (!isDisplayConfigured) {
-            if (!debugMessage.isNullOrEmpty()) {
-                canvas.drawText(debugMessage!!, 0f, 160f, debugTextPaint)
-            }
-        }
     }
 
-    fun configureDisplay(onDisplayConfigured: Runnable) {
-        isDisplayConfigured = true
-        animationViewController?.onDisplayConfiguring()
-        val gView = ghbmView
-        if (gView != null) {
-            gView.setGhbmIlluminationListener(this::doIlluminate)
-            gView.visibility = VISIBLE
-            gView.startGhbmIllumination(onDisplayConfigured)
-        } else {
-            doIlluminate(null /* surface */, onDisplayConfigured)
-        }
+    fun illuminate() {
+        ghbmView?.visibility = VISIBLE
+        doIlluminate(null /* surface */)
     }
 
-    private fun doIlluminate(surface: Surface?, onDisplayConfigured: Runnable?) {
-        if (ghbmView != null && surface == null) {
-            Log.e(TAG, "doIlluminate | surface must be non-null for GHBM")
-        }
-
-        mUdfpsDisplayMode?.enable {
-            onDisplayConfigured?.run()
-            ghbmView?.drawIlluminationDot(RectF(sensorRect))
-        }
+    private fun doIlluminate(surface: Surface?) {
+        ghbmView?.drawIlluminationDot(RectF(sensorRect))
     }
 
-    fun unconfigureDisplay() {
-        isDisplayConfigured = false
+    fun stopIlluminating() {
         animationViewController?.onDisplayUnconfigured()
-        ghbmView?.let { view ->
-            view.setGhbmIlluminationListener(null)
-            view.visibility = INVISIBLE
-        }
-        mUdfpsDisplayMode?.disable(null /* onDisabled */)
+        ghbmView?.visibility = INVISIBLE
     }
 }

@@ -343,9 +343,6 @@ public class UdfpsController implements DozeReceiver, Dumpable {
                         return;
                     }
                     mAcquiredReceived = true;
-                    final View view = mOverlay.getTouchOverlay();
-                    unconfigureDisplay(view);
-                    tryAodSendFingerUp();
                 });
             }
         }
@@ -357,16 +354,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         public void onEnrollmentHelp(int sensorId) { }
 
         @Override
-        public void setDebugMessage(int sensorId, String message) {
-            mFgExecutor.execute(() -> {
-                if (mOverlay == null || mOverlay.isHiding()) {
-                    return;
-                }
-                if (!DeviceEntryUdfpsRefactor.isEnabled()) {
-                    ((UdfpsView) mOverlay.getTouchOverlay()).setDebugMessage(message);
-                }
-            });
-        }
+        public void setDebugMessage(int sensorId, String message) { }
 
         public Rect getSensorBounds() {
             return mOverlayParams.getSensorBounds();
@@ -905,21 +893,20 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         if (!isOptical()) {
             return;
         }
-        if (DeviceEntryUdfpsRefactor.isEnabled()) {
-            UdfpsTouchOverlay overlay = (UdfpsTouchOverlay) view;
-            if (overlay.isDisplayConfigured()) {
-                overlay.unconfigureDisplay();
-            }
-            if (mUdfpsDisplayMode != null) {
-                mUdfpsDisplayMode.disable(null);
-            }
-        } else {
-            if (view != null) {
-                UdfpsView udfpsView = (UdfpsView) view;
-                if (udfpsView.isDisplayConfigured()) {
-                    udfpsView.unconfigureDisplay();
+        Log.d(TAG, "unconfigureDisplay");
+        if (view != null) {
+            if (DeviceEntryUdfpsRefactor.isEnabled()) {
+                UdfpsTouchOverlay overlay = (UdfpsTouchOverlay) view;
+                if (overlay.isDisplayConfigured()) {
+                    overlay.unconfigureDisplay();
                 }
+            } else {
+                UdfpsView udfpsView = (UdfpsView) view;
+                udfpsView.stopIlluminating();
             }
+        }
+        if (mUdfpsDisplayMode != null) {
+            mUdfpsDisplayMode.disable(null);
         }
     }
 
@@ -1166,12 +1153,10 @@ public class UdfpsController implements DozeReceiver, Dumpable {
             if (mIgnoreRefreshRate) {
                 dispatchOnUiReady(requestId);
             } else {
-                if (DeviceEntryUdfpsRefactor.isEnabled()) {
-                    mUdfpsDisplayMode.enable(() -> dispatchOnUiReady(requestId));
-                    ((UdfpsTouchOverlay) view).configureDisplay(() -> dispatchOnUiReady(requestId));
-                } else {
-                    ((UdfpsView) view).configureDisplay(() -> dispatchOnUiReady(requestId));
+                if (!DeviceEntryUdfpsRefactor.isEnabled()) {
+                    ((UdfpsView) view).illuminate();
                 }
+                mUdfpsDisplayMode.enable(() -> dispatchOnUiReady(requestId));
             }
         }
 

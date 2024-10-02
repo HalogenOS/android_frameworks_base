@@ -440,9 +440,6 @@ class UdfpsControllerOverlay @JvmOverloads constructor(
         val wasShowing = isShowing
 
         overlayViewLegacy?.apply {
-            if (isDisplayConfigured) {
-                unconfigureDisplay()
-            }
             animationViewController = null
         }
         if (DeviceEntryUdfpsRefactor.isEnabled) {
