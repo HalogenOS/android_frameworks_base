@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"Kilit açma deseninizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış çizdiniz. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> saniye içinde tekrar deneyin."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"Şifrenizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış yazdınız. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> saniye içinde tekrar deneyin."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"PIN kodunuzu <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış girdiniz. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> saniye içinde tekrar deneyin."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Kilit açma deseninizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış çizdiniz. <xliff:g id="NUMBER_1">%2$d</xliff:g> başarısız denemeden sonra, tabletinizi, Google oturum açma bilgilerinizi kullanarak açmanız istenir.\n\n<xliff:g id="NUMBER_2">%3$d</xliff:g> saniye içinde tekrar deneyin."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Kilit açma deseninizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış çizdiniz. <xliff:g id="NUMBER_1">%2$d</xliff:g> başarısız denemeden sonra, Android TV cihazınızın kilidini Google oturum açma bilgilerinizi kullanarak açmanız istenir.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> saniye içinde tekrar deneyin."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Kilit açma deseninizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış çizdiniz. <xliff:g id="NUMBER_1">%2$d</xliff:g> başarısız denemeden sonra telefonunuzu Google oturum açma bilgilerinizi kullanarak açmanız istenir.\n\n Lütfen <xliff:g id="NUMBER_2">%3$d</xliff:g> saniye içinde tekrar deneyin."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Kilit açma deseninizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış çizdiniz. <xliff:g id="NUMBER_1">%2$d</xliff:g> başarısız denemeden sonra, tabletinizi, oturum açma bilgilerinizi kullanarak açmanız istenir.\n\n<xliff:g id="NUMBER_2">%3$d</xliff:g> saniye içinde tekrar deneyin."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Kilit açma deseninizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış çizdiniz. <xliff:g id="NUMBER_1">%2$d</xliff:g> başarısız denemeden sonra, Android TV cihazınızın kilidini oturum açma bilgilerinizi kullanarak açmanız istenir.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> saniye içinde tekrar deneyin."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Kilit açma deseninizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış çizdiniz. <xliff:g id="NUMBER_1">%2$d</xliff:g> başarısız denemeden sonra telefonunuzu oturum açma bilgilerinizi kullanarak açmanız istenir.\n\n Lütfen <xliff:g id="NUMBER_2">%3$d</xliff:g> saniye içinde tekrar deneyin."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Tablet kilidini <xliff:g id="NUMBER_0">%1$d</xliff:g> defa yanlış bir şekilde açmaya çalıştınız. <xliff:g id="NUMBER_1">%2$d</xliff:g> defa daha başarısız deneme yapılırsa, tablet fabrika varsayılanına sıfırlanır ve tüm kullanıcı verileri kaybedilir."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Android TV cihazınızın kilidini <xliff:g id="NUMBER_0">%1$d</xliff:g> kez hatalı bir şekilde açmayı denediniz. <xliff:g id="NUMBER_1">%2$d</xliff:g> defa daha başarısız deneme yapılırsa Android TV cihazınız fabrika varsayılan ayarlarına sıfırlanır ve tüm kullanıcı verileri kaybedilir."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Telefonun kilidini <xliff:g id="NUMBER_0">%1$d</xliff:g> defa yanlış bir şekilde açmaya çalıştınız. <xliff:g id="NUMBER_1">%2$d</xliff:g> defa daha başarısız deneme yapılırsa, telefon fabrika varsayılanına sıfırlanır ve tüm kullanıcı verileri kaybedilir."</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Deseni unuttunuz mu?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Hesap kilidini açma"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Çok fazla sayıda desen denemesi yapıldı"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Kilidi açmak için Google hesabınızla oturum açın."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Kilidi açmak için hesabınızla oturum açın."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Kullanıcı adı (e-posta)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Şifre"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Oturum aç"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"Geçersiz kullanıcı adı veya şifre."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Kullanıcı adınızı veya şifrenizi mi unuttunuz?\n"<b>"google.com/accounts/recovery"</b>" adresini ziyaret edin."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Kullanıcı adınızı veya şifrenizi mi unuttunuz?\n"<b>"your account provider"</b>" adresini ziyaret edin."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"Denetleniyor…"</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"Kilit Aç"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"Sesi aç"</string>
@@ -1615,7 +1615,7 @@
     <string name="progress_erasing" msgid="6891435992721028004">"Paylaşılan depolama alanı siliniyor…"</string>
     <string name="share" msgid="4157615043345227321">"Paylaş"</string>
     <string name="find" msgid="5015737188624767706">"Bul"</string>
-    <string name="websearch" msgid="5624340204512793290">"Google Web Arama"</string>
+    <string name="websearch" msgid="5624340204512793290">"Web Arama"</string>
     <string name="find_next" msgid="5341217051549648153">"Sonrakini bul"</string>
     <string name="find_previous" msgid="4405898398141275532">"Öncekini bul"</string>
     <string name="gpsNotifTicker" msgid="3207361857637620780">"<xliff:g id="NAME">%s</xliff:g> kullanıcısından gelen konum isteği"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Doğru PUK kodunu tekrar girin. Çok sayıda deneme yapılırsa SIM kart kalıcı olarak devre dışı bırakılır."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN kodları eşleşmiyor"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Çok fazla sayıda desen denemesi yapıldı"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Kilidi açmak için Google hesabınızla oturum açın."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Kilidi açmak için hesabınızla oturum açın."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Kullanıcı adı (e-posta)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Şifre"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Oturum aç"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"Geçersiz kullanıcı adı veya şifre."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Kullanıcı adınızı veya şifrenizi mi unuttunuz?\n"<b>"google.com/accounts/recovery"</b>" adresini ziyaret edin."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Kullanıcı adınızı veya şifrenizi mi unuttunuz?\n"<b>"your account provider"</b>" adresini ziyaret edin."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"Hesap denetleniyor…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"PIN kodunuzu <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış girdiniz. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> saniye içinde tekrar deneyin."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"Şifrenizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış yazdınız. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> saniye içinde tekrar deneyin."</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"Geri dön"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"Bekliyor..."</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"Acil Uydu Bağlantısı kullanıma sunuldu"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Mobil veya kablosuz ağ bağlantısı yoksa acil durum hizmetleriyle mesajlaşabilirsiniz. Google Mesajlar varsayılan mesajlaşma uygulamanız olmalıdır."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Mobil veya kablosuz ağ bağlantısı yoksa acil durum hizmetleriyle mesajlaşabilirsiniz. login Mesajlar varsayılan mesajlaşma uygulamanız olmalıdır."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"Acil Uydu Bağlantısı desteklenmiyor"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"Acil Uydu Bağlantısı bu cihazda desteklenmiyor"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"Acil Uydu Bağlantısı özelliği ayarlanmamış"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"Acil Uydu Bağlantısı kullanılamıyor"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"Acil Uydu Bağlantısı özelliği bu ülkede veya bölgede kullanıma sunulmamıştır"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"Acil Uydu Bağlantısı özelliği ayarlanmamış"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Uydu üzerinden mesajlaşmak için Google Mesajlar\'ı varsayılan mesajlaşma uygulamanız olarak ayarlayın"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Uydu üzerinden mesajlaşmak için login Mesajlar\'ı varsayılan mesajlaşma uygulamanız olarak ayarlayın"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"Acil Uydu Bağlantısı kullanılamıyor"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"Acil Uydu Bağlantısı özelliğinin bu ülkede veya bölgede kullanılıp kullanılamadığını kontrol etmek için konum ayarlarını açın"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"Uydu üzerinden mesajlaşma özelliği kullanılabilir"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Mobil veya kablosuz ağ bağlantısı yoksa uydu üzerinden mesaj gönderebilirsiniz. Google Mesajlar varsayılan mesajlaşma uygulamanız olmalıdır."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Mobil veya kablosuz ağ bağlantısı yoksa uydu üzerinden mesaj gönderebilirsiniz. login Mesajlar varsayılan mesajlaşma uygulamanız olmalıdır."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"Uydu üzerinden mesajlaşma desteklenmiyor"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"Uydu üzerinden mesajlaşma bu cihazda desteklenmiyor"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"Uydu üzerinden mesajlaşma özelliği ayarlanmamış"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"Uydu üzerinden mesajlaşma özelliği kullanılamıyor"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"Uydu üzerinden mesajlaşma özelliği bu ülkede veya bölgede kullanılamıyor"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"Uydu üzerinden mesajlaşma özelliği ayarlanmamış"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Uydu üzerinden mesajlaşmak için Google Mesajlar\'ı varsayılan mesajlaşma uygulamanız olarak ayarlayın"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Uydu üzerinden mesajlaşmak için login Mesajlar\'ı varsayılan mesajlaşma uygulamanız olarak ayarlayın"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"Uydu üzerinden mesajlaşma özelliği kullanılamıyor"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"Uydu üzerinden mesajlaşma özelliğinin bu ülkede veya bölgede kullanılıp kullanılamadığını kontrol etmek için konum ayarlarını açın"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"Parmak İzi Kilidi\'ni tekrar kurun"</string>

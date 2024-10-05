@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"သင်သည် သော့ဖွင့် ပုံစံကို<xliff:g id="NUMBER_0">%1$d</xliff:g> ကြိမ် မမှန်မကန် ရေးဆွဲခဲ့သည်။ \n\nထပ်ပြီးတော့ <xliff:g id="NUMBER_1">%2$d</xliff:g>စက္ကန့် အကြာမှာ စမ်းကြည့်ပါ။"</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"သင်သည် စကားဝှက်ကို  <xliff:g id="NUMBER_0">%1$d</xliff:g> ကြိမ် မမှန်မကန် ရိုက်ခဲ့ပြီ။ \n\n ထပ်ပြီးတော့ <xliff:g id="NUMBER_1">%2$d</xliff:g> စက္ကန့်အကြာ စမ်းကြည့်ပါ။"</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"သင်သည် သင်၏ PIN <xliff:g id="NUMBER_0">%1$d</xliff:g>ကို ကြိမ် မမှန်မကန် ရိုက်ခဲ့ပြီ။ \n\n ထပ်ပြီးတော့ <xliff:g id="NUMBER_1">%2$d</xliff:g> စက္ကန့်အကြာ စမ်းကြည့်ပါ။"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"သင်သည် သော့ဖွင့် ပုံစံကို<xliff:g id="NUMBER_0">%1$d</xliff:g> ကြိမ် မမှန်မကန် ရေးဆွဲခဲ့သည်။ နောက်ထပ် <xliff:g id="NUMBER_1">%2$d</xliff:g> မအောင်မြင်သည့် ကြိုးပမ်းမှု နောက်မှာ၊ သင်၏ တက်ဘလက်ကို Google လက်မှတ်ထိုး ဝင်မှုဖြင့် ဖွင့်ရန် တောင်းဆိုခံရမည်။ \n\n ထပ်ပြီး <xliff:g id="NUMBER_2">%3$d</xliff:g> စက္ကန့် အကြာမှာ စမ်းကြည့်ပါ။"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"သင်သည် သင်၏ လော့ခ်ဖွင့်ခြင်းပုံစံကို <xliff:g id="NUMBER_0">%1$d</xliff:g> ကြိမ် မှားယွင်းစွာ ဆွဲထားသည်။ နောက်ထပ် <xliff:g id="NUMBER_1">%2$d</xliff:g> ကြိမ်မှားယွင်းပါက သင်၏ Android TV စက်ပစ္စည်းကို လော့်ဖွင့်ရန်အတွက် Google လက်မှတ်ထိုးဝင်ခြင်းစနစ်အား အသုံးပြုရန် တောင်းဆိုသွားပါမည်။\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> စက္ကန့်အကြာတွင် ပြန်စမ်းကြည့်ပါ။"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"သင်သည် သော့ဖွင့် ပုံစံကို <xliff:g id="NUMBER_0">%1$d</xliff:g> ကြိမ် မမှန်မကန် ရေးဆွဲခဲ့သည်။ နောက်ထပ် <xliff:g id="NUMBER_1">%2$d</xliff:g> မအောင်မြင်သည့် ကြိုးပမ်းမှု နောက်မှာ၊ သင်၏ ဖုန်းကို Google လက်မှတ်ထိုး ဝင်မှုဖြင့် ဖွင့်ရန် တောင်းဆိုခံရမည်။ \n\n ထပ်ပြီး <xliff:g id="NUMBER_2">%3$d</xliff:g> စက္ကန့် အကြာမှာ စမ်းကြည့်ပါ။"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"သင်သည် သော့ဖွင့် ပုံစံကို<xliff:g id="NUMBER_0">%1$d</xliff:g> ကြိမ် မမှန်မကန် ရေးဆွဲခဲ့သည်။ နောက်ထပ် <xliff:g id="NUMBER_1">%2$d</xliff:g> မအောင်မြင်သည့် ကြိုးပမ်းမှု နောက်မှာ၊ သင်၏ တက်ဘလက်ကို လက်မှတ်ထိုး ဝင်မှုဖြင့် ဖွင့်ရန် တောင်းဆိုခံရမည်။ \n\n ထပ်ပြီး <xliff:g id="NUMBER_2">%3$d</xliff:g> စက္ကန့် အကြာမှာ စမ်းကြည့်ပါ။"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"သင်သည် သင်၏ လော့ခ်ဖွင့်ခြင်းပုံစံကို <xliff:g id="NUMBER_0">%1$d</xliff:g> ကြိမ် မှားယွင်းစွာ ဆွဲထားသည်။ နောက်ထပ် <xliff:g id="NUMBER_1">%2$d</xliff:g> ကြိမ်မှားယွင်းပါက သင်၏ Android TV စက်ပစ္စည်းကို လော့်ဖွင့်ရန်အတွက် လက်မှတ်ထိုးဝင်ခြင်းစနစ်အား အသုံးပြုရန် တောင်းဆိုသွားပါမည်။\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> စက္ကန့်အကြာတွင် ပြန်စမ်းကြည့်ပါ။"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"သင်သည် သော့ဖွင့် ပုံစံကို <xliff:g id="NUMBER_0">%1$d</xliff:g> ကြိမ် မမှန်မကန် ရေးဆွဲခဲ့သည်။ နောက်ထပ် <xliff:g id="NUMBER_1">%2$d</xliff:g> မအောင်မြင်သည့် ကြိုးပမ်းမှု နောက်မှာ၊ သင်၏ ဖုန်းကို လက်မှတ်ထိုး ဝင်မှုဖြင့် ဖွင့်ရန် တောင်းဆိုခံရမည်။ \n\n ထပ်ပြီး <xliff:g id="NUMBER_2">%3$d</xliff:g> စက္ကန့် အကြာမှာ စမ်းကြည့်ပါ။"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"သင့်Tabletအား မှားယွင်းစွာ <xliff:g id="NUMBER_0">%1$d</xliff:g>ကြိမ်ဖွင့်ရန် ကြိုးစားနေပါသည်။ နောက်ထပ်<xliff:g id="NUMBER_1">%2$d</xliff:g>ကြိမ်မအောင်မြင်ပါက မူလစက်ရုံ အနေအထားသို့ပြန်လည်ရောက်ရှိကာ အသုံးပြုသူ၏ဒေတာအားလုံးဆုံးရှုံးပါမည်။"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"သင်၏ Android TV စက်ပစ္စည်းကို လော့ခ်ဖွင့်ရာတွင် <xliff:g id="NUMBER_0">%1$d</xliff:g> ကြိမ် မှားယွင်းထားသည်။ နောက်ထပ် <xliff:g id="NUMBER_1">%2$d</xliff:g> ကြိမ် မှားယွင်းပါက သင်၏ Android TV စက်ပစ္စည်းကို စက်ရုံထုတ်မူရင်းဆက်တင်သို့ ပြင်ဆင်သတ်မှတ်သွားမည်ဖြစ်ပြီး အသုံးပြုသူဒေတာများအားလုံး ဆုံးရှုံးသွားပါမည်။"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"သင့်ဖုန်းအား မှားယွင်းစွာ <xliff:g id="NUMBER_0">%1$d</xliff:g>ကြိမ်ဖွင့်ရန် ကြိုးစားနေပါသည်။ နောက်ထပ်<xliff:g id="NUMBER_1">%2$d</xliff:g>ကြိမ်မအောင်မြင်ပါက မူလစက်ရုံ အနေအထားသို့ပြန်လည်ရောက်ရှိကာ အသုံးပြုသူ၏ဒေတာအားလုံးဆုံးရှုံးပါမည်။"</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"ပုံစံအားမေ့နေပါသလား"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"အကောင့်ဖွင့်ရန်"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"အကြိမ်ရေ များစွာ ပုံဆွဲသော့ဖွင့်ရန် ကြိုးစားခြင်း"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"သော့ဖွင့်ရန် Google အကောင့်ဖြင့် ဝင်ပါ"</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"သော့ဖွင့်ရန် အကောင့်ဖြင့် ဝင်ပါ"</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"သုံးစွဲသူ အမှတ် (အီးမေးလ်)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"စကားဝှက်"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"လက်မှတ်ထိုးဝင်ရန်"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"အသုံးပြုသူအမည် သို့မဟုတ် လျို့ဝှက် နံပါတ် မှားယွင်းနေသည်"</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"သုံးစွဲသူ အမည် သို့ စကားဝှင်ကို မေ့နေပါသလား။ \n"<b>"google.com/accounts/recovery"</b>" ကို သွားရောက်ပါ။"</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"သုံးစွဲသူ အမည် သို့ စကားဝှင်ကို မေ့နေပါသလား။ \n"<b>"your account provider"</b>" ကို သွားရောက်ပါ။"</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"စစ်ဆေးနေပါသည်…"</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"ဆင်းမ်ကတ် ဖွင့်ပါ"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"အသံဖွင့်ထားသည်"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"ပင်နံပါတ် ပြန်ဖွင့်သည့် ကုဒ်ကို ပြန်လည် ရိုက်ထည့်ပါ.။ ထပ်ခါ ထပ်ခါ ကြိုးစားခြင်းသည် ဆင်းမ်ကဒ်ကို အသုံးပြုမရအောင် ဖြစ်နေနိုင်ပါသည်။"</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"ပင် နံပါတ် မတူညီပါ"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"မြောက်မြားစွာ ပုံစံဆွဲ သော့ဖွင့်မှု"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"သော့ဖွင့်ရန် သင့်ရဲ့ Google အကောင့်ဖြင့် ဝင်ပါ"</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"သော့ဖွင့်ရန် သင့်ရဲ့ အကောင့်ဖြင့် ဝင်ပါ"</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"သုံးစွဲသူအမည် (အီးမေးလ်)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"စကားဝှက်"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"လက်မှတ်ထိုးဝင်ရန်"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"အသုံးပြုသူ အမည် သို့  စကားဝှက်မမှန်ကန်ပါ"</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"သင် သုံးစွဲသူ အမည် သို့ စကားဝှက်အားမေ့နေပါသလား။\n"<b>"google.com/accounts/recovery"</b>" သို့ သွားရောက်ပါ"</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"သင် သုံးစွဲသူ အမည် သို့ စကားဝှက်အားမေ့နေပါသလား။\n"<b>"your account provider"</b>" သို့ သွားရောက်ပါ"</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"အကောင့်ကို စစ်ဆေးနေစဉ်..."</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"သင် ပင် နံပါတ်ကို အမှားကို <xliff:g id="NUMBER_0">%1$d</xliff:g> ကြိမ် ရိုက်ထည့်ပြီးပါပြီ။ \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> စက္ကန့် အကြာတွင် ပြန်လည်ကြိုးစားပါ"</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"သင်သည် စကားဝှက်ကို  <xliff:g id="NUMBER_0">%1$d</xliff:g> ကြိမ် မှားရိုက်ပြီးပါပြီ။ \n\n <xliff:g id="NUMBER_1">%2$d</xliff:g> စက္ကန့်အကြာ ပြန်လည်ကြိုးစားပါ"</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"နောက်သို့"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"ဆိုင်းငံ့ထားသည်…"</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"Satellite SOS ကို ယခုသုံးနိုင်ပြီ"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"မိုဘိုင်း (သို့) Wi-Fi ကွန်ရက် မရှိပါက အရေးပေါ်ဝန်ဆောင်မှု ဌာနများသို့ မက်ဆေ့ဂျ်ပို့နိုင်သည်။ Google Messages သည် သင်၏ မူရင်းမက်ဆေ့ဂျ်ပို့ရန်အက်ပ် ဖြစ်ရမည်။"</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"မိုဘိုင်း (သို့) Wi-Fi ကွန်ရက် မရှိပါက အရေးပေါ်ဝန်ဆောင်မှု ဌာနများသို့ မက်ဆေ့ဂျ်ပို့နိုင်သည်။ Messages သည် သင်၏ မူရင်းမက်ဆေ့ဂျ်ပို့ရန်အက်ပ် ဖြစ်ရမည်။"</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"Satellite SOS ကို ပံ့ပိုးမထားပါ"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"Satellite SOS ကို ဤစက်တွင် ပံ့ပိုးမထားပါ"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"Satellite SOS ကို စနစ်ထည့်သွင်းမထားပါ"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"Satellite SOS မရနိုင်ပါ"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"Satellite SOS ကို ဤနိုင်ငံ (သို့) ဒေသတွင် မရနိုင်ပါ"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"Satellite SOS ကို စနစ်ထည့်သွင်းမထားပါ"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့ရန် Google Messages ကို သင်၏ မက်ဆေ့ဂျ်ပို့ရန် မူရင်းအက်ပ်အဖြစ် သတ်မှတ်ပါ"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့ရန် Messages ကို သင်၏ မက်ဆေ့ဂျ်ပို့ရန် မူရင်းအက်ပ်အဖြစ် သတ်မှတ်ပါ"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"Satellite SOS မရနိုင်ပါ"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"Satellite SOS ကို ဤနိုင်ငံ (သို့) ဒေသတွင် ရနိုင်ခြင်းရှိ၊ မရှိ စစ်ဆေးရန် တည်နေရာပြ ဆက်တင်များကို ဖွင့်ပါ"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့ခြင်း ရနိုင်သည်"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"မိုဘိုင်း (သို့) Wi-Fi ကွန်ရက် မရှိသည့်အခါ ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့နိုင်သည်။ Google Messages သည် သင်၏ မူရင်းမက်ဆေ့ဂျ်ပို့ရန်အက်ပ် ဖြစ်ရမည်။"</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"မိုဘိုင်း (သို့) Wi-Fi ကွန်ရက် မရှိသည့်အခါ ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့နိုင်သည်။ Messages သည် သင်၏ မူရင်းမက်ဆေ့ဂျ်ပို့ရန်အက်ပ် ဖြစ်ရမည်။"</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့ခြင်းကို ပံ့ပိုးမထားပါ"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့ခြင်းကို ဤစက်တွင် ပံ့ပိုးမထားပါ"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့ခြင်းကို စနစ်ထည့်သွင်းမထားပါ"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့ခြင်းကို မရနိုင်ပါ"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့ခြင်းကို ဤနိုင်ငံ (သို့) ဒေသတွင် မရနိုင်ပါ"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့ခြင်းကို စနစ်ထည့်သွင်းမထားပါ"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့ရန် Google Messages ကို သင်၏ မက်ဆေ့ဂျ်ပို့ရန် မူရင်းအက်ပ်အဖြစ် သတ်မှတ်ပါ"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့ရန် Messages ကို သင်၏ မက်ဆေ့ဂျ်ပို့ရန် မူရင်းအက်ပ်အဖြစ် သတ်မှတ်ပါ"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့ခြင်းကို မရနိုင်ပါ"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့ခြင်းကို ဤနိုင်ငံ (သို့) ဒေသတွင် ရနိုင်ခြင်းရှိ၊ မရှိ စစ်ဆေးရန် တည်နေရာပြ ဆက်တင်များကို ဖွင့်ပါ"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"‘လက်ဗွေသုံး လော့ခ်ဖွင့်ခြင်း’ ကို စနစ်ထပ်မံထည့်သွင်းပါ"</string>

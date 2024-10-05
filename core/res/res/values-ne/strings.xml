@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"स्काइप"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"स्काइप"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"तपाईँले तपाईँको अनलक प्याटर्न गलत तरिकाले <xliff:g id="NUMBER_0">%1$d</xliff:g> पटक खिच्नु भएको छ। \n\n <xliff:g id="NUMBER_1">%2$d</xliff:g> सेकेन्डमा फेरि कोसिस गर्नुहोस्।"</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"तपाईंले गलत तरिकाले आफ्नो पासवर्ड <xliff:g id="NUMBER_0">%1$d</xliff:g> पटक टाइप गर्नुभयो। \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> सेकेन्डमा फेरि प्रयास गर्नुहोस्।"</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"तपाईंले <xliff:g id="NUMBER_0">%1$d</xliff:g> पटक गलत PIN टाइप गर्नुभएको छ। \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> सेकेन्डमा फेरि प्रयास गर्नुहोस्।"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"तपाईँले तपाईँको अनलक प्याटर्न गलत तरिकाले <xliff:g id="NUMBER_0">%1$d</xliff:g> पटक खिच्नु भएको छ। पछि <xliff:g id="NUMBER_1">%2$d</xliff:g> थप असफल कोसिसहरू, तपाईँको Google साइन इन प्रयोग गरी तपाईँको ट्याब्लेट अनलक गर्न भनिने छ।\n\n  <xliff:g id="NUMBER_2">%3$d</xliff:g> सेकेन्डमा फरि प्रयास गर्नुहोस्।"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"तपाईंले आफ्नो अनलक शैली <xliff:g id="NUMBER_0">%1$d</xliff:g> पटक गलत तरिकाले कोर्नुभएको छ। थप <xliff:g id="NUMBER_1">%2$d</xliff:g> प्रयासहरू असफल भएपछि तपाईंलाई आफ्नो Google खाता मार्फत साइन इन गरेर आफ्नो Android टिभी डिभाइस अनलक गर्न अनुरोध गरिने छ।\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> सेकेन्डपछि फेरि प्रयास गर्नुहोस्।"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"तपाईँले <xliff:g id="NUMBER_0">%1$d</xliff:g> पटक गलत तरिकाले तपाईँको अनलक ढाँचालाई कोर्नु भएको छ। पछि <xliff:g id="NUMBER_1">%2$d</xliff:g> अरू धेरै असफल कोसिसहरूपछि, तपाईँलाई तपाईँको फोन Google साइन इन प्रयोग गरेर अनलक गर्नको लागि सोधिने छ। \n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> सेकेन्डमा पुनः प्रयास गर्नुहोस्।"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"तपाईँले तपाईँको अनलक प्याटर्न गलत तरिकाले <xliff:g id="NUMBER_0">%1$d</xliff:g> पटक खिच्नु भएको छ। पछि <xliff:g id="NUMBER_1">%2$d</xliff:g> थप असफल कोसिसहरू, तपाईँको साइन इन प्रयोग गरी तपाईँको ट्याब्लेट अनलक गर्न भनिने छ।\n\n  <xliff:g id="NUMBER_2">%3$d</xliff:g> सेकेन्डमा फरि प्रयास गर्नुहोस्।"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"तपाईंले आफ्नो अनलक शैली <xliff:g id="NUMBER_0">%1$d</xliff:g> पटक गलत तरिकाले कोर्नुभएको छ। थप <xliff:g id="NUMBER_1">%2$d</xliff:g> प्रयासहरू असफल भएपछि तपाईंलाई आफ्नो खाता मार्फत साइन इन गरेर आफ्नो Android टिभी डिभाइस अनलक गर्न अनुरोध गरिने छ।\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> सेकेन्डपछि फेरि प्रयास गर्नुहोस्।"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"तपाईँले <xliff:g id="NUMBER_0">%1$d</xliff:g> पटक गलत तरिकाले तपाईँको अनलक ढाँचालाई कोर्नु भएको छ। पछि <xliff:g id="NUMBER_1">%2$d</xliff:g> अरू धेरै असफल कोसिसहरूपछि, तपाईँलाई तपाईँको फोन साइन इन प्रयोग गरेर अनलक गर्नको लागि सोधिने छ। \n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> सेकेन्डमा पुनः प्रयास गर्नुहोस्।"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"तपाईँले <xliff:g id="NUMBER_0">%1$d</xliff:g> पटक ट्याब्लेटलाई अनलक गर्नको लागि गलत तरिकाले कोशिस गर्नुभएको छ। <xliff:g id="NUMBER_1">%2$d</xliff:g> अरू धेरै असफल कोसिसहरूपछि, ट्याब्लेट फ्याट्रि पूर्वनिर्धारितमा रिसेट हुने छ र सबै प्रयोगकर्ता डेटा हराउने छन्।"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"तपाईंले आफ्नो Android टिभी यन्त्र <xliff:g id="NUMBER_0">%1$d</xliff:g> पटक गलत तरिकाले अनलक गर्ने प्रयास गर्नुभएको छ। थप <xliff:g id="NUMBER_1">%2$d</xliff:g> प्रयासहरू असफल भएपछि तपाईंको Android टिभी यन्त्रलाई रिसेट गरेर डिफल्ट फ्याक्ट्री सेटिङ लागू गरिने छ र प्रयोगकर्ताको सम्पूर्ण डेटा गुम्ने छ।"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"तपाईंले गलत तरिकाले <xliff:g id="NUMBER_0">%1$d</xliff:g> पटक फोन अनलक गर्ने प्रयत्न गर्नुभयो। <xliff:g id="NUMBER_1">%2$d</xliff:g> बढी असफल प्रयत्नहरू पछि, फोन फ्याक्ट्रि पूर्वनिर्धारितमा रिसेट हुने छ र सबै प्रयोगकर्ता डेटा हराउने छन्।"</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"ढाँचा बिर्सनु भयो?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"खाता अनलक"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"निकै धेरै कोसिसहरू"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"अनलक गर्नको लागि, तपाईँको Google खातासँग साइन इन गर्नुहोस्।"</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"अनलक गर्नको लागि, तपाईँको खातासँग साइन इन गर्नुहोस्।"</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"प्रयोगकर्तानाम (इमेल)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"पासवर्ड"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"साइन इन गर्नुहोस्"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"अमान्य प्रयोगकर्तानाम वा पासवर्ड"</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"तपाईँको एक-पटके टेक्स्ट म्यासेज वा पासवर्ड बिर्सनुभयो?\n भ्रमण गर्नुहोस"<b>"google.com/accounts/recovery"</b></string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"तपाईँको एक-पटके टेक्स्ट म्यासेज वा पासवर्ड बिर्सनुभयो?\n भ्रमण गर्नुहोस"<b>"your account provider"</b></string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"जाँच गर्दै..."</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"खोल्नुहोस्"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"आवाज चालु छ।"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"PUK कोड पुन:प्रदान गर्नुहोस्। धेरै पुन:प्रयासहरूले SIMलाई स्थायी रूपमा निष्क्रिय गरिदिने छ।"</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN कोडहरू मेल खाएन"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"निकै धेरै ढाँचा कोसिसहरू"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"अनलक गर्नको लागि, तपाईँको Google खाताको साथ साइन इन गर्नुहोस्।"</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"अनलक गर्नको लागि, तपाईँको खाताको साथ साइन इन गर्नुहोस्।"</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"एक-पटके टेक्स्ट म्यासेज (इमेल)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"पासवर्ड"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"साइन इन गर्नुहोस्"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"अमान्य प्रयोगकर्तानाम वा पासवर्ड।"</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"के तपाईँले उपयोगकर्ता नाम वा पासवर्ड बिर्सनुभयो?\n"<b>"google.com/accounts/recovery"</b>" मा जानुहोस्।"</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"के तपाईँले उपयोगकर्ता नाम वा पासवर्ड बिर्सनुभयो?\n"<b>"your account provider"</b>" मा जानुहोस्।"</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"खाता जाँच हुँदै…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"तपाईंले <xliff:g id="NUMBER_0">%1$d</xliff:g> पटक गलत PIN टाइप गर्नुभएको छ। \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> सेकेन्डमा फेरि प्रयास गर्नुहोस्।"</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"तपाईँले तपाईँक पासवर्ड <xliff:g id="NUMBER_0">%1$d</xliff:g> पटक गलत टाइप गर्नुभएको छ। \n\n <xliff:g id="NUMBER_1">%2$d</xliff:g> सेकेन्डमा फेरि प्रयास गर्नुहोस्।"</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"पछाडि जानुहोस्"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"विचाराधीन..."</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"स्याटलाइट SOS अब उपलब्ध भएको छ"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"मोबाइल वा Wi-Fi नेटवर्क नभएका खण्डमा तपाईं आपत्‍कालीन सेवामा म्यासेज पठाउन सक्नुहुन्छ। Google Messages अनिवार्य रूपमा तपाईंको डिफल्ट म्यासेजिङ एप हुनु पर्छ।"</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"मोबाइल वा Wi-Fi नेटवर्क नभएका खण्डमा तपाईं आपत्‍कालीन सेवामा म्यासेज पठाउन सक्नुहुन्छ। Messages अनिवार्य रूपमा तपाईंको डिफल्ट म्यासेजिङ एप हुनु पर्छ।"</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"स्याटलाइट SOS प्रयोग गर्न मिल्दैन"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"यो डिभाइसमा स्याटलाइट SOS प्रयोग गर्न मिल्दैन"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"स्याटलाइट SOS सेटअप गरिएको छैन"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"स्याटलाइट SOS उपलब्ध छैन"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"यो देश वा क्षेत्रमा स्याटलाइट SOS उपलब्ध छैन"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"स्याटलाइट SOS सेटअप गरिएको छैन"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"स्याटलाइटमार्फत म्यासेज पठाउन Google Messages लाई डिफल्ट म्यासेजिङ एपका रूपमा सेट गर्नुहोस्"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"स्याटलाइटमार्फत म्यासेज पठाउन Messages लाई डिफल्ट म्यासेजिङ एपका रूपमा सेट गर्नुहोस्"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"स्याटलाइट SOS उपलब्ध छैन"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"यो देश वा क्षेत्रमा स्याटलाइट SOS उपलब्ध छ कि छैन भन्ने कुरा जाँच्न लोकेसन सेटिङ अन गर्नुहोस्"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"स्याटलाइटमार्फत म्यासेज पठाउने सुविधा उपलब्ध छ"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"तपाईं मोबाइल वा Wi-Fi नेटवर्क उपलब्ध नभएका खण्डमा स्याटलाइटमार्फत म्यासेज पठाउन सक्नुहुन्छ। Google Messages अनिवार्य रूपमा तपाईंको डिफल्ट म्यासेजिङ एप हुनु पर्छ।"</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"तपाईं मोबाइल वा Wi-Fi नेटवर्क उपलब्ध नभएका खण्डमा स्याटलाइटमार्फत म्यासेज पठाउन सक्नुहुन्छ। Messages अनिवार्य रूपमा तपाईंको डिफल्ट म्यासेजिङ एप हुनु पर्छ।"</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"स्याटलाइटमार्फत म्यासेज पठाउने सुविधा प्रयोग गर्न मिल्दैन"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"यो डिभाइसमा स्याटलाइटमार्फत म्यासेज पठाउने सुविधा प्रयोग गर्न मिल्दैन"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"स्याटलाइटमार्फत म्यासेज पठाउने सुविधा सेटअप गरिएको छैन"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"स्याटलाइटमार्फत म्यासेज पठाउने सुविधा उपलब्ध छैन"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"यो देश वा क्षेत्रमा स्याटलाइटमार्फत म्यासेज पठाउने सुविधा उपलब्ध छैन"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"स्याटलाइटमार्फत म्यासेज पठाउने सुविधा सेटअप गरिएको छैन"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"स्याटलाइटमार्फत म्यासेज पठाउन Google Messages लाई डिफल्ट म्यासेजिङ एपका रूपमा सेट गर्नुहोस्"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"स्याटलाइटमार्फत म्यासेज पठाउन Messages लाई डिफल्ट म्यासेजिङ एपका रूपमा सेट गर्नुहोस्"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"स्याटलाइटमार्फत म्यासेज पठाउने सुविधा उपलब्ध छैन"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"यो देश वा क्षेत्रमा स्याटलाइटमार्फत म्यासेज पठाउने सुविधा उपलब्ध छ कि छैन भन्ने कुरा जाँच्न लोकेसन सेटिङ अन गर्नुहोस्"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"फिंगरप्रिन्ट अनलक फेरि सेटअप गर्नुहोस्"</string>

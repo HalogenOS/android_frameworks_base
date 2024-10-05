@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"Desblokeatzeko eredua oker marraztu duzu <xliff:g id="NUMBER_0">%1$d</xliff:g> aldiz. \n\nSaiatu berriro <xliff:g id="NUMBER_1">%2$d</xliff:g> segundo barru."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"Pasahitza oker idatzi duzu <xliff:g id="NUMBER_0">%1$d</xliff:g> aldiz. \n\nSaiatu berriro <xliff:g id="NUMBER_1">%2$d</xliff:g> segundo barru."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"PINa oker idatzi duzu <xliff:g id="NUMBER_0">%1$d</xliff:g> aldiz. \n\nSaiatu berriro <xliff:g id="NUMBER_1">%2$d</xliff:g> segundo barru."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Desblokeatzeko eredua oker marraztu duzu <xliff:g id="NUMBER_0">%1$d</xliff:g> aldiz. Beste <xliff:g id="NUMBER_1">%2$d</xliff:g> aldiz idazten baduzu oker, tableta desblokeatzeko, Google-n saioa hasteko kredentzialak erabiltzea eskatuko dizugu.\n\n Saiatu berriro <xliff:g id="NUMBER_2">%3$d</xliff:g> segundo barru."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"<xliff:g id="NUMBER_0">%1$d</xliff:g> aldiz marraztu duzu oker desblokeatzeko eredua. Beste <xliff:g id="NUMBER_1">%2$d</xliff:g> aldiz marrazten baduzu oker, Android TV gailua desblokeatzeko, Google-n saioa hasteko kredentzialak erabiltzea eskatuko dizugu.\n\n Saiatu berriro <xliff:g id="NUMBER_2">%3$d</xliff:g> segundo barru."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Desblokeatzeko eredua oker marraztu duzu <xliff:g id="NUMBER_0">%1$d</xliff:g> aldiz. Beste <xliff:g id="NUMBER_1">%2$d</xliff:g> aldiz idazten baduzu oker, telefonoa desblokeatzeko, Google-n saioa hasteko kredentzialak erabiltzea eskatuko dizugu.\n\n Saiatu berriro <xliff:g id="NUMBER_2">%3$d</xliff:g> segundo barru."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Desblokeatzeko eredua oker marraztu duzu <xliff:g id="NUMBER_0">%1$d</xliff:g> aldiz. Beste <xliff:g id="NUMBER_1">%2$d</xliff:g> aldiz idazten baduzu oker, tableta desblokeatzeko, saioa hasteko kredentzialak erabiltzea eskatuko dizugu.\n\n Saiatu berriro <xliff:g id="NUMBER_2">%3$d</xliff:g> segundo barru."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"<xliff:g id="NUMBER_0">%1$d</xliff:g> aldiz marraztu duzu oker desblokeatzeko eredua. Beste <xliff:g id="NUMBER_1">%2$d</xliff:g> aldiz marrazten baduzu oker, Android TV gailua desblokeatzeko, saioa hasteko kredentzialak erabiltzea eskatuko dizugu.\n\n Saiatu berriro <xliff:g id="NUMBER_2">%3$d</xliff:g> segundo barru."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Desblokeatzeko eredua oker marraztu duzu <xliff:g id="NUMBER_0">%1$d</xliff:g> aldiz. Beste <xliff:g id="NUMBER_1">%2$d</xliff:g> aldiz idazten baduzu oker, telefonoa desblokeatzeko, saioa hasteko kredentzialak erabiltzea eskatuko dizugu.\n\n Saiatu berriro <xliff:g id="NUMBER_2">%3$d</xliff:g> segundo barru."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Tableta <xliff:g id="NUMBER_0">%1$d</xliff:g> aldiz desblokeatzen saiatu zara. Beste <xliff:g id="NUMBER_1">%2$d</xliff:g> aldiz huts egiten baduzu, fabrikako ezarpen lehenetsiak berrezarriko dira eta datu guztiak galduko dituzu."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"<xliff:g id="NUMBER_0">%1$d</xliff:g> aldiz saiatu zara Android TV gailua desblokeatzen, baina huts egin duzu. Beste <xliff:g id="NUMBER_1">%2$d</xliff:g> aldiz huts egiten baduzu, jatorrizko balio lehenetsiak berrezarriko dira Android TV gailuan, eta datu guztiak galduko dituzu."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Telefonoa <xliff:g id="NUMBER_0">%1$d</xliff:g> aldiz desblokeatzen saiatu zara. Beste <xliff:g id="NUMBER_1">%2$d</xliff:g> aldiz huts egiten baduzu, fabrikako ezarpen lehenetsiak berrezarriko dira eta datu guztiak galduko dituzu."</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Eredua ahaztu zaizu?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Kontua desblokeatzea"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Eredua marrazteko saiakera gehiegi egin dira"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Desblokeatzeko, hasi saioa Google-ko kontuarekin."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Desblokeatzeko, hasi saioa kontuarekin."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Erabiltzaile-izena (helbide elektronikoa)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Pasahitza"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Hasi saioa"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"Erabiltzaile-izen edo pasahitz baliogabea."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Erabiltzaile-izena edo pasahitza ahaztu zaizu?\nJoan "<b>"google.com/accounts/recovery"</b>" helbidera."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Erabiltzaile-izena edo pasahitza ahaztu zaizu?\nJoan "<b>"your account provider"</b>" helbidera."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"Egiaztatzen…"</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"Desblokeatu"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"Soinua aktibatuta"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Idatzi berriro PUK kode zuzena. Hainbat saiakera oker eginez gero, betiko desgaituko da SIMa."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN kodeak ez datoz bat"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Eredua marrazteko saiakera gehiegi egin dira"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Desblokeatzeko, hasi saioa Google-ko kontuarekin."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Desblokeatzeko, hasi saioa kontuarekin."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Erabiltzaile-izena (helbide elektronikoa)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Pasahitza"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Hasi saioa"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"Erabiltzaile-izen edo pasahitz baliogabea."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Erabiltzaile-izena edo pasahitza ahaztu zaizu?\nJoan "<b>"google.com/accounts/recovery"</b>" helbidera."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Erabiltzaile-izena edo pasahitza ahaztu zaizu?\nJoan "<b>"your account provider"</b>" helbidera."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"Kontua egiaztatzen…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"PINa oker idatzi duzu <xliff:g id="NUMBER_0">%1$d</xliff:g> aldiz. \n\nSaiatu berriro <xliff:g id="NUMBER_1">%2$d</xliff:g> segundo barru."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"Pasahitza oker idatzi duzu <xliff:g id="NUMBER_0">%1$d</xliff:g> aldiz. \n\nSaiatu berriro <xliff:g id="NUMBER_1">%2$d</xliff:g> segundo barru."</string>
@@ -2098,7 +2098,7 @@
     <string name="app_streaming_blocked_title_for_camera_dialog" msgid="3935701653713853065">"Kamera ez dago erabilgarri"</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog" msgid="3516853717714141951">"Jarraitu telefonoan"</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog" msgid="544822455127171206">"Mikrofonoa ez dago erabilgarri"</string>
-    <string name="app_streaming_blocked_title_for_playstore_dialog" msgid="8149823099822897538">"Google Play Store ez dago erabilgarri"</string>
+    <string name="app_streaming_blocked_title_for_playstore_dialog" msgid="8149823099822897538">"login Play Store ez dago erabilgarri"</string>
     <string name="app_streaming_blocked_title_for_settings_dialog" product="tv" msgid="196994247017450357">"Android TV-ren ezarpenak ez daude erabilgarri"</string>
     <string name="app_streaming_blocked_title_for_settings_dialog" product="tablet" msgid="8222710146267948647">"Tabletaren ezarpenak ez daude erabilgarri"</string>
     <string name="app_streaming_blocked_title_for_settings_dialog" product="default" msgid="6895719984375299791">"Telefonoaren ezarpenak ez daude erabilgarri"</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"Egin atzera"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"Zain…"</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"Satelite bidezko SOS komunikazioa erabilgarri dago orain"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Larrialdi-zerbitzuekin mezuak trukatu ahal izango dituzu sare mugikorrik edo wifi-sarerik ez badago. Google-ren Mezuak aplikazioak izan behar du mezularitza-aplikazio lehenetsia."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Larrialdi-zerbitzuekin mezuak trukatu ahal izango dituzu sare mugikorrik edo wifi-sarerik ez badago. Mezuak aplikazioak izan behar du mezularitza-aplikazio lehenetsia."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"Satelite bidezko SOS komunikazioa ez da bateragarria"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"Satelite bidezko SOS komunikazioa ez da bateragarria gailu honekin"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"Satelite bidezko SOS komunikazioa ez dago konfiguratuta"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"Satelite bidezko SOS komunikazioa ez dago erabilgarri"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"Satelite bidezko SOS komunikazioa ez dago erabilgarri herrialde edo lurralde honetan"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"Satelite bidezko SOS komunikazioa ez dago konfiguratuta"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Satelite bidez mezuak trukatzeko, ezarri Google-ren Mezuak mezularitza-aplikazio lehenetsi gisa"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Satelite bidez mezuak trukatzeko, ezarri Mezuak mezularitza-aplikazio lehenetsi gisa"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"Satelite bidezko SOS komunikazioa ez dago erabilgarri"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"Herrialde edo lurralde honetan satelite bidezko SOS komunikazioa erabilgarri dagoen egiaztatzeko, aktibatu kokapen-ezarpenak"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"Satelite bidezko mezularitza erabilgarri dago"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Satelite bidez trukatu ahal izango dituzu mezuak sare mugikorrik edo wifi-sarerik ez badago. Google-ren Mezuak aplikazioak izan behar du mezularitza-aplikazio lehenetsia."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Satelite bidez trukatu ahal izango dituzu mezuak sare mugikorrik edo wifi-sarerik ez badago. Mezuak aplikazioak izan behar du mezularitza-aplikazio lehenetsia."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"Satelite bidezko mezularitza ez da bateragarria"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"Satelite bidezko mezularitza ez da bateragarria gailu honekin"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"Satelite bidezko mezularitza ez dago konfiguratuta"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"Satelite bidezko mezularitza ez dago erabilgarri"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"Satelite bidezko mezularitza ez dago erabilgarri herrialde edo lurralde honetan"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"Satelite bidezko mezularitza ez dago konfiguratuta"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Satelite bidez mezuak trukatzeko, ezarri Google-ren Mezuak mezularitza-aplikazio lehenetsi gisa"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Satelite bidez mezuak trukatzeko, ezarri Mezuak mezularitza-aplikazio lehenetsi gisa"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"Satelite bidezko mezularitza ez dago erabilgarri"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"Herrialde edo lurralde honetan satelite bidezko mezularitza erabilgarri dagoen egiaztatzeko, aktibatu kokapen-ezarpenak"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"Konfiguratu berriro hatz-marka bidez desblokeatzeko eginbidea"</string>

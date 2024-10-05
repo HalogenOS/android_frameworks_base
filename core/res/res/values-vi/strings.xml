@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"Bạn đã <xliff:g id="NUMBER_0">%1$d</xliff:g> lần vẽ không chính xác hình mở khóa. \n\nVui lòng thử lại sau <xliff:g id="NUMBER_1">%2$d</xliff:g> giây."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"Bạn đã <xliff:g id="NUMBER_0">%1$d</xliff:g> lần nhập sai mật khẩu. \n\nHãy thử lại sau <xliff:g id="NUMBER_1">%2$d</xliff:g> giây."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"Bạn đã nhập sai mã PIN <xliff:g id="NUMBER_0">%1$d</xliff:g> lần. \n\nHãy thử lại sau <xliff:g id="NUMBER_1">%2$d</xliff:g> giây."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Bạn đã <xliff:g id="NUMBER_0">%1$d</xliff:g> lần vẽ không chính xác hình mở khóa của mình. Sau <xliff:g id="NUMBER_1">%2$d</xliff:g> lần thử không thành công nữa, bạn sẽ được yêu cầu mở khóa máy tính bảng bằng thông tin đăng nhập Google của mình.\n\n Vui lòng thử lại sau <xliff:g id="NUMBER_2">%3$d</xliff:g> giây."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Bạn đã vẽ hình mở khóa sai <xliff:g id="NUMBER_0">%1$d</xliff:g> lần. Sau <xliff:g id="NUMBER_1">%2$d</xliff:g> lần thử không thành công nữa, bạn sẽ được yêu cầu mở khóa thiết bị Android TV bằng thông tin đăng nhập Google của mình.\n\n Hãy thử lại sau <xliff:g id="NUMBER_2">%3$d</xliff:g> giây."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Bạn đã <xliff:g id="NUMBER_0">%1$d</xliff:g> lần vẽ không chính xác hình mở khóa. Sau <xliff:g id="NUMBER_1">%2$d</xliff:g> lần thử không thành công nữa, bạn sẽ được yêu cầu mở khóa điện thoại bằng thông tin đăng nhập Google của bạn.\n\n Vui lòng thử lại sau <xliff:g id="NUMBER_2">%3$d</xliff:g> giây."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Bạn đã <xliff:g id="NUMBER_0">%1$d</xliff:g> lần vẽ không chính xác hình mở khóa của mình. Sau <xliff:g id="NUMBER_1">%2$d</xliff:g> lần thử không thành công nữa, bạn sẽ được yêu cầu mở khóa máy tính bảng bằng thông tin đăng nhập của mình.\n\n Vui lòng thử lại sau <xliff:g id="NUMBER_2">%3$d</xliff:g> giây."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Bạn đã vẽ hình mở khóa sai <xliff:g id="NUMBER_0">%1$d</xliff:g> lần. Sau <xliff:g id="NUMBER_1">%2$d</xliff:g> lần thử không thành công nữa, bạn sẽ được yêu cầu mở khóa thiết bị Android TV bằng thông tin đăng nhập của mình.\n\n Hãy thử lại sau <xliff:g id="NUMBER_2">%3$d</xliff:g> giây."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Bạn đã <xliff:g id="NUMBER_0">%1$d</xliff:g> lần vẽ không chính xác hình mở khóa. Sau <xliff:g id="NUMBER_1">%2$d</xliff:g> lần thử không thành công nữa, bạn sẽ được yêu cầu mở khóa điện thoại bằng thông tin đăng nhập của bạn.\n\n Vui lòng thử lại sau <xliff:g id="NUMBER_2">%3$d</xliff:g> giây."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Bạn đã mở khóa máy tính bảng không đúng cách <xliff:g id="NUMBER_0">%1$d</xliff:g> lần. Sau <xliff:g id="NUMBER_1">%2$d</xliff:g> lần mở khóa không thành công nữa, máy tính bảng sẽ được đặt lại về mặc định ban đầu và tất cả dữ liệu người dùng sẽ bị mất."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Bạn đã mở khóa thiết bị Android TV sai <xliff:g id="NUMBER_0">%1$d</xliff:g> lần. Sau <xliff:g id="NUMBER_1">%2$d</xliff:g> lần mở khóa không thành công nữa, thiết bị Android TV sẽ được đặt lại về chế độ mặc định ban đầu và tất cả dữ liệu của người dùng sẽ bị mất."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Bạn đã mở khóa điện thoại không đúng cách <xliff:g id="NUMBER_0">%1$d</xliff:g> lần. Sau <xliff:g id="NUMBER_1">%2$d</xliff:g> lần mở khóa không thành công nữa, điện thoại sẽ được đặt lại về mặc định ban đầu và tất cả dữ liệu người dùng sẽ bị mất."</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Đã quên hình?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Mở khóa tài khoản"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Quá nhiều lần nhập hình"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Để mở khóa, hãy đăng nhập bằng tài khoản Google của bạn."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Để mở khóa, hãy đăng nhập bằng tài khoản của bạn."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Tên người dùng (email)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Mật khẩu"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Đăng nhập"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"Tên người dùng hoặc mật khẩu không hợp lệ."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Bạn quên tên người dùng hoặc mật khẩu?\nHãy truy cập "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Bạn quên tên người dùng hoặc mật khẩu?\nHãy truy cập "<b>"your account provider"</b>"."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"Đang kiểm tra…"</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"Mở khóa"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"Bật âm thanh"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Hãy nhập lại mã PUK chính xác. Nhiều lần lặp lại sẽ vô hiệu hóa vĩnh viễn thẻ SIM."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"Mã PIN không khớp"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Quá nhiều lần nhập hình"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Để mở khóa, hãy đăng nhập bằng tài khoản Google của bạn."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Để mở khóa, hãy đăng nhập bằng tài khoản của bạn."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Tên người dùng (email)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Mật khẩu"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Đăng nhập"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"Tên người dùng hoặc mật khẩu không hợp lệ."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Bạn quên tên người dùng hoặc mật khẩu?\nHãy truy cập "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Bạn quên tên người dùng hoặc mật khẩu?\nHãy truy cập "<b>"your account provider"</b>"."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"Đang kiểm tra tài khoản…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"Bạn đã <xliff:g id="NUMBER_0">%1$d</xliff:g> lần nhập sai mã PIN. \n\nHãy thử lại sau <xliff:g id="NUMBER_1">%2$d</xliff:g> giây."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"Bạn đã <xliff:g id="NUMBER_0">%1$d</xliff:g> lần nhập sai mật khẩu. \n\nHãy thử lại sau <xliff:g id="NUMBER_1">%2$d</xliff:g> giây."</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"Quay lại"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"Đang chờ xử lý..."</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"Tính năng Liên lạc khẩn cấp qua vệ tinh đang hoạt động"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Bạn có thể nhắn tin cho dịch vụ khẩn cấp khi không có mạng di động hay mạng Wi-Fi. Google Tin nhắn phải là ứng dụng nhắn tin mặc định của bạn."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Bạn có thể nhắn tin cho dịch vụ khẩn cấp khi không có mạng di động hay mạng Wi-Fi. login Tin nhắn phải là ứng dụng nhắn tin mặc định của bạn."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"Chưa hỗ trợ tính năng Liên lạc khẩn cấp qua vệ tinh"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"Thiết bị này chưa hỗ trợ tính năng Liên lạc khẩn cấp qua vệ tinh"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"Chưa thiết lập tính năng Liên lạc khẩn cấp qua vệ tinh"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"Tính năng Liên lạc khẩn cấp qua vệ tinh chưa hoạt động"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"Tính năng Liên lạc khẩn cấp qua vệ tinh chưa hoạt động ở quốc gia hoặc khu vực này"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"Chưa thiết lập tính năng Liên lạc khẩn cấp qua vệ tinh"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Để nhắn tin qua vệ tinh, hãy đặt Google Tin nhắn làm ứng dụng nhắn tin mặc định của bạn"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Để nhắn tin qua vệ tinh, hãy đặt login Tin nhắn làm ứng dụng nhắn tin mặc định của bạn"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"Tính năng Liên lạc khẩn cấp qua vệ tinh chưa hoạt động"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"Để kiểm tra xem tính năng Liên lạc khẩn cấp qua vệ tinh có hoạt động ở quốc gia hoặc khu vực này không, hãy bật chế độ cài đặt vị trí"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"Tính năng nhắn tin qua vệ tinh đang hoạt động"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Bạn có thể nhắn tin qua vệ tinh khi không có mạng di động hay mạng Wi-Fi. Google Tin nhắn phải là ứng dụng nhắn tin mặc định của bạn."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Bạn có thể nhắn tin qua vệ tinh khi không có mạng di động hay mạng Wi-Fi. login Tin nhắn phải là ứng dụng nhắn tin mặc định của bạn."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"Chưa hỗ trợ tính năng nhắn tin qua vệ tinh"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"Thiết bị này chưa hỗ trợ tính năng nhắn tin qua vệ tinh"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"Chưa thiết lập tính năng nhắn tin qua vệ tinh"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"Tính năng nhắn tin qua vệ tinh chưa hoạt động"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"Tính năng nhắn tin qua vệ tinh chưa hoạt động ở quốc gia hoặc khu vực này"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"Chưa thiết lập tính năng nhắn tin qua vệ tinh"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Để nhắn tin qua vệ tinh, hãy đặt Google Tin nhắn làm ứng dụng nhắn tin mặc định của bạn"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Để nhắn tin qua vệ tinh, hãy đặt login Tin nhắn làm ứng dụng nhắn tin mặc định của bạn"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"Tính năng nhắn tin qua vệ tinh chưa hoạt động"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"Để kiểm tra xem tính năng nhắn tin qua vệ tinh có hoạt động ở quốc gia hoặc khu vực này không, hãy bật chế độ cài đặt vị trí"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"Thiết lập lại tính năng Mở khoá bằng vân tay"</string>

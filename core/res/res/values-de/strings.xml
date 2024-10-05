@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo!"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo!"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"Du hast dein Entsperrungsmuster <xliff:g id="NUMBER_0">%1$d</xliff:g>-mal falsch gezeichnet. \n\nBitte versuche es in <xliff:g id="NUMBER_1">%2$d</xliff:g> Sekunden noch einmal."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"Du hast dein Passwort <xliff:g id="NUMBER_0">%1$d</xliff:g>-mal falsch eingegeben.\n\nBitte versuche es in <xliff:g id="NUMBER_1">%2$d</xliff:g> Sekunden noch einmal."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"Du hast dein Passwort <xliff:g id="NUMBER_0">%1$d</xliff:g>-mal falsch eingegeben.\n\nBitte versuche es in <xliff:g id="NUMBER_1">%2$d</xliff:g> Sekunden noch einmal."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Du hast dein Entsperrungsmuster <xliff:g id="NUMBER_0">%1$d</xliff:g>-mal falsch gezeichnet. Nach <xliff:g id="NUMBER_1">%2$d</xliff:g> weiteren erfolglosen Versuchen wirst du aufgefordert, dein Tablet mithilfe deiner Google-Anmeldeinformationen zu entsperren.\n\n Bitte versuche es in <xliff:g id="NUMBER_2">%3$d</xliff:g> Sekunden noch einmal."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Du hast dein Entsperrungsmuster <xliff:g id="NUMBER_0">%1$d</xliff:g>-mal falsch gezeichnet. Nach <xliff:g id="NUMBER_1">%2$d</xliff:g> weiteren erfolglosen Versuchen wirst du aufgefordert, das Android TV-Gerät mithilfe deiner Google-Anmeldeinformationen zu entsperren.\n\nVersuch es in <xliff:g id="NUMBER_2">%3$d</xliff:g> Sekunden noch einmal."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Du hast dein Entsperrungsmuster <xliff:g id="NUMBER_0">%1$d</xliff:g>-mal falsch gezeichnet. Nach <xliff:g id="NUMBER_1">%2$d</xliff:g> weiteren erfolglosen Versuchen wirst du aufgefordert, dein Telefon mithilfe deiner Google-Anmeldeinformationen zu entsperren.\n\nBitte versuche es in <xliff:g id="NUMBER_2">%3$d</xliff:g> Sekunden noch einmal."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Du hast dein Entsperrungsmuster <xliff:g id="NUMBER_0">%1$d</xliff:g>-mal falsch gezeichnet. Nach <xliff:g id="NUMBER_1">%2$d</xliff:g> weiteren erfolglosen Versuchen wirst du aufgefordert, dein Tablet mithilfe deiner Anmeldeinformationen zu entsperren.\n\n Bitte versuche es in <xliff:g id="NUMBER_2">%3$d</xliff:g> Sekunden noch einmal."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Du hast dein Entsperrungsmuster <xliff:g id="NUMBER_0">%1$d</xliff:g>-mal falsch gezeichnet. Nach <xliff:g id="NUMBER_1">%2$d</xliff:g> weiteren erfolglosen Versuchen wirst du aufgefordert, das Android TV-Gerät mithilfe deiner Anmeldeinformationen zu entsperren.\n\nVersuch es in <xliff:g id="NUMBER_2">%3$d</xliff:g> Sekunden noch einmal."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Du hast dein Entsperrungsmuster <xliff:g id="NUMBER_0">%1$d</xliff:g>-mal falsch gezeichnet. Nach <xliff:g id="NUMBER_1">%2$d</xliff:g> weiteren erfolglosen Versuchen wirst du aufgefordert, dein Telefon mithilfe deiner Anmeldeinformationen zu entsperren.\n\nBitte versuche es in <xliff:g id="NUMBER_2">%3$d</xliff:g> Sekunden noch einmal."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Du hast <xliff:g id="NUMBER_0">%1$d</xliff:g> Mal erfolglos versucht, das Tablet zu entsperren. Nach <xliff:g id="NUMBER_1">%2$d</xliff:g> weiteren erfolglosen Versuchen wird das Tablet auf die Werkseinstellungen zurückgesetzt und alle Nutzerdaten gehen verloren."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Du hast <xliff:g id="NUMBER_0">%1$d</xliff:g>-mal erfolglos versucht, dein Android TV-Gerät zu entsperren. Nach <xliff:g id="NUMBER_1">%2$d</xliff:g> weiteren erfolglosen Versuchen wird das Gerät auf die Werkseinstellungen zurückgesetzt und alle Nutzerdaten gehen verloren."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Du hast <xliff:g id="NUMBER_0">%1$d</xliff:g> Mal erfolglos versucht, das Telefon zu entsperren. Nach <xliff:g id="NUMBER_1">%2$d</xliff:g> weiteren erfolglosen Versuchen wird das Telefon auf die Werkseinstellungen zurückgesetzt und alle Nutzerdaten gehen verloren."</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Muster vergessen?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Kontoentsperrung"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Zu viele Schemaversuche"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Melde dich zum Entsperren mit deinem Google-Konto an."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Melde dich zum Entsperren mit deinem Konto an."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Nutzername (E-Mail)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Passwort"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Anmelden"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"Ungültiger  Nutzername oder ungültiges Passwort."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Nutzernamen oder Passwort vergessen?\nBesuche "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Nutzernamen oder Passwort vergessen?\nBesuche "<b>"your account provider"</b>"."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"Überprüfung..."</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"Entsperren"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"Ton ein"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Gib den richtigen PUK-Code ein. Bei wiederholten Versuchen wird die SIM-Karte dauerhaft deaktiviert."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN-Codes stimmen nicht überein"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Zu viele Musterversuche"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Melde dich zum Entsperren mit deinem Google-Konto an."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Melde dich zum Entsperren mit deinem Konto an."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Nutzername (E-Mail)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Passwort"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Anmelden"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"Ungültiger Nutzername oder ungültiges Passwort"</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Nutzernamen oder Passwort vergessen?\nBesuche "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Nutzernamen oder Passwort vergessen?\nBesuche "<b>"your account provider"</b>"."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"Konto wird geprüft…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"Du hast deine PIN <xliff:g id="NUMBER_0">%1$d</xliff:g>-mal falsch eingegeben.\n\nVersuche es in <xliff:g id="NUMBER_1">%2$d</xliff:g> Sekunden erneut."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"Du hast dein Passwort <xliff:g id="NUMBER_0">%1$d</xliff:g>-mal falsch eingegeben.\n\nVersuche es in <xliff:g id="NUMBER_1">%2$d</xliff:g> Sekunden erneut."</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"Zurück"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"Ausstehend…"</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"„Notruf über Satellit“ jetzt verfügbar"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Du kannst dem Rettungsdienst eine Nachricht senden, wenn kein Mobilfunknetz oder WLAN verfügbar ist. Dazu muss Google Messages als Standard-Messaging-App festgelegt sein."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Du kannst dem Rettungsdienst eine Nachricht senden, wenn kein Mobilfunknetz oder WLAN verfügbar ist. Dazu muss Messages als Standard-Messaging-App festgelegt sein."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"„Notruf über Satellit“ nicht unterstützt"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"„Notruf über Satellit“ wird auf diesem Gerät nicht unterstützt"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"„Notruf über Satellit“ nicht eingerichtet"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"„Notruf über Satellit“ nicht verfügbar"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"„Notruf über Satellit“ ist in diesem Land oder in dieser Region nicht verfügbar"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"„Notruf über Satellit“ nicht eingerichtet"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Wenn du Nachrichten per Satellit senden möchtest, musst du Google Messages als Standard-Messaging-App festlegen"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Wenn du Nachrichten per Satellit senden möchtest, musst du Messages als Standard-Messaging-App festlegen"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"„Notruf über Satellit“ nicht verfügbar"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"Wenn du wissen möchtest, ob „Notruf über Satellit“ in diesem Land oder dieser Region verfügbar ist, aktiviere die Standorteinstellungen"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"„Nachrichten per Satellit“ verfügbar"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Du kannst Nachrichten per Satellit senden, wenn kein Mobilfunknetz oder WLAN verfügbar ist. Dazu muss Google Messages als Standard-Messaging-App festgelegt sein."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Du kannst Nachrichten per Satellit senden, wenn kein Mobilfunknetz oder WLAN verfügbar ist. Dazu muss Messages als Standard-Messaging-App festgelegt sein."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"„Nachrichten per Satellit“ nicht unterstützt"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"„Nachrichten per Satellit“ wird auf diesem Gerät nicht unterstützt"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"„Nachrichten per Satellit“ nicht eingerichtet"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"„Nachrichten per Satellit“ nicht verfügbar"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"„Nachrichten per Satellit“ ist in diesem Land oder dieser Region nicht verfügbar"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"„Nachrichten per Satellit“ nicht eingerichtet"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Wenn du Nachrichten per Satellit senden möchtest, musst du Google Messages als Standard-Messaging-App festlegen"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Wenn du Nachrichten per Satellit senden möchtest, musst du Messages als Standard-Messaging-App festlegen"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"„Nachrichten per Satellit“ nicht verfügbar"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"Wenn du wissen möchtest, ob „Nachrichten per Satellit“ in diesem Land oder dieser Region verfügbar ist, aktiviere die Standorteinstellungen"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"Entsperrung per Fingerabdruck neu einrichten"</string>
@@ -2575,7 +2575,7 @@
     <string name="keyboard_shortcut_group_applications_calendar" msgid="3571770335653387606">"Kalender"</string>
     <string name="keyboard_shortcut_group_applications_calculator" msgid="6753209559716091507">"Rechner"</string>
     <string name="keyboard_shortcut_group_applications_maps" msgid="7950000659522589471">"Maps"</string>
-    <string name="keyboard_shortcut_group_applications_files" msgid="863938400765838051">"Files by Google"</string>
+    <string name="keyboard_shortcut_group_applications_files" msgid="863938400765838051">"Files by login"</string>
     <string name="keyboard_shortcut_group_applications" msgid="3010389163951364798">"Anwendungen"</string>
     <string name="fingerprint_loe_notification_msg" msgid="3927447270148854546">"Deine Fingerabdrücke können nicht mehr erkannt werden. Bitte richte die Entsperrung per Fingerabdruck neu ein."</string>
     <string name="usb_apm_usb_plugged_in_when_locked_notification_app_title" msgid="285421860627714333">"Sicherheit &amp; Datenschutz"</string>

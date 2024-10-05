@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"ທ່ານແຕ້ມຮູບແບບປົດລັອກບໍ່ຖືກ <xliff:g id="NUMBER_0">%1$d</xliff:g> ເທື່ອແລ້ວ. \n\nລອງໃໝ່ໃນອີກ <xliff:g id="NUMBER_1">%2$d</xliff:g> ວິນາທີ."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"ທ່ານພິມລະຫັດຜ່ານຜິດ <xliff:g id="NUMBER_0">%1$d</xliff:g> ເທື່ອແລ້ວ. \n\nໃຫ້ລອງໃໝ່ອີກຄັ້ງໃນອີກ <xliff:g id="NUMBER_1">%2$d</xliff:g> ວິນາທີ."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"ທ່ານພິມລະຫັດ PIN ຂອງທ່ານຜິດ <xliff:g id="NUMBER_0">%1$d</xliff:g> ເທື່ອແລ້ວ. \n\nລອງໃໝ່ໃນອີກ <xliff:g id="NUMBER_1">%2$d</xliff:g> ວິນາທີ."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"ທ່ານແຕ້ມຮູບແບບປົດລັອກຂອງທ່ານຜິດ <xliff:g id="NUMBER_0">%1$d</xliff:g> ເທື່ອແລ້ວ. ຫຼັງຈາກຄວາມພະຍາຍາມອີກ <xliff:g id="NUMBER_1">%2$d</xliff:g> ເທື່ອ ທ່ານຈະຖືກຖາມໃຫ້ປົດລັອກແທັບເລັດຂອງທ່ານ ດ້ວຍການເຂົ້າສູ່ລະບົບຂອງ Google.\n\n ລອງໃໝ່ອີກຄັ້ງໃນ <xliff:g id="NUMBER_2">%3$d</xliff:g> ວິນາທີ."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"ທ່ານແຕ້ມຮູບແບບປົດລັອກຂອງທ່ານຜິດ <xliff:g id="NUMBER_0">%1$d</xliff:g> ເທື່ອແລ້ວ. ຫຼັງຈາກພະຍາຍາມບໍ່ສຳເລັດອີກ <xliff:g id="NUMBER_1">%2$d</xliff:g> ເທື່ອ, ທ່ານຈະຖືກຖາມໃຫ້ປົດລັອກອຸປະກອນ Android TV ຂອງທ່ານດ້ວຍການເຂົ້າສູ່ລະບົບຂອງ Google.\n\n ກະລຸນາລອງໃໝ່ໃນອີກ <xliff:g id="NUMBER_2">%3$d</xliff:g> ວິນາທີ."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"ທ່ານແຕ້ມຮູບແບບປົດລັອກຜິດ <xliff:g id="NUMBER_0">%1$d</xliff:g> ເທື່ອແລ້ວ. ຫຼັງຈາກແຕ້ມຜິດອີກ <xliff:g id="NUMBER_1">%2$d</xliff:g> ເທື່ອ, ທ່ານຈະຖືກຖາມໃຫ້ປົດລັອກໂທລະສັບຂອງທ່ານ ດ້ວຍການເຂົ້າສູ່ລະບົບ Google.\n\n ລອງໃໝ່ໃນອີກ <xliff:g id="NUMBER_2">%3$d</xliff:g> ວິນາທີ."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"ທ່ານແຕ້ມຮູບແບບປົດລັອກຂອງທ່ານຜິດ <xliff:g id="NUMBER_0">%1$d</xliff:g> ເທື່ອແລ້ວ. ຫຼັງຈາກຄວາມພະຍາຍາມອີກ <xliff:g id="NUMBER_1">%2$d</xliff:g> ເທື່ອ ທ່ານຈະຖືກຖາມໃຫ້ປົດລັອກແທັບເລັດຂອງທ່ານ ດ້ວຍການເຂົ້າສູ່ລະບົບຂອງ login.\n\n ລອງໃໝ່ອີກຄັ້ງໃນ <xliff:g id="NUMBER_2">%3$d</xliff:g> ວິນາທີ."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"ທ່ານແຕ້ມຮູບແບບປົດລັອກຂອງທ່ານຜິດ <xliff:g id="NUMBER_0">%1$d</xliff:g> ເທື່ອແລ້ວ. ຫຼັງຈາກພະຍາຍາມບໍ່ສຳເລັດອີກ <xliff:g id="NUMBER_1">%2$d</xliff:g> ເທື່ອ, ທ່ານຈະຖືກຖາມໃຫ້ປົດລັອກອຸປະກອນ Android TV ຂອງທ່ານດ້ວຍການເຂົ້າສູ່ລະບົບຂອງ login.\n\n ກະລຸນາລອງໃໝ່ໃນອີກ <xliff:g id="NUMBER_2">%3$d</xliff:g> ວິນາທີ."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"ທ່ານແຕ້ມຮູບແບບປົດລັອກຜິດ <xliff:g id="NUMBER_0">%1$d</xliff:g> ເທື່ອແລ້ວ. ຫຼັງຈາກແຕ້ມຜິດອີກ <xliff:g id="NUMBER_1">%2$d</xliff:g> ເທື່ອ, ທ່ານຈະຖືກຖາມໃຫ້ປົດລັອກໂທລະສັບຂອງທ່ານ ດ້ວຍການເຂົ້າສູ່ລະບົບ login.\n\n ລອງໃໝ່ໃນອີກ <xliff:g id="NUMBER_2">%3$d</xliff:g> ວິນາທີ."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"ທ່ານພະຍາຍາມປັດລັອກແທັບເລັດຜິດ <xliff:g id="NUMBER_0">%1$d</xliff:g> ເທື່ອແລ້ວ. ຫຼັງຈາກຜິດອີກ <xliff:g id="NUMBER_1">%2$d</xliff:g> ເທື່ອ, ແທັບເລັດຈະຖືກຣີເຊັດໃຫ້ເປັນແບບທີ່ມາຈາກໂຮງງານ ແລະຂໍ້ມູນທັງໝົດຈະຖືກຫາຍໄປ."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"ທ່ານພະຍາຍາມປົດລັອກອຸປະກອນ Android TV ຂອງທ່ານຜິດ <xliff:g id="NUMBER_0">%1$d</xliff:g> ເທື່ອ. ຫຼັງຈາກພະຍາຍາມບໍ່ສຳເລັດ <xliff:g id="NUMBER_1">%2$d</xliff:g> ເທື່ອ, ອຸປະກອນ Android TV ຂອງທ່ານຈະຖືກຣີເຊັດເປັນຄ່າເລີ່ມຕົ້ນໂຮງງານ ແລະ ຂໍ້ມູນນຜູ້ໃຊ້ທັງໝົດຈະສູນຫາຍໄປ."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"ທ່ານໄດ້ພະຍາຍາມປົດລັອກໂທລະສັບເປັນຈຳນວນ <xliff:g id="NUMBER_0">%1$d</xliff:g> ເທື່ອແລ້ວ. ຫຼັງຈາກການພະຍາຍາມອີກ <xliff:g id="NUMBER_1">%2$d</xliff:g> ເທື່ອແລ້ວບໍ່ສຳເລັດຜົນ, ໂທລະສັບຈະຖືກຕັ້ງຄ່າໃຫ້ເປັນຄ່າຈາກໂຮງງານ ແລະຂໍ້ມູນທັງໝົດຈະສູນຫາຍໄປ."</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"ລືມຮູບແບບປົດລັອກ?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"ປົດລັອກບັນຊີ"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"ພະຍາຍາມໃຊ້ຮູບແບບປົດລັອກຜິດຫຼາຍເທື່ອເກີນໄປ"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"ເພື່ອປົດລັອກ, ໃຫ້ເຂົ້າສູ່ລະບົບດ້ວຍບັນຊີ Google ຂອງທ່ານ."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"ເພື່ອປົດລັອກ, ໃຫ້ເຂົ້າສູ່ລະບົບດ້ວຍບັນຊີ ຂອງທ່ານ."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"ຊື່ຜູ່ໃຊ້ (ອີເມວ)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"ລະຫັດຜ່ານ"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"ເຂົ້າສູ່ລະບົບ"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"ຊື່ຜູ່ໃຊ້ ຫຼືລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ"</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"ລືມຊື່ຜູ່ໃຊ້ ຫຼືລະຫັດຜ່ານຂອງທ່ານບໍ?\nໄປທີ່ "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"ລືມຊື່ຜູ່ໃຊ້ ຫຼືລະຫັດຜ່ານຂອງທ່ານບໍ?\nໄປທີ່ "<b>"your account provider"</b>"."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"ກຳລັງກວດສອບ..."</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"ປົດລັອກ"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"ເປີດສຽງແລ້ວ"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"ປ້ອນລະຫັດ PUK ທີ່ຖືກຕ້ອງຄືນໃໝ່. ການພະຍາຍາມໃສ່ຫຼາຍເທື່ອຈະເຮັດໃຫ້ຊິມກາດໃຊ້ບໍ່ໄດ້ຖາວອນ."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"ລະຫັດ PIN ບໍ່ກົງກັນ"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"ແຕ້ມຮູບແບບປົດລັອກຫຼາຍເກີນໄປ"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"ເພື່ອປົດລັອກ, ເຂົ້າສູ່ລະບົບດ້ວຍບັນຊີ Google ຂອງທ່ານ."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"ເພື່ອປົດລັອກ, ເຂົ້າສູ່ລະບົບດ້ວຍບັນຊີ ຂອງທ່ານ."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"ຊື່ຜູ່ໃຊ້ (ອີເມວ)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"ລະຫັດຜ່ານ"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"ເຂົ້າສູ່ລະບົບ"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"ຊື່ຜູ່ໃຊ້ ຫຼືລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"ລືມຊື່ຜູ່ໃຊ້ ຫຼືລະຫັດຜ່ານຂອງທ່ານບໍ່?\nໄປທີ່ "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"ລືມຊື່ຜູ່ໃຊ້ ຫຼືລະຫັດຜ່ານຂອງທ່ານບໍ່?\nໄປທີ່ "<b>"your account provider"</b>"."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"ກຳລັງກວດສອບບັນຊີ..."</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"ທ່ານພິມລະຫັດ PIN​ ຂອງທ່ານຜິດ <xliff:g id="NUMBER_0">%1$d</xliff:g> ເທື່ອແລ້ວ. \n\nກະລຸນາລອງໃໝ່ໃນອີກ <xliff:g id="NUMBER_1">%2$d</xliff:g> ວິນາທີ."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"ທ່ານພິມລະຫັດຜິດ <xliff:g id="NUMBER_0">%1$d</xliff:g> ເທື່ອແລ້ວ. \n\nລອງໃໝ່ໃນອີກ <xliff:g id="NUMBER_1">%2$d</xliff:g> ວິນາທີ."</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"ກັບຄືນ"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"ລໍຖ້າດຳເນີນການ..."</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"ຕອນນີ້ SOS ດາວທຽມພ້ອມໃຫ້ບໍລິການແລ້ວ"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"ທ່ານສາມາດສົ່ງຂໍ້ຄວາມໄປຫາບໍລິການສຸກເສີນໄດ້ໃນກໍລະນີທີ່ບໍ່ມີເຄືອຂ່າຍມືຖື ຫຼື Wi-Fi. ຕ້ອງຕັ້ງຄ່າ Google Messages ເປັນແອັບຮັບສົ່ງຂໍ້ຄວາມເລີ່ມຕົ້ນຂອງທ່ານ."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"ທ່ານສາມາດສົ່ງຂໍ້ຄວາມໄປຫາບໍລິການສຸກເສີນໄດ້ໃນກໍລະນີທີ່ບໍ່ມີເຄືອຂ່າຍມືຖື ຫຼື Wi-Fi. ຕ້ອງຕັ້ງຄ່າ Messages ເປັນແອັບຮັບສົ່ງຂໍ້ຄວາມເລີ່ມຕົ້ນຂອງທ່ານ."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"ບໍ່ຮອງຮັບ SOS ດາວທຽມ"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"ອຸປະກອນນີ້ບໍ່ຮອງຮັບ SOS ດາວທຽມ"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"ບໍ່ໄດ້ຕັ້ງຄ່າ SOS ດາວທຽມ"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"SOS ດາວທຽມບໍ່ພ້ອມໃຫ້ບໍລິການ"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"SOS ດາວທຽມບໍ່ພ້ອມໃຫ້ບໍລິການໃນປະເທດ ຫຼື ພາກພື້ນນີ້"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"ບໍ່ໄດ້ຕັ້ງຄ່າ SOS ດາວທຽມ"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"ເພື່ອຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມ, ໃຫ້ຕັ້ງ Google Messages ເປັນແອັບຮັບສົ່ງຂໍ້ຄວາມເລີ່ມຕົ້ນຂອງທ່ານ"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"ເພື່ອຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມ, ໃຫ້ຕັ້ງ Messages ເປັນແອັບຮັບສົ່ງຂໍ້ຄວາມເລີ່ມຕົ້ນຂອງທ່ານ"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"SOS ດາວທຽມບໍ່ພ້ອມໃຫ້ບໍລິການ"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"ເພື່ອກວດສອບວ່າ SOS ດາວທຽມພ້ອມໃຫ້ບໍລິການໃນປະເທດ ຫຼື ພາກພື້ນນີ້ຫຼືບໍ່, ໃຫ້ເປີດການຕັ້ງຄ່າສະຖານທີ່"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"ການຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມພ້ອມໃຫ້ບໍລິການ"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"ທ່ານສາມາດຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມໄດ້ໃນກໍລະນີທີ່ບໍ່ມີເຄືອຂ່າຍມືຖື ຫຼື Wi-Fi. ຕ້ອງຕັ້ງຄ່າ Google Messages ເປັນແອັບຮັບສົ່ງຂໍ້ຄວາມເລີ່ມຕົ້ນຂອງທ່ານ."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"ທ່ານສາມາດຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມໄດ້ໃນກໍລະນີທີ່ບໍ່ມີເຄືອຂ່າຍມືຖື ຫຼື Wi-Fi. ຕ້ອງຕັ້ງຄ່າ Messages ເປັນແອັບຮັບສົ່ງຂໍ້ຄວາມເລີ່ມຕົ້ນຂອງທ່ານ."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"ບໍ່ຮອງຮັບການຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມ"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"ອຸປະກອນນີ້ບໍ່ຮອງຮັບການຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມ"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"ບໍ່ໄດ້ຕັ້ງຄ່າການຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມ"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"ການຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມບໍ່ພ້ອມໃຫ້ບໍລິການ"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"ການຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມບໍ່ພ້ອມໃຫ້ບໍລິການໃນປະເທດ ຫຼື ພາກພື້ນນີ້"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"ບໍ່ໄດ້ຕັ້ງຄ່າການຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມ"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"ເພື່ອຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມ, ໃຫ້ຕັ້ງ Google Messages ເປັນແອັບຮັບສົ່ງຂໍ້ຄວາມເລີ່ມຕົ້ນຂອງທ່ານ"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"ເພື່ອຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມ, ໃຫ້ຕັ້ງ Messages ເປັນແອັບຮັບສົ່ງຂໍ້ຄວາມເລີ່ມຕົ້ນຂອງທ່ານ"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"ການຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມບໍ່ພ້ອມໃຫ້ບໍລິການ"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"ເພື່ອກວດສອບວ່າການຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມພ້ອມໃຫ້ບໍລິການໃນປະເທດ ຫຼື ພາກພື້ນນີ້ຫຼືບໍ່, ໃຫ້ເປີດການຕັ້ງຄ່າສະຖານທີ່"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"ຕັ້ງຄ່າການປົດລັອກດ້ວຍລາຍນິ້ວມືຄືນໃໝ່"</string>

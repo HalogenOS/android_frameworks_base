@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">" Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">" Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"คุณวาดรูปแบบการปลดล็อกไม่ถูกต้องไป <xliff:g id="NUMBER_0">%1$d</xliff:g> ครั้งแล้ว\n\nโปรดลองอีกครั้งในอีก <xliff:g id="NUMBER_1">%2$d</xliff:g> วินาที"</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"คุณพิมพ์รหัสผ่านไม่ถูกต้องไป <xliff:g id="NUMBER_0">%1$d</xliff:g> ครั้งแล้ว\n\nลองอีกครั้งใน <xliff:g id="NUMBER_1">%2$d</xliff:g> วินาที"</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"คุณพิมพ์ PIN ไม่ถูกต้องไป <xliff:g id="NUMBER_0">%1$d</xliff:g> ครั้งแล้ว\n\nลองอีกครั้งใน <xliff:g id="NUMBER_1">%2$d</xliff:g> วินาที"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"คุณวาดรูปแบบการปลดล็อกไม่ถูกต้องไป <xliff:g id="NUMBER_0">%1$d</xliff:g> ครั้งแล้ว หากทำไม่สำเร็จอีก <xliff:g id="NUMBER_1">%2$d</xliff:g> ครั้ง ระบบจะขอให้คุณปลดล็อกแท็บเล็ตโดยใช้การลงชื่อเข้าใช้ Google\n\nโปรดลองอีกครั้งในอีก <xliff:g id="NUMBER_2">%3$d</xliff:g> วินาที"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"คุณวาดรูปแบบการปลดล็อกไม่ถูกต้อง <xliff:g id="NUMBER_0">%1$d</xliff:g> ครั้ง หากพยายามไม่สำเร็จอีก <xliff:g id="NUMBER_1">%2$d</xliff:g> ครั้ง ระบบจะขอให้คุณปลดล็อกอุปกรณ์ Android TV โดยใช้การลงชื่อเข้าใช้ Google\n\n ลองอีกครั้งในอีก <xliff:g id="NUMBER_2">%3$d</xliff:g> วินาที"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"คุณวาดรูปแบบการปลดล็อกไม่ถูกต้อง <xliff:g id="NUMBER_0">%1$d</xliff:g> ครั้ง หากทำไม่สำเร็จอีก <xliff:g id="NUMBER_1">%2$d</xliff:g> ครั้ง ระบบจะขอให้คุณปลดล็อกโทรศัพท์โดยใช้การลงชื่อเข้าใช้ Google\n\nโปรดลองอีกครั้งในอีก <xliff:g id="NUMBER_2">%3$d</xliff:g> วินาที"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"คุณวาดรูปแบบการปลดล็อกไม่ถูกต้องไป <xliff:g id="NUMBER_0">%1$d</xliff:g> ครั้งแล้ว หากทำไม่สำเร็จอีก <xliff:g id="NUMBER_1">%2$d</xliff:g> ครั้ง ระบบจะขอให้คุณปลดล็อกแท็บเล็ตโดยใช้การลงชื่อเข้าใช้ login\n\nโปรดลองอีกครั้งในอีก <xliff:g id="NUMBER_2">%3$d</xliff:g> วินาที"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"คุณวาดรูปแบบการปลดล็อกไม่ถูกต้อง <xliff:g id="NUMBER_0">%1$d</xliff:g> ครั้ง หากพยายามไม่สำเร็จอีก <xliff:g id="NUMBER_1">%2$d</xliff:g> ครั้ง ระบบจะขอให้คุณปลดล็อกอุปกรณ์ Android TV โดยใช้การลงชื่อเข้าใช้ login\n\n ลองอีกครั้งในอีก <xliff:g id="NUMBER_2">%3$d</xliff:g> วินาที"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"คุณวาดรูปแบบการปลดล็อกไม่ถูกต้อง <xliff:g id="NUMBER_0">%1$d</xliff:g> ครั้ง หากทำไม่สำเร็จอีก <xliff:g id="NUMBER_1">%2$d</xliff:g> ครั้ง ระบบจะขอให้คุณปลดล็อกโทรศัพท์โดยใช้การลงชื่อเข้าใช้ login\n\nโปรดลองอีกครั้งในอีก <xliff:g id="NUMBER_2">%3$d</xliff:g> วินาที"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"คุณพยายามปลดล็อกแท็บเล็ตอย่างไม่ถูกต้องแล้ว <xliff:g id="NUMBER_0">%1$d</xliff:g> ครั้ง หากการพยายามไม่สำเร็จอีก <xliff:g id="NUMBER_1">%2$d</xliff:g> ครั้ง แท็บเล็ตจะถูกรีเซ็ตเป็นค่าเริ่มต้นจากโรงงานและข้อมูลทั้งหมดของผู้ใช้จะหายไป"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"คุณปลดล็อกอุปกรณ์ Android TV ไม่ถูกต้อง <xliff:g id="NUMBER_0">%1$d</xliff:g> ครั้ง หากพยายามไม่สำเร็จอีก <xliff:g id="NUMBER_1">%2$d</xliff:g> ครั้ง ระบบจะรีเซ็ตอุปกรณ์ Android TV เป็นค่าเริ่มต้นและข้อมูลผู้ใช้ทั้งหมดจะหายไป"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"คุณพยายามปลดล็อกโทรศัพท์อย่างไม่ถูกต้องแล้ว <xliff:g id="NUMBER_0">%1$d</xliff:g> ครั้ง หากการพยายามไม่สำเร็จอีก <xliff:g id="NUMBER_1">%2$d</xliff:g> ครั้ง โทรศัพท์จะถูกรีเซ็ตเป็นค่าเริ่มต้นจากโรงงานและข้อมูลทั้งหมดของผู้ใช้จะหายไป"</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"ลืมรูปแบบหรือ"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"ปลดล็อกบัญชี"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"ลองหลายรูปแบบมากเกินไป"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"หากต้องการปลดล็อก ให้ลงชื่อเข้าใช้ด้วยบัญชี Google ของคุณ"</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"หากต้องการปลดล็อก ให้ลงชื่อเข้าใช้ด้วยบัญชี ของคุณ"</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"ชื่อผู้ใช้ (อีเมล)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"รหัสผ่าน"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"ลงชื่อเข้าใช้"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"หากลืมชื่อผู้ใช้หรือรหัสผ่าน\nโปรดไปที่ "<b>"google.com/accounts/recovery"</b></string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"หากลืมชื่อผู้ใช้หรือรหัสผ่าน\nโปรดไปที่ "<b>"your account provider"</b></string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"กำลังตรวจสอบ…"</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"ปลดล็อก"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"เปิดเสียง"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"ใส่รหัส PUK ที่ถูกต้องอีกครั้ง การพยายามซ้ำหลายครั้งจะทำให้ซิมการ์ดถูกปิดใช้งานอย่างถาวร"</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"รหัส PIN ไม่ตรง"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"ลองหลายรูปแบบมากเกินไป"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"หากต้องการปลดล็อก ให้ลงชื่อเข้าใช้ด้วยบัญชี Google ของคุณ"</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"หากต้องการปลดล็อก ให้ลงชื่อเข้าใช้ด้วยบัญชี ของคุณ"</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"ชื่อผู้ใช้ (อีเมล)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"รหัสผ่าน"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"ลงชื่อเข้าใช้"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"หากลืมชื่อผู้ใช้หรือรหัสผ่าน\nโปรดไปที่ "<b>"google.com/accounts/recovery"</b></string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"หากลืมชื่อผู้ใช้หรือรหัสผ่าน\nโปรดไปที่ "<b>"your account provider"</b></string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"กำลังตรวจสอบบัญชี…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"คุณพิมพ์ PIN ไม่ถูกต้องไป <xliff:g id="NUMBER_0">%1$d</xliff:g> ครั้งแล้ว \n\nโปรดลองอีกครั้งใน <xliff:g id="NUMBER_1">%2$d</xliff:g> วินาที"</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"คุณพิมพ์รหัสผ่านไม่ถูกต้องไป <xliff:g id="NUMBER_0">%1$d</xliff:g> ครั้งแล้ว \n\nโปรดลองอีกครั้งใน <xliff:g id="NUMBER_1">%2$d</xliff:g> วินาที"</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"ย้อนกลับ"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"รอดำเนินการ..."</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"SOS ดาวเทียมพร้อมใช้งานแล้ว"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"คุณส่งข้อความหาบริการช่วยเหลือฉุกเฉินได้ในกรณีที่ไม่มีเครือข่ายมือถือหรือ Wi-Fi โดยที่แอปรับส่งข้อความเริ่มต้นของคุณจะต้องเป็น Google Messages"</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"คุณส่งข้อความหาบริการช่วยเหลือฉุกเฉินได้ในกรณีที่ไม่มีเครือข่ายมือถือหรือ Wi-Fi โดยที่แอปรับส่งข้อความเริ่มต้นของคุณจะต้องเป็น Messages"</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"ไม่รองรับ SOS ดาวเทียม"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"อุปกรณ์นี้ไม่รองรับ SOS ดาวเทียม"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"ไม่ได้ตั้งค่า SOS ดาวเทียม"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"SOS ดาวเทียมไม่พร้อมใช้งาน"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"SOS ดาวเทียมไม่พร้อมใช้งานในประเทศหรือภูมิภาคนี้"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"ไม่ได้ตั้งค่า SOS ดาวเทียม"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"หากต้องการรับส่งข้อความผ่านดาวเทียม ให้ตั้ง Google Messages เป็นแอปรับส่งข้อความเริ่มต้น"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"หากต้องการรับส่งข้อความผ่านดาวเทียม ให้ตั้ง Messages เป็นแอปรับส่งข้อความเริ่มต้น"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"SOS ดาวเทียมไม่พร้อมใช้งาน"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"หากต้องการตรวจสอบว่า SOS ดาวเทียมพร้อมให้บริการในประเทศหรือภูมิภาคนี้หรือไม่ ให้เปิดการตั้งค่าตำแหน่ง"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"การรับส่งข้อความผ่านดาวเทียมพร้อมใช้งาน"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"คุณรับส่งข้อความผ่านดาวเทียมได้ในกรณีที่ไม่มีเครือข่ายมือถือหรือ Wi-Fi โดยที่แอปรับส่งข้อความเริ่มต้นของคุณจะต้องเป็น Google Messages"</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"คุณรับส่งข้อความผ่านดาวเทียมได้ในกรณีที่ไม่มีเครือข่ายมือถือหรือ Wi-Fi โดยที่แอปรับส่งข้อความเริ่มต้นของคุณจะต้องเป็น Messages"</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"ไม่รองรับการรับส่งข้อความผ่านดาวเทียม"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"อุปกรณ์นี้ไม่รองรับการรับส่งข้อความผ่านดาวเทียม"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"ไม่ได้ตั้งค่าการรับส่งข้อความผ่านดาวเทียม"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"การรับส่งข้อความผ่านดาวเทียมไม่พร้อมใช้งาน"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"การรับส่งข้อความผ่านดาวเทียมไม่พร้อมใช้งานในประเทศหรือภูมิภาคนี้"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"ไม่ได้ตั้งค่าการรับส่งข้อความผ่านดาวเทียม"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"หากต้องการรับส่งข้อความผ่านดาวเทียม ให้ตั้ง Google Messages เป็นแอปรับส่งข้อความเริ่มต้น"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"หากต้องการรับส่งข้อความผ่านดาวเทียม ให้ตั้ง Messages เป็นแอปรับส่งข้อความเริ่มต้น"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"การรับส่งข้อความผ่านดาวเทียมไม่พร้อมใช้งาน"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"หากต้องการตรวจสอบว่าการรับส่งข้อความผ่านดาวเทียมพร้อมให้บริการในประเทศหรือภูมิภาคนี้หรือไม่ ให้เปิดการตั้งค่าตำแหน่ง"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"ตั้งค่าการปลดล็อกด้วยลายนิ้วมืออีกครั้ง"</string>

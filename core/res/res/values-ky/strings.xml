@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"Графикалык ачкычты <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес тарттыңыз. \n\n <xliff:g id="NUMBER_1">%2$d</xliff:g> секундадан кийин дагы аракет кылып көрүңүз."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"Сырсөзүңүздү <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес тердиңиз. \n\n <xliff:g id="NUMBER_1">%2$d</xliff:g> секундадан кийин дагы аракет кылып көрүңүз."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"PIN кодуңузду <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес тердиңиз. \n\n <xliff:g id="NUMBER_1">%2$d</xliff:g> секундадан кийин дагы аракет кылып көрүңүз."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Графикалык ачкычты <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес тарттыңыз. Дагы <xliff:g id="NUMBER_1">%2$d</xliff:g> жолу туура эмес тартсаңыз, планшетиңиздин кулпусун Google\'га кирип ачууга туура келет.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> секундадан кийин дагы аракет кылып көрүңүз."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Графикалык ачкычыңызды <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес чийдиңиз. Дагы <xliff:g id="NUMBER_1">%2$d</xliff:g> ийгиликсиз аракеттен кийин, Android TV түзмөгүңүздүн кулпусун Google аккаунтуңузга кирип ачышыңыз керек болот.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> секунддан кийин кайталап көрүңүз."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Графикалык ачкычты <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес тарттыңыз. Дагы <xliff:g id="NUMBER_1">%2$d</xliff:g> жолу туура эмес тартсаңыз, телефонуңуздун кулпусун Google\'га кирип ачууга туура келет.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> секундадан кийин дагы аракет кылып көрүңүз."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Графикалык ачкычты <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес тарттыңыз. Дагы <xliff:g id="NUMBER_1">%2$d</xliff:g> жолу туура эмес тартсаңыз, планшетиңиздин кулпусун login\'га кирип ачууга туура келет.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> секундадан кийин дагы аракет кылып көрүңүз."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Графикалык ачкычыңызды <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес чийдиңиз. Дагы <xliff:g id="NUMBER_1">%2$d</xliff:g> ийгиликсиз аракеттен кийин, Android TV түзмөгүңүздүн кулпусун аккаунтуңузга кирип ачышыңыз керек болот.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> секунддан кийин кайталап көрүңүз."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Графикалык ачкычты <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес тарттыңыз. Дагы <xliff:g id="NUMBER_1">%2$d</xliff:g> жолу туура эмес тартсаңыз, телефонуңуздун кулпусун login\'га кирип ачууга туура келет.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> секундадан кийин дагы аракет кылып көрүңүз."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Сиз планшетиңизди бөгөттөн чыгарууга <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес аракет кылдыңыз. Дагы <xliff:g id="NUMBER_1">%2$d</xliff:g> аракеттен кийин, планшет баштапкы абалына келтирилет жана бардык маалыматтар өчүрүлөт."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Android TV түзмөгүңүздүн кулпусун <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес ачууга аракет жасадыңыз. Дагы <xliff:g id="NUMBER_1">%2$d</xliff:g> ийгиликсиз аракеттен кийин, Android TV түзмөгүңүз демейки параметрлерге кайтарылып, бардык колдонуучу дайындары жоголот."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Сиз телефонуңузду бөгөттөн чыгарууга <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес аракет кылдыңыз. Дагы <xliff:g id="NUMBER_1">%2$d</xliff:g> аракеттен кийин, телефон баштапкы абалына келтирилет жана бардык маалыматтар өчүрүлөт."</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Сүрөт үлгүсүн унутуп койдуңузбу?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Аккаунт менен кулпусун ачуу"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Өтө көп үлгү киргизүү аракети болду"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Бөгөттөн чыгарыш үчүн, Google эсебиңиз менен кириңиз."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Бөгөттөн чыгарыш үчүн, эсебиңиз менен кириңиз."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Колдонуучунун аты (электрондук почта)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Сырсөз"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Кирүү"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"Колдонуучу атыңыз же сырсөзүңүз туура эмес."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Колдонуучу атыңызды же сырсөзүңүздү унутуп койдуңузбу?\n"<b>"google.com/accounts/recovery"</b>" дарегине кайрылыңыз."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Колдонуучу атыңызды же сырсөзүңүздү унутуп койдуңузбу?\n"<b>"your account provider"</b>" дарегине кайрылыңыз."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"Текшерүүдө…"</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"Кулпусун ачуу"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"Добушу күйүк"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Туура PUK-кодду кайрадан териңиз. Кайталанган аракеттер SIM картаны биротоло жараксыз кылат."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN-коддор туура келбеди"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Өтө көп үлгү киргизүү аракети болду"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Бөгөттөн чыгарыш үчүн, Google эсебиңиз менен кириңиз."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Бөгөттөн чыгарыш үчүн, эсебиңиз менен кириңиз."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Колдонуучунун аты (эл.почта)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Сырсөз"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Кирүү"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"Колдонуучу атыңыз же сырсөзүңүз туура эмес."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Колдонуучу атыңызды же сырсөзүңүздү унутуп койдуңузбу?\n"<b>"google.com/accounts/recovery"</b>" дарегине кайрылыңыз."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Колдонуучу атыңызды же сырсөзүңүздү унутуп койдуңузбу?\n"<b>"your account provider"</b>" дарегине кайрылыңыз."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"Эсеп текшерилүүдө…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"Сиз PIN кодуңузду <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес тердиңиз. \n\n <xliff:g id="NUMBER_1">%2$d</xliff:g> секундадан кийин кайталаңыз."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"Сиз сырсөзүңүздү <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес тердиңиз. \n\n <xliff:g id="NUMBER_1">%2$d</xliff:g> секундадан кийин кайталаңыз."</string>
@@ -1776,9 +1776,9 @@
     <string name="kg_failed_attempts_now_wiping" product="tablet" msgid="2299099385175083308">"Сиз планшетиңизди <xliff:g id="NUMBER">%d</xliff:g> жолу ийгиликсиз бөгөттөн чыгаруу аракетин кылдыңыз. Планшет баштапкы абалына кайтарылат."</string>
     <string name="kg_failed_attempts_now_wiping" product="tv" msgid="5045460916106267585">"Android TV түзмөгүңүздүн кулпусун <xliff:g id="NUMBER">%d</xliff:g> жолу туура эмес ачууга аракет жасадыңыз. Android TV түзмөгүңүз эми демейки параметрлерге кайтарылат."</string>
     <string name="kg_failed_attempts_now_wiping" product="default" msgid="5043730590446071189">"Сиз телефонуңузду <xliff:g id="NUMBER">%d</xliff:g> жолу ийгиликсиз бөгөттөн чыгаруу аракетин кылдыңыз. Телефон баштапкы абалына кайтарылат."</string>
-    <string name="kg_failed_attempts_almost_at_login" product="tablet" msgid="7086799295109717623">"Графикалык ачкычты <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес көрсөттүңүз. <xliff:g id="NUMBER_1">%2$d</xliff:g> жолу туура эмес көрсөтүлгөндөн кийин, планшетиңиздин кулпусун ачуу үчүн Google аккаунтуңузга кирүүгө туура келет.\n\n<xliff:g id="NUMBER_2">%3$d</xliff:g> секундадан кийин кайталап көрсөңүз болот."</string>
+    <string name="kg_failed_attempts_almost_at_login" product="tablet" msgid="7086799295109717623">"Графикалык ачкычты <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес көрсөттүңүз. <xliff:g id="NUMBER_1">%2$d</xliff:g> жолу туура эмес көрсөтүлгөндөн кийин, планшетиңиздин кулпусун ачуу үчүн аккаунтуңузга кирүүгө туура келет.\n\n<xliff:g id="NUMBER_2">%3$d</xliff:g> секундадан кийин кайталап көрсөңүз болот."</string>
     <string name="kg_failed_attempts_almost_at_login" product="tv" msgid="4670840383567106114">"Графикалык ачкычыңызды <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес чийдиңиз. Дагы <xliff:g id="NUMBER_1">%2$d</xliff:g> ийгиликсиз аракеттен кийин, Android TV түзмөгүңүздүн кулпусун электрондук почта аккаунтуңуз менен ачышыңыз керек болот.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> секунддан кийин кайталап көрүңүз."</string>
-    <string name="kg_failed_attempts_almost_at_login" product="default" msgid="5270861875006378092">"Графикалык ачкычты <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес көрсөттүңүз. <xliff:g id="NUMBER_1">%2$d</xliff:g> жолу туура эмес көрсөтүлгөндөн кийин, телефондун кулпусун ачуу үчүн Google аккаунтуңузга кирүүгө туура келет.\n\n<xliff:g id="NUMBER_2">%3$d</xliff:g> секундадан кийин кайталап көрсөңүз болот."</string>
+    <string name="kg_failed_attempts_almost_at_login" product="default" msgid="5270861875006378092">"Графикалык ачкычты <xliff:g id="NUMBER_0">%1$d</xliff:g> жолу туура эмес көрсөттүңүз. <xliff:g id="NUMBER_1">%2$d</xliff:g> жолу туура эмес көрсөтүлгөндөн кийин, телефондун кулпусун ачуу үчүн аккаунтуңузга кирүүгө туура келет.\n\n<xliff:g id="NUMBER_2">%3$d</xliff:g> секундадан кийин кайталап көрсөңүз болот."</string>
     <string name="kg_text_message_separator" product="default" msgid="4503708889934976866">" — "</string>
     <string name="kg_reordering_delete_drop_target_text" msgid="2034358143731750914">"Өчүрүү"</string>
     <string name="safe_media_volume_warning" product="default" msgid="3751676824423049994">"Сунушталган деңгээлден да катуулатып уккуңуз келеби?\n\nМузыканы узакка чейин катуу уксаңыз, угууңуз начарлап кетиши мүмкүн."</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"Артка кайтуу"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"Кезекте турат..."</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"Спутник SOS кызматы иштеп баштады"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Мобилдик Интернет же Wi-Fi жок болгон учурда, кырсыктаганда жардамга келчү кызматтарга билдирүү жөнөтө аласыз. Google Жазышуу демейки колдонмоңуз болушу керек."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Мобилдик Интернет же Wi-Fi жок болгон учурда, кырсыктаганда жардамга келчү кызматтарга билдирүү жөнөтө аласыз. login Жазышуу демейки колдонмоңуз болушу керек."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"Спутник SOS колдоого алынбайт"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"Бул түзмөктө спутник SOS колдоого алынбайт"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"Спутник SOS туураланган жок"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"Спутник SOS жеткиликсиз"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"Спутник SOS бул өлкөдө же аймакта жеткиликсиз"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"Спутник SOS туураланган жок"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Спутник аркылуу жазышуу үчүн Google Messages кызматын демейки жазышуу колдонмосу катары тандаңыз"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Спутник аркылуу жазышуу үчүн Messages кызматын демейки жазышуу колдонмосу катары тандаңыз"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"Спутник SOS жеткиликсиз"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"Бул өлкөдө же аймакта спутник SOS функциясынын жеткиликтүүлүгүн текшерүү үчүн жайгашкан жерди аныктоо параметрлерин күйгүзүңүз"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"Спутник аркылуу байланышуу жеткиликтүү"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Мобилдик же Wi-Fi тармагы жок болсо, спутник аркылуу жазыша аласыз. Google Messages демейки жазышуу колдонмоңуз болушу керек."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Мобилдик же Wi-Fi тармагы жок болсо, спутник аркылуу жазыша аласыз. Messages демейки жазышуу колдонмоңуз болушу керек."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"Спутник аркылуу байланышуу колдоого алынбайт"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"Бул түзмөктө спутник аркылуу байланышуу колдоого алынбайт"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"Спутник аркылуу байланышуу туураланган жок"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"Спутник аркылуу байланышуу жеткиликсиз"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"Бул өлкөдө же аймакта спутник аркылуу байланышуу жеткиликсиз"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"Спутник аркылуу байланышуу туураланган жок"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Спутник аркылуу жазышуу үчүн Google Messages кызматын демейки жазышуу колдонмосу катары тандаңыз"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Спутник аркылуу жазышуу үчүн Messages кызматын демейки жазышуу колдонмосу катары тандаңыз"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"Спутник аркылуу байланышуу жеткиликсиз"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"Бул өлкөдө же аймакта спутник аркылуу байланышуу функциясынын жеткиликтүүлүгүн текшерүү үчүн жайгашкан жерди аныктоо параметрлерин күйгүзүңүз"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"Манжа изи менен ачуу функциясын кайра тууралаңыз"</string>

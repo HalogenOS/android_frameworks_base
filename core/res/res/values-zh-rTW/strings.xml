@@ -127,7 +127,7 @@
     <string name="roamingText5" msgid="4294671587635796641">"漫遊 - 偏好系統"</string>
     <string name="roamingText6" msgid="5536156746637992029">"漫遊 - 可用系統"</string>
     <string name="roamingText7" msgid="1783303085512907706">"漫遊 - 聯盟合作夥伴"</string>
-    <string name="roamingText8" msgid="7774800704373721973">"漫遊 - Google Premium 合作夥伴"</string>
+    <string name="roamingText8" msgid="7774800704373721973">"漫遊 - Premium 合作夥伴"</string>
     <string name="roamingText9" msgid="1933460020190244004">"漫遊 - 完整服務功能"</string>
     <string name="roamingText10" msgid="7434767033595769499">"漫遊 - 部分服務功能"</string>
     <string name="roamingText11" msgid="5245687407203281407">"漫遊橫幅開啟"</string>
@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"網路會議"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"你的解鎖圖案已畫錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次。\n\n請在 <xliff:g id="NUMBER_1">%2$d</xliff:g> 秒後再試一次。"</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"你的密碼已輸錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次。\n\n請在 <xliff:g id="NUMBER_1">%2$d</xliff:g> 秒後再試一次。"</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"你的 PIN 已輸錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次。\n\n請在 <xliff:g id="NUMBER_1">%2$d</xliff:g> 秒後再試一次。"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"你的解鎖圖案已畫錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，如果再嘗試 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次仍未成功，系統就會要求你使用你的 Google 登入資訊解除平板電腦的鎖定狀態。\n\n請在 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"你已畫錯解鎖圖案 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，目前還剩 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次機會。如果超過失敗次數上限，系統就會要求你登入 Google 帳戶來解鎖 Android TV 裝置。\n\n 請於 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"你的解鎖圖案已畫錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，如果再試 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次仍未成功，系統就會要求你使用你的 Google 登入資訊解除手機的鎖定狀態。\n\n請在 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"你的解鎖圖案已畫錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，如果再嘗試 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次仍未成功，系統就會要求你使用你的 登入資訊解除平板電腦的鎖定狀態。\n\n請在 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"你已畫錯解鎖圖案 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，目前還剩 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次機會。如果超過失敗次數上限，系統就會要求你登入 帳戶來解鎖 Android TV 裝置。\n\n 請於 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"你的解鎖圖案已畫錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，如果再試 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次仍未成功，系統就會要求你使用你的 登入資訊解除手機的鎖定狀態。\n\n請在 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"你嘗試解除這個平板電腦的鎖定已失敗 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，目前還剩 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次機會。如果失敗次數超過限制，平板電腦將恢復原廠設定，所有使用者資料都會遺失。"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"你嘗試解鎖 Android TV 裝置已失敗 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，目前還剩 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次機會。如果失敗次數超過上限，Android TV 裝置將恢復原廠設定，所有使用者資料都會遺失。"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"你嘗試解除這支手機的鎖定已失敗 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，目前還剩 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次機會。如果失敗次數超過限制，手機將恢復原廠設定，所有使用者資料都會遺失。"</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"忘記解鎖圖案？"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"帳戶解鎖"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"圖案嘗試次數過多"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"如要解除鎖定，請使用 Google 帳戶登入。"</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"如要解除鎖定，請使用 帳戶登入。"</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"使用者名稱 (電子郵件)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"密碼"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"登入"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"使用者名稱或密碼錯誤。"</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"忘了使用者名稱或密碼？\n請造訪 "<b>"google.com/accounts/recovery"</b>"。"</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"忘了使用者名稱或密碼？\n請造訪 "<b>"your account provider"</b>"。"</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"檢查中…"</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"解除封鎖"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"開啟音效"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"重新輸入正確的 PUK 碼。如果錯誤次數過多，SIM 卡將會永久停用。"</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN 碼不符"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"圖案嘗試次數過多"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"如要解除鎖定，請使用 Google 帳戶登入。"</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"如要解除鎖定，請使用 帳戶登入。"</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"使用者名稱 (電子郵件)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"密碼"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"登入"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"使用者名稱或密碼無效。"</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"忘了使用者名稱或密碼？\n請前往 "<b>"google.com/accounts/recovery"</b>"。"</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"忘了使用者名稱或密碼？\n請前往 "<b>"your account provider"</b>"。"</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"正在檢查帳戶…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"你的 PIN 已輸錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次。\n\n請在 <xliff:g id="NUMBER_1">%2$d</xliff:g> 秒後再試一次。"</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"你的密碼已輸錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次。\n\n請在 <xliff:g id="NUMBER_1">%2$d</xliff:g> 秒後再試一次。"</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"返回"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"待處理…"</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"現在可使用「緊急衛星連線」"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"如果沒有行動網路或 Wi-Fi 網路，也可以傳訊息給緊急救援服務。Google 訊息必須是預設訊息應用程式，你才能使用這項功能。"</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"如果沒有行動網路或 Wi-Fi 網路，也可以傳訊息給緊急救援服務。login 訊息必須是預設訊息應用程式，你才能使用這項功能。"</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"不支援「緊急衛星連線」"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"這部裝置不支援「緊急衛星連線」"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"未設定「緊急衛星連線」"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"「緊急衛星連線」無法使用"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"無法在這個國家/地區使用「緊急衛星連線」"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"未設定「緊急衛星連線」"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"如要透過衛星傳送訊息，請將 Google 訊息設為預設訊息應用程式"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"如要透過衛星傳送訊息，請將 login 訊息設為預設訊息應用程式"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"「緊急衛星連線」無法使用"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"如要確認「緊急衛星連線」能否在這個國家/地區使用，請開啟位置資訊設定"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"現在可使用「衛星訊息」"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"如果沒有行動網路或 Wi-Fi 網路，可以透過衛星傳送訊息。Google 訊息必須是預設訊息應用程式，你才能使用這項功能。"</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"如果沒有行動網路或 Wi-Fi 網路，可以透過衛星傳送訊息。login 訊息必須是預設訊息應用程式，你才能使用這項功能。"</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"不支援「衛星訊息」"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"這部裝置不支援「衛星訊息」"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"未設定「衛星訊息」"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"「衛星訊息」無法使用"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"無法在這個國家/地區使用「衛星訊息」"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"未設定「衛星訊息」"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"如要透過衛星傳送訊息，請將 Google 訊息設為預設訊息應用程式"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"如要透過衛星傳送訊息，請將 login 訊息設為預設訊息應用程式"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"「衛星訊息」無法使用"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"如要確認「衛星訊息」能否在這個國家/地區使用，請開啟位置資訊設定"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"重新設定指紋解鎖"</string>

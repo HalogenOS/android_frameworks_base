@@ -961,7 +961,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1009,7 +1009,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1082,9 +1082,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"Вы няправільна ўвялі графічны ключ разблакавання пэўную колькасць разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. \n\nПаўтарыце спробу праз наступную колькасць секунд: <xliff:g id="NUMBER_1">%2$d</xliff:g>."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"Вы няправільна ўвялі пароль пэўную колькасць разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. \n\nПаўтарыце спробу праз наступную колькасць секунд: <xliff:g id="NUMBER_1">%2$d</xliff:g>."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"Вы няправільна ўвялі PIN-код пэўную колькасць разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. \n\nПаўтарыце спробу праз наступную колькасць секунд: <xliff:g id="NUMBER_1">%2$d</xliff:g>."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Вы няправільна ўвялі графічны ключ разблакавання пэўную колькасць разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. Пасля яшчэ некалькiх няўдалых спроб (<xliff:g id="NUMBER_1">%2$d</xliff:g>) вам будзе прапанавана разблакаваць планшэт з дапамогай уваходу ў Google.\n\n Паўтарыце спробу праз наступную колькасць секунд: <xliff:g id="NUMBER_2">%3$d</xliff:g>."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Вы няправільна нарысавалі ўзор разблакіроўкі столькі разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. Пасля яшчэ некалькіх няўдалых спроб (<xliff:g id="NUMBER_1">%2$d</xliff:g>) вам будзе прапанавана разблакіраваць прыладу Android TV з дапамогай імя карыстальніка Google.\n\n Паўтарыце спробу праз <xliff:g id="NUMBER_2">%3$d</xliff:g> с."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Вы няправільна ўвялі графічны ключ разблакавання пэўную колькасць разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. Пасля яшчэ некалькiх няўдалых спроб (<xliff:g id="NUMBER_1">%2$d</xliff:g>) вам будзе прапанавана разблакаваць тэлефон з дапамогай уваходу ў Google.\n\n Паўтарыце спробу праз наступную колькасць секунд: <xliff:g id="NUMBER_2">%3$d</xliff:g>."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Вы няправільна ўвялі графічны ключ разблакавання пэўную колькасць разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. Пасля яшчэ некалькiх няўдалых спроб (<xliff:g id="NUMBER_1">%2$d</xliff:g>) вам будзе прапанавана разблакаваць планшэт з дапамогай уваходу ў login.\n\n Паўтарыце спробу праз наступную колькасць секунд: <xliff:g id="NUMBER_2">%3$d</xliff:g>."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Вы няправільна нарысавалі ўзор разблакіроўкі столькі разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. Пасля яшчэ некалькіх няўдалых спроб (<xliff:g id="NUMBER_1">%2$d</xliff:g>) вам будзе прапанавана разблакіраваць прыладу Android TV з дапамогай імя карыстальніка login.\n\n Паўтарыце спробу праз <xliff:g id="NUMBER_2">%3$d</xliff:g> с."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Вы няправільна ўвялі графічны ключ разблакавання пэўную колькасць разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. Пасля яшчэ некалькiх няўдалых спроб (<xliff:g id="NUMBER_1">%2$d</xliff:g>) вам будзе прапанавана разблакаваць тэлефон з дапамогай уваходу ў login.\n\n Паўтарыце спробу праз наступную колькасць секунд: <xliff:g id="NUMBER_2">%3$d</xliff:g>."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Вы няправільна спрабавалі разблакаваць планшэт некалькi разоў (<xliff:g id="NUMBER_0">%1$d</xliff:g>). Пасля яшчэ некалькiх спробаў (<xliff:g id="NUMBER_1">%2$d</xliff:g>) ён будзе скінуты да заводскіх налад i карыстальнiцкiя дадзеныя будуць згубленыя."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Вы зрабілі некалькі няўдалых спроб (<xliff:g id="NUMBER_0">%1$d</xliff:g>) разблакіраваць прыладу Android TV. Калі наступныя разы (<xliff:g id="NUMBER_1">%2$d</xliff:g>) будуць такімі ж няўдачнымі, налады прылады Android TV скінуцца да заводскіх значэнняў і ўсе карыстальніцкія даныя будуць страчаны."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Вы няправільна спрабавалі разблакаваць планшэт некалькi разоў (<xliff:g id="NUMBER_0">%1$d</xliff:g>). Пасля яшчэ некалькiх спробаў (<xliff:g id="NUMBER_1">%2$d</xliff:g>) ён будзе скінуты да заводскіх налад i карыстальнiцкiя дадзеныя будуць згубленыя."</string>
@@ -1095,12 +1095,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Забылі ўзор?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Разблакаванне ўліковага запісу"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Занадта шмат спроб паўтарыць шаблон!"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Каб разблакаваць, увайдзіце ў свой уліковы запіс Google."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Каб разблакаваць, увайдзіце ў свой уліковы запіс login."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Імя карыстальніка (электронная пошта)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Пароль"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Увайсці"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"Няправільнае імя карыстальніка ці пароль."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Забыліся на імя карыстальніка або пароль?\nНаведайце "<b>"google.com/accounts/recovery"</b></string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Забыліся на імя карыстальніка або пароль?\nНаведайце "<b>"your account provider"</b></string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"Праверка..."</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"Разблакаваць"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"Гук уключаны"</string>
@@ -1762,12 +1762,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Паўторна увядзіце правільны PUK-код. Неаднаразовыя спробы назаўжды адключаць SIM-карту."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN-коды не супадаюць"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Занадта шмат спроб паўтарыць шаблон!"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Каб разблакiраваць, увайдзіце ў свой уліковы запіс Google."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Каб разблакiраваць, увайдзіце ў свой уліковы запіс login."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Імя карыстальніка (электронная пошта)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Пароль"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Увайсцi"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"Няправільнае імя карыстальніка ці пароль."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Забыліся на імя карыстальніка або пароль?\nНаведайце "<b>"google.com/accounts/recovery"</b></string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Забыліся на імя карыстальніка або пароль?\nНаведайце "<b>"your account provider"</b></string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"Праверка ўлiковага запiсу..."</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"Вы няправільна ўвялі PIN-код пэўную колькасць разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. \n\nПаўтарыце спробу праз <xliff:g id="NUMBER_1">%2$d</xliff:g> с."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"Вы няправільна ўвялі пароль пэўную колькасць разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. \n\nПаўтарыце спробу праз <xliff:g id="NUMBER_1">%2$d</xliff:g> с."</string>
@@ -1778,9 +1778,9 @@
     <string name="kg_failed_attempts_now_wiping" product="tablet" msgid="2299099385175083308">"Вы няправільна спрабавалі разблакiраваць планшэт некалькi разоў (<xliff:g id="NUMBER">%d</xliff:g>). Цяпер ён будзе скінуты да завадскіх налад."</string>
     <string name="kg_failed_attempts_now_wiping" product="tv" msgid="5045460916106267585">"Вы зрабілі некалькі няўдалых спроб (<xliff:g id="NUMBER">%d</xliff:g>) разблакіраваць прыладу Android TV. Цяпер яе налады будуць скінуты да заводскіх значэнняў."</string>
     <string name="kg_failed_attempts_now_wiping" product="default" msgid="5043730590446071189">"Вы няправільна спрабавалі разблакiраваць тэлефон некалькi разоў (<xliff:g id="NUMBER">%d</xliff:g>). Цяпер ён будзе скінуты да завадскіх налад."</string>
-    <string name="kg_failed_attempts_almost_at_login" product="tablet" msgid="7086799295109717623">"Вы няправільна ўвялі графічны ключ разблакiроўкi пэўную колькасць разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. Пасля яшчэ некалькiх няўдалых спроб (<xliff:g id="NUMBER_1">%2$d</xliff:g>) вам будзе прапанавана разблакiраваць тэлефон, увайшоўшы ў Google.\n\n Паўтарыце спробу праз <xliff:g id="NUMBER_2">%3$d</xliff:g> с."</string>
+    <string name="kg_failed_attempts_almost_at_login" product="tablet" msgid="7086799295109717623">"Вы няправільна ўвялі графічны ключ разблакiроўкi пэўную колькасць разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. Пасля яшчэ некалькiх няўдалых спроб (<xliff:g id="NUMBER_1">%2$d</xliff:g>) вам будзе прапанавана разблакiраваць тэлефон, увайшоўшы ў login.\n\n Паўтарыце спробу праз <xliff:g id="NUMBER_2">%3$d</xliff:g> с."</string>
     <string name="kg_failed_attempts_almost_at_login" product="tv" msgid="4670840383567106114">"Вы няправільна нарысавалі ўзор разблакіроўкі столькі разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. Пасля яшчэ некалькіх няўдалых спроб (<xliff:g id="NUMBER_1">%2$d</xliff:g>) вам будзе прапанавана разблакіраваць прыладу Android TV, увайшоўшы ва ўліковы запіс электроннай пошты.\n\n Паўтарыце спробу праз <xliff:g id="NUMBER_2">%3$d</xliff:g> с."</string>
-    <string name="kg_failed_attempts_almost_at_login" product="default" msgid="5270861875006378092">"Вы няправільна ўвялі графічны ключ разблакiроўкi пэўную колькасць разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. Пасля яшчэ некалькiх няўдалых спроб (<xliff:g id="NUMBER_1">%2$d</xliff:g>) вам будзе прапанавана разблакiраваць тэлефон, увайшоўшы ў Google.\n\n Паўтарыце спробу праз <xliff:g id="NUMBER_2">%3$d</xliff:g> с."</string>
+    <string name="kg_failed_attempts_almost_at_login" product="default" msgid="5270861875006378092">"Вы няправільна ўвялі графічны ключ разблакiроўкi пэўную колькасць разоў: <xliff:g id="NUMBER_0">%1$d</xliff:g>. Пасля яшчэ некалькiх няўдалых спроб (<xliff:g id="NUMBER_1">%2$d</xliff:g>) вам будзе прапанавана разблакiраваць тэлефон, увайшоўшы ў login.\n\n Паўтарыце спробу праз <xliff:g id="NUMBER_2">%3$d</xliff:g> с."</string>
     <string name="kg_text_message_separator" product="default" msgid="4503708889934976866">" — "</string>
     <string name="kg_reordering_delete_drop_target_text" msgid="2034358143731750914">"Выдалiць"</string>
     <string name="safe_media_volume_warning" product="default" msgid="3751676824423049994">"Павялiчыць гук вышэй рэкамендаванага ўзроўню?\n\nДоўгае праслухоўванне музыкi на вялiкай гучнасцi можа пашкодзiць ваш слых."</string>
@@ -2533,7 +2533,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"Назад"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"У чаканні..."</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"Экстраннае спадарожнікавае падключэнне зараз даступнае"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"У вас ёсць магчымасць адпраўляць паведамленні ў экстранныя службы, калі адсутнічае падключэнне да мабільнай сеткі ці сеткі Wi-Fi. Упэўніцеся, што ў якасці стандартнай выбрана праграма \"Google Паведамленні\"."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"У вас ёсць магчымасць адпраўляць паведамленні ў экстранныя службы, калі адсутнічае падключэнне да мабільнай сеткі ці сеткі Wi-Fi. Упэўніцеся, што ў якасці стандартнай выбрана праграма \"login Паведамленні\"."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"Экстраннае спадарожнікавае падключэнне не падтрымліваецца"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"Экстраннае спадарожнікавае падключэнне не падтрымліваецца на гэтай прыладзе"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"Экстраннае спадарожнікавае падключэнне не наладжана"</string>
@@ -2541,11 +2541,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"Экстраннае спадарожнікавае падключэнне недаступнае"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"Функцыя экстраннага спадарожнікавага падключэння недаступная ў гэтай краіне або рэгіёне"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"Экстраннае спадарожнікавае падключэнне не наладжана"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Каб выкарыстоўваць абмен паведамленнямі па спадарожнікавай сувязі, праграма \"Google Паведамленні\" павінна быць выбрана як стандартная праграма абмену паведамленнямі"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Каб выкарыстоўваць абмен паведамленнямі па спадарожнікавай сувязі, праграма \"login Паведамленні\" павінна быць выбрана як стандартная праграма абмену паведамленнямі"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"Экстраннае спадарожнікавае падключэнне недаступнае"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"Уключыце налады месцазнаходжання, каб праверыць, ці даступнае экстраннае спадарожнікавае падключэнне ў гэтай краіне ці рэгіёне"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"Абмен паведамленнямі па спадарожнікавай сувязі даступны"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Вы можаце абменьвацца паведамленнямі па спадарожнікавай сувязі, калі падключэнне да мабільнай сеткі ці сеткі Wi-Fi адсутнічае. Упэўніцеся, што ў якасці стандартнай выбрана праграма \"Google Паведамленні\"."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Вы можаце абменьвацца паведамленнямі па спадарожнікавай сувязі, калі падключэнне да мабільнай сеткі ці сеткі Wi-Fi адсутнічае. Упэўніцеся, што ў якасці стандартнай выбрана праграма \"login Паведамленні\"."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"Абмен паведамленнямі па спадарожнікавай сувязі не падтрымліваецца"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"Абмен паведамленнямі па спадарожнікавай сувязі не падтрымліваецца на гэтай прыладзе"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"Абмен паведамленнямі па спадарожнікавай сувязі не наладжаны"</string>
@@ -2553,7 +2553,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"Абмен паведамленнямі па спадарожнікавай сувязі недаступны"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"Абмен паведамленнямі па спадарожнікавай сувязі недаступны ў гэтай краіне або рэгіёне"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"Абмен паведамленнямі па спадарожнікавай сувязі не наладжаны"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Каб выкарыстоўваць абмен паведамленнямі па спадарожнікавай сувязі, праграма \"Google Паведамленні\" павінна быць выбрана як стандартная праграма абмену паведамленнямі"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Каб выкарыстоўваць абмен паведамленнямі па спадарожнікавай сувязі, праграма \"login Паведамленні\" павінна быць выбрана як стандартная праграма абмену паведамленнямі"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"Абмен паведамленнямі па спадарожнікавай сувязі недаступны"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"Каб праверыць, ці даступны абмен паведамленнямі па спадарожнікавай сувязі ў гэтай краіне ці рэгіёне, уключыце налады месцазнаходжання"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"Наладзіць разблакіроўку адбіткам пальца паўторна"</string>

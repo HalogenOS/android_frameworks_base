@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"Debuxaches incorrectamente o padrón de desbloqueo <xliff:g id="NUMBER_0">%1$d</xliff:g> veces. \n\nTéntao de novo en <xliff:g id="NUMBER_1">%2$d</xliff:g> segundos."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"Introduciches o contrasinal incorrectamente <xliff:g id="NUMBER_0">%1$d</xliff:g> veces. \n\nTéntao de novo en <xliff:g id="NUMBER_1">%2$d</xliff:g> segundos."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"Introduciches o PIN incorrectamente <xliff:g id="NUMBER_0">%1$d</xliff:g> veces. \n\nTéntao de novo en <xliff:g id="NUMBER_1">%2$d</xliff:g> segundos."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Debuxaches o padrón de desbloqueo <xliff:g id="NUMBER_0">%1$d</xliff:g> veces de forma incorrecta. Se realizas <xliff:g id="NUMBER_1">%2$d</xliff:g> intentos incorrectos máis, terás que desbloquear a tableta cos datos de inicio de sesión de Google.\n\n Téntao de novo en <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Debuxaches incorrectamente o padrón de desbloqueo <xliff:g id="NUMBER_0">%1$d</xliff:g> veces. Se realizas <xliff:g id="NUMBER_1">%2$d</xliff:g> intentos incorrectos máis, terás que desbloquear o dispositivo Android TV cos datos de inicio de sesión de Google.\n\n Téntao de novo en <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Debuxaches o padrón de desbloqueo <xliff:g id="NUMBER_0">%1$d</xliff:g> veces de forma incorrecta. Se realizas <xliff:g id="NUMBER_1">%2$d</xliff:g> intentos incorrectos máis, terás que desbloquear o teléfono cos datos de inicio de sesión de Google.\n\n Téntao de novo en <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Debuxaches o padrón de desbloqueo <xliff:g id="NUMBER_0">%1$d</xliff:g> veces de forma incorrecta. Se realizas <xliff:g id="NUMBER_1">%2$d</xliff:g> intentos incorrectos máis, terás que desbloquear a tableta cos datos de inicio de sesión de login.\n\n Téntao de novo en <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Debuxaches incorrectamente o padrón de desbloqueo <xliff:g id="NUMBER_0">%1$d</xliff:g> veces. Se realizas <xliff:g id="NUMBER_1">%2$d</xliff:g> intentos incorrectos máis, terás que desbloquear o dispositivo Android TV cos datos de inicio de sesión de login.\n\n Téntao de novo en <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Debuxaches o padrón de desbloqueo <xliff:g id="NUMBER_0">%1$d</xliff:g> veces de forma incorrecta. Se realizas <xliff:g id="NUMBER_1">%2$d</xliff:g> intentos incorrectos máis, terás que desbloquear o teléfono cos datos de inicio de sesión de login.\n\n Téntao de novo en <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Tentaches desbloquear a tableta <xliff:g id="NUMBER_0">%1$d</xliff:g> veces sen conseguilo. Se se realizan <xliff:g id="NUMBER_1">%2$d</xliff:g> intentos máis sen logralo, restablecerase a configuración de fábrica predeterminada e perderanse todos os datos do usuario."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Tentaches desbloquear o dispositivo Android TV <xliff:g id="NUMBER_0">%1$d</xliff:g> veces de forma incorrecta. Se realizas <xliff:g id="NUMBER_1">%2$d</xliff:g> intentos incorrectos máis, restablecerase a configuración de fábrica predeterminada e perderanse todos os datos do usuario."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Tentaches desbloquear o teléfono <xliff:g id="NUMBER_0">%1$d</xliff:g> veces sen conseguilo. Se se realizan <xliff:g id="NUMBER_1">%2$d</xliff:g> intentos máis sen logralo, restablecerase a configuración de fábrica predeterminada e perderanse todos os datos do usuario."</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Esqueciches o padrón?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Desbloqueo da conta"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Tentaches debuxar o padrón moitas veces"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Para desbloquear, inicia sesión coa túa conta de Google."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Para desbloquear, inicia sesión coa túa conta de login."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Nome de usuario (correo electrónico)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Contrasinal"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Iniciar sesión"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"O nome de usuario ou o contrasinal non son válidos."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Esqueciches o teu nome de usuario ou contrasinal?\nVai a "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Esqueciches o teu nome de usuario ou contrasinal?\nVai a "<b>"your account provider"</b>"."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"Comprobando..."</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"Desbloquear"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"Son activado"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Volve introducir o código PUK correcto. Se realizas intentos repetidos é posible que se desactive a tarxeta SIM permanentemente."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"Os códigos PIN non coinciden"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Tentaches debuxar o padrón moitas veces"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Para desbloquear, inicia sesión coa túa conta de Google."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Para desbloquear, inicia sesión coa túa conta de login."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Nome de usuario (correo electrónico)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Contrasinal"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Iniciar sesión"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"O nome de usuario ou o contrasinal non son válidos."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Esqueciches o teu nome de usuario ou contrasinal?\nVisita a páxina "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Esqueciches o teu nome de usuario ou contrasinal?\nVisita a páxina "<b>"your account provider"</b>"."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"Comprobando a conta..."</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"Introduciches o PIN incorrectamente <xliff:g id="NUMBER_0">%1$d</xliff:g> veces. \n\nTéntao de novo en <xliff:g id="NUMBER_1">%2$d</xliff:g> segundos."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"Introduciches o contrasinal incorrectamente <xliff:g id="NUMBER_0">%1$d</xliff:g> veces. \n\nTéntao de novo en <xliff:g id="NUMBER_1">%2$d</xliff:g> segundos."</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"Volver"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"Pendente..."</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"SOS por satélite xa está dispoñible"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Podes enviar mensaxes aos servizos de emerxencia se non tes conexión con ningunha rede wifi nin de telefonía móbil. Debes ter definida Mensaxes de Google como aplicación predeterminada de mensaxaría."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Podes enviar mensaxes aos servizos de emerxencia se non tes conexión con ningunha rede wifi nin de telefonía móbil. Debes ter definida Mensaxes de login como aplicación predeterminada de mensaxaría."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"Os SOS por satélite non son compatibles"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"Os SOS por satélite non son compatibles con este dispositivo"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"SOS por satélite non se configurou"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"SOS por satélite non está dispoñible"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"SOS por satélite non está dispoñible neste país ou rexión"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"SOS por satélite non se configurou"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Para intercambiar mensaxes por satélite, cómpre establecer Mensaxes de Google como aplicación de mensaxaría predeterminada"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Para intercambiar mensaxes por satélite, cómpre establecer Mensaxes de login como aplicación de mensaxaría predeterminada"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"SOS por satélite non está dispoñible"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"Para comprobar se está dispoñible SOS por satélite neste país ou rexión, activa a configuración de localización"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"Mensaxaría por satélite dispoñible"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Podes intercambiar mensaxes por satélite se non tes conexión con ningunha rede wifi nin de telefonía móbil. Debes ter definida Mensaxes de Google como aplicación predeterminada de mensaxaría."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Podes intercambiar mensaxes por satélite se non tes conexión con ningunha rede wifi nin de telefonía móbil. Debes ter definida Mensaxes de login como aplicación predeterminada de mensaxaría."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"Mensaxaría por satélite non admitida"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"A mensaxaría por satélite non é compatible con este dispositivo"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"Mensaxaría por satélite non configurada"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"Mensaxaría por satélite non dispoñible"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"A mensaxaría por satélite non está dispoñible neste país ou rexión"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"Mensaxaría por satélite non configurada"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Para intercambiar mensaxes por satélite, cómpre establecer Mensaxes de Google como aplicación de mensaxaría predeterminada"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Para intercambiar mensaxes por satélite, cómpre establecer Mensaxes de login como aplicación de mensaxaría predeterminada"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"Mensaxaría por satélite non dispoñible"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"Para ver se está dispoñible a mensaxaría por satélite neste país ou rexión, activa a configuración de localización"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"Configura de novo o desbloqueo dactilar"</string>

@@ -961,7 +961,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1009,7 +1009,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1095,12 +1095,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Ali ste pozabili vzorec?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Odklepanje računa"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Preveč poskusov vzorca"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Če želite odkleniti telefon, se prijavite z računom Google."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Če želite odkleniti telefon, se prijavite z računom login."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Uporabniško ime (e-pošta)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Geslo"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Prijava"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"Neveljavno uporabniško ime ali geslo."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Ali ste pozabili uporabniško ime ali geslo?\nObiščite "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Ali ste pozabili uporabniško ime ali geslo?\nObiščite "<b>"your account provider"</b>"."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"Preverjanje ..."</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"Odkleni"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"Vklopi zvok"</string>
@@ -1762,12 +1762,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Vnovič vnesite pravilno kodo PUK. Večkratni poskusi bodo trajno onemogočili kartico SIM."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"Kodi PIN se ne ujemata"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Preveč poskusov vzorca"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Če želite odkleniti napravo, se prijavite z računom Google."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Če želite odkleniti napravo, se prijavite z računom login."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Uporabniško ime (e-pošta)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Geslo"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Prijava"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"Neveljavno uporabniško ime ali geslo."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Ali ste pozabili uporabniško ime ali geslo?\nObiščite "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Ali ste pozabili uporabniško ime ali geslo?\nObiščite "<b>"your account provider"</b>"."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"Preverjanje računa ..."</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"PIN ste <xliff:g id="NUMBER_0">%1$d</xliff:g>-krat vnesli napačno. \n\nZnova poskusite čez <xliff:g id="NUMBER_1">%2$d</xliff:g> s."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"Geslo ste <xliff:g id="NUMBER_0">%1$d</xliff:g>-krat vnesli napačno. \n\nZnova poskusite čez <xliff:g id="NUMBER_1">%2$d</xliff:g> s."</string>
@@ -2533,7 +2533,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"Pomik nazaj"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"V teku …"</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"SOS prek satelita je zdaj na voljo"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Reševalnim službam lahko pošljete sporočilo, če ni povezave z mobilnim omrežjem ali omrežjem Wi-Fi. Google Sporočila morajo biti privzeta aplikacija za sporočanje."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Reševalnim službam lahko pošljete sporočilo, če ni povezave z mobilnim omrežjem ali omrežjem Wi-Fi. login Sporočila morajo biti privzeta aplikacija za sporočanje."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"SOS prek satelita ni podprt"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"SOS prek satelita ni podprt v tej napravi"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"SOS prek satelita ni nastavljen"</string>
@@ -2541,11 +2541,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"SOS prek satelita ni na voljo"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"SOS prek satelita ni na voljo v tej državi ali regiji"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"SOS prek satelita ni nastavljen"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Če želite pošiljati satelitska sporočila, nastavite Google Sporočila kot privzeto aplikacijo za sporočanje"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Če želite pošiljati satelitska sporočila, nastavite login Sporočila kot privzeto aplikacijo za sporočanje"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"SOS prek satelita ni na voljo"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"Če želite preveriti, ali je SOS prek satelita na voljo v tej državi ali regiji, vklopite nastavitve lokacije"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"Satelitska sporočila so na voljo"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Satelitska sporočila lahko pošljete, če ni povezave z mobilnim omrežjem ali omrežjem Wi-Fi. Google Sporočila morajo biti privzeta aplikacija za sporočanje."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Satelitska sporočila lahko pošljete, če ni povezave z mobilnim omrežjem ali omrežjem Wi-Fi. login Sporočila morajo biti privzeta aplikacija za sporočanje."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"Satelitska sporočila niso podprta"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"Satelitska sporočila niso podprta v tej napravi"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"Satelitska sporočila niso nastavljena"</string>
@@ -2553,7 +2553,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"Satelitska sporočila niso na voljo"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"Satelitska sporočila niso na voljo v tej državi ali regiji"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"Satelitska sporočila niso nastavljena"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Če želite pošiljati satelitska sporočila, nastavite Google Sporočila kot privzeto aplikacijo za sporočanje"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Če želite pošiljati satelitska sporočila, nastavite login Sporočila kot privzeto aplikacijo za sporočanje"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"Satelitska sporočila niso na voljo"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"Če želite preveriti, ali so satelitska sporočila na voljo v tej državi ali regiji, vklopite nastavitve lokacije"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"Vnovična nastavitev odklepanja s prstnim odtisom"</string>

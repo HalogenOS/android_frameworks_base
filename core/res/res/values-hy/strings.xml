@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"Դուք <xliff:g id="NUMBER_0">%1$d</xliff:g> անգամ սխալ եք հավաքել ձեր ապակողպման սխեման: \n\nՓորձեք կրկին <xliff:g id="NUMBER_1">%2$d</xliff:g> վայրկյանից:"</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"Դուք սխալ եք մուտքագրել ձեր գաղտնաբառը <xliff:g id="NUMBER_0">%1$d</xliff:g> անգամ: \n\n Փորձեք կրկին <xliff:g id="NUMBER_1">%2$d</xliff:g> վայրկյանից:"</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"Դուք <xliff:g id="NUMBER_0">%1$d</xliff:g> անգամ սխալ եք մուտքագրել ձեր PIN-ը: \n\nՓորձեք կրկին <xliff:g id="NUMBER_1">%2$d</xliff:g> վայրկյանից:"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Դուք <xliff:g id="NUMBER_0">%1$d</xliff:g> անգամ սխալ եք հավաքել ձեր ապակողպման սխեման: <xliff:g id="NUMBER_1">%2$d</xliff:g> անգամից ավել անհաջող փորձերից հետո ձեզ կառաջարկվի ապակողպել ձեր պլանշետը` օգտագործելով ձեր Google-ի մուտքի օգտանունը:\n \n Փորձեք կրկին <xliff:g id="NUMBER_2">%3$d</xliff:g> վայրկյանից:"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Դուք <xliff:g id="NUMBER_0">%1$d</xliff:g> անգամ սխալ եք հավաքել ձեր ապակողպման նախշը: Եվս <xliff:g id="NUMBER_1">%2$d</xliff:g> անհաջող փորձից հետո ձեզ կառաջարկվի ապակողպել ձեր Android TV սարքը՝ օգտագործելով Google-ի ձեր մուտքային տվյալները:\n \n Փորձեք կրկին <xliff:g id="NUMBER_2">%3$d</xliff:g> վայրկյանից:"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Դուք <xliff:g id="NUMBER_0">%1$d</xliff:g> անգամ սխալ եք հավաքել ձեր ապակողպման սխեման: Եվս <xliff:g id="NUMBER_1">%2$d</xliff:g> անհաջող փորձից հետո ձեզ կառաջարկվի ապակողպել ձեր հեռախոսը` օգտագործելով Google-ի ձեր մուտքը:\n \n Փորձեք կրկին <xliff:g id="NUMBER_2">%3$d</xliff:g> վայրկյանից:"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Դուք <xliff:g id="NUMBER_0">%1$d</xliff:g> անգամ սխալ եք հավաքել ձեր ապակողպման սխեման: <xliff:g id="NUMBER_1">%2$d</xliff:g> անգամից ավել անհաջող փորձերից հետո ձեզ կառաջարկվի ապակողպել ձեր պլանշետը` օգտագործելով ձեր login-ի մուտքի օգտանունը:\n \n Փորձեք կրկին <xliff:g id="NUMBER_2">%3$d</xliff:g> վայրկյանից:"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Դուք <xliff:g id="NUMBER_0">%1$d</xliff:g> անգամ սխալ եք հավաքել ձեր ապակողպման նախշը: Եվս <xliff:g id="NUMBER_1">%2$d</xliff:g> անհաջող փորձից հետո ձեզ կառաջարկվի ապակողպել ձեր Android TV սարքը՝ օգտագործելով login-ի ձեր մուտքային տվյալները:\n \n Փորձեք կրկին <xliff:g id="NUMBER_2">%3$d</xliff:g> վայրկյանից:"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Դուք <xliff:g id="NUMBER_0">%1$d</xliff:g> անգամ սխալ եք հավաքել ձեր ապակողպման սխեման: Եվս <xliff:g id="NUMBER_1">%2$d</xliff:g> անհաջող փորձից հետո ձեզ կառաջարկվի ապակողպել ձեր հեռախոսը` օգտագործելով login-ի ձեր մուտքը:\n \n Փորձեք կրկին <xliff:g id="NUMBER_2">%3$d</xliff:g> վայրկյանից:"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Դուք <xliff:g id="NUMBER_0">%1$d</xliff:g> անգամ գրասալիկն ապակողպելու սխալ փորձ եք արել: Եվս <xliff:g id="NUMBER_1">%2$d</xliff:g> անհաջող փորձից հետո պլանշետը կվերակարգավորվի գործարանային լռելյայնի, և օգտատիրոջ բոլոր տվյալները կկորչեն:"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Դուք կատարել եք Android TV սարքն ապակողպելու <xliff:g id="NUMBER_0">%1$d</xliff:g> անհաջող փորձ։ <xliff:g id="NUMBER_1">%2$d</xliff:g> անգամից ավել անհաջող փորձերից հետո ձեր Android TV սարքում կվերականգնվեն գործարանային կարգավորումները և օգտատիրոջ բոլոր տվյալները կջնջվեն։"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Դուք <xliff:g id="NUMBER_0">%1$d</xliff:g> անգամ հեռախոսը ապակողպելու սխալ փորձ եք արել: Եվս <xliff:g id="NUMBER_1">%2$d</xliff:g> անհաջող փորձից հետո հեռախոսը կվերակարգավորվի գործարանային սկզբնադիր ռեժիմի, և օգտատիրոջ բոլոր տվյալները կկորչեն:"</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Մոռացե՞լ եք սխեման:"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Հաշվի ապակողպում"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Չափից շատ սխեմայի փորձեր"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Ապակողպելու համար՝ մուտք գործեք ձեր Google հաշվով:"</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Ապակողպելու համար՝ մուտք գործեք ձեր հաշվով:"</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Օգտանուն (էլփոստ)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Գաղտնաբառ"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Մուտք գործել"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"Անվավեր օգտանուն կամ գաղտնաբառ:"</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Մոռացե՞լ եք ձեր օգտանունը կամ գաղտնաբառը:\nԱյցելեք "<b>"google.com/accounts/recovery"</b>":"</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Մոռացե՞լ եք ձեր օգտանունը կամ գաղտնաբառը:\nԱյցելեք "<b>"your account provider"</b>":"</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"Ստուգվում է..."</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"Ապակողպել"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"Ձայնը միացնել"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Վերամուտքագրեք ճիշտ PUK ծածկագիրը: Կրկնվող փորձերը ընդմիշտ կկասեցնեն SIM քարտը:"</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN ծածկագրերը չեն համընկնում"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Չափից շատ սխեմայի փորձեր"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Ապակողպելու համար՝ մուտք գործեք ձեր Google հաշվով:"</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Ապակողպելու համար՝ մուտք գործեք ձեր հաշվով:"</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Օգտանուն (էլփոստ)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Գաղտնաբառը"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Մուտք գործել"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"Սխալ օգտանուն կամ գաղտնաբառ:"</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Մոռացե՞լ եք ձեր օգտանունը կամ գաղտնաբառը:\nԱյցելեք "<b>"google.com /accounts/recovery"</b>":"</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Մոռացե՞լ եք ձեր օգտանունը կամ գաղտնաբառը:\nԱյցելեք "<b>"your account provider"</b>":"</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"Հաշիվը ստուգվում է..."</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"Դուք <xliff:g id="NUMBER_0">%1$d</xliff:g> անգամ սխալ եք մուտքագրել ձեր PIN-ը: \n\nՓորձեք կրկին <xliff:g id="NUMBER_1">%2$d</xliff:g> վայրկյանից:"</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"Դուք սխալ եք մուտքագրել ձեր գաղտնաբառը <xliff:g id="NUMBER_0">%1$d</xliff:g> անգամ: \n\nՓորձեք կրկին <xliff:g id="NUMBER_1">%2$d</xliff:g> վայրկյանից:"</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"Հետ"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"Առկախ է…"</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"Satellite SOS-ը այժմ հասանելի է"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Դուք կարող եք հաղորդագրություն գրել արտակարգ իրավիճակների ծառայություններին բջջային կամ Wi-Fi ցանցի բացակայության դեպքում։ Google Messages-ը պետք է լինի հաղորդագրման ձեր կանխադրված հավելվածը։"</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Դուք կարող եք հաղորդագրություն գրել արտակարգ իրավիճակների ծառայություններին բջջային կամ Wi-Fi ցանցի բացակայության դեպքում։ Messages-ը պետք է լինի հաղորդագրման ձեր կանխադրված հավելվածը։"</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"Satellite SOS-ը չի աջակցվում"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"Satellite SOS-ը այս սարքում չի աջակցվում"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"Satellite SOS-ը կարգավորված չէ"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"Satellite SOS-ը հասանելի չէ"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"Satellite SOS-ը հասանելի չէ այս երկրում կամ տարածաշրջանում"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"Satellite SOS-ը կարգավորված չէ"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Արբանյակային կապով հաղորդագրություններ ուղարկելու համար Google Messages-ը դարձրեք հաղորդագրման ձեր կանխադրված հավելվածը"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Արբանյակային կապով հաղորդագրություններ ուղարկելու համար Messages-ը դարձրեք հաղորդագրման ձեր կանխադրված հավելվածը"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"Satellite SOS-ը հասանելի չէ"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"Միացրեք տեղադրության կարգավորումները, որպեսզի ստուգեք՝ արդյոք Satellite SOS գործառույթը հասանելի է այս երկրում կամ տարածաշրջանում"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"Արբանյակային հաղորդագրումը հասանելի է"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Բջջային կամ Wi-Fi ցանցի բացակայության դեպքում դուք կարող եք հաղորդագրություններ ուղարկել արբանյակային կապով։ Google Messages-ը պետք է լինի հաղորդագրման ձեր կանխադրված հավելվածը։"</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Բջջային կամ Wi-Fi ցանցի բացակայության դեպքում դուք կարող եք հաղորդագրություններ ուղարկել արբանյակային կապով։ Messages-ը պետք է լինի հաղորդագրման ձեր կանխադրված հավելվածը։"</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"Արբանյակային հաղորդագրումը չի աջակցվում"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"Արբանյակային հաղորդագրումն այս սարքում չի աջակցվում"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"Արբանյակային հաղորդագրումը կարգավորված չէ"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"Արբանյակային հաղորդագրումը հասանելի չէ"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"Արբանյակային հաղորդագրումը հասանելի չէ այս երկրում կամ տարածաշրջանում"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"Արբանյակային հաղորդագրումը կարգավորված չէ"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Արբանյակային կապով հաղորդագրություններ ուղարկելու համար Google Messages-ը դարձրեք հաղորդագրման ձեր կանխադրված հավելվածը"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Արբանյակային կապով հաղորդագրություններ ուղարկելու համար Messages-ը դարձրեք հաղորդագրման ձեր կանխադրված հավելվածը"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"Արբանյակային հաղորդագրումը հասանելի չէ"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"Միացրեք տեղադրության կարգավորումները, որպեսզի ստուգեք՝ արդյոք արբանյակային հաղորդագրումը հասանելի է այս երկրում կամ տարածաշրջանում"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"Նորից կարգավորեք մատնահետքով ապակողպումը"</string>

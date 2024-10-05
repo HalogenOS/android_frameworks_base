@@ -960,7 +960,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1008,7 +1008,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1081,9 +1081,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"<xliff:g id="NUMBER_0">%1$d</xliff:g> puta ste nepravilno nacrtali šablon za otključavanje. \n\nProbajte ponovo za <xliff:g id="NUMBER_1">%2$d</xliff:g> sekunde/i."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"<xliff:g id="NUMBER_0">%1$d</xliff:g> puta ste pogrešno uneli lozinku. \n\nProbajte ponovo za <xliff:g id="NUMBER_1">%2$d</xliff:g> sekunde/i."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"<xliff:g id="NUMBER_0">%1$d</xliff:g> puta ste pogrešno uneli PIN. \n\nProbajte ponovo za <xliff:g id="NUMBER_1">%2$d</xliff:g> sekunde/i."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"<xliff:g id="NUMBER_0">%1$d</xliff:g> puta ste netačno uneli šablon za otključavanje. Nakon još <xliff:g id="NUMBER_1">%2$d</xliff:g> nesupešna(ih) pokušaja, od vas će biti zatraženo da otključate tablet pomoću podataka za prijavljivanje na Google.\n\n Probajte ponovo za <xliff:g id="NUMBER_2">%3$d</xliff:g> sekunde/i."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"<xliff:g id="NUMBER_0">%1$d</xliff:g> puta ste netačno uneli šablon za otključavanje. Nakon još <xliff:g id="NUMBER_1">%2$d</xliff:g> nesupešna(ih) pokušaja, od vas će biti zatraženo da otključate tablet pomoću podataka za prijavljivanje na login.\n\n Probajte ponovo za <xliff:g id="NUMBER_2">%3$d</xliff:g> sekunde/i."</string>
     <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Netačno ste nacrtali šablon za otključavanje <xliff:g id="NUMBER_0">%1$d</xliff:g> puta. Ako pogrešno pokušate još puta (<xliff:g id="NUMBER_1">%2$d</xliff:g>), zatražićemo da otključate telefon pomoću Android TV uređaja.\n\n Probajte ponovo za <xliff:g id="NUMBER_2">%3$d</xliff:g> sek."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"<xliff:g id="NUMBER_0">%1$d</xliff:g> puta ste netačno uneli šablon za otključavanje. Nakon još <xliff:g id="NUMBER_1">%2$d</xliff:g> nesupešna(ih) pokušaja, od vas će biti zatraženo da otključate telefon pomoću podataka za prijavljivanje na Google.\n\n Probajte ponovo za <xliff:g id="NUMBER_2">%3$d</xliff:g> sekunde/i."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"<xliff:g id="NUMBER_0">%1$d</xliff:g> puta ste netačno uneli šablon za otključavanje. Nakon još <xliff:g id="NUMBER_1">%2$d</xliff:g> nesupešna(ih) pokušaja, od vas će biti zatraženo da otključate telefon pomoću podataka za prijavljivanje na login.\n\n Probajte ponovo za <xliff:g id="NUMBER_2">%3$d</xliff:g> sekunde/i."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Nepravilno ste pokušali da otključate tablet <xliff:g id="NUMBER_0">%1$d</xliff:g> puta. Nakon još neuspešnih pokušaja (<xliff:g id="NUMBER_1">%2$d</xliff:g>) tablet će biti resetovan na fabrička podešavanja i svi korisnički podaci će biti izgubljeni."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Broj vaših neuspešnih pokušaja da otključate Android TV uređaj: <xliff:g id="NUMBER_0">%1$d</xliff:g>. Broj preostalih neuspešnih pokušaja posle kojih će se Android TV resetovati na fabrička podešavanja i svi podaci korisnika će biti izgubljeni: <xliff:g id="NUMBER_1">%2$d</xliff:g>."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Neispravno ste pokušali da otključate telefon <xliff:g id="NUMBER_0">%1$d</xliff:g> puta. Nakon još neuspešnih pokušaja (<xliff:g id="NUMBER_1">%2$d</xliff:g>) telefon će biti resetovan na fabrička podešavanja i svi korisnički podaci će biti izgubljeni."</string>
@@ -1094,12 +1094,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Zaboravili ste šablon?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Otključavanje naloga"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Previše pokušaja unosa šablona"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Da biste otključali, prijavite se pomoću Google naloga."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Da biste otključali, prijavite se pomoću naloga."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Korisničko ime (imejl adresa)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Lozinka"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Prijavi me"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"Nevažeće korisničko ime ili lozinka."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Zaboravili ste korisničko ime ili lozinku?\nPosetite adresu "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Zaboravili ste korisničko ime ili lozinku?\nPosetite adresu "<b>"your account provider"</b>"."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"Proveravanje..."</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"Otključaj"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"Uključi zvuk"</string>
@@ -1761,12 +1761,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Ponovo unesite ispravni PUK kôd. Ponovljeni pokušaji će trajno onemogućiti SIM."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN kodovi se ne podudaraju"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Previše pokušaja unosa šablona"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Da biste otključali, prijavite se pomoću Google naloga."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Da biste otključali, prijavite se pomoću naloga."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Korisničko ime (imejl adresa)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Lozinka"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Prijavi me"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"Nevažeće korisničko ime ili lozinka."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Zaboravili ste korisničko ime ili lozinku?\nPosetite adresu "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Zaboravili ste korisničko ime ili lozinku?\nPosetite adresu "<b>"your account provider"</b>"."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"Provera naloga…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"Uneli ste netačni PIN <xliff:g id="NUMBER_0">%1$d</xliff:g> puta. \n\nProbajte ponovo za <xliff:g id="NUMBER_1">%2$d</xliff:g> sekunde/i."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"Uneli ste netačnu lozinku <xliff:g id="NUMBER_0">%1$d</xliff:g> puta. \n\nProbajte ponovo za <xliff:g id="NUMBER_1">%2$d</xliff:g> sekunde/i."</string>
@@ -2532,7 +2532,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"Nazad"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"Na čekanju..."</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"Hitna pomoć preko satelita je sada dostupna"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Možete da šaljete poruke hitnim službama ako nemate pristup mobilnoj ni WiFi mreži. Google Messages mora da bude podrazumevana aplikacija za razmenu poruka."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Možete da šaljete poruke hitnim službama ako nemate pristup mobilnoj ni WiFi mreži. Messages mora da bude podrazumevana aplikacija za razmenu poruka."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"Hitna pomoć preko satelita nije podržana"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"Hitna pomoć preko satelita nije podržana na ovom uređaju"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"Hitna pomoć preko satelita nije podešena"</string>
@@ -2540,11 +2540,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"Hitna pomoć preko satelita nije dostupna"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"Hitna pomoć preko satelita nije dostupna u ovoj zemlji ili regionu"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"Hitna pomoć preko satelita nije podešena"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Da biste slali poruke preko satelita, podesite Google Messages kao podrazumevanu aplikaciju za razmenu poruka"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Da biste slali poruke preko satelita, podesite Messages kao podrazumevanu aplikaciju za razmenu poruka"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"Hitna pomoć preko satelita nije dostupna"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"Da biste proverili da li je hitna pomoć preko satelita dostupna u ovoj zemlji ili regionu, uključite podešavanja lokacije"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"Razmena poruka preko satelita je dostupna"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Možete da šaljete poruke preko satelita ako nemate pristup mobilnoj ni WiFi mreži. Google Messages mora da bude podrazumevana aplikacija za razmenu poruka."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Možete da šaljete poruke preko satelita ako nemate pristup mobilnoj ni WiFi mreži. Messages mora da bude podrazumevana aplikacija za razmenu poruka."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"Razmena poruka preko satelita nije podržana"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"Razmena poruka preko satelita nije podržana na ovom uređaju"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"Razmena poruka preko satelita nije podešena"</string>
@@ -2552,7 +2552,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"Razmena poruka preko satelita nije dostupna"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"Razmena poruka preko satelita nije dostupna u ovoj zemlji ili regionu"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"Razmena poruka preko satelita nije podešena"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Da biste slali poruke preko satelita, podesite Google Messages kao podrazumevanu aplikaciju za razmenu poruka"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Da biste slali poruke preko satelita, podesite Messages kao podrazumevanu aplikaciju za razmenu poruka"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"Razmena poruka preko satelita nije dostupna"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"Da biste proverili da li je razmena poruka preko satelita dostupna u ovoj zemlji ili regionu, uključite podešavanja lokacije"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"Ponovo podesite otključavanje otiskom prsta"</string>

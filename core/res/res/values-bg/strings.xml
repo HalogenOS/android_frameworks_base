@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"Начертахте неправилно фигурата си за отключване <xliff:g id="NUMBER_0">%1$d</xliff:g> пъти. \n\nОпитайте отново след <xliff:g id="NUMBER_1">%2$d</xliff:g> секунди."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"Въведохте неправилно паролата си <xliff:g id="NUMBER_0">%1$d</xliff:g> пъти. \n\nОпитайте отново след <xliff:g id="NUMBER_1">%2$d</xliff:g> секунди."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"Въведохте неправилно ПИН кода си <xliff:g id="NUMBER_0">%1$d</xliff:g> пъти. \n\nОпитайте отново след <xliff:g id="NUMBER_1">%2$d</xliff:g> секунди."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Начертахте неправилно фигурата си за отключване <xliff:g id="NUMBER_0">%1$d</xliff:g> пъти. След още <xliff:g id="NUMBER_1">%2$d</xliff:g> неуспешни опита ще бъдете помолени да отключите таблета посредством данните си за вход в Google.\n\nОпитайте отново след <xliff:g id="NUMBER_2">%3$d</xliff:g> секунди."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Начертахте неправилно фигурата си за отключване <xliff:g id="NUMBER_0">%1$d</xliff:g> пъти. След още <xliff:g id="NUMBER_1">%2$d</xliff:g> неуспешни опита ще трябва да отключите устройството с Android TV посредством данните си за вход в Google.\n\nОпитайте отново след <xliff:g id="NUMBER_2">%3$d</xliff:g> секунди."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Начертахте неправилно фигурата си за отключване <xliff:g id="NUMBER_0">%1$d</xliff:g> пъти. След още <xliff:g id="NUMBER_1">%2$d</xliff:g> неуспешни опита ще бъдете помолени да отключите телефона посредством данните си за вход в Google.\n\n Опитайте отново след <xliff:g id="NUMBER_2">%3$d</xliff:g> секунди."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Начертахте неправилно фигурата си за отключване <xliff:g id="NUMBER_0">%1$d</xliff:g> пъти. След още <xliff:g id="NUMBER_1">%2$d</xliff:g> неуспешни опита ще бъдете помолени да отключите таблета посредством данните си за вход в login.\n\nОпитайте отново след <xliff:g id="NUMBER_2">%3$d</xliff:g> секунди."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Начертахте неправилно фигурата си за отключване <xliff:g id="NUMBER_0">%1$d</xliff:g> пъти. След още <xliff:g id="NUMBER_1">%2$d</xliff:g> неуспешни опита ще трябва да отключите устройството с Android TV посредством данните си за вход в login.\n\nОпитайте отново след <xliff:g id="NUMBER_2">%3$d</xliff:g> секунди."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Начертахте неправилно фигурата си за отключване <xliff:g id="NUMBER_0">%1$d</xliff:g> пъти. След още <xliff:g id="NUMBER_1">%2$d</xliff:g> неуспешни опита ще бъдете помолени да отключите телефона посредством данните си за вход в login.\n\n Опитайте отново след <xliff:g id="NUMBER_2">%3$d</xliff:g> секунди."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Направихте опит да отключите таблета неправилно <xliff:g id="NUMBER_0">%1$d</xliff:g> пъти. След още <xliff:g id="NUMBER_1">%2$d</xliff:g> неуспешни опита ще бъдат възстановени стандартните му фабрични настройки и всички потребителски данни ще бъдат заличени."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Направихте <xliff:g id="NUMBER_0">%1$d</xliff:g> неправилни опита за отключване на устройството си с Android TV. След още <xliff:g id="NUMBER_1">%2$d</xliff:g> неуспешни опита ще бъдат възстановени фабричните му настройки и всички потребителски данни ще бъдат заличени."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Направихте опит да отключите телефона неправилно <xliff:g id="NUMBER_0">%1$d</xliff:g> пъти. След още <xliff:g id="NUMBER_1">%2$d</xliff:g> неуспешни опита ще бъдат възстановени стандартните му фабрични настройки и всички потребителски данни ще бъдат заличени."</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Забравили сте фигурата?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Отключване на профила"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Опитите за фигурата са твърде много"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"За да отключите, влезте с профила си в Google."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"За да отключите, влезте с профила си в login."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Потребителско име (имейл)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Парола"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Вход"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"Потребителското име или паролата са невалидни."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Забравили сте потребителското си име или парола?\nПосетете "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Забравили сте потребителското си име или парола?\nПосетете "<b>"your account provider"</b>"."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"Проверява се..."</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"Отключване"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"Включване на звука"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Въведете отново правилния PUK код. Многократните опити ще деактивират за постоянно SIM картата."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"ПИН кодовете не съвпадат"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Опитите за фигурата са твърде много"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"За да отключите, влезте с профила си в Google."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"За да отключите, влезте с профила си в login."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Потребителско име (имейл)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Парола"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Вход"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"Невалидно потребителско име или парола."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Забравили сте потребителското име или паролата си?\nПосетете "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Забравили сте потребителското име или паролата си?\nПосетете "<b>"your account provider"</b>"."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"Профилът се проверява…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"Въведохте неправилно ПИН кода си <xliff:g id="NUMBER_0">%1$d</xliff:g> пъти. \n\nОпитайте отново след <xliff:g id="NUMBER_1">%2$d</xliff:g> секунди."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"Въведохте неправилно паролата си <xliff:g id="NUMBER_0">%1$d</xliff:g> пъти. \n\nОпитайте отново след <xliff:g id="NUMBER_1">%2$d</xliff:g> секунди."</string>
@@ -2098,7 +2098,7 @@
     <string name="app_streaming_blocked_title_for_camera_dialog" msgid="3935701653713853065">"Няма достъп до камерата"</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog" msgid="3516853717714141951">"Продължете на телефона"</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog" msgid="544822455127171206">"Микрофонът не е достъпен"</string>
-    <string name="app_streaming_blocked_title_for_playstore_dialog" msgid="8149823099822897538">"Няма достъп до Google Play Магазин"</string>
+    <string name="app_streaming_blocked_title_for_playstore_dialog" msgid="8149823099822897538">"Няма достъп до Play Магазин"</string>
     <string name="app_streaming_blocked_title_for_settings_dialog" product="tv" msgid="196994247017450357">"Настройките за Android TV не са достъпни"</string>
     <string name="app_streaming_blocked_title_for_settings_dialog" product="tablet" msgid="8222710146267948647">"Настройките за таблета не са достъпни"</string>
     <string name="app_streaming_blocked_title_for_settings_dialog" product="default" msgid="6895719984375299791">"Настройките за телефона не са достъпни"</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"Назад"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"Изчаква..."</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"Функцията „SOS чрез сателит“ вече е налице"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Можете да изпращате съобщения до службите за спешни случаи, ако нямате връзка с мобилна или Wi-Fi мрежа. Google Messages трябва да е основното ви приложение за съобщения."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Можете да изпращате съобщения до службите за спешни случаи, ако нямате връзка с мобилна или Wi-Fi мрежа. Messages трябва да е основното ви приложение за съобщения."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"Функцията „SOS чрез сателит“ не се поддържа"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"Функцията „SOS чрез сателит“ не се поддържа на това устройство"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"Функцията „SOS чрез сателит“ не е настроена"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"Функцията „SOS чрез сателит“ не е налице"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"Функцията „SOS чрез сателит“ не е налице в тази държава или регион"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"Функцията „SOS чрез сателит“ не е настроена"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"За да изпращате съобщения чрез сателит, задайте Google Messages като основното си приложение за съобщения"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"За да изпращате съобщения чрез сателит, задайте Messages като основното си приложение за съобщения"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"Функцията „SOS чрез сателит“ не е налице"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"За да проверите дали функцията „SOS чрез сателит“ е налице в тази държава или регион, включете настройките за местоположението"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"Функцията за сателитни съобщения е налице"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Можете да изпращате съобщения чрез сателит, ако нямате връзка с мобилна или Wi-Fi мрежа. Google Messages трябва да е основното ви приложение за съобщения."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Можете да изпращате съобщения чрез сателит, ако нямате връзка с мобилна или Wi-Fi мрежа. Messages трябва да е основното ви приложение за съобщения."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"Функцията за сателитни съобщения не се поддържа"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"Функцията за сателитни съобщения не се поддържа на това устройство"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"Функцията за сателитни съобщения не е настроена"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"Функцията за сателитни съобщения не е налице"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"Функцията за сателитни съобщения не е налице в тази държава или регион"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"Функцията за сателитни съобщения не е настроена"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"За да изпращате съобщения чрез сателит, задайте Google Messages като основното си приложение за съобщения"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"За да изпращате съобщения чрез сателит, задайте Messages като основното си приложение за съобщения"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"Функцията за сателитни съобщения не е налице"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"За да проверите дали функцията за сателитни съобщения е налице в тази държава или регион, включете настройките за местоположението"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"Повторно настройване на „Отключване с отпечатък“"</string>

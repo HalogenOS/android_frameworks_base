@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"നിങ്ങളുടെ പാറ്റേൺ <xliff:g id="NUMBER_0">%1$d</xliff:g> തവണ തെറ്റായി വരച്ചു. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> സെക്കൻഡിനുള്ളിൽ വീണ്ടും ശ്രമിക്കുക."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"നിങ്ങളുടെ പാസ്‌വേഡ് <xliff:g id="NUMBER_0">%1$d</xliff:g> തവണ തെറ്റായി ടൈപ്പുചെയ്‌തു. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> സെക്കൻഡിനുള്ളിൽ വീണ്ടും ശ്രമിക്കുക."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"നിങ്ങളുടെ പിൻ <xliff:g id="NUMBER_0">%1$d</xliff:g> തവണ തെറ്റായി ടൈപ്പുചെയ്‌തു. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> സെക്കൻഡിനുള്ളിൽ വീണ്ടും ശ്രമിക്കുക."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"നിങ്ങളുടെ അൺലോക്കുചെയ്യൽ പാറ്റേൺ <xliff:g id="NUMBER_0">%1$d</xliff:g> തവണ തെറ്റായി വരച്ചു. <xliff:g id="NUMBER_1">%2$d</xliff:g> തെറ്റായ ശ്രമങ്ങൾക്കുശേഷം, Google സൈൻ ഇൻ ചെയ്യൽ ഉപയോഗിച്ച് നിങ്ങളുടെ ടാബ്‌ലെറ്റ് അൺലോക്കുചെയ്യുന്നതിന് ആവശ്യപ്പടും.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> സെക്കൻഡിനുള്ളിൽ വീണ്ടും ശ്രമിക്കുക."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"നിങ്ങളുടെ അൺലോക്ക് പാറ്റേൺ <xliff:g id="NUMBER_0">%1$d</xliff:g> തവണ തെറ്റായി വരച്ചു. <xliff:g id="NUMBER_1">%2$d</xliff:g> ശ്രമങ്ങൾ കൂടി പരാജയപ്പെട്ടാൽ Google സൈൻ ഇൻ ഉപയോഗിച്ച് നിങ്ങളുടെ Android TV അൺലോക്ക് ചെയ്യാൻ ആവശ്യപ്പെടും.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> സെക്കൻഡിന് ശേഷം വീണ്ടും ശ്രമിക്കുക."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"നിങ്ങൾ അൺലോക്കുചെയ്യൽ പാറ്റേൺ <xliff:g id="NUMBER_0">%1$d</xliff:g> തവണ തെറ്റായി വരച്ചു. <xliff:g id="NUMBER_1">%2$d</xliff:g> തെറ്റായ ശ്രമങ്ങൾക്കുശേഷം, Google സൈൻ ഇൻ ചെയ്യൽ ഉപയോഗിച്ച് നിങ്ങളുടെ ഫോൺ അൺലോക്കുചെയ്യുന്നതിന് ആവശ്യപ്പടും. \n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> സെക്കൻഡിനുള്ളിൽ വീണ്ടും ശ്രമിക്കുക."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"നിങ്ങളുടെ അൺലോക്കുചെയ്യൽ പാറ്റേൺ <xliff:g id="NUMBER_0">%1$d</xliff:g> തവണ തെറ്റായി വരച്ചു. <xliff:g id="NUMBER_1">%2$d</xliff:g> തെറ്റായ ശ്രമങ്ങൾക്കുശേഷം, സൈൻ ഇൻ ചെയ്യൽ ഉപയോഗിച്ച് നിങ്ങളുടെ ടാബ്‌ലെറ്റ് അൺലോക്കുചെയ്യുന്നതിന് ആവശ്യപ്പടും.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> സെക്കൻഡിനുള്ളിൽ വീണ്ടും ശ്രമിക്കുക."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"നിങ്ങളുടെ അൺലോക്ക് പാറ്റേൺ <xliff:g id="NUMBER_0">%1$d</xliff:g> തവണ തെറ്റായി വരച്ചു. <xliff:g id="NUMBER_1">%2$d</xliff:g> ശ്രമങ്ങൾ കൂടി പരാജയപ്പെട്ടാൽ സൈൻ ഇൻ ഉപയോഗിച്ച് നിങ്ങളുടെ Android TV അൺലോക്ക് ചെയ്യാൻ ആവശ്യപ്പെടും.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> സെക്കൻഡിന് ശേഷം വീണ്ടും ശ്രമിക്കുക."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"നിങ്ങൾ അൺലോക്കുചെയ്യൽ പാറ്റേൺ <xliff:g id="NUMBER_0">%1$d</xliff:g> തവണ തെറ്റായി വരച്ചു. <xliff:g id="NUMBER_1">%2$d</xliff:g> തെറ്റായ ശ്രമങ്ങൾക്കുശേഷം, സൈൻ ഇൻ ചെയ്യൽ ഉപയോഗിച്ച് നിങ്ങളുടെ ഫോൺ അൺലോക്കുചെയ്യുന്നതിന് ആവശ്യപ്പടും. \n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> സെക്കൻഡിനുള്ളിൽ വീണ്ടും ശ്രമിക്കുക."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"നിങ്ങൾ ഫോൺ അൺലോക്കുചെയ്യാൻ തവണ <xliff:g id="NUMBER_0">%1$d</xliff:g> തെറ്റായി ശ്രമിച്ചു. <xliff:g id="NUMBER_1">%2$d</xliff:g> ശ്രമങ്ങൾ കൂടി വിജയിച്ചില്ലെങ്കിൽ, ടാബ്‌ലെറ്റ് ഫാക്‌ടറി സ്ഥിരമായതിലേക്ക് പുനഃസജ്ജികരിക്കുകയും ഉപയോക്തൃ ഡാറ്റയെല്ലാം നഷ്‌ടപ്പെടുകയും ചെയ്യും."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"നിങ്ങൾ <xliff:g id="NUMBER_0">%1$d</xliff:g> തവണ തെറ്റായി Android TV അൺലോക്ക് ചെയ്യാൻ ശ്രമിച്ചു. <xliff:g id="NUMBER_1">%2$d</xliff:g> ശ്രമങ്ങൾ കൂടി പരാജയപ്പെട്ടാൽ, നിങ്ങളുടെ Android TV ഫാക്‌ടറി ഡിഫോൾട്ടിലേക്ക് റീസെറ്റ് ചെയ്യപ്പെടുകയും എല്ലാ ഉപയോക്തൃ ഡാറ്റയും നഷ്‌ടപ്പെടുകയും ചെയ്യും."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"നിങ്ങൾ <xliff:g id="NUMBER_0">%1$d</xliff:g> തവണ ഫോൺ അൺലോക്കുചെയ്യാൻ തെറ്റായി ശ്രമിച്ചു. <xliff:g id="NUMBER_1">%2$d</xliff:g> ശ്രമങ്ങൾ കൂടി പരാജയപ്പെടുകയാണെങ്കിൽ, ഫോൺ ഫാക്‌ടറി സ്ഥിരമായതിലേക്ക് പുനഃസജ്ജികരിക്കുകയും ഉപയോക്തൃ ഡാറ്റയെല്ലാം നഷ്‌ടപ്പെടുകയും ചെയ്യും."</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"പാറ്റേൺ മറന്നോ?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"അക്കൗണ്ട് അൺലോക്ക്"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"വളരെയധികം പാറ്റേൺ ശ്രമങ്ങൾ"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"അൺലോക്കുചെയ്യുന്നതിന്, നിങ്ങളുടെ Google Account ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യുക."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"അൺലോക്കുചെയ്യുന്നതിന്, നിങ്ങളുടെ Account ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യുക."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"ഉപയോക്താവിന്റെ പേര് (ഇമെയിൽ)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"പാസ്‌വേഡ്"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"സൈൻ ഇൻ ചെയ്യുക"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"ഉപയോക്താവിന്റെ പേരോ പാസ്‌വേഡോ അസാധുവാണ്."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"നിങ്ങളുടെ ഉപയോക്തൃനാമമോ പാസ്‌വേഡോ മറന്നുപോയോ?\n"<b>"google.com/accounts/recovery"</b>" സന്ദർശിക്കുക."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"നിങ്ങളുടെ ഉപയോക്തൃനാമമോ പാസ്‌വേഡോ മറന്നുപോയോ?\n"<b>"your account provider"</b>" സന്ദർശിക്കുക."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"പരിശോധിക്കുന്നു…"</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"അൺലോക്കുചെയ്യുക"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"ശബ്ദം ഓണ്‍ ചെയ്യുക"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"ശരിയായ PUK കോഡ് വീണ്ടും നൽകുക. ആവർത്തിച്ചുള്ള ശ്രമങ്ങൾ സിം ശാശ്വതമായി പ്രവർത്തനരഹിതമാക്കും."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"പിൻ കോഡുകൾ പൊരുത്തപ്പെടുന്നില്ല"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"വളരെയധികം പാറ്റേൺ ശ്രമങ്ങൾ"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"അൺലോക്കുചെയ്യുന്നതിന്, നിങ്ങളുടെ Google Account ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യുക."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"അൺലോക്കുചെയ്യുന്നതിന്, നിങ്ങളുടെ Account ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യുക."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"ഉപയോക്താവിന്റെ പേര് (ഇമെയിൽ)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"പാസ്‌വേഡ്"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"സൈൻ ഇൻ ചെയ്യുക"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"ഉപയോക്തൃനാമമോ പാസ്‌വേഡോ അസാധുവാണ്."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"നിങ്ങളുടെ ഉപയോക്തൃനാമമോ പാസ്‌വേഡോ മറന്നുപോയോ?\n"<b>"google.com/accounts/recovery"</b>" സന്ദർശിക്കുക."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"നിങ്ങളുടെ ഉപയോക്തൃനാമമോ പാസ്‌വേഡോ മറന്നുപോയോ?\n"<b>"your account provider"</b>" സന്ദർശിക്കുക."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"അക്കൗണ്ട് പരിശോധിക്കുന്നു…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"നിങ്ങളുടെ പിൻ <xliff:g id="NUMBER_0">%1$d</xliff:g> തവണ തെറ്റായി ടൈപ്പുചെയ്‌തു. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> സെക്കൻഡിനുള്ളിൽ വീണ്ടും ശ്രമിക്കുക."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"നിങ്ങളുടെ പാസ്‌വേഡ് <xliff:g id="NUMBER_0">%1$d</xliff:g> തവണ തെറ്റായി ടൈപ്പുചെയ്‌തു. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> സെക്കൻഡിനുള്ളിൽ വീണ്ടും ശ്രമിക്കുക."</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"മടങ്ങുക"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"തീർപ്പാക്കിയിട്ടില്ല..."</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"സാറ്റലൈറ്റ് SOS ഇപ്പോൾ ലഭ്യമാണ്"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"മൊബൈൽ അല്ലെങ്കിൽ വൈഫൈ നെറ്റ്‌വർക്ക് ലഭ്യമല്ലെങ്കിൽ നിങ്ങൾക്ക് അടിയന്തര സേവനങ്ങൾക്ക് സന്ദേശമയയ്ക്കാം. നിങ്ങളുടെ ഡിഫോൾട്ട് സന്ദേശമയയ്ക്കൽ ആപ്പ് Google Messages ആയിരിക്കണം."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"മൊബൈൽ അല്ലെങ്കിൽ വൈഫൈ നെറ്റ്‌വർക്ക് ലഭ്യമല്ലെങ്കിൽ നിങ്ങൾക്ക് അടിയന്തര സേവനങ്ങൾക്ക് സന്ദേശമയയ്ക്കാം. നിങ്ങളുടെ ഡിഫോൾട്ട് സന്ദേശമയയ്ക്കൽ ആപ്പ് Messages ആയിരിക്കണം."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"സാറ്റലൈറ്റ് SOS പിന്തുണയ്ക്കുന്നില്ല"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"ഈ ഉപകരണത്തിൽ സാറ്റലൈറ്റ് SOS പിന്തുണയ്ക്കുന്നില്ല"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"സാറ്റലൈറ്റ് SOS സജ്ജീകരിച്ചിട്ടില്ല"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"സാറ്റലൈറ്റ് SOS ലഭ്യമല്ല"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"ഈ രാജ്യത്ത് അല്ലെങ്കിൽ പ്രദേശത്ത് സാറ്റലൈറ്റ് SOS ലഭ്യമല്ല"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"സാറ്റലൈറ്റ് SOS സജ്ജീകരിച്ചിട്ടില്ല"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"സാറ്റലൈറ്റ് വഴി സന്ദേശമയയ്ക്കാൻ, നിങ്ങളുടെ ഡിഫോൾട്ട് സന്ദേശമയയ്ക്കൽ ആപ്പായി Google Messages സജ്ജീകരിക്കുക"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"സാറ്റലൈറ്റ് വഴി സന്ദേശമയയ്ക്കാൻ, നിങ്ങളുടെ ഡിഫോൾട്ട് സന്ദേശമയയ്ക്കൽ ആപ്പായി Messages സജ്ജീകരിക്കുക"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"സാറ്റലൈറ്റ് SOS ലഭ്യമല്ല"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"ഈ രാജ്യത്ത് അല്ലെങ്കിൽ പ്രദേശത്ത് സാറ്റലൈറ്റ് SOS ലഭ്യമാണോയെന്ന് പരിശോധിക്കുന്നതിന്, ലൊക്കേഷൻ ക്രമീകരണം ഓണാക്കുക"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"സാറ്റലൈറ്റ് സഹായത്തോടെ സന്ദേശമയയ്ക്കൽ ലഭ്യമാണ്"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"മൊബൈൽ അല്ലെങ്കിൽ വൈഫൈ നെറ്റ്‌വർക്ക് ഇല്ലെങ്കിൽ നിങ്ങൾക്ക് സാറ്റലൈറ്റ് വഴി സന്ദേശമയയ്ക്കാം. നിങ്ങളുടെ ഡിഫോൾട്ട് സന്ദേശമയയ്ക്കൽ ആപ്പ് Google Messages ആയിരിക്കണം."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"മൊബൈൽ അല്ലെങ്കിൽ വൈഫൈ നെറ്റ്‌വർക്ക് ഇല്ലെങ്കിൽ നിങ്ങൾക്ക് സാറ്റലൈറ്റ് വഴി സന്ദേശമയയ്ക്കാം. നിങ്ങളുടെ ഡിഫോൾട്ട് സന്ദേശമയയ്ക്കൽ ആപ്പ് Messages ആയിരിക്കണം."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"സാറ്റലൈറ്റ് സഹായത്തോടെ സന്ദേശമയയ്ക്കൽ പിന്തുണയ്ക്കുന്നില്ല"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"ഈ ഉപകരണത്തിൽ സാറ്റലൈറ്റ് സഹായത്തോടെ സന്ദേശമയയ്ക്കൽ പിന്തുണയ്ക്കുന്നില്ല"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"സാറ്റലൈറ്റ് സഹായത്തോടെ സന്ദേശമയയ്ക്കൽ സജ്ജീകരിച്ചിട്ടില്ല"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"സാറ്റലൈറ്റ് സഹായത്തോടെ സന്ദേശമയയ്ക്കൽ ലഭ്യമല്ല"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"ഈ രാജ്യത്ത് അല്ലെങ്കിൽ പ്രദേശത്ത് സാറ്റലൈറ്റ് സഹായത്തോടെ സന്ദേശമയയ്ക്കൽ ലഭ്യമല്ല"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"സാറ്റലൈറ്റ് സഹായത്തോടെ സന്ദേശമയയ്ക്കൽ സജ്ജീകരിച്ചിട്ടില്ല"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"സാറ്റലൈറ്റ് വഴി സന്ദേശമയയ്ക്കാൻ, നിങ്ങളുടെ ഡിഫോൾട്ട് സന്ദേശമയയ്ക്കൽ ആപ്പായി Google Messages സജ്ജീകരിക്കുക"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"സാറ്റലൈറ്റ് വഴി സന്ദേശമയയ്ക്കാൻ, നിങ്ങളുടെ ഡിഫോൾട്ട് സന്ദേശമയയ്ക്കൽ ആപ്പായി Messages സജ്ജീകരിക്കുക"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"സാറ്റലൈറ്റ് സഹായത്തോടെ സന്ദേശമയയ്ക്കൽ ലഭ്യമല്ല"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"ഈ രാജ്യത്ത് അല്ലെങ്കിൽ പ്രദേശത്ത് സാറ്റലൈറ്റ് സഹായത്തോടെ സന്ദേശമയയ്ക്കൽ ലഭ്യമാണോയെന്ന് പരിശോധിക്കാൻ, ലൊക്കേഷൻ ക്രമീകരണം ഓണാക്കുക"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"ഫിംഗർപ്രിന്റ് അൺലോക്ക് വീണ്ടും സജ്ജീകരിക്കുക"</string>

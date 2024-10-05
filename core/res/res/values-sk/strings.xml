@@ -961,7 +961,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1009,7 +1009,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1082,9 +1082,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"<xliff:g id="NUMBER_0">%1$d</xliff:g>-krát ste použili nesprávny bezpečnostný vzor. \n\nSkúste to znova o <xliff:g id="NUMBER_1">%2$d</xliff:g> s."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"<xliff:g id="NUMBER_0">%1$d</xliff:g>-krát ste zadali nesprávne heslo. \n\nSkúste to znova o <xliff:g id="NUMBER_1">%2$d</xliff:g> s."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"<xliff:g id="NUMBER_0">%1$d</xliff:g>-krát ste zadali nesprávny kód PIN. \n\nSkúste to znova o <xliff:g id="NUMBER_1">%2$d</xliff:g> s."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"<xliff:g id="NUMBER_0">%1$d</xliff:g>-krát ste nesprávne nakreslili svoj bezpečnostný vzor. Po ďalších neúspešných pokusoch (<xliff:g id="NUMBER_1">%2$d</xliff:g>) budete vyzvaní odomknúť tablet pomocou prihlasovacích údajov služby Google.\n\n Skúste to znova o <xliff:g id="NUMBER_2">%3$d</xliff:g> s."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Už ste <xliff:g id="NUMBER_0">%1$d</xliff:g>-krát nesprávne nakreslil bezpečnostný vzor. Po <xliff:g id="NUMBER_1">%2$d</xliff:g> ďalších neúspešných pokusoch sa zobrazí výzva na odomknutie zariadenia Android TV pomocou prihlásenia cez Google.\n\n Skúste to znova o <xliff:g id="NUMBER_2">%3$d</xliff:g> s."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"<xliff:g id="NUMBER_0">%1$d</xliff:g>-krát ste nesprávne nakreslili svoj bezpečnostný vzor. Po <xliff:g id="NUMBER_1">%2$d</xliff:g> ďalších neúspešných pokusoch sa zobrazí výzva na odomknutie telefónu pomocou prihlasovacích údajov Google.\n\n Skúste to znova o <xliff:g id="NUMBER_2">%3$d</xliff:g> s."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"<xliff:g id="NUMBER_0">%1$d</xliff:g>-krát ste nesprávne nakreslili svoj bezpečnostný vzor. Po ďalších neúspešných pokusoch (<xliff:g id="NUMBER_1">%2$d</xliff:g>) budete vyzvaní odomknúť tablet pomocou prihlasovacích údajov služby login.\n\n Skúste to znova o <xliff:g id="NUMBER_2">%3$d</xliff:g> s."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Už ste <xliff:g id="NUMBER_0">%1$d</xliff:g>-krát nesprávne nakreslil bezpečnostný vzor. Po <xliff:g id="NUMBER_1">%2$d</xliff:g> ďalších neúspešných pokusoch sa zobrazí výzva na odomknutie zariadenia Android TV pomocou prihlásenia cez login.\n\n Skúste to znova o <xliff:g id="NUMBER_2">%3$d</xliff:g> s."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"<xliff:g id="NUMBER_0">%1$d</xliff:g>-krát ste nesprávne nakreslili svoj bezpečnostný vzor. Po <xliff:g id="NUMBER_1">%2$d</xliff:g> ďalších neúspešných pokusoch sa zobrazí výzva na odomknutie telefónu pomocou prihlasovacích údajov login.\n\n Skúste to znova o <xliff:g id="NUMBER_2">%3$d</xliff:g> s."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Tablet ste sa pokúsili odomknúť nesprávnym spôsobom <xliff:g id="NUMBER_0">%1$d</xliff:g>-krát. Po <xliff:g id="NUMBER_1">%2$d</xliff:g> ďalších neúspešných pokusoch sa v tablete obnovia predvolené výrobné nastavenia a všetky používateľské údaje budú stratené."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Už ste sa <xliff:g id="NUMBER_0">%1$d</xliff:g>-krát pokúsili nesprávne odomknúť zariadenie Android TV. Po <xliff:g id="NUMBER_1">%2$d</xliff:g> ďalších neúspešných pokusoch sa obnovia výrobné nastavenia zariadenia Android TV a vymažú všetky údaje používateľa."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Telefón ste sa pokúsili odomknúť nesprávnym spôsobom <xliff:g id="NUMBER_0">%1$d</xliff:g>-krát. Po <xliff:g id="NUMBER_1">%2$d</xliff:g> ďalších neúspešných pokusoch sa v telefóne obnovia predvolené výrobné nastavenia a všetky používateľské údaje budú stratené."</string>
@@ -1095,12 +1095,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Zabudli ste vzor?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Odomknutie účtu"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Príliš veľa pokusov o nakreslenie vzoru"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Ak chcete telefón odomknúť, prihláste sa pomocou svojho účtu Google."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Ak chcete telefón odomknúť, prihláste sa pomocou svojho účtu login."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Používateľské meno (e-mail)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Heslo"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Prihlásiť sa"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"Neplatné používateľské meno alebo heslo."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Zabudli ste používateľské meno alebo heslo?\nNavštívte stránky "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Zabudli ste používateľské meno alebo heslo?\nNavštívte stránky "<b>"your account provider"</b>"."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"Prebieha kontrola…"</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"Odomknúť"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"Zapnúť zvuk"</string>
@@ -1762,12 +1762,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Znova zadajte správny kód PUK. Opakované pokusy zakážu SIM kartu natrvalo."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"Kódy PIN sa nezhodujú"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Príliš veľa pokusov o nakreslenie vzoru"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Ak chcete telefón odomknúť, prihláste sa pomocou svojho účtu Google."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Ak chcete telefón odomknúť, prihláste sa pomocou svojho účtu login."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Používateľské meno (e-mail)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Heslo"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Prihlásiť sa"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"Neplatné používateľské meno alebo heslo."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Zabudli ste svoje používateľské meno alebo heslo?\n Navštívte stránky "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Zabudli ste svoje používateľské meno alebo heslo?\n Navštívte stránky "<b>"your account provider"</b>"."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"Prebieha kontrola účtu..."</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"<xliff:g id="NUMBER_0">%1$d</xliff:g>-krát ste zadali nesprávny kód PIN. \n\nSkúste to znova o <xliff:g id="NUMBER_1">%2$d</xliff:g> s."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"<xliff:g id="NUMBER_0">%1$d</xliff:g>-krát ste zadali nesprávne heslo. \n\nSkúste to znova o <xliff:g id="NUMBER_1">%2$d</xliff:g> s."</string>
@@ -2533,7 +2533,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"Späť"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"Nespracovaná…"</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"Pomoc cez satelit je teraz k dispozícii"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Tiesňovej linke môžete poslať správu, keď nie je dostupná mobilná sieť ani sieť Wi‑Fi. Správy Google musíte mať nastavené ako predvolený komunikátor."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Tiesňovej linke môžete poslať správu, keď nie je dostupná mobilná sieť ani sieť Wi‑Fi. Správy login musíte mať nastavené ako predvolený komunikátor."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"Pomoc cez satelit nie je podporovaná"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"Pomoc cez satelit nie je v tomto zariadení podporovaná"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"Pomoc cez satelit nie je nastavená"</string>
@@ -2541,11 +2541,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"Pomoc cez satelit nie je k dispozícii"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"Pomoc cez satelit nie je v tejto krajine alebo regióne k dispozícii"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"Pomoc cez satelit nie je nastavená"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Ak chcete posielať správy cez satelit, nastavte Správy Google ako predvolený komunikátor"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Ak chcete posielať správy cez satelit, nastavte Správy login ako predvolený komunikátor"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"Pomoc cez satelit nie je k dispozícii"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"Ak chcete skontrolovať, či je pomoc cez satelit v tejto krajine alebo regióne k dispozícii, zapnite nastavenia polohy"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"Správy cez satelit sú k dispozícii"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Keď nie je dostupná mobilná sieť ani sieť Wi‑Fi, môžete posielať správy cez satelit. Správy Google musíte mať nastavené ako predvolený komunikátor."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Keď nie je dostupná mobilná sieť ani sieť Wi‑Fi, môžete posielať správy cez satelit. Správy login musíte mať nastavené ako predvolený komunikátor."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"Správy cez satelit nie sú podporované"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"Správy cez satelit nie sú v tomto zariadení podporované"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"Správy cez satelit nie sú nastavené"</string>
@@ -2553,7 +2553,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"Správy cez satelit nie sú k dispozícii"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"Správy cez satelit nie sú v tejto krajine alebo regióne k dispozícii"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"Správy cez satelit nie sú nastavené"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Ak chcete posielať správy cez satelit, nastavte Správy Google ako predvolený komunikátor"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Ak chcete posielať správy cez satelit, nastavte Správy login ako predvolený komunikátor"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"Správy cez satelit nie sú k dispozícii"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"Ak chcete skontrolovať, či sú správy cez satelit v tejto krajine alebo regióne k dispozícii, zapnite nastavenia polohy"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"Znova nastavte odomknutie odtlačkom prsta"</string>

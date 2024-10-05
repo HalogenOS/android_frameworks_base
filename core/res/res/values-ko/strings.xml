@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google 토크"</item>
+    <item msgid="8831467252725610081">"login 토크"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"행아웃"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"행아웃"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"잠금해제 패턴을 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 그렸습니다. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g>초 후에 다시 시도하세요."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"비밀번호를 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 입력했습니다. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g>초 후에 다시 시도하세요."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"PIN을 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 입력했습니다. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g>초 후에 다시 시도하세요."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"잠금해제 패턴을 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 그렸습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>회 더 실패하면 Google 로그인을 통해 태블릿을 잠금해제해야 합니다.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g>초 후에 다시 시도하세요."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"잠금해제 패턴을 <xliff:g id="NUMBER_0">%1$d</xliff:g>번 잘못 그렸습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>번 더 실패하면 Google 로그인 정보를 사용해 Android TV 기기를 잠금 해제해야 합니다.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g>초 후에 다시 시도해 보세요."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"잠금해제 패턴을 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 그렸습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>회 더 실패하면 Google 로그인을 통해 휴대전화를 잠금해제해야 합니다.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g>초 후에 다시 시도하세요."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"잠금해제 패턴을 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 그렸습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>회 더 실패하면 로그인을 통해 태블릿을 잠금해제해야 합니다.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g>초 후에 다시 시도하세요."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"잠금해제 패턴을 <xliff:g id="NUMBER_0">%1$d</xliff:g>번 잘못 그렸습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>번 더 실패하면 로그인 정보를 사용해 Android TV 기기를 잠금 해제해야 합니다.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g>초 후에 다시 시도해 보세요."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"잠금해제 패턴을 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 그렸습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>회 더 실패하면 로그인을 통해 휴대전화를 잠금해제해야 합니다.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g>초 후에 다시 시도하세요."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"태블릿을 잠금 해제하려는 시도가 <xliff:g id="NUMBER_0">%1$d</xliff:g>번 잘못되었습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>번 더 실패하면 태블릿이 초기화되고 사용자 데이터가 모두 손실됩니다."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Android TV 기기 잠금 해제에 <xliff:g id="NUMBER_0">%1$d</xliff:g>번 실패했습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>번 더 실패하면 Android TV 기기가 초기화되고 사용자 데이터가 모두 삭제됩니다."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"휴대전화를 잠금 해제하려는 시도가 <xliff:g id="NUMBER_0">%1$d</xliff:g>번 잘못되었습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>번 더 실패하면 휴대전화가 초기화되고 사용자 데이터가 모두 손실됩니다."</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"패턴을 잊으셨나요?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"계정 잠금 해제"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"패턴을 너무 많이 시도했습니다."</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"잠금해제하려면 Google 계정으로 로그인하세요."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"잠금해제하려면 계정으로 로그인하세요."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"사용자 이름(이메일)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"비밀번호"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"로그인"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"사용자 이름 또는 비밀번호가 잘못되었습니다."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"사용자 이름이나 비밀번호를 잊어버렸습니까?\n"<b>"google.com/accounts/recovery"</b>"를 방문하세요."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"사용자 이름이나 비밀번호를 잊어버렸습니까?\n"<b>"your account provider"</b>"를 방문하세요."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"확인 중…"</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"잠금해제"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"사운드 켜기"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"올바른 PUK 코드를 다시 입력하세요. 입력을 반복해서 시도하면 SIM을 영구적으로 사용할 수 없게 됩니다."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN 코드가 일치하지 않음"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"패턴 시도 횟수가 너무 많음"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"잠금해제하려면 Google 계정으로 로그인하세요."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"잠금해제하려면 계정으로 로그인하세요."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"사용자 이름(이메일)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"비밀번호"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"로그인"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"사용자 이름 또는 비밀번호가 잘못되었습니다."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"사용자 이름이나 비밀번호를 잊어버렸습니까?\n"<b>"google.com/accounts/recovery"</b>" 페이지를 방문하세요."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"사용자 이름이나 비밀번호를 잊어버렸습니까?\n"<b>"your account provider"</b>" 페이지를 방문하세요."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"계정 확인 중…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"PIN을 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 입력했습니다. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g>초 후에 다시 시도해 주세요."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"비밀번호를 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 입력했습니다. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g>초 후에 다시 시도해 주세요."</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"뒤로"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"대기 중…"</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"이제 위성 긴급 SOS를 사용할 수 있음"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"모바일 또는 Wi-Fi 네트워크가 없는 경우 응급 서비스로 메시지를 보낼 수 있습니다. Google 메시지가 기본 메시지 앱으로 설정되어 있어야 합니다."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"모바일 또는 Wi-Fi 네트워크가 없는 경우 응급 서비스로 메시지를 보낼 수 있습니다. login 메시지가 기본 메시지 앱으로 설정되어 있어야 합니다."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"위성 긴급 SOS가 지원되지 않음"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"이 기기에서는 위성 긴급 SOS가 지원되지 않습니다."</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"위성 긴급 SOS가 설정되지 않음"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"위성 긴급 SOS를 사용할 수 없음"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"이 국가 또는 지역에서는 위성 긴급 SOS를 사용할 수 없습니다."</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"위성 긴급 SOS가 설정되지 않음"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"위성으로 메시지를 보내려면 Google 메시지를 기본 메시지 앱으로 설정하세요."</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"위성으로 메시지를 보내려면 login 메시지를 기본 메시지 앱으로 설정하세요."</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"위성 긴급 SOS를 사용할 수 없음"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"이 국가 또는 지역에서 위성 긴급 SOS를 사용할 수 있는지 확인하려면 위치 설정을 사용 설정하세요."</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"위성 메시지 사용 가능"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"모바일 또는 Wi-Fi 네트워크가 없는 경우 위성으로 메시지를 보낼 수 있습니다. Google 메시지가 기본 메시지 앱으로 설정되어 있어야 합니다."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"모바일 또는 Wi-Fi 네트워크가 없는 경우 위성으로 메시지를 보낼 수 있습니다. login 메시지가 기본 메시지 앱으로 설정되어 있어야 합니다."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"위성 메시지가 지원되지 않음"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"이 기기에서는 위성 메시지가 지원되지 않습니다."</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"위성 메시지가 설정되지 않음"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"위성 메시지를 사용할 수 없음"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"이 국가 또는 지역에서는 위성 메시지를 사용할 수 없습니다."</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"위성 메시지가 설정되지 않음"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"위성으로 메시지를 보내려면 Google 메시지를 기본 메시지 앱으로 설정하세요."</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"위성으로 메시지를 보내려면 login 메시지를 기본 메시지 앱으로 설정하세요."</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"위성 메시지를 사용할 수 없음"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"이 국가 또는 지역에서 위성 메시지를 사용할 수 있는지 확인하려면 위치 설정을 사용 설정하세요."</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"지문 잠금 해제 다시 설정"</string>

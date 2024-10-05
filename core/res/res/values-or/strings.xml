@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google ଟକ୍‍"</item>
+    <item msgid="8831467252725610081">"login ଟକ୍‍"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"ଆପଣଙ୍କ ଅନଲକ୍‍ ପାଟର୍ନକୁ ଆପଣ <xliff:g id="NUMBER_0">%1$d</xliff:g> ଥର ଭୁଲ ଭାବେ ଅଙ୍କନ କରିଛନ୍ତି। \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> ସେକେଣ୍ଡ ପରେ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"ଆପଣଙ୍କ ପାସୱର୍ଡକୁ ଆପଣ <xliff:g id="NUMBER_0">%1$d</xliff:g> ଥର ଭୁଲ ଭାବେ ଟାଇପ୍‍ କରିଛନ୍ତି। \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> ସେକେଣ୍ଡ ପରେ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"ଆପଣଙ୍କ PINକୁ ଆପଣ <xliff:g id="NUMBER_0">%1$d</xliff:g> ଥର ଭୁଲ ଭାବେ ଟାଇପ୍‍ କରିଛନ୍ତି। \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> ସେକେଣ୍ଡ ପରେ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"ଅନଲକ୍‍ ପାଟର୍ନକୁ ଆପଣ <xliff:g id="NUMBER_0">%1$d</xliff:g> ଥର ଭୁଲ ଭାବେ ଅଙ୍କନ କରିଛନ୍ତି। ଆଉ <xliff:g id="NUMBER_1">%2$d</xliff:g>ଟି ଭୁଲ ପ୍ରୟାସ ପରେ, Google ସାଇନ୍‌-ଇନ୍‍ ବ୍ୟବହାର କରି ଆପଣଙ୍କୁ ନିଜ ଟାବଲେଟ୍‍କୁ ଅନଲକ୍‍ କରିବାକୁ କୁହାଯିବ।\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> ସେକେଣ୍ଡ ପରେ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"ଆପଣ ଆପଣଙ୍କର ଅନଲକ୍ ପାଟର୍ନକୁ <xliff:g id="NUMBER_0">%1$d</xliff:g> ଥର ଭୁଲ ଭାବେ ଆଙ୍କିଛନ୍ତି। <xliff:g id="NUMBER_1">%2$d</xliff:g> ଥର ଅସଫଳ ଚେଷ୍ଟା ପରେ, ଆପଣଙ୍କୁ Google ସାଇନ୍ଇନ୍ ବ୍ୟବହାର କରି ଆପଣଙ୍କର Android TV ଡିଭାଇସ୍‌କୁ ଅନ୍‌ଲକ୍ କରିବା ପାଇଁ କୁହାଯିବ। \n\n<xliff:g id="NUMBER_2">%3$d</xliff:g> ସେକେଣ୍ଡ ମଧ୍ୟରେ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"ଅନଲକ୍‍ ପାଟର୍ନକୁ ଆପଣ <xliff:g id="NUMBER_0">%1$d</xliff:g> ଥର ଭୁଲ ଭାବେ ଅଙ୍କନ କରିଛନ୍ତି। ଆଉ <xliff:g id="NUMBER_1">%2$d</xliff:g>ଟି ଭୁଲ ପ୍ରୟାସ ପରେ, Google ସାଇନ୍‌-ଇନ୍‍ ବ୍ୟବହାର କରି ଆପଣଙ୍କୁ ନିଜ ଫୋନ୍‍କୁ ଅନଲକ୍‍ କରିବାକୁ କୁହାଯିବ।\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> ସେକେଣ୍ଡ ପରେ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"ଅନଲକ୍‍ ପାଟର୍ନକୁ ଆପଣ <xliff:g id="NUMBER_0">%1$d</xliff:g> ଥର ଭୁଲ ଭାବେ ଅଙ୍କନ କରିଛନ୍ତି। ଆଉ <xliff:g id="NUMBER_1">%2$d</xliff:g>ଟି ଭୁଲ ପ୍ରୟାସ ପରେ, ସାଇନ୍‌-ଇନ୍‍ ବ୍ୟବହାର କରି ଆପଣଙ୍କୁ ନିଜ ଟାବଲେଟ୍‍କୁ ଅନଲକ୍‍ କରିବାକୁ କୁହାଯିବ।\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> ସେକେଣ୍ଡ ପରେ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"ଆପଣ ଆପଣଙ୍କର ଅନଲକ୍ ପାଟର୍ନକୁ <xliff:g id="NUMBER_0">%1$d</xliff:g> ଥର ଭୁଲ ଭାବେ ଆଙ୍କିଛନ୍ତି। <xliff:g id="NUMBER_1">%2$d</xliff:g> ଥର ଅସଫଳ ଚେଷ୍ଟା ପରେ, ଆପଣଙ୍କୁ ସାଇନ୍ଇନ୍ ବ୍ୟବହାର କରି ଆପଣଙ୍କର Android TV ଡିଭାଇସ୍‌କୁ ଅନ୍‌ଲକ୍ କରିବା ପାଇଁ କୁହାଯିବ। \n\n<xliff:g id="NUMBER_2">%3$d</xliff:g> ସେକେଣ୍ଡ ମଧ୍ୟରେ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"ଅନଲକ୍‍ ପାଟର୍ନକୁ ଆପଣ <xliff:g id="NUMBER_0">%1$d</xliff:g> ଥର ଭୁଲ ଭାବେ ଅଙ୍କନ କରିଛନ୍ତି। ଆଉ <xliff:g id="NUMBER_1">%2$d</xliff:g>ଟି ଭୁଲ ପ୍ରୟାସ ପରେ, ସାଇନ୍‌-ଇନ୍‍ ବ୍ୟବହାର କରି ଆପଣଙ୍କୁ ନିଜ ଫୋନ୍‍କୁ ଅନଲକ୍‍ କରିବାକୁ କୁହାଯିବ।\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> ସେକେଣ୍ଡ ପରେ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"ଟାବଲେଟ୍‍କୁ ଅନ୍‌ଲକ୍‌ କରିବା ପାଇଁ <xliff:g id="NUMBER_0">%1$d</xliff:g> ଥର ଭୁଲ ପ୍ରୟାସ କରିଛନ୍ତି। ଆଉ <xliff:g id="NUMBER_1">%2$d</xliff:g>ଟି ଭୁଲ ପ୍ରୟାସ ପରେ, ଟାବଲେଟ୍‍ଟି ଫ୍ୟାକ୍ଟୋରୀ ଡିଫଲ୍ଟକୁ ରିସେଟ୍‍ ହୋଇଯିବ ଏବଂ ଆପଣ ସମସ୍ତ ୟୁଜର୍‍ ଡାଟା ହରାଇବେ।"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"ଆପଣ <xliff:g id="NUMBER_0">%1$d</xliff:g> ଥର ଆପଣଙ୍କର Android TV ଡିଭାଇସକୁ ଭୁଲ ଭାବେ ଅନଲକ କରିବାକୁ ଚେଷ୍ଟା କରିଛନ୍ତି। <xliff:g id="NUMBER_1">%2$d</xliff:g> ଥର ଅସଫଳ ଚେଷ୍ଟା ପରେ ଆପଣଙ୍କର Android TV ଡିଭାଇସ ଫେକ୍ଟୋରୀ ଡିଫଲ୍ଟକୁ ରିସେଟ କରାଯିବ ଏବଂ ସମସ୍ତ ୟୁଜର ଡାଟା ହରାଇବ।"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"ଫୋନ୍‍ ଅନଲକ୍‍ କରିବାକୁ ଆପଣ <xliff:g id="NUMBER_0">%1$d</xliff:g> ଥର ଭୁଲ ପ୍ରୟାସ କଲେ। ଆଉ <xliff:g id="NUMBER_1">%2$d</xliff:g>ଟି ଭୁଲ ପ୍ରୟାସ ପରେ, ଫୋନ୍‍ଟି ଫ୍ୟାକ୍ଟୋରୀ ଡିଫଲ୍ଟକୁ ରିସେଟ୍‍ ହୋଇଯିବ ଏବଂ ଆପଣ ସମସ୍ତ ୟୁଜର୍‍ ଡାଟା ହରାଇବେ।"</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"ପାଟର୍ନ ଭୁଲି ଯାଇଛନ୍ତି କି?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"ଆକାଉଣ୍ଟ ଅନଲକ୍‌"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"ଅତ୍ୟଧିକ ପାଟର୍ନ ଉଦ୍ୟମ"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"ଅନଲକ୍‌ କରିବା ପାଇଁ, ନିଜ Google ଆକାଉଣ୍ଟରେ ସାଇନ୍-ଇନ୍ କରନ୍ତୁ।"</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"ଅନଲକ୍‌ କରିବା ପାଇଁ, ନିଜ ଆକାଉଣ୍ଟରେ ସାଇନ୍-ଇନ୍ କରନ୍ତୁ।"</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"ୟୁଜରନେମ୍‌ (ଇମେଲ୍)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"ପାସୱାର୍ଡ"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"ସାଇନ୍‍-ଇନ୍"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"ୟୁଜର୍‍ନେମ୍‌ କିମ୍ୱା ପାସ୍‌ୱର୍ଡ ଭୁଲ୍‍ ଅଛି।"</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"ଆପଣଙ୍କର ଯୁଜରନେମ୍‌ କିମ୍ୱା ପାସୱାର୍ଡ ଭୁଲି ଯାଇଛନ୍ତି କି?\n"<b>"google.com/accounts/recovery"</b>" ଭିଜିଟ୍‍ କରନ୍ତୁ।"</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"ଆପଣଙ୍କର ଯୁଜରନେମ୍‌ କିମ୍ୱା ପାସୱାର୍ଡ ଭୁଲି ଯାଇଛନ୍ତି କି?\n"<b>"your account provider"</b>" ଭିଜିଟ୍‍ କରନ୍ତୁ।"</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"ଯାଞ୍ଚ କରାଯାଉଛି…"</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"ଅନଲକ୍‌"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"ସାଉଣ୍ଡ ଚାଲୁ ଅଛି"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"ଠିକ୍‍ PUK କୋଡ୍‍ ପୁଣି ଲେଖନ୍ତୁ। ବାରମ୍ବାର ପ୍ରୟାସ କଲେ SIM କାର୍ଡ ସ୍ଥାୟୀ ରୂପେ ଅକ୍ଷମ ହୋଇଯିବ।"</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN କୋଡ୍‍ ମେଳ ଖାଉନାହିଁ"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"ଅନେକ ପାଟର୍ନ ପ୍ରୟାସ"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"ଅନଲକ୍‌ କରିବା ପାଇଁ, ଆପଣଙ୍କ Google ଆକାଉଣ୍ଟ ସହ ସାଇନ୍-ଇନ୍ କରନ୍ତୁ।"</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"ଅନଲକ୍‌ କରିବା ପାଇଁ, ଆପଣଙ୍କ ଆକାଉଣ୍ଟ ସହ ସାଇନ୍-ଇନ୍ କରନ୍ତୁ।"</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"ୟୁଜରନେମ୍‍ (ଇମେଲ୍)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"ପାସୱାର୍ଡ"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"ସାଇନ ଇନ କରନ୍ତୁ"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"ଅମାନ୍ୟ ୟୁଜରନେମ୍‍ କିମ୍ୱା ପାସ୍‌ୱର୍ଡ।"</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"ଆପଣଙ୍କର ୟୁଜରନେମ୍‍ କିମ୍ୱା ପାସ୍‌ୱର୍ଡ ଭୁଲି ଯାଇଛନ୍ତି କି?\n"<b>"google.com/accounts/recovery"</b>" ଭିଜିଟ୍‍ କରନ୍ତୁ।"</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"ଆପଣଙ୍କର ୟୁଜରନେମ୍‍ କିମ୍ୱା ପାସ୍‌ୱର୍ଡ ଭୁଲି ଯାଇଛନ୍ତି କି?\n"<b>"your account provider"</b>" ଭିଜିଟ୍‍ କରନ୍ତୁ।"</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"ଆକାଉଣ୍ଟ ଯାଞ୍ଚ କରାଯାଉଛି…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"ଆପଣଙ୍କ PINକୁ ଆପଣ <xliff:g id="NUMBER_0">%1$d</xliff:g>ଥର ଭୁଲ ଭାବେ ଟାଇପ୍ କରିଛନ୍ତି। <xliff:g id="NUMBER_1">%2$d</xliff:g> ସେକେଣ୍ଡ ପରେ \n\nପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"ଆପଣଙ୍କ ପାସ୍‌ୱର୍ଡକୁ ଆପଣ <xliff:g id="NUMBER_0">%1$d</xliff:g>ଥର ଭୁଲ ଭାବେ ଟାଇପ୍ କରିଛନ୍ତି। <xliff:g id="NUMBER_1">%2$d</xliff:g> ସେକେଣ୍ଡ ପରେ \n\nପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"ପଛକୁ ଫେରନ୍ତୁ"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"ବାକି ଅଛି…"</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"ବର୍ତ୍ତମାନ ସେଟେଲାଇଟ SOS ଉପଲବ୍ଧ ଅଛି"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"କୌଣସି ମୋବାଇଲ କିମ୍ବା ୱାଇ-ଫାଇ ନେଟୱାର୍କ ନଥିଲେ ଆପଣ ଜରୁରୀକାଳୀନ ସେବାଗୁଡ଼ିକୁ ମେସେଜ କରିପାରିବେ। Google Messages ଆପଣଙ୍କର ଡିଫଲ୍ଟ ମେସେଜିଂ ଆପ ହେବା ଆବଶ୍ୟକ।"</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"କୌଣସି ମୋବାଇଲ କିମ୍ବା ୱାଇ-ଫାଇ ନେଟୱାର୍କ ନଥିଲେ ଆପଣ ଜରୁରୀକାଳୀନ ସେବାଗୁଡ଼ିକୁ ମେସେଜ କରିପାରିବେ। Messages ଆପଣଙ୍କର ଡିଫଲ୍ଟ ମେସେଜିଂ ଆପ ହେବା ଆବଶ୍ୟକ।"</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"ସେଟେଲାଇଟ SOS ସପୋର୍ଟ କରୁନାହିଁ"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"ଏହି ଡିଭାଇସରେ ସେଟେଲାଇଟ SOS ସପୋର୍ଟ କରୁନାହିଁ"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"ସେଟେଲାଇଟ SOS ସେଟ ଅପ କରାଯାଇନାହିଁ"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"ସେଟେଲାଇଟ SOS ଉପଲବ୍ଧ ନାହିଁ"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"ଏହି ଦେଶ କିମ୍ବା ଅଞ୍ଚଳରେ ସେଟେଲାଇଟ SOS ଉପଲବ୍ଧ ନାହିଁ"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"ସେଟେଲାଇଟ SOS ସେଟ ଅପ କରାଯାଇନାହିଁ"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"ସେଟେଲାଇଟ ମାଧ୍ୟମରେ ମେସେଜ କରିବା ପାଇଁ Google Messagesକୁ ଆପଣଙ୍କର ଡିଫଲ୍ଟ ମେସେଜିଂ ଆପ ଭାବେ ସେଟ କରନ୍ତୁ"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"ସେଟେଲାଇଟ ମାଧ୍ୟମରେ ମେସେଜ କରିବା ପାଇଁ Messagesକୁ ଆପଣଙ୍କର ଡିଫଲ୍ଟ ମେସେଜିଂ ଆପ ଭାବେ ସେଟ କରନ୍ତୁ"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"ସେଟେଲାଇଟ SOS ଉପଲବ୍ଧ ନାହିଁ"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"ଏହି ଦେଶ କିମ୍ବା ଅଞ୍ଚଳରେ ସେଟେଲାଇଟ SOS ଉପଲବ୍ଧ ଅଛି ନା ନାହିଁ ତାହା ଯାଞ୍ଚ କରିବାକୁ ଲୋକେସନ ସେଟିଂସ ଚାଲୁ କରନ୍ତୁ"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"ସେଟେଲାଇଟ ମେସେଜିଂ ଉପଲବ୍ଧ ଅଛି"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"କୌଣସି ମୋବାଇଲ କିମ୍ବା ୱାଇ-ଫାଇ ନେଟୱାର୍କ ନଥିଲେ ଆପଣ ସେଟେଲାଇଟ ମାଧ୍ୟମରେ ମେସେଜ କରିପାରିବେ। Google Messages ଆପଣଙ୍କର ଡିଫଲ୍ଟ ମେସେଜିଂ ଆପ ହେବା ଆବଶ୍ୟକ।"</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"କୌଣସି ମୋବାଇଲ କିମ୍ବା ୱାଇ-ଫାଇ ନେଟୱାର୍କ ନଥିଲେ ଆପଣ ସେଟେଲାଇଟ ମାଧ୍ୟମରେ ମେସେଜ କରିପାରିବେ। Messages ଆପଣଙ୍କର ଡିଫଲ୍ଟ ମେସେଜିଂ ଆପ ହେବା ଆବଶ୍ୟକ।"</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"ସେଟେଲାଇଟ ମେସେଜିଂ ସପୋର୍ଟ କରୁନାହିଁ"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"ଏହି ଡିଭାଇସରେ ସେଟେଲାଇଟ ମେସେଜିଂ ସପୋର୍ଟ କରୁନାହିଁ"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"ସେଟେଲାଇଟ ମେସେଜିଂ ସେଟ ଅପ କରାଯାଇନାହିଁ"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"ସେଟେଲାଇଟ ମେସେଜିଂ ଉପଲବ୍ଧ ନାହିଁ"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"ଏହି ଦେଶ କିମ୍ବା ଅଞ୍ଚଳରେ ସେଟେଲାଇଟ ମେସେଜିଂ ଉପଲବ୍ଧ ନାହିଁ"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"ସେଟେଲାଇଟ ମେସେଜିଂ ସେଟ ଅପ କରାଯାଇନାହିଁ"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"ସେଟେଲାଇଟ ମାଧ୍ୟମରେ ମେସେଜ କରିବା ପାଇଁ Google Messagesକୁ ଆପଣଙ୍କର ଡିଫଲ୍ଟ ମେସେଜିଂ ଆପ ଭାବେ ସେଟ କରନ୍ତୁ"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"ସେଟେଲାଇଟ ମାଧ୍ୟମରେ ମେସେଜ କରିବା ପାଇଁ Messagesକୁ ଆପଣଙ୍କର ଡିଫଲ୍ଟ ମେସେଜିଂ ଆପ ଭାବେ ସେଟ କରନ୍ତୁ"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"ସେଟେଲାଇଟ ମେସେଜିଂ ଉପଲବ୍ଧ ନାହିଁ"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"ଏହି ଦେଶ କିମ୍ବା ଅଞ୍ଚଳରେ ସେଟେଲାଇଟ ମେସେଜିଂ ଉପଲବ୍ଧ ଅଛି ନା ନାହିଁ ତାହା ଯାଞ୍ଚ କରିବାକୁ ଲୋକେସନ ସେଟିଂସ ଚାଲୁ କରନ୍ତୁ"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"ଫିଙ୍ଗରପ୍ରିଣ୍ଟ ଅନଲକ ପୁଣି ସେଟ ଅପ କରନ୍ତୁ"</string>

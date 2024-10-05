@@ -128,7 +128,7 @@
     <string name="roamingText5" msgid="4294671587635796641">"Roaming - Sistema recomendado"</string>
     <string name="roamingText6" msgid="5536156746637992029">"Roaming -  Sistema disponível"</string>
     <string name="roamingText7" msgid="1783303085512907706">"Roaming - Parceiro do Alliance"</string>
-    <string name="roamingText8" msgid="7774800704373721973">"Roaming - Parceiro do Google Premium"</string>
+    <string name="roamingText8" msgid="7774800704373721973">"Roaming - Parceiro do Premium"</string>
     <string name="roamingText9" msgid="1933460020190244004">"Roaming - Funcionalidade de serviço completo"</string>
     <string name="roamingText10" msgid="7434767033595769499">"Roaming - Funcionalidade de serviço parcial"</string>
     <string name="roamingText11" msgid="5245687407203281407">"Banner de roaming ativado"</string>
@@ -960,7 +960,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1008,7 +1008,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1081,9 +1081,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"Você desenhou seu padrão de desbloqueio incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. \n\nTente novamente em <xliff:g id="NUMBER_1">%2$d</xliff:g> segundos."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"Você digitou sua senha incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. \n\nTente novamente em <xliff:g id="NUMBER_1">%2$d</xliff:g> segundos."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"Você digitou seu PIN incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes.\n\nTente novamente em <xliff:g id="NUMBER_1">%2$d</xliff:g> segundos."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Você desenhou sua sequência de desbloqueio incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. Se fizer mais <xliff:g id="NUMBER_1">%2$d</xliff:g> tentativas incorretas, será solicitado que você use o login do Google para desbloquear seu tablet.\n\n Tente novamente em <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Você desenhou seu padrão de desbloqueio incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. Se fizer mais <xliff:g id="NUMBER_1">%2$d</xliff:g> tentativas incorretas, o uso do seu login do Google será solicitado para que você desbloqueie o dispositivo Android TV.\n\n Tente novamente em <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Você desenhou sua sequência de desbloqueio incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. Se fizer mais <xliff:g id="NUMBER_1">%2$d</xliff:g> tentativas incorretas, será solicitado que você use o login do Google para desbloquear.\n\n Tente novamente em <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Você desenhou sua sequência de desbloqueio incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. Se fizer mais <xliff:g id="NUMBER_1">%2$d</xliff:g> tentativas incorretas, será solicitado que você use o login do para desbloquear seu tablet.\n\n Tente novamente em <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Você desenhou seu padrão de desbloqueio incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. Se fizer mais <xliff:g id="NUMBER_1">%2$d</xliff:g> tentativas incorretas, o uso do seu login do será solicitado para que você desbloqueie o dispositivo Android TV.\n\n Tente novamente em <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Você desenhou sua sequência de desbloqueio incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. Se fizer mais <xliff:g id="NUMBER_1">%2$d</xliff:g> tentativas incorretas, será solicitado que você use o login do para desbloquear.\n\n Tente novamente em <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Você tentou desbloquear incorretamente o tablet <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. Após mais <xliff:g id="NUMBER_1">%2$d</xliff:g> tentativas malsucedidas, o tablet será redefinido para o padrão de fábrica e todos os dados do usuário serão perdidos."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Você tentou desbloquear seu dispositivo Android TV incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. Depois de mais <xliff:g id="NUMBER_1">%2$d</xliff:g> tentativas malsucedidas, o dispositivo Android TV será redefinido para a configuração original, e todos os dados do usuário serão perdidos."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Você tentou desbloquear incorretamente o telefone <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. Após mais <xliff:g id="NUMBER_1">%2$d</xliff:g> tentativas malsucedidas, o telefone será redefinido para o padrão de fábrica e todos os dados do usuário serão perdidos."</string>
@@ -1094,12 +1094,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Esqueceu o padrão?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Desbloqueio de conta"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Muitas tentativas de padrão"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Para desbloquear, faça login com sua Conta do Google."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Para desbloquear, faça login com sua Conta do login."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Nome de usuário (e-mail)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Senha"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Fazer login"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"Nome de usuário ou senha inválidos."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Esqueceu seu nome de usuário ou senha?\nAcesse "<b>"google.com.br/accounts/recovery"</b>"."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Esqueceu seu nome de usuário ou senha?\nAcesse "<b>"your account provider"</b>"."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"Verificando…"</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"Desbloquear"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"Som ativado"</string>
@@ -1616,7 +1616,7 @@
     <string name="progress_erasing" msgid="6891435992721028004">"Limpando armazenamento compartilhado…"</string>
     <string name="share" msgid="4157615043345227321">"Compartilhar"</string>
     <string name="find" msgid="5015737188624767706">"Localizar"</string>
-    <string name="websearch" msgid="5624340204512793290">"Pesquisa Google na Web"</string>
+    <string name="websearch" msgid="5624340204512793290">"Pesquisa na Web"</string>
     <string name="find_next" msgid="5341217051549648153">"Localizar próximo"</string>
     <string name="find_previous" msgid="4405898398141275532">"Localizar anterior"</string>
     <string name="gpsNotifTicker" msgid="3207361857637620780">"Solicitação de local de <xliff:g id="NAME">%s</xliff:g>"</string>
@@ -1761,12 +1761,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Introduza novamente o código PUK correto. Muitas tentativas malsucedidas desativarão permanentemente o chip."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"Os códigos PIN não coincidem"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Muitas tentativas de padrão"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Para desbloquear, faça login usando sua Conta do Google."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Para desbloquear, faça login usando sua Conta do login."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Nome de usuário (e-mail)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Senha"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Fazer login"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"Nome de usuário ou senha inválidos."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Esqueceu seu nome de usuário ou senha?\nAcesse "<b>"google.com.br/accounts/recovery"</b>"."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Esqueceu seu nome de usuário ou senha?\nAcesse "<b>"your account provider"</b>"."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"Verificando a conta..."</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"Você digitou seu PIN incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. \n\nTente novamente em <xliff:g id="NUMBER_1">%2$d</xliff:g> segundos."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"Você digitou sua senha incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. \n\nTente novamente em <xliff:g id="NUMBER_1">%2$d</xliff:g> segundos."</string>
@@ -1777,9 +1777,9 @@
     <string name="kg_failed_attempts_now_wiping" product="tablet" msgid="2299099385175083308">"Você tentou desbloquear incorretamente o tablet <xliff:g id="NUMBER">%d</xliff:g> vezes. O tablet será redefinido para o padrão de fábrica."</string>
     <string name="kg_failed_attempts_now_wiping" product="tv" msgid="5045460916106267585">"Você tentou desbloquear seu dispositivo Android TV incorretamente <xliff:g id="NUMBER">%d</xliff:g> vezes. O dispositivo Android TV será redefinido para a configuração original."</string>
     <string name="kg_failed_attempts_now_wiping" product="default" msgid="5043730590446071189">"Você tentou desbloquear incorretamente o telefone <xliff:g id="NUMBER">%d</xliff:g> vezes. O telefone será redefinido para o padrão de fábrica."</string>
-    <string name="kg_failed_attempts_almost_at_login" product="tablet" msgid="7086799295109717623">"Você desenhou sua sequência de desbloqueio incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. Se fizer mais <xliff:g id="NUMBER_1">%2$d</xliff:g> tentativas incorretas, será solicitado que você use o login do Google para desbloquear seu tablet.\n\n Tente novamente em <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
+    <string name="kg_failed_attempts_almost_at_login" product="tablet" msgid="7086799295109717623">"Você desenhou sua sequência de desbloqueio incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. Se fizer mais <xliff:g id="NUMBER_1">%2$d</xliff:g> tentativas incorretas, será solicitado que você use o login do para desbloquear seu tablet.\n\n Tente novamente em <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
     <string name="kg_failed_attempts_almost_at_login" product="tv" msgid="4670840383567106114">"Você desenhou seu padrão de desbloqueio incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. Se fizer mais <xliff:g id="NUMBER_1">%2$d</xliff:g> tentativas incorretas, será solicitado que você use sua conta de e-mail para desbloquear seu dispositivo Android TV.\n\n Tente novamente em <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
-    <string name="kg_failed_attempts_almost_at_login" product="default" msgid="5270861875006378092">"Você desenhou sua sequência de desbloqueio incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. Se fizer mais <xliff:g id="NUMBER_1">%2$d</xliff:g> tentativas incorretas, será solicitado que você use o login do Google para desbloquear.\n\n Tente novamente em <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
+    <string name="kg_failed_attempts_almost_at_login" product="default" msgid="5270861875006378092">"Você desenhou sua sequência de desbloqueio incorretamente <xliff:g id="NUMBER_0">%1$d</xliff:g> vezes. Se fizer mais <xliff:g id="NUMBER_1">%2$d</xliff:g> tentativas incorretas, será solicitado que você use o login do para desbloquear.\n\n Tente novamente em <xliff:g id="NUMBER_2">%3$d</xliff:g> segundos."</string>
     <string name="kg_text_message_separator" product="default" msgid="4503708889934976866">" — "</string>
     <string name="kg_reordering_delete_drop_target_text" msgid="2034358143731750914">"Remover"</string>
     <string name="safe_media_volume_warning" product="default" msgid="3751676824423049994">"Aumentar o volume acima do nível recomendado?\n\nOuvir em volume alto por longos períodos pode danificar sua audição."</string>
@@ -2532,7 +2532,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"Voltar"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"Pendente…"</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"O SOS via satélite já está disponível"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Você poderá enviar uma mensagem para serviços de emergência se não houver uma rede móvel ou Wi-Fi. O Google Mensagens precisa ser seu app de mensagens padrão."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Você poderá enviar uma mensagem para serviços de emergência se não houver uma rede móvel ou Wi-Fi. O Mensagens precisa ser seu app de mensagens padrão."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"Incompatível com o SOS via satélite"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"Este dispositivo não é compatível com o SOS via satélite"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"O SOS via satélite não foi configurado"</string>
@@ -2540,11 +2540,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"SOS via satélite indisponível"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"O SOS via satélite não está disponível neste país ou região"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"SOS via satélite não configurado"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Para enviar mensagens via satélite, defina o Google Mensagens como seu app de mensagens padrão"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Para enviar mensagens via satélite, defina o Mensagens como seu app de mensagens padrão"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"SOS via satélite indisponível"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"Para verificar se o SOS via satélite está disponível neste país ou região, ative as configurações de localização"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"Mensagem via satélite disponível"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"É possível trocar mensagens por satélite caso não haja uma rede móvel ou Wi-Fi. O Google Mensagens precisa ser seu app de mensagens padrão."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"É possível trocar mensagens por satélite caso não haja uma rede móvel ou Wi-Fi. O Mensagens precisa ser seu app de mensagens padrão."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"Incompatível com mensagem via satélite"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"Este dispositivo não é compatível com mensagem via satélite"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"Mensagem via satélite não configurada"</string>
@@ -2552,7 +2552,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"Mensagem via satélite indisponível"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"A mensagem via satélite não está disponível neste país ou região"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"Mensagem via satélite não configurada"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Para enviar mensagens via satélite, defina o Google Mensagens como seu app de mensagens padrão"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Para enviar mensagens via satélite, defina o Mensagens como seu app de mensagens padrão"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"Mensagem via satélite indisponível"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"Para verificar se a mensagem via satélite está disponível neste país ou região, ative as configurações de localização"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"Configurar o desbloqueio por impressão digital de novo"</string>

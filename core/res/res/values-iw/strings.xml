@@ -113,7 +113,7 @@
     <string name="peerTtyModeVco" msgid="572208600818270944">"‏העמית ביקש TTY במצב VCO"</string>
     <string name="peerTtyModeOff" msgid="2420380956369226583">"‏העמית ביקש TTY במצב OFF"</string>
     <string name="serviceClassVoice" msgid="2065556932043454987">"קול"</string>
-    <string name="serviceClassData" msgid="4148080018967300248">"Google Data"</string>
+    <string name="serviceClassData" msgid="4148080018967300248">"Data"</string>
     <string name="serviceClassFAX" msgid="2561653371698904118">"פקס"</string>
     <string name="serviceClassSMS" msgid="1547664561704509004">"SMS"</string>
     <string name="serviceClassDataAsync" msgid="2029856900898545984">"אסינכרוני"</string>
@@ -960,7 +960,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1008,7 +1008,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1081,9 +1081,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"שרטטת את קו ביטול הנעילה באופן שגוי <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים. \n\nיש לנסות שוב בעוד <xliff:g id="NUMBER_1">%2$d</xliff:g> שניות."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"הקלדת סיסמה שגויה <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים.\n\nיש לנסות שוב בעוד <xliff:g id="NUMBER_1">%2$d</xliff:g> שניות."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"הקלדת קוד גישה שגוי <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים.\n\nאפשר לנסות שוב בעוד <xliff:g id="NUMBER_1">%2$d</xliff:g> שניות."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"‏שרטטת את קו ביטול הנעילה באופן שגוי <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים. לאחר <xliff:g id="NUMBER_1">%2$d</xliff:g> ניסיונות כושלים נוספים, יהיה צורך לבטל את נעילת הטאבלט באמצעות פרטי הכניסה שלך ל-Google.\n\nיש לנסות שוב בעוד <xliff:g id="NUMBER_2">%3$d</xliff:g> שניות."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"‏שרטטת קו ביטול נעילה שגוי <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים. לאחר <xliff:g id="NUMBER_1">%2$d</xliff:g> ניסיונות כושלים נוספים, יהיה צורך לבטל את הנעילה של מכשיר ה-Android TV באמצעות כניסה לחשבון Google שלך.\n\n אפשר לנסות שוב בעוד <xliff:g id="NUMBER_2">%3$d</xliff:g> שניות."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"‏שרטטת את קו ביטול הנעילה באופן שגוי <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים. בעוד <xliff:g id="NUMBER_1">%2$d</xliff:g> ניסיונות כושלים נוספים, יהיה צורך לבטל את נעילת הטלפון באמצעות פרטי הכניסה שלך ל-Google‏.\n\n יש לנסות שוב בעוד <xliff:g id="NUMBER_2">%3$d</xliff:g> שניות."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"‏שרטטת את קו ביטול הנעילה באופן שגוי <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים. לאחר <xliff:g id="NUMBER_1">%2$d</xliff:g> ניסיונות כושלים נוספים, יהיה צורך לבטל את נעילת הטאבלט באמצעות פרטי הכניסה שלך ל-login.\n\nיש לנסות שוב בעוד <xliff:g id="NUMBER_2">%3$d</xliff:g> שניות."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"‏שרטטת קו ביטול נעילה שגוי <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים. לאחר <xliff:g id="NUMBER_1">%2$d</xliff:g> ניסיונות כושלים נוספים, יהיה צורך לבטל את הנעילה של מכשיר ה-Android TV באמצעות כניסה לחשבון שלך.\n\n אפשר לנסות שוב בעוד <xliff:g id="NUMBER_2">%3$d</xliff:g> שניות."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"‏שרטטת את קו ביטול הנעילה באופן שגוי <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים. בעוד <xliff:g id="NUMBER_1">%2$d</xliff:g> ניסיונות כושלים נוספים, יהיה צורך לבטל את נעילת הטלפון באמצעות פרטי הכניסה שלך ל-login.\n\n יש לנסות שוב בעוד <xliff:g id="NUMBER_2">%3$d</xliff:g> שניות."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"ביצעת <xliff:g id="NUMBER_0">%1$d</xliff:g> ניסיונות שגויים לביטול נעילת הטאבלט. לאחר <xliff:g id="NUMBER_1">%2$d</xliff:g> ניסיונות כושלים נוספים, הטאבלט יעבור איפוס לברירת המחדל של היצרן וכל נתוני המשתמש יאבדו."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"‏ניסית לבטל בצורה שגויה את הנעילה של מכשיר ה-Android TV <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים. לאחר <xliff:g id="NUMBER_1">%2$d</xliff:g> ניסיונות כושלים נוספים, מכשיר ה-Android TV יעבור איפוס לברירת המחדל של היצרן וכל נתוני המשתמש יאבדו."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"ביצעת <xliff:g id="NUMBER_0">%1$d</xliff:g> ניסיונות שגויים לביטול נעילת הטלפון. לאחר <xliff:g id="NUMBER_1">%2$d</xliff:g> ניסיונות כושלים נוספים, הטלפון יעבור איפוס לברירת המחדל של היצרן וכל נתוני המשתמש יאבדו."</string>
@@ -1094,12 +1094,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"שכחת את קו ביטול הנעילה?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"ביטול נעילת החשבון"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"בוצעו ניסיונות רבים מדי לשרטוט קו ביטול נעילה."</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"‏כדי לבטל את הנעילה, עליך להיכנס באמצעות חשבון Google שלך."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"‏כדי לבטל את הנעילה, עליך להיכנס באמצעות חשבון שלך."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"שם משתמש (אימייל)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"סיסמה"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"כניסה"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"שם משתמש או סיסמה לא חוקיים."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"‏שכחת את שם המשתמש או הסיסמה?\nאפשר להיכנס לכתובת "<b>"google.com/accounts/recovery"</b></string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"‏שכחת את שם המשתמש או הסיסמה?\nאפשר להיכנס לכתובת "<b>"your account provider"</b></string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"בבדיקה..."</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"ביטול נעילה"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"קול פועל"</string>
@@ -1299,7 +1299,7 @@
     <string name="whichImageCaptureApplicationLabel" msgid="6505433734824988277">"צילום תמונה"</string>
     <string name="alwaysUse" msgid="3153558199076112903">"שימוש כברירת מחדל עבור הפעולה הזו."</string>
     <string name="use_a_different_app" msgid="4987790276170972776">"שימוש באפליקציה אחרת"</string>
-    <string name="clearDefaultHintMsg" msgid="1325866337702524936">"‏צריך לנקות את הגדרת המחדל ב\'הגדרות מערכת\' &lt;‏ \'אפליקציות של Google‏\' &lt; \'הורדות\'."</string>
+    <string name="clearDefaultHintMsg" msgid="1325866337702524936">"‏צריך לנקות את הגדרת המחדל ב\'הגדרות מערכת\' &lt;‏ \'אפליקציות של login‏\' &lt; \'הורדות\'."</string>
     <string name="chooseActivity" msgid="8563390197659779956">"בחירת פעולה"</string>
     <string name="chooseUsbActivity" msgid="2096269989990986612">"‏בחירת אפליקציה עבור התקן ה-USB"</string>
     <string name="noApplications" msgid="1186909265235544019">"אין אפליקציות שיכולות לבצע את הפעולה הזו."</string>
@@ -1327,7 +1327,7 @@
     <string name="launch_warning_original" msgid="3332206576800169626">"אפליקציית <xliff:g id="APP_NAME">%1$s</xliff:g> הופעלה במקור."</string>
     <string name="screen_compat_mode_scale" msgid="8627359598437527726">"שינוי קנה-מידה"</string>
     <string name="screen_compat_mode_show" msgid="5080361367584709857">"להציג תמיד"</string>
-    <string name="screen_compat_mode_hint" msgid="4032272159093750908">"‏אפשר להפעיל מחדש את התכונה הזו ב\'הגדרות מערכת\' &lt;‏ Google Apps‏ &lt; \'הורדות\'."</string>
+    <string name="screen_compat_mode_hint" msgid="4032272159093750908">"‏אפשר להפעיל מחדש את התכונה הזו ב\'הגדרות מערכת\' &lt;‏ Apps‏ &lt; \'הורדות\'."</string>
     <string name="unsupported_display_size_message" msgid="7265211375269394699">"האפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> לא תומכת בהגדרת הגודל הנוכחית של התצוגה, והיא עשויה לא לפעול כראוי."</string>
     <string name="unsupported_display_size_show" msgid="980129850974919375">"להציג תמיד"</string>
     <string name="unsupported_compile_sdk_message" msgid="7326293500707890537">"‏<xliff:g id="APP_NAME">%1$s</xliff:g> נבנתה לגרסה לא תואמת של מערכת ההפעלה של Android ועלולה להתנהג באופן לא צפוי. ייתכן שקיימת גרסה מעודכנת של האפליקציה."</string>
@@ -1761,12 +1761,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"‏יש להזין שוב את קוד ה-PUK הנכון. ניסיונות חוזרים ישביתו את כרטיס ה-SIM באופן סופי."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"קודי האימות לא תואמים"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"ניסיונות רבים מדי לשרטוט קו ביטול נעילה."</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"‏כדי לבטל את הנעילה, עליך להיכנס באמצעות חשבון Google שלך."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"‏כדי לבטל את הנעילה, עליך להיכנס באמצעות חשבון שלך."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"שם משתמש (אימייל)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"סיסמה"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"כניסה"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"שם משתמש או סיסמה לא חוקיים."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"‏שכחת את שם המשתמש או הסיסמה?\nאפשר להיכנס לכתובת "<b>"google.com/accounts/recovery"</b></string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"‏שכחת את שם המשתמש או הסיסמה?\nאפשר להיכנס לכתובת "<b>"your account provider"</b></string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"מתבצעת בדיקה של החשבון…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"הקלדת קוד אימות שגוי <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים. \n\nאפשר לנסות שוב בעוד <xliff:g id="NUMBER_1">%2$d</xliff:g> שניות."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"הקלדת סיסמה שגויה <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים.\n\nאפשר לנסות שוב בעוד <xliff:g id="NUMBER_1">%2$d</xliff:g> שניות."</string>
@@ -2532,7 +2532,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"חזרה"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"בהמתנה..."</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"התכונה \"תקשורת לוויינית למצב חירום\" זמינה עכשיו"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"‏אפשר לשלוח הודעות לשירותי החירום כשאין חיבור לרשת סלולרית או לרשת Wi-Fi. חובה להגדיר את Google Messages כאפליקציית ברירת המחדל להודעות."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"‏אפשר לשלוח הודעות לשירותי החירום כשאין חיבור לרשת סלולרית או לרשת Wi-Fi. חובה להגדיר את Messages כאפליקציית ברירת המחדל להודעות."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"התכונה \"תקשורת לוויינית למצב חירום\" לא נתמכת"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"המכשיר הזה לא תומך בתכונה \"תקשורת לוויינית למצב חירום\""</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"התכונה \"תקשורת לוויינית למצב חירום\" לא מוגדרת"</string>
@@ -2540,11 +2540,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"התכונה \"תקשורת לוויינית למצב חירום\" לא זמינה"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"התכונה \"תקשורת לוויינית למצב חירום\" לא זמינה במדינה הזו או באזור הזה"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"התכונה \"תקשורת לוויינית למצב חירום\" לא מוגדרת"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"‏כדי להעביר הודעות באמצעות לוויין, צריך להגדיר את Google Messages כאפליקציית ברירת המחדל להודעות"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"‏כדי להעביר הודעות באמצעות לוויין, צריך להגדיר את Messages כאפליקציית ברירת המחדל להודעות"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"התכונה \"תקשורת לוויינית למצב חירום\" לא זמינה"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"כדי לבדוק אם התכונה \"תקשורת לוויינית למצב חירום\" זמינה במדינה או באזור שלך, צריך להפעיל את הגדרות המיקום"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"התכונה \"העברת הודעות באמצעות לוויין\" זמינה"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"‏כשאין חיבור לרשת סלולרית או לרשת Wi-Fi, אפשר להעביר הודעות בתקשורת לוויינית. חובה להגדיר את Google Messages כאפליקציית ברירת המחדל להודעות."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"‏כשאין חיבור לרשת סלולרית או לרשת Wi-Fi, אפשר להעביר הודעות בתקשורת לוויינית. חובה להגדיר את Messages כאפליקציית ברירת המחדל להודעות."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"התכונה \"העברת הודעות באמצעות לוויין\" לא נתמכת"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"המכשיר הזה לא תומך בתכונה \"העברת הודעות באמצעות לוויין\""</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"התכונה \"העברת הודעות באמצעות לוויין\" לא מוגדרת"</string>
@@ -2552,7 +2552,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"התכונה \"העברת הודעות באמצעות לוויין\" לא זמינה"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"התכונה \"העברת הודעות באמצעות לוויין\" לא זמינה במדינה הזו או באזור הזה"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"התכונה \"העברת הודעות באמצעות לוויין\" לא מוגדרת"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"‏כדי להעביר הודעות באמצעות לוויין, צריך להגדיר את Google Messages כאפליקציית ברירת המחדל להודעות"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"‏כדי להעביר הודעות באמצעות לוויין, צריך להגדיר את Messages כאפליקציית ברירת המחדל להודעות"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"התכונה \"העברת הודעות באמצעות לוויין\" לא זמינה"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"כדי לבדוק אם התכונה \"העברת הודעות באמצעות לוויין\" זמינה במדינה או באזור שלך, צריך להפעיל את הגדרות המיקום"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"הגדרה חוזרת של \'ביטול הנעילה בטביעת אצבע\'"</string>

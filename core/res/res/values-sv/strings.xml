@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"Du har ritat ditt grafiska lösenord fel <xliff:g id="NUMBER_0">%1$d</xliff:g> gånger. \n\nFörsök igen om <xliff:g id="NUMBER_1">%2$d</xliff:g> sekunder."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"Du har angett fel lösenord <xliff:g id="NUMBER_0">%1$d</xliff:g> gånger. \n\nFörsök igen om <xliff:g id="NUMBER_1">%2$d</xliff:g> sekunder."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"Du har angett fel lösenord <xliff:g id="NUMBER_0">%1$d</xliff:g> gånger. \n\nFörsök igen om <xliff:g id="NUMBER_1">%2$d</xliff:g> sekunder."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Du har ritat ditt grafiska lösenord fel <xliff:g id="NUMBER_0">%1$d</xliff:g> gånger. Efter <xliff:g id="NUMBER_1">%2$d</xliff:g> försök till ombeds du att låsa upp surfplattan med din Google-inloggning.\n\n Försök igen om  <xliff:g id="NUMBER_2">%3$d</xliff:g> sekunder."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Du har ritat ditt grafiska lösenord fel <xliff:g id="NUMBER_0">%1$d</xliff:g> gånger. Efter ytterligare <xliff:g id="NUMBER_1">%2$d</xliff:g> försök måste du låsa upp Android TV-enheten med hjälp av dina inloggningsuppgifter på Google.\n\n Försök igen om <xliff:g id="NUMBER_2">%3$d</xliff:g> sekunder."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Du har ritat ditt grafiska lösenord fel <xliff:g id="NUMBER_0">%1$d</xliff:g> gånger. Efter <xliff:g id="NUMBER_1">%2$d</xliff:g> försök till ombeds du att låsa upp mobilen med uppgifterna som du använder när du loggar in på Google.\n\n Försök igen om  <xliff:g id="NUMBER_2">%3$d</xliff:g> sekunder."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Du har ritat ditt grafiska lösenord fel <xliff:g id="NUMBER_0">%1$d</xliff:g> gånger. Efter <xliff:g id="NUMBER_1">%2$d</xliff:g> försök till ombeds du att låsa upp surfplattan med din inloggning.\n\n Försök igen om  <xliff:g id="NUMBER_2">%3$d</xliff:g> sekunder."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Du har ritat ditt grafiska lösenord fel <xliff:g id="NUMBER_0">%1$d</xliff:g> gånger. Efter ytterligare <xliff:g id="NUMBER_1">%2$d</xliff:g> försök måste du låsa upp Android TV-enheten med hjälp av dina inloggningsuppgifter på login.\n\n Försök igen om <xliff:g id="NUMBER_2">%3$d</xliff:g> sekunder."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Du har ritat ditt grafiska lösenord fel <xliff:g id="NUMBER_0">%1$d</xliff:g> gånger. Efter <xliff:g id="NUMBER_1">%2$d</xliff:g> försök till ombeds du att låsa upp mobilen med uppgifterna som du använder när du loggar in på login.\n\n Försök igen om  <xliff:g id="NUMBER_2">%3$d</xliff:g> sekunder."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Du har försökt låsa upp surfplattan på fel sätt <xliff:g id="NUMBER_0">%1$d</xliff:g> gånger. Efter <xliff:g id="NUMBER_1">%2$d</xliff:g> misslyckade försök till kommer surfplattan att återställas till fabriksinställningarna. Du förlorar då alla användardata."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Du har gjort <xliff:g id="NUMBER_0">%1$d</xliff:g> misslyckade försök att låsa upp Android TV-enheten. Efter ytterligare <xliff:g id="NUMBER_1">%2$d</xliff:g> misslyckade försök återställs standardinställningarna på Android TV-enheten och all användardata försvinner."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Du har försökt låsa upp mobilen på fel sätt <xliff:g id="NUMBER_0">%1$d</xliff:g> gånger. Efter <xliff:g id="NUMBER_1">%2$d</xliff:g> misslyckade försök till kommer mobilen att återställas till fabriksinställningarna. Du förlorar då alla användardata."</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Glömt ditt grafiska lösenord?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Lås upp konto"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"För många försök med mönster"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Logga in med ditt Google-konto om du vill låsa upp."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Logga in med ditt konto om du vill låsa upp."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Användarnamn (e-post)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Lösenord"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Logga in"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"Ogiltigt användarnamn eller lösenord."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Har du glömt ditt användarnamn eller lösenord?\nBesök "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Har du glömt ditt användarnamn eller lösenord?\nBesök "<b>"your account provider"</b>"."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"Kontrollerar …"</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"Lås upp"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"Ljud på"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Ange rätt PUK-kod igen. Om försöken upprepas inaktiveras SIM-kortet permanent."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN-koderna stämmer inte överens"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"För många försök med mönster"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Logga in med ditt Google-konto om du vill låsa upp."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Logga in med ditt konto om du vill låsa upp."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Användarnamn (e-post)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Lösenord"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Logga in"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"Ogiltigt användarnamn eller lösenord."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Har du glömt ditt användarnamn eller lösenord?\nBesök "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Har du glömt ditt användarnamn eller lösenord?\nBesök "<b>"your account provider"</b>"."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"Kontot kontrolleras …"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"Du har angett fel lösenord <xliff:g id="NUMBER_0">%1$d</xliff:g> gånger. \n\nFörsök igen om <xliff:g id="NUMBER_1">%2$d</xliff:g> sekunder."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"Du har angett fel lösenord <xliff:g id="NUMBER_0">%1$d</xliff:g> gånger. \n\nFörsök igen om <xliff:g id="NUMBER_1">%2$d</xliff:g> sekunder."</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"Tillbaka"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"Väntar …"</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"SOS-larm via satellit är nu tillgängligt"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Du kan skicka meddelanden till räddningstjänsten om det inte finns någon mobil- eller wifi-anslutning. Google Messages måste vara din standardapp för meddelanden."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Du kan skicka meddelanden till räddningstjänsten om det inte finns någon mobil- eller wifi-anslutning. Messages måste vara din standardapp för meddelanden."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"SOS-larm via satellit stöds inte"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"SOS-larm via satellit stöds inte på den här enheten"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"SOS-larm via satellit har inte konfigurerats"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"SOS-larm via satellit är inte tillgängligt"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"SOS-larm via satellit är inte tillgängligt i det här landet eller den här regionen"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"SOS-larm via satellit har inte konfigurerats"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Ställ in Google Messages som standardapp för meddelanden om du vill skicka meddelanden via satellit"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Ställ in Messages som standardapp för meddelanden om du vill skicka meddelanden via satellit"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"SOS-larm via satellit är inte tillgängligt"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"Aktivera platsinställningar för att kontrollera om SOS-larm via satellit är tillgängligt i det här landet eller den här regionen"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"Satellitmeddelanden är tillgängliga"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Du kan skicka meddelanden via satellit om det inte finns någon mobil- eller wifi-anslutning. Google Messages måste vara din standardapp för meddelanden."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Du kan skicka meddelanden via satellit om det inte finns någon mobil- eller wifi-anslutning. Messages måste vara din standardapp för meddelanden."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"Satellitmeddelanden stöds inte"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"Satellitmeddelanden stöds inte på den här enheten"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"Satellitmeddelanden har inte ställts in"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"Satellitmeddelanden är inte tillgängliga"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"Satellitmeddelanden är inte tillgängliga i det här landet eller den här regionen"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"Satellitmeddelanden har inte ställts in"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Ställ in Google Messages som standardapp för meddelanden om du vill skicka meddelanden via satellit"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Ställ in Messages som standardapp för meddelanden om du vill skicka meddelanden via satellit"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"Satellitmeddelanden är inte tillgängliga"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"Aktivera platsinställningar för att kontrollera om satellitmeddelanden är tillgängliga i det här landet eller den här regionen"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"Konfigurera fingeravtryckslås igen"</string>

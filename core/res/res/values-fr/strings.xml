@@ -960,7 +960,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1008,7 +1008,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"NetMeeting"</string>
@@ -1081,9 +1081,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"Vous avez dessiné un schéma de déverrouillage incorrect à <xliff:g id="NUMBER_0">%1$d</xliff:g> reprises.\n\nVeuillez réessayer dans <xliff:g id="NUMBER_1">%2$d</xliff:g> secondes."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"Vous avez saisi un mot de passe incorrect <xliff:g id="NUMBER_0">%1$d</xliff:g> fois. \n\nVeuillez réessayer dans <xliff:g id="NUMBER_1">%2$d</xliff:g> secondes."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"Vous avez saisi un code PIN incorrect <xliff:g id="NUMBER_0">%1$d</xliff:g> fois. \n\nVeuillez réessayer dans <xliff:g id="NUMBER_1">%2$d</xliff:g> secondes."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Vous avez dessiné un schéma de déverrouillage incorrect à <xliff:g id="NUMBER_0">%1$d</xliff:g> reprises. Au bout de <xliff:g id="NUMBER_1">%2$d</xliff:g> échecs supplémentaires, vous devrez déverrouiller votre tablette à l\'aide de votre identifiant Google.\n\nVeuillez réessayer dans <xliff:g id="NUMBER_2">%3$d</xliff:g> secondes."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Vous avez dessiné un schéma de déverrouillage incorrect à <xliff:g id="NUMBER_0">%1$d</xliff:g> reprises. Si vous échouez encore <xliff:g id="NUMBER_1">%2$d</xliff:g> fois, vous devrez déverrouiller votre appareil Android TV en vous connectant à votre compte Google.\n\n Réessayez dans <xliff:g id="NUMBER_2">%3$d</xliff:g> secondes."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Vous avez dessiné un schéma de déverrouillage incorrect à <xliff:g id="NUMBER_0">%1$d</xliff:g> reprises. Au bout de <xliff:g id="NUMBER_1">%2$d</xliff:g> échecs supplémentaires, vous devrez déverrouiller votre téléphone à l\'aide de votre identifiant Google.\n\nVeuillez réessayer dans <xliff:g id="NUMBER_2">%3$d</xliff:g> secondes."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Vous avez dessiné un schéma de déverrouillage incorrect à <xliff:g id="NUMBER_0">%1$d</xliff:g> reprises. Au bout de <xliff:g id="NUMBER_1">%2$d</xliff:g> échecs supplémentaires, vous devrez déverrouiller votre tablette à l\'aide de votre identifiant login.\n\nVeuillez réessayer dans <xliff:g id="NUMBER_2">%3$d</xliff:g> secondes."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Vous avez dessiné un schéma de déverrouillage incorrect à <xliff:g id="NUMBER_0">%1$d</xliff:g> reprises. Si vous échouez encore <xliff:g id="NUMBER_1">%2$d</xliff:g> fois, vous devrez déverrouiller votre appareil Android TV en vous connectant à votre compte.\n\n Réessayez dans <xliff:g id="NUMBER_2">%3$d</xliff:g> secondes."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Vous avez dessiné un schéma de déverrouillage incorrect à <xliff:g id="NUMBER_0">%1$d</xliff:g> reprises. Au bout de <xliff:g id="NUMBER_1">%2$d</xliff:g> échecs supplémentaires, vous devrez déverrouiller votre téléphone à l\'aide de votre identifiant login.\n\nVeuillez réessayer dans <xliff:g id="NUMBER_2">%3$d</xliff:g> secondes."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Vous avez tenté de déverrouiller la tablette de façon incorrecte à <xliff:g id="NUMBER_0">%1$d</xliff:g> reprises. Si vous échouez encore <xliff:g id="NUMBER_1">%2$d</xliff:g> fois, sa configuration d\'usine sera rétablie, et toutes les données utilisateur seront perdues."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Vous avez tenté de déverrouiller votre appareil Android TV à <xliff:g id="NUMBER_0">%1$d</xliff:g> reprises. Si vous échouez encore <xliff:g id="NUMBER_1">%2$d</xliff:g> fois, sa configuration d\'usine sera rétablie, et toutes les données utilisateur seront perdues."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Vous avez tenté de déverrouiller le téléphone de façon incorrecte à <xliff:g id="NUMBER_0">%1$d</xliff:g> reprises. Si vous échouez encore <xliff:g id="NUMBER_1">%2$d</xliff:g> fois, sa configuration d\'usine sera rétablie, et toutes les données utilisateur seront perdues."</string>
@@ -1094,12 +1094,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Schéma oublié ?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Déverrouillage du compte"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Trop de tentatives"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Pour déverrouiller le téléphone, veuillez vous connecter avec votre compte Google."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Pour déverrouiller le téléphone, veuillez vous connecter avec votre compte."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Nom d\'utilisateur (e-mail)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Mot de passe"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Se connecter"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"Nom d\'utilisateur ou mot de passe incorrect."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Vous avez oublié votre nom d\'utilisateur ou votre mot de passe ?\nAccédez à la page "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"Vous avez oublié votre nom d\'utilisateur ou votre mot de passe ?\nAccédez à la page "<b>"your account provider"</b>"."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"Vérification en cours…"</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"Déverrouiller"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"Son activé"</string>
@@ -1761,12 +1761,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Veuillez saisir de nouveau le code PUK correct. Des tentatives répétées désactivent définitivement la carte SIM."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"Les codes PIN ne correspondent pas."</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Trop de tentatives."</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Pour déverrouiller le téléphone, veuillez vous connecter avec votre compte Google."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Pour déverrouiller le téléphone, veuillez vous connecter avec votre compte."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Nom d\'utilisateur (e-mail)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Mot de passe"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Connexion"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"Nom d\'utilisateur ou mot de passe non valide."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Vous avez oublié votre nom d\'utilisateur ou votre mot de passe ?\nRendez-vous sur la page "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"Vous avez oublié votre nom d\'utilisateur ou votre mot de passe ?\nRendez-vous sur la page "<b>"your account provider"</b>"."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"Vérification du compte en cours…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"Vous avez saisi un code PIN incorrect à <xliff:g id="NUMBER_0">%1$d</xliff:g> reprises. \n\nVeuillez réessayer dans <xliff:g id="NUMBER_1">%2$d</xliff:g> secondes."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"Vous avez saisi un mot de passe incorrect à <xliff:g id="NUMBER_0">%1$d</xliff:g> reprises. \n\nVeuillez réessayer dans <xliff:g id="NUMBER_1">%2$d</xliff:g> secondes."</string>
@@ -2532,7 +2532,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"Retour"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"En attente…"</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"SOS par satellite est maintenant disponible"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Vous pouvez envoyer des messages aux services d\'urgence s\'il n\'y a pas de réseau mobile ou Wi-Fi. Google Messages doit être votre application de messagerie par défaut."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Vous pouvez envoyer des messages aux services d\'urgence s\'il n\'y a pas de réseau mobile ou Wi-Fi. login Messages doit être votre application de messagerie par défaut."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"SOS par satellite n\'est pas disponible"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"SOS par satellite n\'est pas disponible sur cet appareil"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"SOS par satellite n\'est pas configuré"</string>
@@ -2540,11 +2540,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"SOS par satellite n\'est pas disponible"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"SOS par satellite n\'est pas disponible dans ce pays ou cette région"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"SOS par satellite non configuré"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Pour envoyer des messages par satellite, définissez Google Messages comme application de chat par défaut"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"Pour envoyer des messages par satellite, définissez login Messages comme application de chat par défaut"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"SOS par satellite n\'est pas disponible"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"Pour savoir si SOS par satellite est disponible dans ce pays ou cette région, activez les paramètres de localisation"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"Messagerie par satellite disponible"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Vous pouvez envoyer des messages par satellite s\'il n\'y a pas de réseau mobile ou Wi-Fi. Google Messages doit être votre application de chat par défaut."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Vous pouvez envoyer des messages par satellite s\'il n\'y a pas de réseau mobile ou Wi-Fi. login Messages doit être votre application de chat par défaut."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"Messagerie par satellite non disponible"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"La messagerie par satellite n\'est pas disponible sur cet appareil"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"Messagerie par satellite non configurée"</string>
@@ -2552,7 +2552,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"Messagerie par satellite non disponible"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"La messagerie par satellite n\'est pas disponible dans ce pays ou cette région"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"Messagerie par satellite non configurée"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Pour envoyer des messages par satellite, définissez Google Messages comme application de chat par défaut"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"Pour envoyer des messages par satellite, définissez login Messages comme application de chat par défaut"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"Messagerie par satellite non disponible"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"Pour savoir si la messagerie par satellite est disponible dans ce pays ou cette région, activez les paramètres de localisation"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"Reconfigurer le déverrouillage par empreinte digitale"</string>

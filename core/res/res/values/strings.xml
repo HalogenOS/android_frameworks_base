@@ -2591,7 +2591,7 @@
         <item>Yahoo</item>
         <item>Skype</item>
         <item>QQ</item>
-        <item>Google Talk</item>
+        <item>Hangouts</item>
         <item>ICQ</item>
         <item>Jabber</item>
     </string-array>
@@ -2689,7 +2689,7 @@
     <string name="imProtocolSkype">Skype</string>
     <!-- QQ IM protocol type -->
     <string name="imProtocolQq">QQ</string>
-    <!-- Google Talk IM protocol type -->
+    <!-- Hangouts IM protocol type -->
     <string name="imProtocolGoogleTalk">Hangouts</string>
     <!-- ICQ IM protocol type -->
     <string name="imProtocolIcq">ICQ</string>
@@ -2899,7 +2899,7 @@
     <string name="lockscreen_failed_attempts_almost_glogin" product="tablet">
         You have incorrectly drawn your unlock pattern <xliff:g id="number">%1$d</xliff:g> times.
        After <xliff:g id="number">%2$d</xliff:g> more unsuccessful attempts,
-       you will be asked to unlock your tablet using your Google signin.\n\n
+       you will be asked to unlock your tablet using your signin.\n\n
        Try again in <xliff:g id="number">%3$d</xliff:g> seconds.
     </string>
 
@@ -2908,7 +2908,7 @@
     <string name="lockscreen_failed_attempts_almost_glogin" product="tv">
         You have incorrectly drawn your unlock pattern <xliff:g id="number">%1$d</xliff:g> times.
        After <xliff:g id="number">%2$d</xliff:g> more unsuccessful attempts,
-       you will be asked to unlock your Android TV device using your Google signin.\n\n
+       you will be asked to unlock your Android TV device using your signin.\n\n
        Try again in <xliff:g id="number">%3$d</xliff:g> seconds.
     </string>
 
@@ -2917,7 +2917,7 @@
     <string name="lockscreen_failed_attempts_almost_glogin" product="default">
         You have incorrectly drawn your unlock pattern <xliff:g id="number">%1$d</xliff:g> times.
        After <xliff:g id="number">%2$d</xliff:g> more unsuccessful attempts,
-       you will be asked to unlock your phone using your Google signin.\n\n
+       you will be asked to unlock your phone using your signin.\n\n
        Try again in <xliff:g id="number">%3$d</xliff:g> seconds.
     </string>
 
@@ -2974,14 +2974,14 @@
          their lock gesture -->
     <string name="lockscreen_forgot_pattern_button_text">Forgot pattern?</string>
 
-    <!-- Title of the unlock screen that uses your Google login and password when the user hit
+    <!-- Title of the unlock screen that uses your login login and password when the user hit
          the 'forgot pattern' button.-->
     <string name="lockscreen_glogin_forgot_pattern">Account unlock</string>
-    <!-- Title of the unlock screen that uses your Google login and password when the user attempted
+    <!-- Title of the unlock screen that uses your login login and password when the user attempted
          too many patterns and we are forcing them to use their account instead. -->
     <string name="lockscreen_glogin_too_many_attempts">Too many pattern attempts</string>
-    <!-- In the unlock screen, message telling the user that they need to use their Google login and password to unlock the phone -->
-    <string name="lockscreen_glogin_instructions">To unlock, sign in with your Google account.</string>
+    <!-- In the unlock screen, message telling the user that they need to use their login login and password to unlock the phone -->
+    <string name="lockscreen_glogin_instructions">To unlock, sign in with your account.</string>
     <!-- Hint caption for the username field when unlocking the phone using login and password -->
     <string name="lockscreen_glogin_username_hint">Username (email)</string>
     <!-- Hint caption for the password field when unlocking the phone using login and password -->
@@ -2991,7 +2991,7 @@
     <!-- Displayed to the user when unlocking the phone with a username and password fails. -->
     <string name="lockscreen_glogin_invalid_input">Invalid username or password.</string>
     <!-- Hint displayed on account unlock screen to advise the user on how to recover the account. -->
-    <string name="lockscreen_glogin_account_recovery_hint">Forgot your username or password\?\nVisit <b>google.com/accounts/recovery</b>.</string>
+    <string name="lockscreen_glogin_account_recovery_hint">Forgot your username or password\?\nVisit <b>your account provider</b>.</string>
 
     <!-- Displayed in a progress dialog while a username and password are being checked. -->
     <string name="lockscreen_glogin_checking_password">Checking\u2026</string>
@@ -3539,7 +3539,7 @@
     <string name="whichViewApplicationLabel">Open</string>
     <!-- Title of intent resolver dialog when selecting a browser/application that opens specific URIs
          [CHAR LIMIT=128]. -->
-    <string name="whichOpenHostLinksWith">Open <xliff:g id="host" example="mail.google.com">%1$s</xliff:g> links with</string>
+    <string name="whichOpenHostLinksWith">Open <xliff:g id="host" example="mail.example.com">%1$s</xliff:g> links with</string>
     <!-- Title of intent resolver dialog when selecting a browser that opens URI
          [CHAR LIMIT=128]. -->
     <string name="whichOpenLinksWith">Open links with</string>
@@ -3548,7 +3548,7 @@
     <string name="whichOpenLinksWithApp">Open links with <xliff:g id="application" example="Chrome">%1$s</xliff:g></string>
     <!-- Title of intent resolver dialog when defaulting to a specific browser that opens URI
          [CHAR LIMIT=128]. -->
-    <string name="whichOpenHostLinksWithApp">Open <xliff:g id="host" example="mail.google.com">%1$s</xliff:g> links with <xliff:g id="application" example="Chrome">%2$s</xliff:g></string>
+    <string name="whichOpenHostLinksWithApp">Open <xliff:g id="host" example="mail.example.com">%1$s</xliff:g> links with <xliff:g id="application" example="Chrome">%2$s</xliff:g></string>
     <!-- Title of intent resolver dialog when selecting a viewer application that opens URI
          and a previously used application is known [CHAR LIMIT=128]. -->
     <!-- Label for a link to an intent resolver dialog to open URI [CHAR LIMIT=18] -->
@@ -3853,7 +3853,7 @@
     <string name="network_available_sign_in_detailed"><xliff:g id="network_ssid">%1$s</xliff:g></string>
 
     <!-- A notification is shown when the user connects to a Wi-Fi network and the system detects that that network has no Internet access. This is the notification's title. -->
-    <string name="wifi_no_internet"><xliff:g id="network_ssid" example="GoogleGuest">%1$s</xliff:g> has no internet access</string>
+    <string name="wifi_no_internet"><xliff:g id="network_ssid" example="Guest">%1$s</xliff:g> has no internet access</string>
 
     <!-- A notification is shown when the user connects to a Wi-Fi network and the system detects that that network has no Internet access. This is the notification's message. -->
     <string name="wifi_no_internet_detailed">Tap for options</string>
@@ -3868,7 +3868,7 @@
     <string name="private_dns_broken_detailed">Private DNS server cannot be accessed</string>
 
     <!-- A notification is shown when the user connects to a network that doesn't have access to some services (e.g. Push notifications may not work). This is the notification's title. [CHAR LIMIT=50] -->
-    <string name="network_partial_connectivity"><xliff:g id="network_ssid" example="GoogleGuest">%1$s</xliff:g> has limited connectivity</string>
+    <string name="network_partial_connectivity"><xliff:g id="network_ssid" example="Guest">%1$s</xliff:g> has limited connectivity</string>
 
     <!-- A notification is shown when the user connects to a network that doesn't have access to some services (e.g. Push notifications may not work). This is the notification's message. [CHAR LIMIT=50] -->
     <string name="network_partial_connectivity_detailed">Tap to connect anyway</string>
@@ -4097,13 +4097,13 @@
     <string name="alert_windows_notification_channel_group_name">Display over other apps</string>
     <!-- Name of notification channel the system post notification to inform the use about apps
          that are drawing ui on-top of other apps (alert-windows) [CHAR LIMIT=NONE] -->
-    <string name="alert_windows_notification_channel_name"><xliff:g id="name" example="Google Maps">%s</xliff:g> displaying over other apps</string>
+    <string name="alert_windows_notification_channel_name"><xliff:g id="name" example="Maps">%s</xliff:g> displaying over other apps</string>
     <!-- Notification title when an application is displaying ui on-top of other apps
          [CHAR LIMIT=30] -->
-    <string name="alert_windows_notification_title"><xliff:g id="name" example="Google Maps">%s</xliff:g> is displaying over other apps</string>
+    <string name="alert_windows_notification_title"><xliff:g id="name" example="Maps">%s</xliff:g> is displaying over other apps</string>
     <!-- Notification body when an application is displaying ui on-top of other apps
          [CHAR LIMIT=NONE] -->
-    <string name="alert_windows_notification_message">If you don’t want <xliff:g id="name" example="Google Maps">%s</xliff:g> to use this feature, tap to open settings and turn it off.</string>
+    <string name="alert_windows_notification_message">If you don’t want <xliff:g id="name" example="Maps">%s</xliff:g> to use this feature, tap to open settings and turn it off.</string>
     <!-- Notification action to turn-off app displaying on-top of other apps. [CHAR LIMIT=20] -->
     <string name="alert_windows_notification_turn_off_action">Turn off</string>
 
@@ -4286,7 +4286,7 @@
     <string name="ime_action_default">Execute</string>
 
     <!-- Strings for search suggestions. These are going here because they are referenced by both
-         ContactsProvider and GoogleContactsProvider -->
+         ContactsProvider and loginContactsProvider -->
     <skip />
 
 
@@ -4809,7 +4809,7 @@
     <!-- Message shown when the user exceeds the maximum number of pattern attempts -->
     <string name="kg_login_too_many_attempts">Too many pattern attempts</string>
     <!-- Instructions show in account unlock screen allowing user to enter their email password -->
-    <string name="kg_login_instructions">To unlock, sign in with your Google account.</string>
+    <string name="kg_login_instructions">To unlock, sign in with your account.</string>
     <!-- Hint shown in TextView in account unlock screen of keyguard -->
     <string name="kg_login_username_hint">Username (email)</string>
     <!-- Hint shown in TextView in account unlock screen of keyguard -->
@@ -4819,7 +4819,7 @@
     <!-- Message shown when the user enters an invalid username/password combination in account unlock screen of keyguard -->
     <string name="kg_login_invalid_input">Invalid username or password.</string>
     <!-- Hint text shown when user has too many failed password attempts in account unlock screen of keyguard -->
-    <string name="kg_login_account_recovery_hint">Forgot your username or password\?\nVisit <b>google.com/accounts/recovery</b>.</string>
+    <string name="kg_login_account_recovery_hint">Forgot your username or password\?\nVisit <b>your account provider</b>.</string>
     <!-- Message shown while device checks username/password in account unlock screen of keyguard -->
     <string name="kg_login_checking_password">Checking account\u2026</string>
     <!-- Message shown in dialog when max number of attempts are reached for PIN screen of keyguard -->
@@ -6818,7 +6818,7 @@ ul.</string>
     <!-- Notification title when satellite service is available. -->
     <string name="satellite_sos_available_notification_title">Satellite SOS is now available</string>
     <!-- Notification summary when satellite service is available. [CHAR LIMIT=NONE] -->
-    <string name="satellite_sos_available_notification_summary">You can message emergency services if there\'s no mobile or Wi-Fi network. Google Messages must be your default messaging app.</string>
+    <string name="satellite_sos_available_notification_summary">You can message emergency services if there\'s no mobile or Wi-Fi network. Messages must be your default messaging app.</string>
     <!-- Notification title when satellite service is not supported by device. -->
     <string name="satellite_sos_not_supported_notification_title">Satellite SOS isn\'t supported</string>
     <!-- Notification summary when satellite service is not supported by device. [CHAR LIMIT=NONE] -->
@@ -6834,7 +6834,7 @@ ul.</string>
     <!-- Notification title when default messaging app does not support satellite. [CHAR LIMIT=NONE] -->
     <string name="satellite_sos_unsupported_default_sms_app_notification_title">Satellite SOS not set up</string>
     <!-- Notification summary when default messaging app does not support satellite. [CHAR LIMIT=NONE] -->
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary">To message by satellite, set Google Messages as your default messaging app</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary">To message by satellite, set Messages as your default messaging app</string>
     <!-- Notification title when location settings is disabled. -->
     <string name="satellite_sos_location_disabled_notification_title">Satellite SOS isn\'t available</string>
     <!-- Notification summary when location settings is disabled. [CHAR LIMIT=NONE] -->
@@ -6842,7 +6842,7 @@ ul.</string>
     <!-- Notification title when satellite service is available. -->
     <string name="satellite_messaging_available_notification_title">Satellite messaging available</string>
     <!-- Notification summary when satellite service is available. [CHAR LIMIT=NONE] -->
-    <string name="satellite_messaging_available_notification_summary">You can message by satellite if there\'s no mobile or Wi-Fi network. Google Messages must be your default messaging app.</string>
+    <string name="satellite_messaging_available_notification_summary">You can message by satellite if there\'s no mobile or Wi-Fi network. Messages must be your default messaging app.</string>
     <!-- Notification title when satellite service is not supported by device. -->
     <string name="satellite_messaging_not_supported_notification_title">Satellite messaging not supported</string>
     <!-- Notification summary when satellite service is not supported by device. [CHAR LIMIT=NONE] -->
@@ -6858,7 +6858,7 @@ ul.</string>
     <!-- Notification title when default messaging app does not support satellite. [CHAR LIMIT=NONE] -->
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title">Satellite messaging not set up</string>
     <!-- Notification summary when default messaging app does not support satellite. [CHAR LIMIT=NONE] -->
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary">To message by satellite, set Google Messages as your default messaging app</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary">To message by satellite, set Messages as your default messaging app</string>
     <!-- Notification title when location settings is disabled. -->
     <string name="satellite_messaging_location_disabled_notification_title">Satellite messaging not available</string>
     <!-- Notification summary when location settings is disabled. [CHAR LIMIT=NONE] -->

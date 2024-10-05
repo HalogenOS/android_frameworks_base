@@ -959,7 +959,7 @@
     <item msgid="4925858989398000295">"Yahoo"</item>
     <item msgid="5203383604393320577">"Skype"</item>
     <item msgid="6142060795155127001">"QQ"</item>
-    <item msgid="8831467252725610081">"Google Talk"</item>
+    <item msgid="8831467252725610081">"Hangouts"</item>
     <item msgid="4717545739447438044">"ICQ"</item>
     <item msgid="8293711853624033835">"Jabber"</item>
   </string-array>
@@ -1007,7 +1007,7 @@
     <string name="imProtocolYahoo" msgid="5373338758093392231">"Yahoo"</string>
     <string name="imProtocolSkype" msgid="1486297589164830043">"Skype"</string>
     <string name="imProtocolQq" msgid="7254708777029006592">"QQ"</string>
-    <string name="imProtocolGoogleTalk" msgid="9194016024343166782">"Hangouts"</string>
+    <string name="imProtocolHangouts" msgid="9194016024343166782">"Hangouts"</string>
     <string name="imProtocolIcq" msgid="2410325380427389521">"ICQ"</string>
     <string name="imProtocolJabber" msgid="7919269388889582015">"Jabber"</string>
     <string name="imProtocolNetMeeting" msgid="4985002408136148256">"Netmeeting"</string>
@@ -1080,9 +1080,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"თქვენ <xliff:g id="NUMBER_0">%1$d</xliff:g>-ჯერ დახატეთ განბლოკვის ნიმუში. \n\nსცადეთ ხელახლა <xliff:g id="NUMBER_1">%2$d</xliff:g> წამში."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"თქვენ არასწორად დაბეჭდეთ თქვენი პაროლი <xliff:g id="NUMBER_0">%1$d</xliff:g> ჯერ. \n\nხელახლა სცადეთ <xliff:g id="NUMBER_1">%2$d</xliff:g> წამში."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"თქვენ <xliff:g id="NUMBER_0">%1$d</xliff:g>-ჯერ არასწორად შეიყვანეთ PIN კოდი. \n\nსცადეთ ხელახლა <xliff:g id="NUMBER_1">%2$d</xliff:g> წამში."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"თქვენ არასწორად დახატეთ განბლოკვის ნიმუში <xliff:g id="NUMBER_0">%1$d</xliff:g>-ჯერ. კიდევ <xliff:g id="NUMBER_1">%2$d</xliff:g> წარუმატებელი ცდის შემდეგ დაგჭირდებათ თქვენი ტაბლეტის განბლოკვა Google-ში შესვლით.\n\n გთხოვთ, ხელახლა სცადოთ <xliff:g id="NUMBER_2">%3$d</xliff:g> წამში."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"თქვენ არასწორად დახატეთ განბლოკვის ნიმუში <xliff:g id="NUMBER_0">%1$d</xliff:g>-ჯერ. კიდევ <xliff:g id="NUMBER_1">%2$d</xliff:g> წარუმატებელი მცდელობის შემდეგ, Android TV მოწყობილობის განბლოკვა Google-ში შესვლით მოგიწევთ.\n\n ცადეთ ხელახლა <xliff:g id="NUMBER_2">%3$d</xliff:g> წამში."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"თქვენ არასწორად დახატეთ განბლოკვის ნიმუში <xliff:g id="NUMBER_0">%1$d</xliff:g>-ჯერ. კიდევ <xliff:g id="NUMBER_1">%2$d</xliff:g> წარუმატებელი ცდის შემდეგ დაგჭირდებათ თქვენი ტელეფონის განბლოკვა Google-ში შესვლით.\n\n გთხოვთ, ხელახლა სცადოთ <xliff:g id="NUMBER_2">%3$d</xliff:g> წამში."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"თქვენ არასწორად დახატეთ განბლოკვის ნიმუში <xliff:g id="NUMBER_0">%1$d</xliff:g>-ჯერ. კიდევ <xliff:g id="NUMBER_1">%2$d</xliff:g> წარუმატებელი ცდის შემდეგ დაგჭირდებათ თქვენი ტაბლეტის განბლოკვა login-ში შესვლით.\n\n გთხოვთ, ხელახლა სცადოთ <xliff:g id="NUMBER_2">%3$d</xliff:g> წამში."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"თქვენ არასწორად დახატეთ განბლოკვის ნიმუში <xliff:g id="NUMBER_0">%1$d</xliff:g>-ჯერ. კიდევ <xliff:g id="NUMBER_1">%2$d</xliff:g> წარუმატებელი მცდელობის შემდეგ, Android TV მოწყობილობის განბლოკვა login-ში შესვლით მოგიწევთ.\n\n ცადეთ ხელახლა <xliff:g id="NUMBER_2">%3$d</xliff:g> წამში."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"თქვენ არასწორად დახატეთ განბლოკვის ნიმუში <xliff:g id="NUMBER_0">%1$d</xliff:g>-ჯერ. კიდევ <xliff:g id="NUMBER_1">%2$d</xliff:g> წარუმატებელი ცდის შემდეგ დაგჭირდებათ თქვენი ტელეფონის განბლოკვა login-ში შესვლით.\n\n გთხოვთ, ხელახლა სცადოთ <xliff:g id="NUMBER_2">%3$d</xliff:g> წამში."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"თქვენ არასწორად სცადეთ ტაბლეტის განბლოკვა <xliff:g id="NUMBER_0">%1$d</xliff:g>-ჯერ. კიდევ <xliff:g id="NUMBER_1">%2$d</xliff:g> წარუმატებელი ცდის შემდეგ ტაბლეტზე დაყენდება საწყისი, ქარხნული პარამეტრები და მომხმარებლის ყველა მონაცემი დაიკარგება."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"თქვენ არასწორად ცადეთ თქვენი Android TV მოწყობილობის განბლოკვა <xliff:g id="NUMBER_0">%1$d</xliff:g>-ჯერ. კიდევ <xliff:g id="NUMBER_1">%2$d</xliff:g> წარუმატებელი მცდელობის შემდეგ, თქვენს Android TV მოწყობილობაზე აღდგება ქარხნული პარამეტრები და მომხმარებლის ყველა მონაცემი დაიკარგება."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"თქვენ არასწორად სცადეთ ტელეფონის განბლოკვა <xliff:g id="NUMBER_0">%1$d</xliff:g> ჯერ. კიდევ <xliff:g id="NUMBER_1">%2$d</xliff:g> წარუმატებელი ცდის შემდეგ ტელეფონზე დაყენდება საწყისი, ქარხნული პარამეტრები და მომხმარებლის ყველა მონაცემი დაიკარგება."</string>
@@ -1093,12 +1093,12 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"დაგავიწყდათ გრაფიკული გასაღები?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"ანგარიშით განბლოკვა"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"ნახატი ნიმუშის ძალიან ბევრი მცდელობა"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"განბლოკვისთვის გაიარეთ ავტორიზაცია თქვენი Google  ანგარიშით."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"განბლოკვისთვის გაიარეთ ავტორიზაცია თქვენი  ანგარიშით."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"მომხმარებლის სახელი (ელფოსტა)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"პაროლი"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"შესვლა"</string>
     <string name="lockscreen_glogin_invalid_input" msgid="4369219936865697679">"არასწორი მომხმარებლის სახელი ან პაროლი."</string>
-    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"დაგავიწყდათ მომხმარებლის სახელი და პაროლი?\nეწვიეთ ბმულს "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="lockscreen_glogin_account_recovery_hint" msgid="1683405808525090649">"დაგავიწყდათ მომხმარებლის სახელი და პაროლი?\nეწვიეთ ბმულს "<b>"your account provider"</b>"."</string>
     <string name="lockscreen_glogin_checking_password" msgid="2607271802803381645">"შემოწმება..."</string>
     <string name="lockscreen_unlock_label" msgid="4648257878373307582">"განბლოკვა"</string>
     <string name="lockscreen_sound_on_label" msgid="1660281470535492430">"ხმების ჩართვა"</string>
@@ -1760,12 +1760,12 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"ხელახლა შეიყვანეთ სწორი PUK კოდი. რამდენიმე წარუმატებელი მცდელობა გამოიწვევს SIM ბარათის დაბლოკვას."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN კოდები არ ემთხვევა"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"ნახატი ნიმუშის ძალიან ბევრი მცდელობა"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"განბლოკვისთვის გაიარეთ ავტორიზაცია თქვენი Google  ანგარიშით."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"განბლოკვისთვის გაიარეთ ავტორიზაცია თქვენი  ანგარიშით."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"მომხმარებლის სახელი (ელფოსტა)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"პაროლი"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"შესვლა"</string>
     <string name="kg_login_invalid_input" msgid="8292367491901220210">"არასწორი სახელი, ან პაროლი."</string>
-    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"დაგავიწყდათ მომხმარებლის სახელი და პაროლი?\nეწვიეთ "<b>"google.com/accounts/recovery"</b>"."</string>
+    <string name="kg_login_account_recovery_hint" msgid="4892466171043541248">"დაგავიწყდათ მომხმარებლის სახელი და პაროლი?\nეწვიეთ "<b>"your account provider"</b>"."</string>
     <string name="kg_login_checking_password" msgid="4676010303243317253">"მიმდინარეობს ანგარიშის შემოწმება…"</string>
     <string name="kg_too_many_failed_pin_attempts_dialog_message" msgid="23741434207544038">"თქვენ <xliff:g id="NUMBER_0">%1$d</xliff:g>-ჯერ არასწორად შეიყვანეთ PIN კოდი. \n\nსცადეთ ხელახლა <xliff:g id="NUMBER_1">%2$d</xliff:g> წამში."</string>
     <string name="kg_too_many_failed_password_attempts_dialog_message" msgid="3328686432962224215">"თქვენ <xliff:g id="NUMBER_0">%1$d</xliff:g>-ჯერ არასწორად დაბეჭდეთ თქვენი პაროლი. \n\nხელახლა სცადეთ <xliff:g id="NUMBER_1">%2$d</xliff:g> წამში."</string>
@@ -2531,7 +2531,7 @@
     <string name="satellite_manual_selection_state_popup_cancel" msgid="973605633339469252">"უკან დაბრუნება"</string>
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"მომლოდინე..."</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"სატელიტური SOS ახლა ხელმისაწვდომია"</string>
-    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"შეგიძლიათ, შეტყობინება გაუგზავნოთ გადაუდებელი დახმარების სამსახურებს, თუ მობილური ან Wi-Fi ქსელი არ არის ხელმისაწვდომი. საჭიროა, რომ Google Messages იყოს თქვენი ნაგულისხმევი შეტყობინებების აპი."</string>
+    <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"შეგიძლიათ, შეტყობინება გაუგზავნოთ გადაუდებელი დახმარების სამსახურებს, თუ მობილური ან Wi-Fi ქსელი არ არის ხელმისაწვდომი. საჭიროა, რომ Messages იყოს თქვენი ნაგულისხმევი შეტყობინებების აპი."</string>
     <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"სატელიტური SOS არ არის მხარდაჭერილი"</string>
     <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"სატელიტური SOS არ არის მხარდაჭერილი ამ მოწყობილობაზე"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"სატელიტური SOS არ არის დაყენებული"</string>
@@ -2539,11 +2539,11 @@
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"სატელიტური SOS არ არის ხელმისაწვდომი"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_summary" msgid="7686947667515679672">"სატელიტური SOS ამ ქვეყანასა თუ რეგიონში არ არის ხელმისაწვდომი"</string>
     <string name="satellite_sos_unsupported_default_sms_app_notification_title" msgid="292528603128702080">"სატელიტური SOS არ არის დაყენებული"</string>
-    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"შეტყობინებების სატელიტური მიმოცვლისთვის თქვენს ნაგულისხმევ შეტყობინებების აპად დააყენეთ Google Messages"</string>
+    <string name="satellite_sos_unsupported_default_sms_app_notification_summary" msgid="3165168393504548437">"შეტყობინებების სატელიტური მიმოცვლისთვის თქვენს ნაგულისხმევ შეტყობინებების აპად დააყენეთ Messages"</string>
     <string name="satellite_sos_location_disabled_notification_title" msgid="5427987916850950591">"სატელიტური SOS არ არის ხელმისაწვდომი"</string>
     <string name="satellite_sos_location_disabled_notification_summary" msgid="1544937460641058567">"ამ ქვეყანაში ან რეგიონში სატელიტური SOS-ის ხელმისაწვდომობის შესამოწმებლად ჩართეთ მდებარეობის პარამეტრები"</string>
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"შეტყობინებების სატელიტური მიმოცვლა ხელმისაწვდომია"</string>
-    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"შეტყობინების გაგზავნა სატელიტის საშუალებით შეგიძლიათ, თუ მობილურზე ან Wi-Fi ქსელზე წვდომა არ გაქვთ. საჭიროა, რომ Google Messages იყოს თქვენი ნაგულისხმევი შეტყობინებების აპი."</string>
+    <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"შეტყობინების გაგზავნა სატელიტის საშუალებით შეგიძლიათ, თუ მობილურზე ან Wi-Fi ქსელზე წვდომა არ გაქვთ. საჭიროა, რომ Messages იყოს თქვენი ნაგულისხმევი შეტყობინებების აპი."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"შეტყობინებების სატელიტური მიმოცვლა მხარდაჭერილი არ არის"</string>
     <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"ამ მოწყობილობაზე შეტყობინებების სატელიტური მიმოცვლა არ არის მხარდაჭერილი"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"შეტყობინებების სატელიტური მიმოცვლა დაყენებული არ არის"</string>
@@ -2551,7 +2551,7 @@
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"შეტყობინებების სატელიტური მიმოცვლა მიუწვდომელია"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_summary" msgid="5270294879531815854">"ამ ქვეყანაში ან რეგიონში შეტყობინებების სატელიტური მიმოცვლა მიუწვდომელია"</string>
     <string name="satellite_messaging_unsupported_default_sms_app_notification_title" msgid="1004808759472360189">"შეტყობინებების სატელიტური მიმოცვლა დაყენებული არ არის"</string>
-    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"შეტყობინებების სატელიტური მიმოცვლისთვის თქვენს ნაგულისხმევ შეტყობინებების აპად დააყენეთ Google Messages"</string>
+    <string name="satellite_messaging_unsupported_default_sms_app_notification_summary" msgid="17084124893763593">"შეტყობინებების სატელიტური მიმოცვლისთვის თქვენს ნაგულისხმევ შეტყობინებების აპად დააყენეთ Messages"</string>
     <string name="satellite_messaging_location_disabled_notification_title" msgid="7270641894250928494">"შეტყობინებების სატელიტური მიმოცვლა მიუწვდომელია"</string>
     <string name="satellite_messaging_location_disabled_notification_summary" msgid="1450824950686221810">"ამ ქვეყანაში ან რეგიონში შეტყობინებების სატელიტური მიმოცვლის ხელმისაწვდომობის შესამოწმებლად ჩართეთ მდებარეობის პარამეტრები"</string>
     <string name="fingerprint_dangling_notification_title" msgid="7362075195588639989">"ანაბეჭდით განბლოკვის ხელახლა დაყენება"</string>
