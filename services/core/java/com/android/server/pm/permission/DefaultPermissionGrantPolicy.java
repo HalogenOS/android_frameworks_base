@@ -254,6 +254,14 @@ final class DefaultPermissionGrantPolicy {
         NOTIFICATION_PERMISSIONS.add(Manifest.permission.POST_NOTIFICATIONS);
     }
 
+    private static final Set<String> GALLERY_PERMISSIONS = new ArraySet<>();
+    static {
+        GALLERY_PERMISSIONS.add(Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED);
+        GALLERY_PERMISSIONS.add(Manifest.permission.READ_MEDIA_IMAGES);
+        GALLERY_PERMISSIONS.add(Manifest.permission.READ_MEDIA_VIDEO);
+        GALLERY_PERMISSIONS.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
+    }
+
     private static final int MSG_READ_DEFAULT_PERMISSION_EXCEPTIONS = 1;
 
     private static final String ACTION_TRACK = "com.android.fitness.TRACK";
@@ -960,6 +968,9 @@ final class DefaultPermissionGrantPolicy {
         String commonServiceAction = "android.adservices.AD_SERVICES_COMMON_SERVICE";
         grantPermissionsToSystemPackage(pm, getDefaultSystemHandlerServicePackage(pm,
                         commonServiceAction, userId), userId, NOTIFICATION_PERMISSIONS);
+
+        // Glimpse (gallery app)
+        grantPermissionsToSystemPackage(pm, "org.lineageos.glimpse", userId, GALLERY_PERMISSIONS);
     }
 
     private String getDefaultSystemHandlerActivityPackageForCategory(PackageManagerWrapper pm,
