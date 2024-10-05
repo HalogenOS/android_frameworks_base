@@ -247,6 +247,14 @@ final class DefaultPermissionGrantPolicy {
         SUSPEND_APP_PERMISSIONS.add(Manifest.permission.SUSPEND_APPS);
     }
 
+    private static final Set<String> GALLERY_PERMISSIONS = new ArraySet<>();
+    static {
+        GALLERY_PERMISSIONS.add(Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED);
+        GALLERY_PERMISSIONS.add(Manifest.permission.READ_MEDIA_IMAGES);
+        GALLERY_PERMISSIONS.add(Manifest.permission.READ_MEDIA_VIDEO);
+        GALLERY_PERMISSIONS.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
+    }
+
     private static final int MSG_READ_DEFAULT_PERMISSION_EXCEPTIONS = 1;
 
     private static final String ACTION_TRACK = "com.android.fitness.TRACK";
@@ -496,7 +504,7 @@ final class DefaultPermissionGrantPolicy {
                     true, // systemFixed
                     userId);
         }
-        
+
         // Grant ACCESS_COARSE_LOCATION to all system apps that have ACCESS_FINE_LOCATION
         for (PackageInfo locPkg : packages) {
             if (locPkg == null
@@ -507,7 +515,7 @@ final class DefaultPermissionGrantPolicy {
                     || pm.isSysComponentOrPersistentPlatformSignedPrivApp(locPkg)) {
                 continue;
             }
-                    
+
             grantRuntimePermissions(pm, locPkg,
                     Collections.singleton(Manifest.permission.ACCESS_COARSE_LOCATION),
                     true, // systemFixed
@@ -968,6 +976,9 @@ final class DefaultPermissionGrantPolicy {
         grantPermissionsToPackage(pm, "com.google.android.googlequicksearchbox", userId,
                 false /* ignoreSystemPackage */, true /*whitelistRestrictedPermissions*/,
                 PHONE_PERMISSIONS);
+
+        // Glimpse (gallery app)
+        grantPermissionsToSystemPackage(pm, "org.lineageos.glimpse", userId, GALLERY_PERMISSIONS);
     }
 
     private String getDefaultSystemHandlerActivityPackageForCategory(PackageManagerWrapper pm,
