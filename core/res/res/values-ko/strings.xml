@@ -1028,9 +1028,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"잠금해제 패턴을 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 그렸습니다. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g>초 후에 다시 시도하세요."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"비밀번호를 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 입력했습니다. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g>초 후에 다시 시도하세요."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"PIN을 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 입력했습니다. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g>초 후에 다시 시도하세요."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"잠금해제 패턴을 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 그렸습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>회 더 실패하면 Google 로그인을 통해 태블릿을 잠금해제해야 합니다.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g>초 후에 다시 시도하세요."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"잠금해제 패턴을 <xliff:g id="NUMBER_0">%1$d</xliff:g>번 잘못 그렸습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>번 더 실패하면 Google 로그인 정보를 사용해 Android TV 기기를 잠금 해제해야 합니다.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g>초 후에 다시 시도해 보세요."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"잠금해제 패턴을 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 그렸습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>회 더 실패하면 Google 로그인을 통해 휴대전화를 잠금해제해야 합니다.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g>초 후에 다시 시도하세요."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"잠금해제 패턴을 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 그렸습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>회 더 실패하면 로그인을 통해 태블릿을 잠금해제해야 합니다.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g>초 후에 다시 시도하세요."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"잠금해제 패턴을 <xliff:g id="NUMBER_0">%1$d</xliff:g>번 잘못 그렸습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>번 더 실패하면 로그인 정보를 사용해 Android TV 기기를 잠금 해제해야 합니다.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g>초 후에 다시 시도해 보세요."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"잠금해제 패턴을 <xliff:g id="NUMBER_0">%1$d</xliff:g>회 잘못 그렸습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>회 더 실패하면 로그인을 통해 휴대전화를 잠금해제해야 합니다.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g>초 후에 다시 시도하세요."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"태블릿을 잠금 해제하려는 시도가 <xliff:g id="NUMBER_0">%1$d</xliff:g>번 잘못되었습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>번 더 실패하면 태블릿이 초기화되고 사용자 데이터가 모두 손실됩니다."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Android TV 기기 잠금 해제에 <xliff:g id="NUMBER_0">%1$d</xliff:g>번 실패했습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>번 더 실패하면 Android TV 기기가 초기화되고 사용자 데이터가 모두 삭제됩니다."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"휴대전화를 잠금 해제하려는 시도가 <xliff:g id="NUMBER_0">%1$d</xliff:g>번 잘못되었습니다. <xliff:g id="NUMBER_1">%2$d</xliff:g>번 더 실패하면 휴대전화가 초기화되고 사용자 데이터가 모두 손실됩니다."</string>
@@ -1041,7 +1041,7 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"패턴을 잊으셨나요?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"계정 잠금 해제"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"패턴을 너무 많이 시도했습니다."</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"잠금해제하려면 Google 계정으로 로그인하세요."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"잠금해제하려면 계정으로 로그인하세요."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"사용자 이름(이메일)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"비밀번호"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"로그인"</string>
@@ -1694,7 +1694,7 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"올바른 PUK 코드를 다시 입력하세요. 입력을 반복해서 시도하면 SIM을 영구적으로 사용할 수 없게 됩니다."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN 코드가 일치하지 않음"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"패턴 시도 횟수가 너무 많음"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"잠금해제하려면 Google 계정으로 로그인하세요."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"잠금해제하려면 계정으로 로그인하세요."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"사용자 이름(이메일)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"비밀번호"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"로그인"</string>

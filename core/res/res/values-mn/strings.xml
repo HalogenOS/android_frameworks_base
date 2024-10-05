@@ -1028,9 +1028,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"Та тайлах хээг <xliff:g id="NUMBER_0">%1$d</xliff:g> удаа буруу зурлаа. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> секундын дараа дахин оролдоно уу."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"Та нууц үгээ <xliff:g id="NUMBER_0">%1$d</xliff:g> удаа буруу бичив. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> секундын дараа дахин оролдоно уу."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"Та ПИН кодоо <xliff:g id="NUMBER_0">%1$d</xliff:g> удаа буруу бичив. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> секундын дараа дахин оролдоно уу."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Та тайлах хээг <xliff:g id="NUMBER_0">%1$d</xliff:g> удаа буруу зурлаа. <xliff:g id="NUMBER_1">%2$d</xliff:g> удаа дахин буруу оруулбал, та таблетаа тайлахын тулд Google нэвтрэлтээ ашиглах шаардлагатай болно.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> секундын дараа дахин оролдоно уу."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Та тайлах хээг <xliff:g id="NUMBER_0">%1$d</xliff:g> удаа буруу зурлаа. <xliff:g id="NUMBER_1">%2$d</xliff:g> удаа дахин буруу оруулбал, та таблетаа тайлахын тулд нэвтрэлтээ ашиглах шаардлагатай болно.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> секундын дараа дахин оролдоно уу."</string>
     <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Та тайлах хээг <xliff:g id="NUMBER_0">%1$d</xliff:g> удаа буруу зурсан байна. Та дахин <xliff:g id="NUMBER_1">%2$d</xliff:g> удаа буруу оруулсан тохиолдолд Android TV төхөөрөмжийнхөө түгжээг тайлахын тулд Google-д нэвтрэх шаардлагатай болно.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> секундийн дараа дахин оролдоно уу."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Та тайлах хээг <xliff:g id="NUMBER_0">%1$d</xliff:g> удаа буруу зурлаа. <xliff:g id="NUMBER_1">%2$d</xliff:g> удаа дахин буруу оролдвол, та таблетаа тайлахын тулд Google нэвтрэлтээ ашиглах шаардлагатай болно.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> секундын дараа дахин оролдоно уу."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Та тайлах хээг <xliff:g id="NUMBER_0">%1$d</xliff:g> удаа буруу зурлаа. <xliff:g id="NUMBER_1">%2$d</xliff:g> удаа дахин буруу оролдвол, та таблетаа тайлахын тулд нэвтрэлтээ ашиглах шаардлагатай болно.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> секундын дараа дахин оролдоно уу."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Та таблетыг тайлах гэж <xliff:g id="NUMBER_0">%1$d</xliff:g> удаа буруу оролдлоо. <xliff:g id="NUMBER_1">%2$d</xliff:g> удаа дахин буруу оролдвол таблет үйлдвэрийн үндсэн утгаараа тохируулагдах ба хэрэглэгчийн дата бүхэлдээ устана."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Та Android TV төхөөрөмжийнхөө түгжээг тайлахаар <xliff:g id="NUMBER_0">%1$d</xliff:g> удаа буруу оролдсон байна. <xliff:g id="NUMBER_1">%2$d</xliff:g> удаагийн амжилтгүй оролдлогын дараагаас таны Android TV төхөөрөмжийг үйлдвэрийн өгөгдмөл төлөвт шинэчлэх бөгөөд хэрэглэгчийн бүх өгөгдөл устах болно."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Та утсыг тайлах гэж <xliff:g id="NUMBER_0">%1$d</xliff:g> удаа буруу оролдлоо. <xliff:g id="NUMBER_1">%2$d</xliff:g> удаа дахин буруу оролдвол утас үйлдвэрийн үндсэн утгаараа тохируулагдах ба хэрэглэгчийн дата бүхэлдээ устана."</string>
@@ -1041,7 +1041,7 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Хээг мартсан уу?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Бүртгэл тайлах"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Хээ оруулах оролдлого хэт олон"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Түгжээг тайлах бол Google акаунтаараа нэвтэрнэ үү."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Түгжээг тайлах бол акаунтаараа нэвтэрнэ үү."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Хэрэглэгч (имэйл)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Нууц үг"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Нэвтрэх"</string>
@@ -1694,7 +1694,7 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Зөв PUK кодыг дахин оруулна уу. Давтан оролдвол SIM нь бүрмөсөн идэвхгүй болгоно."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"ПИН кодууд таарахгүй байна"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Хээ оруулах оролдлого хэт олон"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Түгжээг тайлах бол Google акаунтаараа нэвтэрнэ үү."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Түгжээг тайлах бол акаунтаараа нэвтэрнэ үү."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Хэрэглэгчийн нэр (имэйл)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Нууц үг"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Нэвтрэх"</string>

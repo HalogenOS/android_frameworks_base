@@ -1042,7 +1042,7 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Zaboravili ste uzorak?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Otključaj račun"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Previše pokušaja iscrtavanja uzorka"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Za otključavanje prijavite se s Google računom."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Za otključavanje prijavite se s računom."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Korisničko ime (e-pošta)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Zaporka"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Prijava"</string>
@@ -1695,7 +1695,7 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Ponovo unesite ispravan PUK kôd. Ponovljeni pokušaji trajno će onemogućiti SIM."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN kodovi nisu jednaki"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Previše pokušaja iscrtavanja obrasca"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Za otključavanje prijavite se Google računom."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Za otključavanje prijavite se računom."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Korisničko ime (e-pošta)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Zaporka"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Prijava"</string>

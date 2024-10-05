@@ -1028,9 +1028,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"የመክፈቻ ስርዓተ ጥለቱን <xliff:g id="NUMBER_0">%1$d</xliff:g>ጊዜ በስህተት ስለውታል።\n\nእባክህ እንደገና ከ<xliff:g id="NUMBER_1">%2$d</xliff:g>ሰከንዶች በኋላ ሞክር።"</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"<xliff:g id="NUMBER_0">%1$d</xliff:g>ጊዚያቶች የይለፍ ቃልህን በስህተት ተይበኻል፡፡በ<xliff:g id="NUMBER_1">%2$d</xliff:g> ሰኮንዶች ውስጥ \n\nእንደገና ሞክር፡፡"</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"<xliff:g id="NUMBER_0">%1$d</xliff:g>ጊዚያቶች ፒንህን በስህተት ተይበኻል፡፡በ\nሰኮንዶች ውስጥ \n<xliff:g id="NUMBER_1">%2$d</xliff:g>እንደገና ሞክር፡፡"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"የመክፈቻ ስርዓተ ጥለቱን <xliff:g id="NUMBER_0">%1$d</xliff:g>ጊዜ በስህተት ስለውታል።ከ<xliff:g id="NUMBER_1">%2$d</xliff:g>የበለጠ ያልተሳካ ሙከራ በኋላ፣ የGoogle መግቢያዎን ተጠቅመው ስልኩን እንዲከከፍቱ ይጠየቃሉ።\n\nእባክዎ እንደገና <xliff:g id="NUMBER_2">%3$d</xliff:g>ከሰከንዶች በኋላ ይሞክሩ።"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"የመክፈቻ ሥርዓተ ጥለቱን <xliff:g id="NUMBER_0">%1$d</xliff:g> ጊዜዎች በስሕተት ሥለዋል። ከ<xliff:g id="NUMBER_1">%2$d</xliff:g> ተጨማሪ ያልተሳካ ሙከራ በኋላ፣ የእርስዎን የ Android TV መሣሪያ የ Google በመለያ መግቢያን ተጠቅመው እንዲከፍቱ ይጠየቃሉ።\n\nእባክዎ እንደገና <xliff:g id="NUMBER_2">%3$d</xliff:g> ሰከንዶች በኋላ እንደገና ይሞክሩ።"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"የመክፈቻ ስርዓተ ጥለቱን<xliff:g id="NUMBER_0">%1$d</xliff:g>ጊዜ በስህተት ስለውታል።ከ<xliff:g id="NUMBER_1">%2$d</xliff:g> የበለጠ ያልተሳካ ሙከራ በኋላ፣ የGoogle መግቢያዎን ተጠቅመው ስልኩን እንዲከፍቱ ይጠየቃሉ።\n\nእባክዎ እንደገና ከ<xliff:g id="NUMBER_2">%3$d</xliff:g> ሰከንዶች በኋላ ይሞክሩ።"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"የመክፈቻ ስርዓተ ጥለቱን <xliff:g id="NUMBER_0">%1$d</xliff:g>ጊዜ በስህተት ስለውታል።ከ<xliff:g id="NUMBER_1">%2$d</xliff:g>የበለጠ ያልተሳካ ሙከራ በኋላ፣ የመግቢያዎን ተጠቅመው ስልኩን እንዲከከፍቱ ይጠየቃሉ።\n\nእባክዎ እንደገና <xliff:g id="NUMBER_2">%3$d</xliff:g>ከሰከንዶች በኋላ ይሞክሩ።"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"የመክፈቻ ሥርዓተ ጥለቱን <xliff:g id="NUMBER_0">%1$d</xliff:g> ጊዜዎች በስሕተት ሥለዋል። ከ<xliff:g id="NUMBER_1">%2$d</xliff:g> ተጨማሪ ያልተሳካ ሙከራ በኋላ፣ የእርስዎን የ Android TV መሣሪያ የ በመለያ መግቢያን ተጠቅመው እንዲከፍቱ ይጠየቃሉ።\n\nእባክዎ እንደገና <xliff:g id="NUMBER_2">%3$d</xliff:g> ሰከንዶች በኋላ እንደገና ይሞክሩ።"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"የመክፈቻ ስርዓተ ጥለቱን<xliff:g id="NUMBER_0">%1$d</xliff:g>ጊዜ በስህተት ስለውታል።ከ<xliff:g id="NUMBER_1">%2$d</xliff:g> የበለጠ ያልተሳካ ሙከራ በኋላ፣ የመግቢያዎን ተጠቅመው ስልኩን እንዲከፍቱ ይጠየቃሉ።\n\nእባክዎ እንደገና ከ<xliff:g id="NUMBER_2">%3$d</xliff:g> ሰከንዶች በኋላ ይሞክሩ።"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"ይህን tablet <xliff:g id="NUMBER_0">%1$d</xliff:g> ጊዜ ያህል በስህተት ለማስከፈት ሞክረሃል፡፡ ከ <xliff:g id="NUMBER_1">%2$d</xliff:g> በላይ ያልተሳኩ ሙከራዎች በኋላ፣ ይህ tablet አሁን በፋብሪካ ነባሪ ቅንጅት ዳግም ይቀናበርና ሁሉም የተጠቃሚው ውሂብ ይጠፋል፡፡"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"የእርስዎን የ Android TV መሣሪያ <xliff:g id="NUMBER_0">%1$d</xliff:g> ጊዜዎች በስሕተት ለመክፈት ሞክረዋል። ከ <xliff:g id="NUMBER_1">%2$d</xliff:g> ተጨማሪ ያልተሳኩ ሙከራዎ በኋላ፣ የእርስዎ Android TV መሣሪያ ወደ ፋብሪካ ነባሪ ዳግም ይቀናበር እና ሁሉም የተጠቃሚ ውሂብ ይጠፋል።"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"ይህን ስልክ <xliff:g id="NUMBER_0">%1$d</xliff:g> ጊዜ ያህል በስህተት ለማስከፈት ሞክረሃል፡፡ ከ <xliff:g id="NUMBER_1">%2$d</xliff:g> በላይ ያልተሳኩ ሙከራዎች በኋላ፣ ይህ ስልክ በፋብሪካ ነባሪ ቅንጅት ዳግም ይቀናበርና ሁሉም የተጠቃሚው ውሂብ ይጠፋል፡፡"</string>
@@ -1041,7 +1041,7 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"ስርዓተ ጥለት ረሱ?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"መለያ ክፈት"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"በጣም ብዙ የስርዓተ ጥለት ሙከራዎች"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"ለመክፈት በGoogle መለያህ ግባ።"</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"ለመክፈት በመለያህ ግባ።"</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"የተጠቃሚ ስም(ኢ-ሜይል)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"የይለፍ ቃል"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"ግባ"</string>
@@ -1694,7 +1694,7 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"ትክክለኛውን የPUK ኮድ እንደገና ያስገቡ። ተደጋጋሚ ሙከራዎች ሲም ካርዱን እስከመጨረሻው ያሰናክሉታል።"</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"ፒን ኮዶች አይገጣጠሙም"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"በጣም ብዙ የስርዓተ ጥለት ሙከራዎች"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"ለመክፈት በGoogle መለያዎ ይግቡ።"</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"ለመክፈት በመለያዎ ይግቡ።"</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"የተጠቃሚ ስም (ኢሜይል)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"የይለፍ ቃል"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"ግባ"</string>

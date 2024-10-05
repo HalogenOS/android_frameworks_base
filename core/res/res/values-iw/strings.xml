@@ -100,7 +100,7 @@
     <string name="peerTtyModeVco" msgid="572208600818270944">"‏העמית ביקש TTY במצב VCO"</string>
     <string name="peerTtyModeOff" msgid="2420380956369226583">"‏העמית ביקש TTY במצב OFF"</string>
     <string name="serviceClassVoice" msgid="2065556932043454987">"קול"</string>
-    <string name="serviceClassData" msgid="4148080018967300248">"Google Data"</string>
+    <string name="serviceClassData" msgid="4148080018967300248">"Data"</string>
     <string name="serviceClassFAX" msgid="2561653371698904118">"פקס"</string>
     <string name="serviceClassSMS" msgid="1547664561704509004">"SMS"</string>
     <string name="serviceClassDataAsync" msgid="2029856900898545984">"אסינכרוני"</string>
@@ -1030,7 +1030,7 @@
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"הקלדת סיסמה שגויה <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים.\n\nיש לנסות שוב בעוד <xliff:g id="NUMBER_1">%2$d</xliff:g> שניות."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"הקלדת קוד גישה שגוי <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים.\n\nאפשר לנסות שוב בעוד <xliff:g id="NUMBER_1">%2$d</xliff:g> שניות."</string>
     <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"‏שרטטת את קו ביטול הנעילה באופן שגוי <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים. לאחר <xliff:g id="NUMBER_1">%2$d</xliff:g> ניסיונות כושלים נוספים, יהיה צורך לבטל את נעילת הטאבלט באמצעות פרטי הכניסה שלך ל-Google.\n\nיש לנסות שוב בעוד <xliff:g id="NUMBER_2">%3$d</xliff:g> שניות."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"‏שרטטת קו ביטול נעילה שגוי <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים. לאחר <xliff:g id="NUMBER_1">%2$d</xliff:g> ניסיונות כושלים נוספים, יהיה צורך לבטל את הנעילה של מכשיר ה-Android TV באמצעות כניסה לחשבון Google שלך.\n\n אפשר לנסות שוב בעוד <xliff:g id="NUMBER_2">%3$d</xliff:g> שניות."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"‏שרטטת קו ביטול נעילה שגוי <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים. לאחר <xliff:g id="NUMBER_1">%2$d</xliff:g> ניסיונות כושלים נוספים, יהיה צורך לבטל את הנעילה של מכשיר ה-Android TV באמצעות כניסה לחשבון שלך.\n\n אפשר לנסות שוב בעוד <xliff:g id="NUMBER_2">%3$d</xliff:g> שניות."</string>
     <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"‏שרטטת את קו ביטול הנעילה באופן שגוי <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים. בעוד <xliff:g id="NUMBER_1">%2$d</xliff:g> ניסיונות כושלים נוספים, יהיה צורך לבטל את נעילת הטלפון באמצעות פרטי הכניסה שלך ל-Google‏.\n\n יש לנסות שוב בעוד <xliff:g id="NUMBER_2">%3$d</xliff:g> שניות."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"ביצעת <xliff:g id="NUMBER_0">%1$d</xliff:g> ניסיונות שגויים לביטול נעילת הטאבלט. לאחר <xliff:g id="NUMBER_1">%2$d</xliff:g> ניסיונות כושלים נוספים, הטאבלט יעבור איפוס לברירת המחדל של היצרן וכל נתוני המשתמש יאבדו."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"‏ניסית לבטל בצורה שגויה את הנעילה של מכשיר ה-Android TV <xliff:g id="NUMBER_0">%1$d</xliff:g> פעמים. לאחר <xliff:g id="NUMBER_1">%2$d</xliff:g> ניסיונות כושלים נוספים, מכשיר ה-Android TV יעבור איפוס לברירת המחדל של היצרן וכל נתוני המשתמש יאבדו."</string>
@@ -1042,7 +1042,7 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"שכחת את קו ביטול הנעילה?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"ביטול נעילת החשבון"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"בוצעו ניסיונות רבים מדי לשרטוט קו ביטול נעילה."</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"‏כדי לבטל את הנעילה, עליך להיכנס באמצעות חשבון Google שלך."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"‏כדי לבטל את הנעילה, עליך להיכנס באמצעות חשבון שלך."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"שם משתמש (אימייל)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"סיסמה"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"כניסה"</string>
@@ -1270,7 +1270,7 @@
     <string name="launch_warning_original" msgid="3332206576800169626">"אפליקציית <xliff:g id="APP_NAME">%1$s</xliff:g> הופעלה במקור."</string>
     <string name="screen_compat_mode_scale" msgid="8627359598437527726">"שינוי קנה-מידה"</string>
     <string name="screen_compat_mode_show" msgid="5080361367584709857">"להציג תמיד"</string>
-    <string name="screen_compat_mode_hint" msgid="4032272159093750908">"‏אפשר להפעיל מחדש את התכונה הזו ב\'הגדרות מערכת\' &lt;‏ Google Apps‏ &lt; \'הורדות\'."</string>
+    <string name="screen_compat_mode_hint" msgid="4032272159093750908">"‏אפשר להפעיל מחדש את התכונה הזו ב\'הגדרות מערכת\' &lt;‏ Apps‏ &lt; \'הורדות\'."</string>
     <string name="unsupported_display_size_message" msgid="7265211375269394699">"האפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> לא תומכת בהגדרת הגודל הנוכחית של התצוגה, והיא עשויה לא לפעול כראוי."</string>
     <string name="unsupported_display_size_show" msgid="980129850974919375">"להציג תמיד"</string>
     <string name="unsupported_compile_sdk_message" msgid="7326293500707890537">"‏<xliff:g id="APP_NAME">%1$s</xliff:g> נבנתה לגרסה לא תואמת של מערכת ההפעלה של Android ועלולה להתנהג באופן לא צפוי. ייתכן שקיימת גרסה מעודכנת של האפליקציה."</string>
@@ -1695,7 +1695,7 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"‏יש להזין שוב את קוד ה-PUK הנכון. ניסיונות חוזרים ישביתו את כרטיס ה-SIM באופן סופי."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"קודי האימות לא תואמים"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"ניסיונות רבים מדי לשרטוט קו ביטול נעילה."</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"‏כדי לבטל את הנעילה, עליך להיכנס באמצעות חשבון Google שלך."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"‏כדי לבטל את הנעילה, עליך להיכנס באמצעות חשבון שלך."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"שם משתמש (אימייל)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"סיסמה"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"כניסה"</string>

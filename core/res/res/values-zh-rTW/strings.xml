@@ -114,7 +114,7 @@
     <string name="roamingText5" msgid="4294671587635796641">"漫遊 - 偏好系統"</string>
     <string name="roamingText6" msgid="5536156746637992029">"漫遊 - 可用系統"</string>
     <string name="roamingText7" msgid="1783303085512907706">"漫遊 - 聯盟合作夥伴"</string>
-    <string name="roamingText8" msgid="7774800704373721973">"漫遊 - Google Premium 合作夥伴"</string>
+    <string name="roamingText8" msgid="7774800704373721973">"漫遊 - Premium 合作夥伴"</string>
     <string name="roamingText9" msgid="1933460020190244004">"漫遊 - 完整服務功能"</string>
     <string name="roamingText10" msgid="7434767033595769499">"漫遊 - 部分服務功能"</string>
     <string name="roamingText11" msgid="5245687407203281407">"漫遊橫幅開啟"</string>
@@ -1028,9 +1028,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"你的解鎖圖案已畫錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次。\n\n請在 <xliff:g id="NUMBER_1">%2$d</xliff:g> 秒後再試一次。"</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"你的密碼已輸錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次。\n\n請在 <xliff:g id="NUMBER_1">%2$d</xliff:g> 秒後再試一次。"</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"你的 PIN 已輸錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次。\n\n請在 <xliff:g id="NUMBER_1">%2$d</xliff:g> 秒後再試一次。"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"你的解鎖圖案已畫錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，如果再嘗試 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次仍未成功，系統就會要求你使用你的 Google 登入資訊解除平板電腦的鎖定狀態。\n\n請在 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"你已畫錯解鎖圖案 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，目前還剩 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次機會。如果超過失敗次數上限，系統就會要求你登入 Google 帳戶來解鎖 Android TV 裝置。\n\n 請於 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"你的解鎖圖案已畫錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，如果再試 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次仍未成功，系統就會要求你使用你的 Google 登入資訊解除手機的鎖定狀態。\n\n請在 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"你的解鎖圖案已畫錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，如果再嘗試 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次仍未成功，系統就會要求你使用你的 登入資訊解除平板電腦的鎖定狀態。\n\n請在 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"你已畫錯解鎖圖案 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，目前還剩 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次機會。如果超過失敗次數上限，系統就會要求你登入 帳戶來解鎖 Android TV 裝置。\n\n 請於 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"你的解鎖圖案已畫錯 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，如果再試 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次仍未成功，系統就會要求你使用你的 登入資訊解除手機的鎖定狀態。\n\n請在 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"你嘗試解除這個平板電腦的鎖定已失敗 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，目前還剩 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次機會。如果失敗次數超過限制，平板電腦將恢復原廠設定，所有使用者資料都會遺失。"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"你嘗試解鎖 Android TV 裝置已失敗 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，目前還剩 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次機會。如果失敗次數超過上限，Android TV 裝置將恢復原廠設定，所有使用者資料都會遺失。"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"你嘗試解除這支手機的鎖定已失敗 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，目前還剩 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次機會。如果失敗次數超過限制，手機將恢復原廠設定，所有使用者資料都會遺失。"</string>
@@ -1041,7 +1041,7 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"忘記解鎖圖案？"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"帳戶解鎖"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"圖案嘗試次數過多"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"如要解除鎖定，請使用 Google 帳戶登入。"</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"如要解除鎖定，請使用 帳戶登入。"</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"使用者名稱 (電子郵件)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"密碼"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"登入"</string>
@@ -1694,7 +1694,7 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"重新輸入正確的 PUK 碼。如果錯誤次數過多，SIM 卡將會永久停用。"</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN 碼不符"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"圖案嘗試次數過多"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"如要解除鎖定，請使用 Google 帳戶登入。"</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"如要解除鎖定，請使用 帳戶登入。"</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"使用者名稱 (電子郵件)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"密碼"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"登入"</string>
