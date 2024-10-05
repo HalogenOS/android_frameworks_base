@@ -898,10 +898,6 @@ base::expected<StringPiece16, NullOrIOError> ResStringPool::stringAt(size_t idx)
                             ALOGI("CREATING STRING CACHE OF %zu bytes",
                                   mHeader->stringCount*sizeof(char16_t**));
                         }
-#else
-                        // We do not want to be in this case when actually running Android.
-                        ALOGW("CREATING STRING CACHE OF %zu bytes",
-                                static_cast<size_t>(mHeader->stringCount*sizeof(char16_t**)));
 #endif
                         mCache = (char16_t**)calloc(mHeader->stringCount, sizeof(char16_t*));
                         if (mCache == NULL) {
