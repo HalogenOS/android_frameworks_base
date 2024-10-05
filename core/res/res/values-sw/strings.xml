@@ -1041,7 +1041,7 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Umesahau mchoro?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Fungua akaunti"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Majaribio mengi sana ya mchoro"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Ili kufungua, ingia na Akaunti Google yako."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Ili kufungua, ingia na Akaunti yako."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Jina la mtumiaji (barua pepe)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Nenosiri"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Ingia"</string>
@@ -2018,7 +2018,7 @@
     <string name="app_streaming_blocked_title_for_camera_dialog" msgid="3935701653713853065">"Kamera haipatikani"</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog" msgid="3516853717714141951">"Endelea kwenye simu"</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog" msgid="544822455127171206">"Maikrofoni haipatikani"</string>
-    <string name="app_streaming_blocked_title_for_playstore_dialog" msgid="8149823099822897538">"Huduma ya Duka la Google Play haipatikani"</string>
+    <string name="app_streaming_blocked_title_for_playstore_dialog" msgid="8149823099822897538">"Huduma ya Duka la Play haipatikani"</string>
     <string name="app_streaming_blocked_title_for_settings_dialog" product="tv" msgid="196994247017450357">"Mipangilio ya Android TV haipatikani"</string>
     <string name="app_streaming_blocked_title_for_settings_dialog" product="tablet" msgid="8222710146267948647">"Mipangilio ya kompyuta kibao haipatikani"</string>
     <string name="app_streaming_blocked_title_for_settings_dialog" product="default" msgid="6895719984375299791">"Mipangilio ya simu haipatikani"</string>

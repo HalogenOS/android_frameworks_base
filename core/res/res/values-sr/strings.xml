@@ -1042,7 +1042,7 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Заборавили сте шаблон?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Откључавање налога"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Превише покушаја уноса шаблона"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Да бисте откључали, пријавите се помоћу Google налога."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Да бисте откључали, пријавите се помоћу налога."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Корисничко име (имејл адреса)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Лозинка"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Пријави ме"</string>
@@ -1700,7 +1700,7 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Поново унесите исправни PUK кôд. Поновљени покушаји ће трајно онемогућити SIM."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN кодови се не подударају"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Превише покушаја уноса шаблона"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Да бисте откључали, пријавите се помоћу Google налога."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Да бисте откључали, пријавите се помоћу налога."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Корисничко име (имејл адреса)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Лозинка"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Пријави ме"</string>

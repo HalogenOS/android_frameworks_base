@@ -103,7 +103,7 @@
     <string name="serviceClassFAX" msgid="2561653371698904118">"傳真"</string>
     <string name="serviceClassSMS" msgid="1547664561704509004">"SMS"</string>
     <string name="serviceClassDataAsync" msgid="2029856900898545984">"非同步"</string>
-    <string name="serviceClassDataSync" msgid="7895071363569133704">"Google Sync"</string>
+    <string name="serviceClassDataSync" msgid="7895071363569133704">"Sync"</string>
     <string name="serviceClassPacket" msgid="1430642951399303804">"封包"</string>
     <string name="serviceClassPAD" msgid="6850244583416306321">"PAD"</string>
     <string name="roamingText0" msgid="7793257871609854208">"漫遊指示開啟"</string>
@@ -114,7 +114,7 @@
     <string name="roamingText5" msgid="4294671587635796641">"漫遊 - 首選系統"</string>
     <string name="roamingText6" msgid="5536156746637992029">"漫遊 - 可用系統"</string>
     <string name="roamingText7" msgid="1783303085512907706">"漫遊 - 聯盟合作夥伴"</string>
-    <string name="roamingText8" msgid="7774800704373721973">"漫遊 - Google Premium 合作夥伴"</string>
+    <string name="roamingText8" msgid="7774800704373721973">"漫遊 - Premium 合作夥伴"</string>
     <string name="roamingText9" msgid="1933460020190244004">"漫遊 - 完整服務功能"</string>
     <string name="roamingText10" msgid="7434767033595769499">"漫遊 - 部份服務功能"</string>
     <string name="roamingText11" msgid="5245687407203281407">"漫遊橫幅開啟"</string>
@@ -185,7 +185,7 @@
     <string name="httpErrorFileNotFound" msgid="5191433324871147386">"找不到所要求的檔案。"</string>
     <string name="httpErrorTooManyRequests" msgid="2149677715552037198">"同時處理過多要求，請稍後再試。"</string>
     <string name="notification_title" msgid="5783748077084481121">"<xliff:g id="ACCOUNT">%1$s</xliff:g> 登入錯誤"</string>
-    <string name="contentServiceSync" msgid="2341041749565687871">"Google Sync"</string>
+    <string name="contentServiceSync" msgid="2341041749565687871">"Sync"</string>
     <string name="contentServiceSyncNotificationTitle" msgid="5766411446676388623">"無法同步處理"</string>
     <string name="contentServiceTooManyDeletesNotificationDesc" msgid="4562226280528716090">"嘗試刪除 <xliff:g id="CONTENT_TYPE">%s</xliff:g> 的次數過多。"</string>
     <string name="low_memory" product="tablet" msgid="5557552311566179924">"平板電腦的儲存空間已滿。請刪除一些檔案，以騰出可用空間。"</string>
@@ -1028,9 +1028,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"你已畫錯解鎖圖案 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次。\n\n請在 <xliff:g id="NUMBER_1">%2$d</xliff:g> 秒後再試一次。"</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"你已輸入錯誤的密碼 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次。\n\n請在 <xliff:g id="NUMBER_1">%2$d</xliff:g> 秒後再試一次。"</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"你已輸入錯誤的 PIN 碼 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次。\n\n請在 <xliff:g id="NUMBER_1">%2$d</xliff:g> 秒後再試一次。"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"你已畫錯解鎖圖案 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，如果再嘗試 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次仍未成功，系統會要求你使用你的 Google 登入資料解開上鎖的平板電腦。\n\n請在 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"你已畫錯解鎖圖案 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，如果再嘗試 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次仍未成功，系統會要求你使用 Google 登入資料將 Android TV 裝置解鎖。\n\n請在 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"你已畫錯解鎖圖案 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，如果再嘗試 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次仍未成功，系統會要求你使用你的 Google 登入資料解開上鎖的手機。\n\n請在 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"你已畫錯解鎖圖案 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，如果再嘗試 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次仍未成功，系統會要求你使用你的 登入資料解開上鎖的平板電腦。\n\n請在 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"你已畫錯解鎖圖案 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，如果再嘗試 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次仍未成功，系統會要求你使用 登入資料將 Android TV 裝置解鎖。\n\n請在 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"你已畫錯解鎖圖案 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，如果再嘗試 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次仍未成功，系統會要求你使用你的 登入資料解開上鎖的手機。\n\n請在 <xliff:g id="NUMBER_2">%3$d</xliff:g> 秒後再試一次。"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"你嘗試解除這部平板電腦的鎖定已失敗 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，剩餘 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次嘗試機會。如果失敗次數超過嘗試次數限制，平板電腦將恢復原廠設定，所有使用者資料均會遺失。"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"你已 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次無法解鎖 Android TV 裝置。如果再失敗 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次，Android TV 裝置將回復原廠設定，所有使用者資料均會遺失。"</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"你嘗試解除這部手機的鎖定已失敗 <xliff:g id="NUMBER_0">%1$d</xliff:g> 次，剩餘 <xliff:g id="NUMBER_1">%2$d</xliff:g> 次嘗試機會。如果失敗次數超過嘗試次數限制，手機將恢復原廠設定，所有使用者資料均會遺失。"</string>
@@ -1041,7 +1041,7 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"忘記圖案？"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"帳戶解鎖"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"圖案嘗試次數過多"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"如要解鎖，請以 Google 帳戶登入。"</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"如要解鎖，請以 帳戶登入。"</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"使用者名稱 (電子郵件)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"密碼"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"登入"</string>
@@ -1560,7 +1560,7 @@
     <string name="progress_erasing" msgid="6891435992721028004">"正在清除共用儲存空間資料…"</string>
     <string name="share" msgid="4157615043345227321">"分享"</string>
     <string name="find" msgid="5015737188624767706">"尋找"</string>
-    <string name="websearch" msgid="5624340204512793290">"Google 網頁搜尋"</string>
+    <string name="websearch" msgid="5624340204512793290">"網頁搜尋"</string>
     <string name="find_next" msgid="5341217051549648153">"尋找下一個"</string>
     <string name="find_previous" msgid="4405898398141275532">"尋找上一個"</string>
     <string name="gpsNotifTicker" msgid="3207361857637620780">"<xliff:g id="NAME">%s</xliff:g> 的位置要求"</string>
@@ -1699,7 +1699,7 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"請重新輸入正確的 PUK 碼。如果嘗試輸入的次數過多，SIM 卡將永久停用。"</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN 碼不符"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"圖案嘗試次數過多"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"如要解鎖，請以 Google 帳戶登入。"</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"如要解鎖，請以 帳戶登入。"</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"使用者名稱 (電子郵件)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"密碼"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"登入"</string>

@@ -1041,7 +1041,7 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Lupa pola?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Pembuka kunci akun"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Terlalu banyak upaya pola"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Untuk membuka, login dengan akun Google Anda."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Untuk membuka, login dengan akun Anda."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Nama pengguna (email)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Sandi"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Login"</string>
@@ -1699,7 +1699,7 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Masukkan kembali kode PUK yang benar. Jika berulang kali gagal, SIM akan dinonaktifkan secara permanen."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"Kode PIN tidak cocok"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Terlalu banyak upaya pola"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Untuk membuka kunci, login dengan akun Google Anda."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Untuk membuka kunci, login dengan akun Anda."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Nama pengguna (email)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Sandi"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Login"</string>

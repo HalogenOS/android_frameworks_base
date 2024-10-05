@@ -1560,7 +1560,7 @@
     <string name="progress_erasing" msgid="6891435992721028004">"Gedeelde opslag wissen…"</string>
     <string name="share" msgid="4157615043345227321">"Delen"</string>
     <string name="find" msgid="5015737188624767706">"Vinden"</string>
-    <string name="websearch" msgid="5624340204512793290">"Google Zoeken"</string>
+    <string name="websearch" msgid="5624340204512793290">"Zoeken"</string>
     <string name="find_next" msgid="5341217051549648153">"Volgende zoeken"</string>
     <string name="find_previous" msgid="4405898398141275532">"Vorige zoeken"</string>
     <string name="gpsNotifTicker" msgid="3207361857637620780">"Locatieverzoek van <xliff:g id="NAME">%s</xliff:g>"</string>

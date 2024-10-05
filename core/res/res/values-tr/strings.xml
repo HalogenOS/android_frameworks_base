@@ -1028,9 +1028,9 @@
     <string name="lockscreen_too_many_failed_attempts_dialog_message" msgid="6458790975898594240">"Kilit açma deseninizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış çizdiniz. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> saniye içinde tekrar deneyin."</string>
     <string name="lockscreen_too_many_failed_password_attempts_dialog_message" msgid="3118353451602377380">"Şifrenizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış yazdınız. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> saniye içinde tekrar deneyin."</string>
     <string name="lockscreen_too_many_failed_pin_attempts_dialog_message" msgid="2874278239714821984">"PIN kodunuzu <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış girdiniz. \n\n<xliff:g id="NUMBER_1">%2$d</xliff:g> saniye içinde tekrar deneyin."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Kilit açma deseninizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış çizdiniz. <xliff:g id="NUMBER_1">%2$d</xliff:g> başarısız denemeden sonra, tabletinizi, Google oturum açma bilgilerinizi kullanarak açmanız istenir.\n\n<xliff:g id="NUMBER_2">%3$d</xliff:g> saniye içinde tekrar deneyin."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Kilit açma deseninizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış çizdiniz. <xliff:g id="NUMBER_1">%2$d</xliff:g> başarısız denemeden sonra, Android TV cihazınızın kilidini Google oturum açma bilgilerinizi kullanarak açmanız istenir.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> saniye içinde tekrar deneyin."</string>
-    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Kilit açma deseninizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış çizdiniz. <xliff:g id="NUMBER_1">%2$d</xliff:g> başarısız denemeden sonra telefonunuzu Google oturum açma bilgilerinizi kullanarak açmanız istenir.\n\n Lütfen <xliff:g id="NUMBER_2">%3$d</xliff:g> saniye içinde tekrar deneyin."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tablet" msgid="3069635524964070596">"Kilit açma deseninizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış çizdiniz. <xliff:g id="NUMBER_1">%2$d</xliff:g> başarısız denemeden sonra, tabletinizi, oturum açma bilgilerinizi kullanarak açmanız istenir.\n\n<xliff:g id="NUMBER_2">%3$d</xliff:g> saniye içinde tekrar deneyin."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="tv" msgid="6399092175942158529">"Kilit açma deseninizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış çizdiniz. <xliff:g id="NUMBER_1">%2$d</xliff:g> başarısız denemeden sonra, Android TV cihazınızın kilidini oturum açma bilgilerinizi kullanarak açmanız istenir.\n\n <xliff:g id="NUMBER_2">%3$d</xliff:g> saniye içinde tekrar deneyin."</string>
+    <string name="lockscreen_failed_attempts_almost_glogin" product="default" msgid="5691623136957148335">"Kilit açma deseninizi <xliff:g id="NUMBER_0">%1$d</xliff:g> kez yanlış çizdiniz. <xliff:g id="NUMBER_1">%2$d</xliff:g> başarısız denemeden sonra telefonunuzu oturum açma bilgilerinizi kullanarak açmanız istenir.\n\n Lütfen <xliff:g id="NUMBER_2">%3$d</xliff:g> saniye içinde tekrar deneyin."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tablet" msgid="7914445759242151426">"Tablet kilidini <xliff:g id="NUMBER_0">%1$d</xliff:g> defa yanlış bir şekilde açmaya çalıştınız. <xliff:g id="NUMBER_1">%2$d</xliff:g> defa daha başarısız deneme yapılırsa, tablet fabrika varsayılanına sıfırlanır ve tüm kullanıcı verileri kaybedilir."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="tv" msgid="4275591249631864248">"Android TV cihazınızın kilidini <xliff:g id="NUMBER_0">%1$d</xliff:g> kez hatalı bir şekilde açmayı denediniz. <xliff:g id="NUMBER_1">%2$d</xliff:g> defa daha başarısız deneme yapılırsa Android TV cihazınız fabrika varsayılan ayarlarına sıfırlanır ve tüm kullanıcı verileri kaybedilir."</string>
     <string name="lockscreen_failed_attempts_almost_at_wipe" product="default" msgid="1166532464798446579">"Telefonun kilidini <xliff:g id="NUMBER_0">%1$d</xliff:g> defa yanlış bir şekilde açmaya çalıştınız. <xliff:g id="NUMBER_1">%2$d</xliff:g> defa daha başarısız deneme yapılırsa, telefon fabrika varsayılanına sıfırlanır ve tüm kullanıcı verileri kaybedilir."</string>
@@ -1041,7 +1041,7 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"Deseni unuttunuz mu?"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"Hesap kilidini açma"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"Çok fazla sayıda desen denemesi yapıldı"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Kilidi açmak için Google hesabınızla oturum açın."</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"Kilidi açmak için hesabınızla oturum açın."</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"Kullanıcı adı (e-posta)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"Şifre"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"Oturum aç"</string>
@@ -1560,7 +1560,7 @@
     <string name="progress_erasing" msgid="6891435992721028004">"Paylaşılan depolama alanı siliniyor…"</string>
     <string name="share" msgid="4157615043345227321">"Paylaş"</string>
     <string name="find" msgid="5015737188624767706">"Bul"</string>
-    <string name="websearch" msgid="5624340204512793290">"Google Web Arama"</string>
+    <string name="websearch" msgid="5624340204512793290">"Web Arama"</string>
     <string name="find_next" msgid="5341217051549648153">"Sonrakini bul"</string>
     <string name="find_previous" msgid="4405898398141275532">"Öncekini bul"</string>
     <string name="gpsNotifTicker" msgid="3207361857637620780">"<xliff:g id="NAME">%s</xliff:g> kullanıcısından gelen konum isteği"</string>
@@ -1699,7 +1699,7 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"Doğru PUK kodunu tekrar girin. Çok sayıda deneme yapılırsa SIM kart kalıcı olarak devre dışı bırakılır."</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"PIN kodları eşleşmiyor"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"Çok fazla sayıda desen denemesi yapıldı"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"Kilidi açmak için Google hesabınızla oturum açın."</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"Kilidi açmak için hesabınızla oturum açın."</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"Kullanıcı adı (e-posta)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"Şifre"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"Oturum aç"</string>

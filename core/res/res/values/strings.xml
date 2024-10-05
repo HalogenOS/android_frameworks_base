@@ -2810,7 +2810,7 @@
          too many patterns and we are forcing them to use their account instead. -->
     <string name="lockscreen_glogin_too_many_attempts">Too many pattern attempts</string>
     <!-- In the unlock screen, message telling the user that they need to use their Google login and password to unlock the phone -->
-    <string name="lockscreen_glogin_instructions">To unlock, sign in with your Google account.</string>
+    <string name="lockscreen_glogin_instructions">To unlock, sign in with your account.</string>
     <!-- Hint caption for the username field when unlocking the phone using login and password -->
     <string name="lockscreen_glogin_username_hint">Username (email)</string>
     <!-- Hint caption for the password field when unlocking the phone using login and password -->
@@ -3913,13 +3913,13 @@
     <string name="alert_windows_notification_channel_group_name">Display over other apps</string>
     <!-- Name of notification channel the system post notification to inform the use about apps
          that are drawing ui on-top of other apps (alert-windows) [CHAR LIMIT=NONE] -->
-    <string name="alert_windows_notification_channel_name"><xliff:g id="name" example="Google Maps">%s</xliff:g> displaying over other apps</string>
+    <string name="alert_windows_notification_channel_name"><xliff:g id="name" example="Maps">%s</xliff:g> displaying over other apps</string>
     <!-- Notification title when an application is displaying ui on-top of other apps
          [CHAR LIMIT=30] -->
-    <string name="alert_windows_notification_title"><xliff:g id="name" example="Google Maps">%s</xliff:g> is displaying over other apps</string>
+    <string name="alert_windows_notification_title"><xliff:g id="name" example="Maps">%s</xliff:g> is displaying over other apps</string>
     <!-- Notification body when an application is displaying ui on-top of other apps
          [CHAR LIMIT=NONE] -->
-    <string name="alert_windows_notification_message">If you don’t want <xliff:g id="name" example="Google Maps">%s</xliff:g> to use this feature, tap to open settings and turn it off.</string>
+    <string name="alert_windows_notification_message">If you don’t want <xliff:g id="name" example="Maps">%s</xliff:g> to use this feature, tap to open settings and turn it off.</string>
     <!-- Notification action to turn-off app displaying on-top of other apps. [CHAR LIMIT=20] -->
     <string name="alert_windows_notification_turn_off_action">Turn off</string>
 
@@ -4607,7 +4607,7 @@
     <!-- Message shown when the user exceeds the maximum number of pattern attempts -->
     <string name="kg_login_too_many_attempts">Too many pattern attempts</string>
     <!-- Instructions show in account unlock screen allowing user to enter their email password -->
-    <string name="kg_login_instructions">To unlock, sign in with your Google account.</string>
+    <string name="kg_login_instructions">To unlock, sign in with your account.</string>
     <!-- Hint shown in TextView in account unlock screen of keyguard -->
     <string name="kg_login_username_hint">Username (email)</string>
     <!-- Hint shown in TextView in account unlock screen of keyguard -->

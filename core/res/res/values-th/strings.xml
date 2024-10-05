@@ -1041,7 +1041,7 @@
     <string name="lockscreen_forgot_pattern_button_text" msgid="8362442730606839031">"ลืมรูปแบบหรือ"</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="9218940117797602518">"ปลดล็อกบัญชี"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="3775904917743034195">"ลองหลายรูปแบบมากเกินไป"</string>
-    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"หากต้องการปลดล็อก ให้ลงชื่อเข้าใช้ด้วยบัญชี Google ของคุณ"</string>
+    <string name="lockscreen_glogin_instructions" msgid="4695162942525531700">"หากต้องการปลดล็อก ให้ลงชื่อเข้าใช้ด้วยบัญชี ของคุณ"</string>
     <string name="lockscreen_glogin_username_hint" msgid="6916101478673157045">"ชื่อผู้ใช้ (อีเมล)"</string>
     <string name="lockscreen_glogin_password_hint" msgid="3031027901286812848">"รหัสผ่าน"</string>
     <string name="lockscreen_glogin_submit_button" msgid="3590556636347843733">"ลงชื่อเข้าใช้"</string>
@@ -1699,7 +1699,7 @@
     <string name="kg_invalid_puk" msgid="4809502818518963344">"ใส่รหัส PUK ที่ถูกต้องอีกครั้ง การพยายามซ้ำหลายครั้งจะทำให้ซิมการ์ดถูกปิดใช้งานอย่างถาวร"</string>
     <string name="kg_invalid_confirm_pin_hint" product="default" msgid="4705368340409816254">"รหัส PIN ไม่ตรง"</string>
     <string name="kg_login_too_many_attempts" msgid="699292728290654121">"ลองหลายรูปแบบมากเกินไป"</string>
-    <string name="kg_login_instructions" msgid="3619844310339066827">"หากต้องการปลดล็อก ให้ลงชื่อเข้าใช้ด้วยบัญชี Google ของคุณ"</string>
+    <string name="kg_login_instructions" msgid="3619844310339066827">"หากต้องการปลดล็อก ให้ลงชื่อเข้าใช้ด้วยบัญชี ของคุณ"</string>
     <string name="kg_login_username_hint" msgid="1765453775467133251">"ชื่อผู้ใช้ (อีเมล)"</string>
     <string name="kg_login_password_hint" msgid="3330530727273164402">"รหัสผ่าน"</string>
     <string name="kg_login_submit_button" msgid="893611277617096870">"ลงชื่อเข้าใช้"</string>
