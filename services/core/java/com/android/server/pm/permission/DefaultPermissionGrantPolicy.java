@@ -191,6 +191,15 @@ final class DefaultPermissionGrantPolicy {
         CALENDAR_PERMISSIONS.add(Manifest.permission.WRITE_CALENDAR);
     }
 
+    private static final Set<String> ADDITIONAL_CALENDAR_PERMISSIONS = new ArraySet<>();
+    static {
+        ADDITIONAL_CALENDAR_PERMISSIONS.add(Manifest.permission.POST_NOTIFICATIONS);
+        ADDITIONAL_CALENDAR_PERMISSIONS.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        ADDITIONAL_CALENDAR_PERMISSIONS.add(Manifest.permission.GET_ACCOUNTS);
+        ADDITIONAL_CALENDAR_PERMISSIONS.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        ADDITIONAL_CALENDAR_PERMISSIONS.add(Manifest.permission.READ_CONTACTS);
+    }
+
     private static final Set<String> SMS_PERMISSIONS = new ArraySet<>();
     static {
         SMS_PERMISSIONS.add(Manifest.permission.SEND_SMS);
@@ -973,6 +982,10 @@ final class DefaultPermissionGrantPolicy {
 
         // Glimpse (gallery app)
         grantPermissionsToSystemPackage(pm, "org.lineageos.glimpse", userId, GALLERY_PERMISSIONS);
+
+        // Etar (calendar app)
+        grantPermissionsToSystemPackage(pm, "org.lineageos.etar", userId,
+                CALENDAR_PERMISSIONS, ADDITIONAL_CALENDAR_PERMISSIONS);
     }
 
     private String getDefaultSystemHandlerActivityPackageForCategory(PackageManagerWrapper pm,
