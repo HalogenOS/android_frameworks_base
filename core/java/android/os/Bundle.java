@@ -1589,6 +1589,16 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
     }
 
     /**
+     * Same as {@link #toString()}, but unparcels the internal map if it isn't unparcelled already,
+     * which ensures that the internal map contents are included in the result.
+     * @hide
+     */
+    public String toStringDeep() {
+        unparcel((mFlags & FLAG_DEFUSABLE) != 0);
+        return toString();
+    }
+
+    /**
      * @hide
      */
     public synchronized String toShortString() {
