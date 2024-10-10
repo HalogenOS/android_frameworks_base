@@ -520,10 +520,10 @@ public final class OverlayConfigParser {
                         + parsingContext.mPartition.getOverlayFolder() + " is ignored.");
                 return;
             } else if (info == null || !parsingContext.mPartition.containsOverlay(info.path)) {
-                throw new IllegalStateException(
-                        String.format("overlay %s not present in partition %s in %s at %s",
+                Log.e(TAG, String.format("overlay %s not present in partition %s in %s at %s",
                                 packageName, parsingContext.mPartition.getOverlayFolder(),
                                 configFile, parser.getPositionDescription()));
+                return;
             }
         } else {
             // Zygote shall have crashed itself, if there's an overlay apk not present in the
