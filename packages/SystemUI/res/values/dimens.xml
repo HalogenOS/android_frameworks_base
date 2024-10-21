@@ -1134,8 +1134,8 @@
     <dimen name="biometric_prompt_one_pane_medium_horizontal_guideline_padding">0dp</dimen>
 
     <!-- Dimensions for biometric prompt scroll view padding -->
-    <dimen name="biometric_prompt_top_scroll_view_bottom_padding">24dp</dimen>
-    <dimen name="biometric_prompt_top_scroll_view_horizontal_padding">24dp</dimen>
+    <dimen name="biometric_prompt_top_scroll_view_bottom_padding">16dp</dimen>
+    <dimen name="biometric_prompt_top_scroll_view_horizontal_padding">16dp</dimen>
 
     <!-- Dimensions for biometric prompt icon padding -->
     <dimen name="biometric_prompt_portrait_small_bottom_padding">60dp</dimen>
