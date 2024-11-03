@@ -173,7 +173,6 @@ public class OverlayConfig {
                                     Collections.emptyList()));
             if (partitionOverlays != null) {
                 overlays.addAll(partitionOverlays);
-                continue;
             }
 
             // If the configuration file is not present, then use android:isStatic and
@@ -205,7 +204,18 @@ public class OverlayConfig {
             }
 
             partitionConfigs.sort(sStaticOverlayComparator);
-            overlays.addAll(partitionConfigs);
+            outer:
+            for (ParsedConfiguration config : partitionConfigs) {
+                for (ParsedConfiguration existing : overlays) {
+                    if (existing.packageName.equals(config.packageName)) {
+                        Log.i(TAG, "Overlay " + config.packageName +
+                            " already defined explicitly in config, not using default behavior.");
+                        continue outer;
+                    }
+                }
+                Log.d(TAG, "Adding overlay " + config.packageName + " using default behavior");
+                overlays.add(config);
+            }
         }
 
         for (int i = 0, n = overlays.size(); i < n; i++) {
