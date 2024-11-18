@@ -4642,7 +4642,8 @@ public class PermissionManagerServiceImpl implements PermissionManagerServiceInt
     @Nullable
     @Override
     public String getDefaultPermissionGrantFingerprint(@UserIdInt int userId) {
-        return mPackageManagerInt.isPermissionUpgradeNeeded(userId) ? null : Build.FINGERPRINT;
+        return mPackageManagerInt.isPermissionUpgradeNeeded(userId)
+                ? null : Build.VERSION.INCREMENTAL;
     }
 
     @Override
