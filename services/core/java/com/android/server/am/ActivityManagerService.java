@@ -55,6 +55,7 @@ import static android.app.ActivityManagerInternal.OOM_ADJ_REASON_PROCESS_END;
 import static android.app.ActivityManagerInternal.OOM_ADJ_REASON_SHELL;
 import static android.app.ActivityManagerInternal.OOM_ADJ_REASON_SYSTEM_INIT;
 import static android.app.ActivityManagerInternal.OOM_ADJ_REASON_UI_VISIBILITY;
+import static android.app.ActivityManagerInternal.enableBackupAgentInSeparateProcess;
 import static android.app.AppOpsManager.OP_NONE;
 import static android.app.ProcessMemoryState.HOSTING_COMPONENT_TYPE_BACKUP;
 import static android.app.ProcessMemoryState.HOSTING_COMPONENT_TYPE_INSTRUMENTATION;
@@ -14086,10 +14087,16 @@ public class ActivityManagerService extends IActivityManager.Stub
                             ? new ComponentName(app.packageName, app.backupAgentName)
                             : new ComponentName("android", "FullBackupAgent");
 
-            ProcessRecord proc = getProcessRecordLocked(app.processName, app.uid);
+            final boolean shouldUseSeparateProcess =
+                    enableBackupAgentInSeparateProcess()
+                    && !UserHandle.isCore(app.uid);
+            // Sync the above conditions with BackupAgentConnectionManager.
+            final String processName = shouldUseSeparateProcess
+                    ? app.processName + ":BackupAgent" : app.processName;
+            ProcessRecord proc = getProcessRecordLocked(processName, app.uid);
             boolean isProcessStarted = proc != null;
             if (!isProcessStarted) {
-                proc = startProcessLocked(app.processName, app,
+                proc = startProcessLocked(processName, app,
                   false, 0,
                   new HostingRecord(HostingRecord.HOSTING_TYPE_BACKUP, hostingName),
                   ZYGOTE_POLICY_FLAG_SYSTEM_PROCESS, false, false);

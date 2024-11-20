@@ -42,6 +42,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerExemptionManager.ReasonCode;
 import android.os.PowerExemptionManager.TempAllowListType;
+import android.os.SystemProperties;
 import android.os.TransactionTooLargeException;
 import android.os.WorkSource;
 import android.os.instrumentation.IOffsetCallback;
@@ -1369,4 +1370,9 @@ public abstract class ActivityManagerInternal {
      * @hide
      */
     public abstract void addCreatorToken(Intent intent, String creatorPackage);
+
+    public static boolean enableBackupAgentInSeparateProcess() {
+        return SystemProperties.getBoolean("persist.testing.backup_agent_in_separate_process",
+                false);
+    }
 }

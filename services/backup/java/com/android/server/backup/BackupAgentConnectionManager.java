@@ -16,6 +16,8 @@
 
 package com.android.server.backup;
 
+import static android.app.ActivityManagerInternal.enableBackupAgentInSeparateProcess;
+
 import static com.android.server.backup.BackupManagerService.MORE_DEBUG;
 import static com.android.server.backup.BackupManagerService.TAG;
 
@@ -217,7 +219,10 @@ public class BackupAgentConnectionManager {
 
                 if (willKill) {
                     Slog.i(TAG, mUserIdMsg + "Killing agent host process");
-                    mActivityManager.killApplicationProcess(app.processName, app.uid);
+
+                    final String processName = enableBackupAgentInSeparateProcess()
+                            ? app.processName + ":BackupAgent" : app.processName;
+                    mActivityManager.killApplicationProcess(processName, app.uid);
                 }
             } catch (RemoteException e) {
                 // Can't happen - activity manager is local
@@ -227,6 +232,10 @@ public class BackupAgentConnectionManager {
 
     @GuardedBy("mAgentConnectLock")
     private boolean shouldKillAppOnUnbind(ApplicationInfo app) {
+        // Sync these conditions with ActivityManagerService.bindBackupAgent().
+        // TODO: Ideally, make the same logic be used and not duplicated.
+        // Right now we only copy UserHandle.isCore().
+
         // We don't ask system UID processes to be killed.
         if (UserHandle.isCore(app.uid)) {
             return false;
