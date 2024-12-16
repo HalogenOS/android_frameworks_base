@@ -179,6 +179,16 @@ cc_library_host_static {
     defaults: ["aapt2_defaults"],
 }
 
+java_library_host {
+    name: "aapt2_proto_java",
+    srcs: [
+        "*.proto",
+    ],
+    proto: {
+        type: "full",
+    },
+}
+
 // ==========================================================
 // Build the host tests: aapt2_tests
 // ==========================================================
