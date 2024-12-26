@@ -23,8 +23,8 @@ import android.util.Log
 import com.android.systemui.res.R
 import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.doze.util.getBurnInOffset
+import com.android.systemui.navigationbar.NavigationBarView
 import com.android.systemui.navigationbar.NavigationModeController
-import com.android.systemui.navigationbar.views.NavigationBarView;
 import com.android.systemui.shared.system.QuickStepContract.isGesturalMode
 import com.android.systemui.statusbar.phone.PhoneStatusBarView
 import com.android.systemui.statusbar.policy.ConfigurationController
