@@ -157,6 +157,8 @@ constructor(
 
     private var overlayTouchListener: TouchExplorationStateChangeListener? = null
 
+    private val useFrameworkDimming = context.resources.getBoolean(
+            com.android.systemui.res.R.bool.config_udfpsFrameworkDimming)
     private val udfpsHelper: UdfpsHelper? = if (useFrameworkDimming) {
         UdfpsHelper(context, windowManager, shadeInteractor, transitionInteractor, requestReason)
     } else null
@@ -425,15 +427,7 @@ constructor(
         val wasShowing = isShowing
 
         overlayViewLegacy?.apply {
-            if (isDisplayConfigured) {
-                unconfigureDisplay()
-            }
             animationViewController = null
-        }
-        overlayTouchView?.apply {
-            if (isDisplayConfigured) {
-                unconfigureDisplay()
-            }
         }
         if (DeviceEntryUdfpsRefactor.isEnabled) {
             udfpsDisplayModeProvider.disable(null)

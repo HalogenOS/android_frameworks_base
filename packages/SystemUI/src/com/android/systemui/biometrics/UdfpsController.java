@@ -924,13 +924,6 @@ public class UdfpsController implements DozeReceiver, Dumpable {
             if (mUdfpsDisplayMode != null) {
                 mUdfpsDisplayMode.disable(null);
             }
-        } else {
-            if (view != null) {
-                UdfpsView udfpsView = (UdfpsView) view;
-                if (udfpsView.isDisplayConfigured()) {
-                    udfpsView.unconfigureDisplay();
-                }
-            }
         }
     }
 
