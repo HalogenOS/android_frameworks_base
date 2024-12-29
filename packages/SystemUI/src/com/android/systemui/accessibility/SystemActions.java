@@ -207,6 +207,7 @@ public class SystemActions implements CoreStartable, ConfigurationController.Con
 
     @Inject
     public SystemActions(Context context,
+            Handler mainThreadHandler,
             UserTracker userTracker,
             NotificationShadeWindowController notificationShadeController,
             KeyguardStateController keyguardStateController,
@@ -231,7 +232,7 @@ public class SystemActions implements CoreStartable, ConfigurationController.Con
         mNotificationShadeCallback =
                 (keyguardShowing, keyguardOccluded, keyguardGoingAway, bouncerShowing, mDozing,
                         panelExpanded, isDreaming, communalShowing) ->
-                        registerOrUnregisterDismissNotificationShadeAction();
+                        mainThreadHandler.post(() -> registerOrUnregisterDismissNotificationShadeAction());
         mScreenshotHelper = new ScreenshotHelper(mContext);
     }
 
