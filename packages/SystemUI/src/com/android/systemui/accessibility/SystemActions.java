@@ -231,7 +231,7 @@ public class SystemActions implements CoreStartable, ConfigurationController.Con
         mNotificationShadeCallback =
                 (keyguardShowing, keyguardOccluded, keyguardGoingAway, bouncerShowing, mDozing,
                         panelExpanded, isDreaming, communalShowing) ->
-                        registerOrUnregisterDismissNotificationShadeAction();
+                        new Handler(Looper.getMainLooper()).post(this::registerOrUnregisterDismissNotificationShadeAction);
         mScreenshotHelper = new ScreenshotHelper(mContext);
     }
 
@@ -346,7 +346,12 @@ public class SystemActions implements CoreStartable, ConfigurationController.Con
         mA11yManager.registerSystemAction(actionDpadCenter, SYSTEM_ACTION_ID_DPAD_CENTER);
         mA11yManager.registerSystemAction(actionMenu, SYSTEM_ACTION_ID_MENU);
         mA11yManager.registerSystemAction(actionMediaPlayPause, SYSTEM_ACTION_ID_MEDIA_PLAY_PAUSE);
-        registerOrUnregisterDismissNotificationShadeAction();
+
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            new Handler(Looper.getMainLooper()).post(this::registerOrUnregisterDismissNotificationShadeAction);
+        } else {
+            registerOrUnregisterDismissNotificationShadeAction();
+	}
     }
 
     private void registerOrUnregisterDismissNotificationShadeAction() {
