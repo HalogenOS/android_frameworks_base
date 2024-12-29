@@ -106,6 +106,12 @@ class UdfpsView(
     fun configureDisplay(onDisplayConfigured: Runnable) {
         isDisplayConfigured = true
         animationViewController?.onDisplayConfiguring()
+        mUdfpsDisplayMode?.enable(onDisplayConfigured)
+    }
+
+    fun unconfigureDisplay() {
+        isDisplayConfigured = false
+        animationViewController?.onDisplayUnconfigured()
         mUdfpsDisplayMode?.disable(null /* onDisabled */)
     }
 }

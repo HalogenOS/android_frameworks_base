@@ -66,8 +66,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import java.util.ArrayList;
-
 @Presubmit
 @SmallTest
 public class HidlToAidlSensorAdapterTest {
@@ -136,8 +134,7 @@ public class HidlToAidlSensorAdapterTest {
         mHidlToAidlSensorAdapter = new HidlToAidlSensorAdapter(
                 mFingerprintProvider, mContext, new Handler(mLooper.getLooper()),
                 fingerprintSensorConfig, mLockoutResetDispatcherForSensor,
-                mBiometricContext, new ArrayList<>(),
-                false /* resetLockoutRequiresHardwareAuthToken */,
+                mBiometricContext, false /* resetLockoutRequiresHardwareAuthToken */,
                 mInternalCleanupRunnable, mAuthSessionCoordinator, mDaemon,
                 mAidlResponseHandlerCallback);
         mHidlToAidlSensorAdapter.init(mGestureAvailabilityDispatcher,
