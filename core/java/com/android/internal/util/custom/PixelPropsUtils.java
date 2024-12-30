@@ -448,18 +448,18 @@ public final class PixelPropsUtils {
             return;
         // Alter build parameters to avoid hardware attestation enforcement
         setPropValue("MANUFACTURER", "Google");
-        setPropValue("MODEL", "Pixel 9 Pro XL");
-        setPropValue("FINGERPRINT", "google/komodo_beta/komodo:15/AP41.240925.009/12534705:user/release-keys");
+        setPropValue("MODEL", "Pixel 7a");
+        setPropValue("FINGERPRINT", "google/lynx_beta/lynx:15/BP11.241121.010/12780007:user/release-keys");
         setPropValue("BRAND", "google");
-        setPropValue("PRODUCT", "komodo_beta");
-        setPropValue("DEVICE", "komodo");
+        setPropValue("PRODUCT", "lynx_beta");
+        setPropValue("DEVICE", "lynx");
         setPropValue("VERSION.RELEASE", "15");
-        setPropValue("ID", "AP41.240925.009");
-        setPropValue("VERSION.INCREMENTAL", "12534705");
+        setPropValue("ID", "BP11.241121.010");
+        setPropValue("VERSION.INCREMENTAL", "12780007");
         setPropValue("TYPE", "user");
         setPropValue("TAGS", "release-keys");
-        setPropValue("VERSION.SECURITY_PATCH", "2024-10-05");
-        setPropValue("VERSION.DEVICE_INITIAL_SDK_INT", "32");
+        setPropValue("VERSION.SECURITY_PATCH", "2024-12-05");
+        setPropValue("VERSION.DEVICE_INITIAL_SDK_INT", "21");
     }
 
     private static boolean isCallerSafetyNet() {
