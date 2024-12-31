@@ -2774,7 +2774,7 @@ class WindowState extends WindowContainer<WindowState> implements WindowManagerP
             final boolean wasShowWhenLocked = (sa.flags & FLAG_SHOW_WHEN_LOCKED) != 0;
             final boolean removeShowWhenLocked = (mAttrs.flags & FLAG_SHOW_WHEN_LOCKED) == 0;
             sa.flags = (sa.flags & ~mask) | (mAttrs.flags & mask);
-            if (Flags.keepAppWindowHideWhileLocked() && wasShowWhenLocked && removeShowWhenLocked) {
+            if (wasShowWhenLocked && removeShowWhenLocked) {
                 // Trigger unoccluding animation if needed.
                 mActivityRecord.checkKeyguardFlagsChanged();
                 mActivityRecord.deferStartingWindowRemovalForKeyguardUnoccluding();
