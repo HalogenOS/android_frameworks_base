@@ -7658,7 +7658,7 @@ public abstract class Context {
      * @hide
      */
     @NonNull
-    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
+    @SystemApi
     @TestApi
     public UserHandle getUser() {
         return android.os.Process.myUserHandle();
