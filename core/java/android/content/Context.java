@@ -8014,7 +8014,7 @@ public abstract class Context {
      * @hide
      */
     @NonNull
-    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
+    @SystemApi
     @TestApi
     @RavenwoodSupported(type = SupportType.SUBCLASS, subclass = "ContextImpl")
     public @CanBeALL @CanBeCURRENT UserHandle getUser() {
