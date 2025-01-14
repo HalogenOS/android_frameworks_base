@@ -609,7 +609,7 @@ public class BiometricUnlockController extends KeyguardUpdateMonitorCallback imp
         if (!deviceInteractive) {
             if (!keyguardShowing && !mScreenOffAnimationController.isKeyguardShowDelayed()) {
                 if (mKeyguardStateController.isUnlocked()) {
-                    return MODE_WAKE_AND_UNLOCK;
+                    return MODE_ONLY_WAKE;
                 }
                 return MODE_ONLY_WAKE;
             } else if (mDozeScrimController.isPulsing() && unlockingAllowed) {
