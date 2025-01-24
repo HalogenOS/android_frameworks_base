@@ -2544,16 +2544,18 @@ public final class ProcessList implements ProcessStateController.ProcessLruUpdat
                 allowlistedAppDataInfoMap = null;
             }
 
-            boolean bindOverrideSysprops = false;
-            if (Build.IS_USERDEBUG || Build.IS_ENG) {
-                final String[] syspropOverridePkgNames = DeviceConfig.getString(
-                        DeviceConfig.NAMESPACE_APP_COMPAT,
-                                "appcompat_sysprop_override_pkgs", "").split(",");
-                final String[] pkgs = app.getProcessPackageNames();
-                for (int i = 0; i < pkgs.length; i++) {
-                    if (ArrayUtils.contains(syspropOverridePkgNames, pkgs[i])) {
-                        bindOverrideSysprops = true;
-                        break;
+            boolean bindOverrideSysprops = !app.info.isSystemApp();
+            if (!bindOverrideSysprops) {
+                if (Build.IS_USERDEBUG || Build.IS_ENG) {
+                    final String[] syspropOverridePkgNames = DeviceConfig.getString(
+                            DeviceConfig.NAMESPACE_APP_COMPAT,
+                                    "appcompat_sysprop_override_pkgs", "").split(",");
+                    final String[] pkgs = app.getProcessPackageNames();
+                    for (int i = 0; i < pkgs.length; i++) {
+                        if (ArrayUtils.contains(syspropOverridePkgNames, pkgs[i])) {
+                            bindOverrideSysprops = true;
+                            break;
+                        }
                     }
                 }
             }
