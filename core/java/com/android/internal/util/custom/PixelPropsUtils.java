@@ -449,16 +449,16 @@ public final class PixelPropsUtils {
         // Alter build parameters to avoid hardware attestation enforcement
         setPropValue("MANUFACTURER", "Google");
         setPropValue("MODEL", "Pixel 7a");
-        setPropValue("FINGERPRINT", "google/lynx_beta/lynx:15/BP11.241121.010/12780007:user/release-keys");
+        setPropValue("FINGERPRINT", "google/lynx_beta/lynx:15/BP11.241210.004/12926906:user/release-keys");
         setPropValue("BRAND", "google");
         setPropValue("PRODUCT", "lynx_beta");
         setPropValue("DEVICE", "lynx");
         setPropValue("VERSION.RELEASE", "15");
-        setPropValue("ID", "BP11.241121.010");
-        setPropValue("VERSION.INCREMENTAL", "12780007");
+        setPropValue("ID", "BP11.241210.004");
+        setPropValue("VERSION.INCREMENTAL", "12926906");
         setPropValue("TYPE", "user");
         setPropValue("TAGS", "release-keys");
-        setPropValue("VERSION.SECURITY_PATCH", "2024-12-05");
+        setPropValue("VERSION.SECURITY_PATCH", "2025-01-05");
         setPropValue("VERSION.DEVICE_INITIAL_SDK_INT", "21");
     }
 
