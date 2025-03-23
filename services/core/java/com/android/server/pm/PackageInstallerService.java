@@ -910,6 +910,9 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
                     == PackageManager.PERMISSION_DENIED) {
                 throw new SecurityException("Not allowed to perform APEX updates");
             }
+            if (Build.IS_USER) {
+                throw new SecurityException("Not allowed to perform APEX updates on user builds");
+            }
         } else if (params.isStaged) {
             mContext.enforceCallingOrSelfPermission(Manifest.permission.INSTALL_PACKAGES, TAG);
         }

@@ -4400,6 +4400,11 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
     @GuardedBy("mLock")
     private void validateApexInstallLocked()
             throws PackageManagerException {
+        if (Build.IS_USER) {
+            throw new PackageManagerException(PackageManager.INSTALL_FAILED_SESSION_INVALID,
+                    "APEX installation is not allowed on user builds");
+        }
+
         final List<File> addedFiles = getAddedApksLocked();
         if (addedFiles.isEmpty()) {
             throw new PackageManagerException(INSTALL_FAILED_INVALID_APK,
