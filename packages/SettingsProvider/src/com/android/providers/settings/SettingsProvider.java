@@ -75,6 +75,7 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.ext.KnownSystemPackages;
 import android.hardware.camera2.utils.ArrayUtils;
 import android.media.AudioManager;
 import android.media.IRingtonePlayer;
@@ -346,27 +347,33 @@ public class SettingsProvider extends ContentProvider {
     private static final Set<String> sReadableSecureSettings = new ArraySet<>();
     private static final ArrayMap<String, Integer> sReadableSecureSettingsWithMaxTargetSdk =
             new ArrayMap<>();
+    private static final ArrayMap<String, Settings.ProtectedSetting> sProtectedSecureSettings =
+            new ArrayMap<>();
     static {
         Settings.Secure.getPublicSettings(sAllSecureSettings, sReadableSecureSettings,
-                sReadableSecureSettingsWithMaxTargetSdk);
+                sReadableSecureSettingsWithMaxTargetSdk, sProtectedSecureSettings);
     }
 
     private static final Set<String> sAllSystemSettings = new ArraySet<>();
     private static final Set<String> sReadableSystemSettings = new ArraySet<>();
     private static final ArrayMap<String, Integer> sReadableSystemSettingsWithMaxTargetSdk =
             new ArrayMap<>();
+    private static final ArrayMap<String, Settings.ProtectedSetting> sProtectedSystemSettings =
+            new ArrayMap<>();
     static {
         Settings.System.getPublicSettings(sAllSystemSettings, sReadableSystemSettings,
-                sReadableSystemSettingsWithMaxTargetSdk);
+                sReadableSystemSettingsWithMaxTargetSdk, sProtectedSystemSettings);
     }
 
     private static final Set<String> sAllGlobalSettings = new ArraySet<>();
     private static final Set<String> sReadableGlobalSettings = new ArraySet<>();
     private static final ArrayMap<String, Integer> sReadableGlobalSettingsWithMaxTargetSdk =
             new ArrayMap<>();
+    private static final ArrayMap<String, Settings.ProtectedSetting> sProtectedGlobalSettings =
+            new ArrayMap<>();
     static {
         Settings.Global.getPublicSettings(sAllGlobalSettings, sReadableGlobalSettings,
-                sReadableGlobalSettingsWithMaxTargetSdk);
+                sReadableGlobalSettingsWithMaxTargetSdk, sProtectedGlobalSettings);
     }
 
     private final Object mLock = new Object();
@@ -1556,6 +1563,8 @@ public class SettingsProvider extends ContentProvider {
         // Make sure the caller can change the settings - treated as secure.
         enforceHasAtLeastOnePermission(Manifest.permission.WRITE_SECURE_SETTINGS);
 
+        checkProtectedSettingAccess(/* isRead */ false, name, sProtectedGlobalSettings);
+
         // Resolve the userId on whose behalf the call is made.
         final int callingUserId = resolveCallingUserIdEnforcingPermissions(requestingUserId);
 
@@ -1841,6 +1850,8 @@ public class SettingsProvider extends ContentProvider {
         // Make sure the caller can change the settings.
         enforceHasAtLeastOnePermission(Manifest.permission.WRITE_SECURE_SETTINGS);
 
+        checkProtectedSettingAccess(/* isRead */ false, name, sProtectedSecureSettings);
+
         // Resolve the userId on whose behalf the call is made.
         final int callingUserId = resolveCallingUserIdEnforcingPermissions(requestingUserId);
 
@@ -2004,6 +2015,8 @@ public class SettingsProvider extends ContentProvider {
                 return false;
             }
         }
+
+        checkProtectedSettingAccess(/* isRead */ false, name, sProtectedSystemSettings);
 
         // Resolve the userId on whose behalf the call is made.
         final int callingUserId = resolveCallingUserIdEnforcingPermissions(runAsUserId);
@@ -2294,6 +2307,8 @@ public class SettingsProvider extends ContentProvider {
     }
 
     private void enforceSettingReadable(String settingName, int settingsType, int userId) {
+        checkProtectedSettingAccess(/* isRead */ true, settingName, getProtectedSettings(settingsType));
+
         if (UserHandle.getAppId(Binder.getCallingUid()) < Process.FIRST_APPLICATION_UID) {
             return;
         }
@@ -2334,6 +2349,61 @@ public class SettingsProvider extends ContentProvider {
             Slog.w(LOG_TAG, "Instant App " + ai.packageName
                     + " trying to access unexposed setting, this will be an error in the future.");
         }
+    }
+
+    private void checkProtectedSettingAccess(boolean isRead, String name, ArrayMap<String, Settings.ProtectedSetting> map) {
+        Settings.ProtectedSetting protSetting = map.get(name);
+        if (protSetting == null) {
+            return;
+        }
+        if (isRead && !protSetting.restrictReads()) {
+            return;
+        }
+        if (Binder.getCallingPid() == Process.myPid()) {
+            // SettingsProvider runs in system_server process
+            return;
+        }
+        String callingPackage = getCallingPackage();
+        if (callingPackage == null) {
+            if (Build.IS_DEBUGGABLE) {
+                if (Binder.getCallingUid() == ROOT_UID) {
+                    Slog.d(LOG_TAG, "allowed root to access protected setting " + protSetting.key());
+                    return;
+                }
+            }
+            throw new SecurityException("callingPackage is null when accessing protected setting " + protSetting.key());
+        }
+        var ksp = KnownSystemPackages.get(requireContext());
+
+        for (int id : protSetting.readWritableBy()) {
+            if (callingPackage.equals(ksp.getById(id))) {
+                return;
+            }
+        }
+        if (isRead) {
+            for (int id : protSetting.readableBy()) {
+                if (callingPackage.equals(ksp.getById(id))) {
+                    return;
+                }
+            }
+        }
+
+        if (ksp.shell.equals(callingPackage)) {
+            // ADB is used for testing
+            Slog.d(LOG_TAG, "allowed shell to access protected setting " + protSetting.key());
+            return;
+        }
+
+        throw new SecurityException(callingPackage + " is not allowed to access protected setting " + protSetting.key());
+    }
+
+    private static ArrayMap<String, Settings.ProtectedSetting> getProtectedSettings(int settingsType) {
+        return switch (settingsType) {
+            case SETTINGS_TYPE_GLOBAL -> sProtectedGlobalSettings;
+            case SETTINGS_TYPE_SECURE -> sProtectedSecureSettings;
+            case SETTINGS_TYPE_SYSTEM -> sProtectedSystemSettings;
+            default -> throw new IllegalArgumentException();
+        };
     }
 
     /**
@@ -3347,6 +3417,33 @@ public class SettingsProvider extends ContentProvider {
             // Upgrade the settings to the latest version.
             UpgradeController upgrader = new UpgradeController(userId);
             upgrader.upgradeIfNeededLocked();
+
+            // Init immutable settings
+            int[] typesToInit = userId == UserHandle.USER_SYSTEM ?
+                    new int[] { SETTINGS_TYPE_GLOBAL, SETTINGS_TYPE_SECURE, SETTINGS_TYPE_SYSTEM, } :
+                    new int[] { SETTINGS_TYPE_SECURE, };
+
+            for (int type : typesToInit) {
+                SettingsState settingsState = SettingsRegistry.this.getSettingsLocked(type, userId);
+                ArrayMap<String, Settings.ProtectedSetting> protectedSettings = getProtectedSettings(type);
+                String typeStr = SettingsState.settingTypeToString(type);
+                if (type == SETTINGS_TYPE_SECURE) {
+                    typeStr += " (user " + userId + ")";
+                }
+                for (int i = 0; i < protectedSettings.size(); ++i) {
+                    Settings.ProtectedSetting setting = protectedSettings.valueAt(i);
+                    String immutableValue = setting.immutableValue();
+                    if (immutableValue == null) {
+                        continue;
+                    }
+                    settingsState.insertSettingLocked(setting.key(), immutableValue,
+                            /* tag */ null, /* makeDefault */ false,
+                            SettingsState.SYSTEM_PACKAGE_NAME);
+
+                    Slog.d(LOG_TAG, typeStr + ": initialized " + setting.key()
+                            + " with immutable value " + immutableValue);
+                }
+            }
             return true;
         }
 
