@@ -3,6 +3,7 @@ package com.android.internal.gmscompat.flags;
 import android.app.compat.gms.GmsCompat;
 import android.content.Intent;
 import android.ext.PackageId;
+import android.provider.Settings;
 import android.util.ArrayMap;
 import android.util.Log;
 
@@ -18,6 +19,13 @@ public class PhenotypeFlags {
 
     public static void applyOverrides(GmsCompatConfig config) {
         ArrayMap<String, ArrayMap<String, GmsFlag>> packageFlagMap = config.flags;
+
+        var deleteIntent = new Intent("com.google.android.gms.phenotype.FLAG_OVERRIDE");
+        deleteIntent.setPackage(PackageId.GMS_CORE_NAME);
+        deleteIntent.putExtra("action", "delete");
+        Log.d(TAG, "sending delete overrides broadcast");
+        GmsCompat.appContext().sendBroadcast(deleteIntent);
+
         for (int packageIdx = 0; packageIdx < packageFlagMap.size(); ++packageIdx) {
             Collection<GmsFlag> configFlags = packageFlagMap.valueAt(packageIdx).values();
             var overridenFlags = new ArrayList<GmsFlag>(configFlags.size());
