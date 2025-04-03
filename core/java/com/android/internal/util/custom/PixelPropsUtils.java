@@ -298,7 +298,7 @@ public final class PixelPropsUtils {
                 if (SystemProperties.getBoolean(SPOOF_PIXEL_GPHOTOS, true)) {
                     propsToChange.putAll(propsToChangePixelXL);
                 }
-            } else if (packageName.equals("com.netflix.mediaclient") && 
+            } else if (packageName.equals("com.netflix.mediaclient") &&
                         !SystemProperties.getBoolean(SPOOF_PIXEL_NETFLIX, false)) {
                     if (DEBUG) Log.d(TAG, "Netflix spoofing disabled by system prop");
                     return;
@@ -448,17 +448,17 @@ public final class PixelPropsUtils {
             return;
         // Alter build parameters to avoid hardware attestation enforcement
         setPropValue("MANUFACTURER", "Google");
-        setPropValue("MODEL", "Pixel 7a");
-        setPropValue("FINGERPRINT", "google/lynx_beta/lynx:15/BP11.241210.004/12926906:user/release-keys");
+        setPropValue("MODEL", "Pixel 9");
+        setPropValue("FINGERPRINT", "google/tokay_beta/tokay:16/BP22.250221.015/13278879:user/release-keys");
         setPropValue("BRAND", "google");
-        setPropValue("PRODUCT", "lynx_beta");
-        setPropValue("DEVICE", "lynx");
-        setPropValue("VERSION.RELEASE", "15");
-        setPropValue("ID", "BP11.241210.004");
-        setPropValue("VERSION.INCREMENTAL", "12926906");
+        setPropValue("PRODUCT", "tokay_beta");
+        setPropValue("DEVICE", "tokay");
+        setPropValue("VERSION.RELEASE", "16");
+        setPropValue("ID", "BP22.250221.015");
+        setPropValue("VERSION.INCREMENTAL", "13278879");
         setPropValue("TYPE", "user");
         setPropValue("TAGS", "release-keys");
-        setPropValue("VERSION.SECURITY_PATCH", "2025-01-05");
+        setPropValue("VERSION.SECURITY_PATCH", "2025-03-05");
         setPropValue("VERSION.DEVICE_INITIAL_SDK_INT", "21");
     }
 
