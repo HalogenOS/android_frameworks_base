@@ -811,6 +811,24 @@ public class StatusBarManager {
     }
 
     /**
+     * Restarts the System UI process. SystemUI is persistent, so the activity manager will
+     * relaunch it automatically after it is killed.
+     *
+     * @hide
+     */
+    @RequiresPermission(android.Manifest.permission.STATUS_BAR_SERVICE)
+    public void restartSystemUI() {
+        try {
+            final IStatusBarService svc = getService();
+            if (svc != null) {
+                svc.restartSystemUI();
+            }
+        } catch (RemoteException ex) {
+            throw ex.rethrowFromSystemServer();
+        }
+    }
+
+    /**
      * Sends system keys to the status bar.
      *
      * @hide

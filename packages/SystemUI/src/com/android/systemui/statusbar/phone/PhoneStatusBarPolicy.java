@@ -33,6 +33,7 @@ import android.content.res.Resources;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserManager;
 import android.provider.Settings.Global;
@@ -672,6 +673,11 @@ public class PhoneStatusBarPolicy
         } else {
             mIconController.setIconVisibility(mSlotRotate, false);
         }
+    }
+
+    @Override
+    public void restartSystemUI() {
+        Process.killProcess(Process.myPid());
     }
 
     private void updateHeadsetPlug(Intent intent) {
