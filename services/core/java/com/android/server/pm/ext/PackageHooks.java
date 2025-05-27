@@ -89,4 +89,30 @@ public class PackageHooks {
     public boolean shouldAllowFgsWhileInUsePermission(PackageManagerInternal pm, int userId) {
         return false;
     }
+
+    public static boolean shouldHideContentProvider(
+            @Nullable PackageStateInternal psi,
+            @Nullable android.content.pm.ProviderInfo providerInfo) {
+        if (providerInfo == null) {
+            return false;
+        }
+
+        if (psi == null) {
+            return false;
+        }
+
+        AndroidPackage pkg = psi.getPkg();
+        if (pkg == null) {
+            return false;
+        }
+
+        PackageExt pkgExt = PackageExt.get(pkg);
+        final int flagBitToCheck = android.ext.AppInfoExtFlag.HAS_PLAY_STORE_SOURCE_STAMP_ON_APK_CERTS;
+        final String providerToHide = "com.pairip.licensecheck.LicenseContentProvider";
+        if (pkgExt.hasFlag(flagBitToCheck) && providerToHide.equals(providerInfo.name)) {
+            return true;
+        }
+
+        return false;
+    }
 }
