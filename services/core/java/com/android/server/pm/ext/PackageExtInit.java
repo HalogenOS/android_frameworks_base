@@ -62,6 +62,19 @@ public class PackageExtInit implements ParsingPackageUtils.PackageExtInitIface {
             }
         }
 
+        var apkSplits = pkg.getSplits();
+        int apkSplitsSize = apkSplits.size();
+        boolean allApksFromPlayStore = true;
+        for (int i = 0; i < apkSplitsSize; ++i) {
+            if (!PlayStoreUtils.isSourceStampPlaySigned(apkSplits.get(i).getPath())) {
+                allApksFromPlayStore = false;
+                break;
+            }
+        }
+        if (allApksFromPlayStore) {
+            flags |= (1 << AppInfoExtFlag.HAS_PLAY_STORE_SOURCE_STAMP_ON_APK_CERTS);
+        }
+
         return flags;
     }
 
