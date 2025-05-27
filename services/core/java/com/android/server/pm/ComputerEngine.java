@@ -4796,6 +4796,9 @@ public class ComputerEngine implements Computer {
         }
         final PackageStateInternal packageState = getPackageStateInternal(
                 providerInfo.packageName);
+        if (com.android.server.pm.ext.PackageHooks.shouldHideContentProvider(packageState, providerInfo)) {
+            return null;
+        }
         if (!PackageStateUtils.isEnabledAndMatches(packageState, providerInfo, flags, userId)) {
             return null;
         }
@@ -4884,6 +4887,9 @@ public class ComputerEngine implements Computer {
                 continue;
             }
             final PackageStateInternal ps = mSettings.getPackage(providerInfo.packageName);
+            if (com.android.server.pm.ext.PackageHooks.shouldHideContentProvider(ps, providerInfo)) {
+                continue;
+            }
             final ComponentName component =
                     new ComponentName(providerInfo.packageName, providerInfo.name);
             if (shouldFilterApplication(
