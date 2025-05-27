@@ -32,6 +32,10 @@ public class PackageExt implements PackageExtIface {
         this.hooks = PackageHooksRegistry.getHooks(packageId);
     }
 
+    public boolean hasFlag(@android.ext.AppInfoExtFlag.Enum int flag) {
+        return (this.flags & (1 << flag)) != 0;
+    }
+
     public int getPackageId() {
         return packageId;
     }
