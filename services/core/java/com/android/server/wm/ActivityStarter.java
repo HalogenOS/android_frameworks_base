@@ -914,7 +914,9 @@ class ActivityStarter {
                 }
 
                 if (res == START_ABORTED) {
-                    if (android.app.compat.gms.GmsCompat.isEnabledFor(mRequest.callingPackage, mRequest.userId)) {
+                    String callingPackage = mRequest.callingPackage;
+                    if (callingPackage != null &&
+                            android.app.compat.gms.GmsCompat.isEnabledFor(callingPackage, mRequest.userId)) {
                         return START_ABORTED;
                     }
                 }
