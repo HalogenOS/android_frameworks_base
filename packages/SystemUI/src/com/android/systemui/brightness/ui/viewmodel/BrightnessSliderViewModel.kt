@@ -130,7 +130,7 @@ constructor(
     }
 
     companion object {
-        val initialValue = GammaBrightness(-1)
+        val initialValue = GammaBrightness(0)
 
         private val icons =
             BrightnessIcons(
