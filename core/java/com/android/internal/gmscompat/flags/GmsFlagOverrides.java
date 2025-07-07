@@ -4,15 +4,27 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.ext.PackageId;
 import android.util.Log;
 
 import com.android.internal.gmscompat.GmsCompatConfig;
 import com.android.internal.gmscompat.GmsHooks;
 
+import java.util.Arrays;
+
 public class GmsFlagOverrides {
     private static final String TAG = "GmsFlagOverrides";
 
     public static void init(Context ctx) {
+        Arrays.asListHook = (Object[] arr) -> {
+            if (arr.length == 2 && "com.google.android.apps.internal.mobdog".equals(arr[0]) && "com.google.android.apps.mobileutilities".equals(arr[1])) {
+                String[] replacement = new String[] { (String) arr[0], (String) arr[1], PackageId.GMS_CORE_NAME, };
+                Log.d(TAG, "Arrays.asListHook: replaced " + Arrays.toString(arr) + " with " + Arrays.toString(replacement));
+                return replacement;
+            }
+            return arr;
+        };
+
         var receiver = new BroadcastReceiver() {
             private boolean receivedPhenotypeCommittedBroadcast;
 
