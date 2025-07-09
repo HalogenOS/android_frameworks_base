@@ -1102,7 +1102,7 @@ public class WallpaperManager {
      * Obtain a drawable for the built-in static system wallpaper.
      */
     public Drawable getBuiltInDrawable() {
-        return getBuiltInDrawable(0, 0, false, 0, 0, FLAG_SYSTEM);
+        return getBuiltInDrawable(0, 0, false, 0.5f, 0.5f, FLAG_SYSTEM);
     }
 
     /**
@@ -1114,7 +1114,7 @@ public class WallpaperManager {
      *     if no built-in default image for that wallpaper type exists.
      */
     public Drawable getBuiltInDrawable(@SetWallpaperFlags int which) {
-        return getBuiltInDrawable(0, 0, false, 0, 0, which);
+        return getBuiltInDrawable(0, 0, false, 0.5f, 0.5f, which);
     }
 
     /**
