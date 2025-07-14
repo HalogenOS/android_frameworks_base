@@ -5323,6 +5323,9 @@
     <!-- Name of the font family to use in the default lockscreen clock -->
     <string name="config_clockFontFamily" translatable="false"></string>
 
+    <!-- Allows setting custom fontFeatureSettings on clock text. -->
+    <string name="config_clockFontFeatureSettings" translatable="false">pnum</string>
+
     <!-- Size of icon shown beside a preference locked by admin -->
     <dimen name="config_restrictedIconSize">@dimen/restricted_icon_size_material</dimen>
 

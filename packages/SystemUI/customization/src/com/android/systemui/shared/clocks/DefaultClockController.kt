@@ -140,6 +140,13 @@ class DefaultClockController(
         init {
             view.setColors(DOZE_COLOR, currentColor)
             messageBuffer?.let { view.messageBuffer = it }
+
+            val clockFontFeatureSettings = resources.getString(
+                com.android.internal.R.string.config_clockFontFeatureSettings
+            )
+            if (clockFontFeatureSettings.isNotEmpty()) {
+                view.fontFeatureSettings = clockFontFeatureSettings
+            }
         }
 
         override val events =

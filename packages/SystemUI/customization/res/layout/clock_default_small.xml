@@ -24,10 +24,10 @@
     android:gravity="start"
     android:textSize="@dimen/small_clock_text_size"
     android:fontFamily="@*android:string/config_clockFontFamily"
+    android:fontFeatureSettings="@*android:string/config_clockFontFeatureSettings"
     android:elegantTextHeight="false"
     android:ellipsize="none"
     android:singleLine="true"
-    android:fontFeatureSettings="pnum"
     chargeAnimationDelay="350"
     dozeWeight="200"
     lockScreenWeight="400" />
