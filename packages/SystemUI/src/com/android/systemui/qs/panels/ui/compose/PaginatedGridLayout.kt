@@ -24,12 +24,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,8 +42,6 @@ import com.android.compose.animation.scene.ContentScope
 import com.android.compose.modifiers.padding
 import com.android.systemui.common.ui.compose.PagerDots
 import com.android.systemui.compose.modifiers.sysuiResTag
-import com.android.systemui.development.ui.compose.BuildNumber
-import com.android.systemui.development.ui.viewmodel.BuildNumberViewModel
 import com.android.systemui.lifecycle.rememberViewModel
 import com.android.systemui.qs.panels.dagger.PaginatedBaseLayoutType
 import com.android.systemui.qs.panels.ui.compose.Dimensions.FooterHeight
@@ -137,7 +133,6 @@ constructor(
                 with(delegateGridLayout) { TileGrid(tiles = page, modifier = Modifier, listening) }
             }
             FooterBar(
-                buildNumberViewModelFactory = viewModel.buildNumberViewModelFactory,
                 pagerState = pagerState,
                 editButtonViewModelFactory = viewModel.editModeButtonViewModelFactory,
             )
@@ -152,7 +147,6 @@ private object Dimensions {
 
 @Composable
 private fun FooterBar(
-    buildNumberViewModelFactory: BuildNumberViewModel.Factory,
     pagerState: PagerState,
     editButtonViewModelFactory: EditModeButtonViewModel.Factory,
 ) {
@@ -174,25 +168,15 @@ private fun FooterBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = spacedBy(8.dp),
     ) {
-        Row(Modifier.weight(1f)) {
-            BuildNumber(
-                viewModelFactory = buildNumberViewModelFactory,
-                textColor = MaterialTheme.colorScheme.onSurface,
-                modifier =
-                    Modifier.borderOnFocus(
-                            color = MaterialTheme.colorScheme.secondary,
-                            cornerSize = CornerSize(1.dp),
-                        )
-                        .wrapContentSize(),
-            )
-            Spacer(modifier = Modifier.weight(1f))
-        }
+        Spacer(Modifier.weight(1f))
+    
         PagerDots(
             pagerState = pagerState,
             activeColor = MaterialTheme.colorScheme.primary,
             nonActiveColor = MaterialTheme.colorScheme.surfaceVariant,
             modifier = Modifier.wrapContentWidth(),
         )
+ 
         Row(Modifier.weight(1f)) {
             Spacer(modifier = Modifier.weight(1f))
             EditModeButton(viewModel = editButtonViewModel)

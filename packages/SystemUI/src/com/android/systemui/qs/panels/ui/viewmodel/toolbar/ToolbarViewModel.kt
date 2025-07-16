@@ -24,7 +24,6 @@ import androidx.compose.runtime.setValue
 import com.android.systemui.animation.Expandable
 import com.android.systemui.classifier.domain.interactor.FalsingInteractor
 import com.android.systemui.classifier.domain.interactor.runIfNotFalseTap
-import com.android.systemui.development.ui.viewmodel.BuildNumberViewModel
 import com.android.systemui.globalactions.GlobalActionsDialogLite
 import com.android.systemui.lifecycle.ExclusiveActivatable
 import com.android.systemui.lifecycle.Hydrator
@@ -47,7 +46,6 @@ class ToolbarViewModel
 @AssistedInject
 constructor(
     editModeButtonViewModelFactory: EditModeButtonViewModel.Factory,
-    val buildNumberViewModelFactory: BuildNumberViewModel.Factory,
     private val footerActionsInteractor: FooterActionsInteractor,
     private val globalActionsDialogLiteProvider: Provider<GlobalActionsDialogLite>,
     private val falsingInteractor: FalsingInteractor,
