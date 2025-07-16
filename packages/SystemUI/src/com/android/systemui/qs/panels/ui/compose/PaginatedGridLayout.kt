@@ -43,8 +43,6 @@ import com.android.compose.animation.scene.ContentScope
 import com.android.compose.modifiers.padding
 import com.android.systemui.common.ui.compose.PagerDots
 import com.android.systemui.compose.modifiers.sysuiResTag
-import com.android.systemui.development.ui.compose.BuildNumber
-import com.android.systemui.development.ui.viewmodel.BuildNumberViewModel
 import com.android.systemui.lifecycle.rememberViewModel
 import com.android.systemui.qs.panels.dagger.PaginatedBaseLayoutType
 import com.android.systemui.qs.panels.ui.compose.Dimensions.FooterHeight
@@ -149,7 +147,6 @@ constructor(
                 }
             }
             FooterBar(
-                buildNumberViewModelFactory = viewModel.buildNumberViewModelFactory,
                 pagerState = pagerState,
                 showArrowsInPager = viewModel.showArrowsInPagerDots,
                 editButtonViewModelFactory = viewModel.editModeButtonViewModelFactory,
@@ -166,7 +163,6 @@ private object Dimensions {
 
 @Composable
 private fun FooterBar(
-    buildNumberViewModelFactory: BuildNumberViewModel.Factory,
     pagerState: PagerState,
     showArrowsInPager: Boolean,
     editButtonViewModelFactory: EditModeButtonViewModel.Factory,
@@ -181,19 +177,13 @@ private fun FooterBar(
     // expected to be inside a scrollable container, this should not be an issue.
     // Also, we construct the layout this way to do the following:
     // * PagerDots is centered in the row, taking as much space as it needs.
-    // * On the start side, we place the BuildNumber, taking as much space as it needs, but
-    //   constrained by the available space left over after PagerDots.
-    // * On the end side, we place the edit mode button, with the same constraints as for
-    //   BuildNumber (but it will usually fit, as it's just a square button).
+    // * On the end side, we place the edit mode button.
     Row(
         modifier = Modifier.requiredHeight(FooterHeight).fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = spacedBy(8.dp),
     ) {
-        Row(Modifier.weight(1f)) {
-            BuildNumber(viewModelFactory = buildNumberViewModelFactory)
-            Spacer(modifier = Modifier.weight(1f))
-        }
+        Spacer(Modifier.weight(1f))
         PagerDots(
             pagerState = pagerState,
             activeColor = MaterialTheme.colorScheme.onSurfaceVariant,
