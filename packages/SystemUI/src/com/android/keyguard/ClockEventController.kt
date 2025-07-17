@@ -488,9 +488,11 @@ constructor(
         zenModeController.addCallback(zenModeCallback)
         if (SceneContainerFlag.isEnabled) {
             handleDoze(
-                when (AOD) {
-                    keyguardTransitionInteractor.getCurrentState() -> 1f
-                    keyguardTransitionInteractor.getStartedState() -> 1f
+                when {
+                    keyguardTransitionInteractor.getCurrentState() == AOD -> 1f
+                    keyguardTransitionInteractor.getStartedState() == AOD -> 1f
+                    keyguardTransitionInteractor.getCurrentState() == DOZING -> 1f
+                    keyguardTransitionInteractor.getStartedState() == DOZING -> 1f
                     else -> 0f
                 }
             )
@@ -614,6 +616,10 @@ constructor(
                         it.copy(value = 1f - it.value)
                     },
                     keyguardTransitionInteractor.transition(Edge.create(LOCKSCREEN, AOD)),
+                    keyguardTransitionInteractor.transition(Edge.create(DOZING, LOCKSCREEN)).map {
+                        it.copy(value = 1f - it.value)
+                    },
+                    keyguardTransitionInteractor.transition(Edge.create(LOCKSCREEN, DOZING)),
                 )
                 .filter { it.transitionState != TransitionState.FINISHED }
                 .collect { handleDoze(it.value) }
