@@ -9,6 +9,8 @@
 package com.android.server.clover;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -16,7 +18,6 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.android.server.SystemService;
-import com.android.internal.util.clover.CloverUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -65,7 +66,7 @@ public final class AttestationService extends SystemService {
 
     @Override
     public void onBootPhase(int phase) {
-        if (CloverUtils.isPackageInstalled(mContext, "com.google.android.gms")
+        if (isPackageInstalled(mContext, "com.google.android.gms", true)
                 && phase == PHASE_BOOT_COMPLETED) {
             Log.i(TAG, "Scheduling periodic fetch every " + INTERVAL + " hours");
             mScheduler.scheduleAtFixedRate(
@@ -162,6 +163,20 @@ public final class AttestationService extends SystemService {
                 Log.w(TAG, "Connectivity lost");
             }
         });
+    }
+
+    public static boolean isPackageInstalled(Context context, String packageName, boolean ignoreState) {
+        if (packageName != null) {
+            try {
+                PackageInfo pi = context.getPackageManager().getPackageInfo(packageName, 0);
+                if (!pi.applicationInfo.enabled && !ignoreState) {
+                    return false;
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private class FetchGmsCertifiedProps implements Runnable {
