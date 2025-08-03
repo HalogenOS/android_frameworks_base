@@ -244,8 +244,7 @@ class ZygoteConnection {
                 }
 
                 if (parsedArgs.mInvokeWith != null || ExtSettings.EXEC_SPAWNING.get() || parsedArgs.mStartChildZygote
-                        || !multipleOK || peer.getUid() != Process.SYSTEM_UID
-                        || (parsedArgs.mRuntimeFlags & Zygote.RUNTIME_FLAGS_DEPENDENT_ON_EXEC_SPAWNING) != 0) {
+                        || !multipleOK || peer.getUid() != Process.SYSTEM_UID) {
                     // Continue using old code for now. TODO: Handle these cases in the other path.
                     pid = Zygote.forkAndSpecialize(parsedArgs.mUid, parsedArgs.mGid,
                             parsedArgs.mGids, parsedArgs.mRuntimeFlags, rlimits,
@@ -527,16 +526,10 @@ class ZygoteConnection {
             throw new IllegalStateException("WrapperInit.execApplication unexpectedly returned");
         } else {
             if (!isZygote) {
-                final int runtimeFlags = parsedArgs.mRuntimeFlags;
-                boolean useExecInit =
-                        ((runtimeFlags & Zygote.RUNTIME_FLAGS_DEPENDENT_ON_EXEC_SPAWNING) != 0
-                            || ExtSettings.EXEC_SPAWNING.get())
-                        &&
-                        (runtimeFlags & ApplicationInfo.FLAG_DEBUGGABLE) == 0;
-
-                if (useExecInit) {
+                if (ExtSettings.EXEC_SPAWNING.get()  &&
+                        (parsedArgs.mRuntimeFlags & ApplicationInfo.FLAG_DEBUGGABLE) == 0) {
                     ExecInit.execApplication(parsedArgs.mNiceName, parsedArgs.mTargetSdkVersion,
-                            VMRuntime.getCurrentInstructionSet(), runtimeFlags, parsedArgs.mRemainingArgs);
+                            VMRuntime.getCurrentInstructionSet(), parsedArgs.mRuntimeFlags, parsedArgs.mRemainingArgs);
 
                     // Should not get here.
                     throw new IllegalStateException("ExecInit.execApplication unexpectedly returned");
