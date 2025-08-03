@@ -203,27 +203,30 @@ public class PropImitationHooks {
          */
 
         switch (processName) {
-            case PROCESS_GMS_UNSTABLE:
-                dlog("Setting certified props for: " + packageName + " process: " + processName);
-                setCertifiedPropsForGms(context);
-                return;
             case PROCESS_GMS_PERSISTENT:
             case PROCESS_GMS_GAPPS:
             case PROCESS_GMS_GSERVICE:
             case PROCESS_GMS_LEARNING:
             case PROCESS_GMS_SEARCH:
             case PROCESS_GMS_UPDATE:
-                dlog("Spoofing Pixel 5a for: " + packageName + " process: " + processName);
-                setProps(sPixelFiveProps);
+                dlog("Setting certified props for: " + packageName + " process: " + processName);
+                setCertifiedProps();
+                return;
+            case PROCESS_GMS_UNSTABLE:
+                dlog("Setting certified props for: " + packageName + " process: " + processName);
+                setCertifiedPropsForGms(context);
                 return;
         }
 
         switch (packageName) {
+            case PACKAGE_GMS:
+                dlog("Setting certified props for: " + packageName + " process: " + processName);
+                setCertifiedPropsForGms(context);
+                return;
             case PACKAGE_AIWALLPAPERS:
             case PACKAGE_ASI:
             case PACKAGE_BARD:
             case PACKAGE_EMOJIWALLPAPER:
-            case PACKAGE_GMS:
             case PACKAGE_LAUNCHER:
             case PACKAGE_LIVEWALLPAPER:
             case PACKAGE_PIXELCREATIVE:
