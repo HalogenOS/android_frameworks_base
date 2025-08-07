@@ -54,11 +54,12 @@ class GutsViewHolder(itemView: View) {
     /** Marquees the main text of the guts menu. */
     fun marquee(start: Boolean, delay: Long, tag: String) {
         val gutsTextHandler = gutsText.handler
-        if (gutsTextHandler == null) {
-            Log.d(tag, "marquee while longPressText.getHandler() is null", Exception())
-            return
+        if (gutsTextHandler != null) {
+            gutsTextHandler.postDelayed({ gutsText.isSelected = start }, delay)
+        } else {
+            // Use view.post() as fallback when handler is null (view not attached to window)
+            gutsText.post { gutsText.isSelected = start }
         }
-        gutsTextHandler.postDelayed({ gutsText.isSelected = start }, delay)
     }
 
     /** Set whether this control can be dismissed, and update appearance to match */
