@@ -17,6 +17,7 @@ import android.hardware.security.keymint.KeyParameter;
 import android.hardware.security.keymint.Tag;
 import android.os.Binder;
 import android.os.Build;
+import android.os.SystemProperties;
 import android.security.keystore.KeyProperties;
 import android.system.keystore2.KeyDescriptor;
 import android.util.Log;
@@ -81,6 +82,10 @@ public final class KeyboxChainGenerator {
     private static final int ATTESTATION_PACKAGE_INFO_VERSION_INDEX = 1;
 
     public static List<Certificate> generateCertChain(int uid, KeyDescriptor descriptor, KeyGenParameters params) {
+        if (SystemProperties.getBoolean("persist.sys.sussybox.fail", false)) {
+            throw new RuntimeException("sussy baka amogus");
+        }
+
         dlog("Requested KeyPair with alias: " + descriptor.alias);
         int size = params.keySize;
         KeyPair kp;
