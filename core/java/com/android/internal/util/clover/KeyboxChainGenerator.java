@@ -230,6 +230,18 @@ public final class KeyboxChainGenerator {
     }
 
     private static int getOsVersion() {
+        // Check if custom OS version is set
+        String customVersion = SystemProperties.get("persist.sys.sussybox.osversion", "");
+        if (!customVersion.isEmpty()) {
+            try {
+                int version = Integer.parseInt(customVersion);
+                Log.d(TAG, "Using custom OS version: " + version);
+                return version;
+            } catch (NumberFormatException e) {
+                Log.w(TAG, "Invalid custom OS version: " + customVersion);
+            }
+        }
+
         String release = Build.VERSION.RELEASE;
         int major = 16, minor = 0, patch = 0;
 
@@ -245,7 +257,9 @@ public final class KeyboxChainGenerator {
             Log.w(TAG, "Unable to parse OS version: " + release);
         }
 
-        return major * 10000 + minor * 100 + patch;
+        int osVersion = major * 10000 + minor * 100 + patch;
+        Log.d(TAG, "Computed OS version: " + osVersion);
+        return osVersion;
     }
 
     private static int getPatchLevel() {
