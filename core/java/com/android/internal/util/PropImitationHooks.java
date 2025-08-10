@@ -342,9 +342,15 @@ public class PropImitationHooks {
             }
             setPropValue(fieldAndProp[0], fieldAndProp[1]);
         }
-        setSystemProperty(PROP_SECURITY_PATCH, Build.VERSION.SECURITY_PATCH);
-        setSystemProperty(PROP_FIRST_API_LEVEL,
-                Integer.toString(Build.VERSION.DEVICE_INITIAL_SDK_INT));
+        try {
+            setSystemProperty(PROP_SECURITY_PATCH, Build.VERSION.SECURITY_PATCH);
+            setSystemProperty(PROP_FIRST_API_LEVEL,
+                    Integer.toString(Build.VERSION.DEVICE_INITIAL_SDK_INT));
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to set certified platform props, defaulting to other values", e);
+            setSystemProperty(PROP_SECURITY_PATCH, "2025-06-05");
+            setSystemProperty(PROP_FIRST_API_LEVEL, "36");
+        }
     }
 
     private static String readFromFile(File file) {
