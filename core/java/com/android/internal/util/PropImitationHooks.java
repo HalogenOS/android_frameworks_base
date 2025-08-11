@@ -167,7 +167,7 @@ public class PropImitationHooks {
     private static volatile String sNetflixModel;
 
     private static volatile String sProcessName;
-    private static volatile boolean sIsGms, sIsFinsky, sIsPhotos;
+    private static volatile boolean sIsPhotos;
 
     public static void setProps(Context context) {
         final String packageName = context.getPackageName();
@@ -191,8 +191,6 @@ public class PropImitationHooks {
         sNetflixModel = res.getString(R.string.config_netflixSpoofModel);
 
         sProcessName = processName;
-        sIsGms = packageName.equals(PACKAGE_GMS) && processName.equals(PROCESS_GMS_UNSTABLE);
-        sIsFinsky = packageName.equals(PACKAGE_FINSKY);
         sIsPhotos = packageName.equals(PACKAGE_GPHOTOS);
 
         /* Set certified properties for GMSCore
