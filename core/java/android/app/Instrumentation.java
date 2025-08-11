@@ -1357,7 +1357,11 @@ public class Instrumentation {
                     .instantiateApplication(cl, className);
         }
         app.attach(context);
-        PropImitationHooks.setProps(context);
+        try {
+            PropImitationHooks.setProps(context);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to play the imitation game, proceeding without", e);
+        }
         return app;
     }
     
@@ -1375,7 +1379,11 @@ public class Instrumentation {
             ClassNotFoundException {
         Application app = (Application)clazz.newInstance();
         app.attach(context);
-        PropImitationHooks.setProps(context);
+        try {
+            PropImitationHooks.setProps(context);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to play the imitation game, proceeding without", e);
+        }
         return app;
     }
 
