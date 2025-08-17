@@ -1385,7 +1385,14 @@ public class Instrumentation {
     static public Application newApplication(Class<?> clazz, Context context)
             throws InstantiationException, IllegalAccessException, 
             ClassNotFoundException {
-        Application app = (Application)clazz.newInstance();
+        GmsCompat.maybeEnable(context);
+        final Application app;
+        if (GmsCompat.isInGmsCompatProcess()) {
+            // GmsCompat process should never run app's code
+            app = new Application();
+        } else {
+            app = (Application)clazz.newInstance();
+        }
         app.attach(context);
         return app;
     }
