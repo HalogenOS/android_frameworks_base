@@ -23,7 +23,7 @@
     android:layout_gravity="center"
     android:gravity="center_horizontal"
     android:textSize="@dimen/large_clock_text_size"
-    android:fontFeatureSettings="@*android:string/config_clockFontFeatureSettings"
+    android:fontFeatureSettings="tnum"
     android:fontFamily="@*android:string/config_clockFontFamily"
     android:typeface="monospace"
     android:elegantTextHeight="false"
