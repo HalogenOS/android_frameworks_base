@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2020 The Android Open Source Project
+ * Copyright (C) 2025 The halogenOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +37,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 
@@ -49,16 +51,17 @@ public class GroupExpansionManagerImpl implements GroupExpansionManager, Dumpabl
 
     private final DumpManager mDumpManager;
     private final GroupMembershipManager mGroupMembershipManager;
-    private final Set<OnGroupExpansionChangeListener> mOnGroupChangeListeners = new HashSet<>();
+    private final Set<OnGroupExpansionChangeListener> mOnGroupChangeListeners =
+            ConcurrentHashMap.newKeySet();
 
     /**
      * Set of summary keys whose groups are expanded.
      * NOTE: This should not be modified without notifying listeners, so prefer using
      * {@code setGroupExpanded} when making changes.
      */
-    private final Set<NotificationEntry> mExpandedGroups = new HashSet<>();
+    private final Set<NotificationEntry> mExpandedGroups = ConcurrentHashMap.newKeySet();
 
-    private final Set<EntryAdapter> mExpandedCollections = new HashSet<>();
+    private final Set<EntryAdapter> mExpandedCollections = ConcurrentHashMap.newKeySet();
 
     @Inject
     public GroupExpansionManagerImpl(DumpManager dumpManager,
@@ -89,7 +92,8 @@ public class GroupExpansionManagerImpl implements GroupExpansionManager, Dumpabl
         }
 
         if (NotificationBundleUi.isEnabled()) {
-            for (EntryAdapter entryAdapter : mExpandedCollections) {
+            // Create a copy to safely iterate while potentially modifying
+            for (EntryAdapter entryAdapter : new ArrayList<>(mExpandedCollections)) {
                 boolean isInPipeline = false;
                 for (NotificationEntry entry : renderingSummaries) {
                     if (entry.getKey().equals(entryAdapter.getKey())) {
