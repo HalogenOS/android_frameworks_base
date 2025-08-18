@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2020 The Android Open Source Project
+ * Copyright (C) 2025 The halogenOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +35,7 @@ import com.android.systemui.statusbar.notification.row.ExpandableNotificationRow
 import com.android.systemui.statusbar.notification.shared.NotificationBundleUi;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,7 +54,8 @@ public class GroupExpansionManagerImpl implements GroupExpansionManager, Dumpabl
 
     private final DumpManager mDumpManager;
     private final GroupMembershipManager mGroupMembershipManager;
-    private final Set<OnGroupExpansionChangeListener> mOnGroupChangeListeners = new HashSet<>();
+    private final Set<OnGroupExpansionChangeListener> mOnGroupChangeListeners =
+            ConcurrentHashMap.newKeySet();
 
     /**
      * Set of summary keys whose groups are expanded.
@@ -88,7 +91,8 @@ public class GroupExpansionManagerImpl implements GroupExpansionManager, Dumpabl
             final Set<PipelineEntry> renderingSummaries = new HashSet<>();
             findRenderingSummariesRecursive(entries, renderingSummaries);
 
-            for (EntryAdapter entryAdapter : mExpandedCollections) {
+            // Create a copy to safely iterate while potentially modifying
+            for (EntryAdapter entryAdapter : new ArrayList<>(mExpandedCollections)) {
                 boolean isInPipeline = false;
                 for (PipelineEntry entry : renderingSummaries) {
                     if (entry.getKey().equals(entryAdapter.getKey())) {
