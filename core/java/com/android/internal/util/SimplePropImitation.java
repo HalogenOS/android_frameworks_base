@@ -1,0 +1,232 @@
+/*
+ * Copyright (C) 2025 The halogenOS Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.android.internal.util;
+
+import android.app.ActivityTaskManager;
+import android.app.Application;
+import android.app.TaskStackListener;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.res.Resources;
+import android.os.Build;
+import android.os.Process;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.android.internal.R;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * SimplePropImitation - Simplified property imitation for GMS
+ * @hide
+ */
+public class SimplePropImitation {
+
+    private static final String TAG = "SimplePropImitation";
+    private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
+
+    private static final String PACKAGE_GMS = "com.google.android.gms";
+    private static final String PROCESS_GMS_UNSTABLE = PACKAGE_GMS + ".unstable";
+
+    // GMS Add Account Activity - we need to skip imitation when this is on top
+    private static final ComponentName GMS_ADD_ACCOUNT_ACTIVITY = ComponentName.unflattenFromString(
+            "com.google.android.gms/.auth.uiflows.minutemaid.MinuteMaidActivity");
+
+    private static volatile List<String> sCertifiedProps = null;
+    private static volatile String sProcessName = "";
+
+    private SimplePropImitation() {
+        // Private constructor to prevent instantiation
+    }
+
+    /**
+     * Set properties for the given context.
+     * This is called from Instrumentation when a new application is created.
+     */
+    public static void setProps(Context context) {
+        final String packageName = context.getPackageName();
+        final String processName = Application.getProcessName();
+
+        if (TextUtils.isEmpty(packageName) || TextUtils.isEmpty(processName)) {
+            Log.e(TAG, "Null package or process name");
+            return;
+        }
+
+        sProcessName = processName;
+
+        // Only handle GMS package
+        if (!PACKAGE_GMS.equals(packageName)) {
+            return;
+        }
+
+        // We handle all GMS processes, but special handling for unstable
+        if (PROCESS_GMS_UNSTABLE.equals(processName)) {
+            dlog("Setting certified props for GMS unstable process");
+            setCertifiedPropsForGms(context);
+        } else if (processName.startsWith(PACKAGE_GMS)) {
+            // Handle other GMS processes (persistent, gapps, gservice, etc.)
+            dlog("Setting certified props for GMS process: " + processName);
+            loadAndSetCertifiedProps(context);
+        }
+    }
+
+    /**
+     * Special handling for GMS processes - checks for Add Account activity
+     */
+    private static void setCertifiedPropsForGms(Context context) {
+        loadCertifiedPropsFromResources(context);
+
+        final boolean wasAddAccountOnTop = isGmsAddAccountActivityOnTop();
+
+        // Register a task stack listener to detect when Add Account activity changes
+        final TaskStackListener taskStackListener = new TaskStackListener() {
+            @Override
+            public void onTaskStackChanged() {
+                final boolean isAddAccountOnTop = isGmsAddAccountActivityOnTop();
+                if (isAddAccountOnTop ^ wasAddAccountOnTop) {
+                    dlog("GmsAddAccountActivityOnTop is:" + isAddAccountOnTop 
+                            + " was:" + wasAddAccountOnTop + ", killing myself!");
+                    // Process will restart automatically later
+                    Process.killProcess(Process.myPid());
+                }
+            }
+        };
+
+        if (!wasAddAccountOnTop) {
+            dlog("Spoofing build for GMS");
+            applyCertifiedProps();
+        } else {
+            dlog("Skip spoofing build for GMS, because GmsAddAccountActivityOnTop");
+        }
+
+        try {
+            ActivityTaskManager.getService().registerTaskStackListener(taskStackListener);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to register task stack listener!", e);
+        }
+    }
+
+    /**
+     * Load and set certified props without checking for Add Account activity
+     */
+    private static void loadAndSetCertifiedProps(Context context) {
+        loadCertifiedPropsFromResources(context);
+        applyCertifiedProps();
+    }
+
+    /**
+     * Load certified properties from resources
+     */
+    private static void loadCertifiedPropsFromResources(Context context) {
+        if (sCertifiedProps != null) {
+            return;
+        }
+
+        final Resources res = context.getResources();
+        if (res == null) {
+            Log.e(TAG, "Null resources");
+            return;
+        }
+
+        try {
+            sCertifiedProps = Arrays.asList(
+                    res.getStringArray(R.array.config_certifiedBuildProperties));
+            dlog("Loaded " + sCertifiedProps.size() + " certified properties from resources");
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to load certified properties from resources", e);
+            sCertifiedProps = Arrays.asList();
+        }
+    }
+
+    /**
+     * Apply the certified properties
+     */
+    private static void applyCertifiedProps() {
+        if (sCertifiedProps == null || sCertifiedProps.isEmpty()) {
+            Log.e(TAG, "No certified props loaded");
+            return;
+        }
+
+        for (String entry : sCertifiedProps) {
+            // Each entry must be of the format FIELD:value
+            final String[] parts = entry.split(":", 2);
+            if (parts.length != 2) {
+                Log.e(TAG, "Invalid entry in certified props: " + entry);
+                continue;
+            }
+            setPropValue(parts[0], parts[1]);
+        }
+    }
+
+    /**
+     * Set a single property value using reflection
+     */
+    private static void setPropValue(String key, String value) {
+        try {
+            dlog("Setting prop " + key + " to " + value);
+
+            Class<?> clazz = Build.class;
+            String fieldName = key;
+
+            if (key.startsWith("VERSION.")) {
+                clazz = Build.VERSION.class;
+                fieldName = key.substring(8);
+            }
+
+            Field field = clazz.getDeclaredField(fieldName);
+            field.setAccessible(true);
+
+            // Cast the value to int if it's an integer field, otherwise string
+            if (field.getType().equals(Integer.TYPE)) {
+                field.set(null, Integer.parseInt(value));
+            } else {
+                field.set(null, value);
+            }
+
+            field.setAccessible(false);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to set prop " + key, e);
+        }
+    }
+
+    /**
+     * Check if GMS Add Account activity is on top
+     */
+    private static boolean isGmsAddAccountActivityOnTop() {
+        try {
+            final ActivityTaskManager.RootTaskInfo focusedTask =
+                    ActivityTaskManager.getService().getFocusedRootTaskInfo();
+            return focusedTask != null && focusedTask.topActivity != null
+                    && GMS_ADD_ACCOUNT_ACTIVITY.equals(focusedTask.topActivity);
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to get top activity!", e);
+        }
+        return false;
+    }
+
+    /**
+     * Debug logging
+     */
+    private static void dlog(String msg) {
+        if (DEBUG) {
+            Log.d(TAG, "[" + sProcessName + "] " + msg);
+        }
+    }
+}

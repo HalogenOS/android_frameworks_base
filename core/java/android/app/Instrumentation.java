@@ -68,6 +68,7 @@ import android.view.WindowManagerGlobal;
 import com.android.internal.app.StorageScopesAppHooks;
 import com.android.internal.content.ReferrerIntent;
 import com.android.internal.gmscompat.GmsHooks;
+import com.android.internal.util.SimplePropImitation;
 
 import java.io.File;
 import java.lang.annotation.Retention;
@@ -1354,6 +1355,11 @@ public class Instrumentation {
         } else {
             app = getFactory(context.getPackageName())
                     .instantiateApplication(cl, className);
+            try {
+                SimplePropImitation.setProps(context);
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to set simple prop imitation", e);
+            }
         }
         app.attach(context);
         return app;
@@ -1378,6 +1384,11 @@ public class Instrumentation {
             app = new Application();
         } else {
             app = (Application)clazz.newInstance();
+            try {
+                SimplePropImitation.setProps(context);
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to set simple prop imitation", e);
+            }
         }
         app.attach(context);
         return app;
