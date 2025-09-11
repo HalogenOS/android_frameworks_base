@@ -912,8 +912,17 @@ class TransitionController {
                 transition.setPipActivity(null);
             }
 
+            final RemoteTransition remoteInfo;
+            if (remoteTransition != null) {
+                transition.mRemoteDelegate = remoteTransition.getAppThread();
+                remoteInfo = new RemoteTransition(remoteTransition.getRemoteTransition(),
+                        remoteTransition.getDebugName());
+            } else {
+                remoteInfo = null;
+            }
+
             final TransitionRequestInfo request = new TransitionRequestInfo(transition.mType,
-                    startTaskInfo, pipChange, remoteTransition, displayChange,
+                    startTaskInfo, pipChange, remoteInfo, displayChange,
                     transition.getRequestedLocation(), userChange, null /* windowingLayerChange */,
                     transition.getFlags(), transition.getSyncId());
 

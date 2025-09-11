@@ -856,6 +856,21 @@ public final class WindowContainerTransaction implements Parcelable {
         return this;
     }
 
+    /**
+     * Informs WM that a non-shell process is expected to animate this transition. This is only
+     * used for recents-launch since it has a special way to delegate remote animation. For normal
+     * launches, RemoteTransition in ActivityOptions provides the delegate.
+     * @hide
+     */
+    @NonNull
+    public WindowContainerTransaction setAnimationDelegate(@NonNull IBinder delegate) {
+        mHierarchyOps.add(new HierarchyOp.Builder(
+                HierarchyOp.HIERARCHY_OP_TYPE_SET_ANIMATION_DELEGATE)
+                .setInsetsFrameOwner(delegate)
+                .build());
+        return this;
+    }
+
     /*
      * ===========================================================================================
      * Multitasking
@@ -1952,6 +1967,7 @@ public final class WindowContainerTransaction implements Parcelable {
         public static final int HIERARCHY_OP_TYPE_SET_SAFE_REGION_BOUNDS = 25;
         public static final int HIERARCHY_OP_TYPE_SET_SYSTEM_BAR_VISIBILITY_OVERRIDE = 26;
         public static final int HIERARCHY_OP_TYPE_DISALLOW_OVERRIDE_BOUNDS_FOR_CHILDREN = 27;
+        public static final int HIERARCHY_OP_TYPE_SET_ANIMATION_DELEGATE = 28;
 
         @IntDef(prefix = {"HIERARCHY_OP_TYPE_"}, value = {
                 HIERARCHY_OP_TYPE_REPARENT,
@@ -1982,6 +1998,7 @@ public final class WindowContainerTransaction implements Parcelable {
                 HIERARCHY_OP_TYPE_SET_SAFE_REGION_BOUNDS,
                 HIERARCHY_OP_TYPE_SET_SYSTEM_BAR_VISIBILITY_OVERRIDE,
                 HIERARCHY_OP_TYPE_DISALLOW_OVERRIDE_BOUNDS_FOR_CHILDREN,
+                HIERARCHY_OP_TYPE_SET_ANIMATION_DELEGATE,
         })
         @Retention(RetentionPolicy.SOURCE)
         public @interface HierarchyOpType {
@@ -2015,6 +2032,9 @@ public final class WindowContainerTransaction implements Parcelable {
 
         @Nullable
         private InsetsFrameProvider mInsetsFrameProvider;
+
+        @Nullable
+        private IBinder mInsetsFrameOwner;
 
         @Nullable
         private IBinder mCaller;
@@ -2250,6 +2270,7 @@ public final class WindowContainerTransaction implements Parcelable {
             mIncludingParents = copy.mIncludingParents;
             mReparent = copy.mReparent;
             mInsetsFrameProvider = copy.mInsetsFrameProvider;
+            mInsetsFrameOwner = copy.mInsetsFrameOwner;
             mCaller = copy.mCaller;
             mToTop = copy.mToTop;
             mReparentTopOnly = copy.mReparentTopOnly;
@@ -2280,6 +2301,7 @@ public final class WindowContainerTransaction implements Parcelable {
             mIncludingParents = in.readBoolean();
             mReparent = in.readStrongBinder();
             mInsetsFrameProvider = in.readTypedObject(InsetsFrameProvider.CREATOR);
+            mInsetsFrameOwner = in.readStrongBinder();
             mCaller = in.readStrongBinder();
             mToTop = in.readBoolean();
             mReparentTopOnly = in.readBoolean();
@@ -2319,6 +2341,11 @@ public final class WindowContainerTransaction implements Parcelable {
         @Nullable
         public InsetsFrameProvider getInsetsFrameProvider() {
             return mInsetsFrameProvider;
+        }
+
+        @Nullable
+        public IBinder getInsetsFrameOwner() {
+            return mInsetsFrameOwner;
         }
 
         @Nullable
@@ -2470,6 +2497,7 @@ public final class WindowContainerTransaction implements Parcelable {
                     return "setSystemBarVisibilityOverride";
                 case HIERARCHY_OP_TYPE_DISALLOW_OVERRIDE_BOUNDS_FOR_CHILDREN:
                     return "disallowOverrideBoundsForChildren";
+                case HIERARCHY_OP_TYPE_SET_ANIMATION_DELEGATE: return "setAnimationDelegate";
                 default: return "HOP(" + type + ")";
             }
         }
@@ -2585,6 +2613,9 @@ public final class WindowContainerTransaction implements Parcelable {
                             .append(" mDisallowOverrideBoundsForChildren=")
                             .append(mDisallowOverrideBoundsForChildren);
                     break;
+                case HIERARCHY_OP_TYPE_SET_ANIMATION_DELEGATE:
+                    sb.append(" caller=").append(mInsetsFrameOwner);
+                    break;
                 default:
                     sb.append("container=").append(mContainer)
                             .append(" reparent=").append(mReparent)
@@ -2604,6 +2635,7 @@ public final class WindowContainerTransaction implements Parcelable {
             dest.writeBoolean(mIncludingParents);
             dest.writeStrongBinder(mReparent);
             dest.writeTypedObject(mInsetsFrameProvider, flags);
+            dest.writeStrongBinder(mInsetsFrameOwner);
             dest.writeStrongBinder(mCaller);
             dest.writeBoolean(mToTop);
             dest.writeBoolean(mReparentTopOnly);
@@ -2659,6 +2691,9 @@ public final class WindowContainerTransaction implements Parcelable {
 
             @Nullable
             private InsetsFrameProvider mInsetsFrameProvider;
+
+            @Nullable
+            private IBinder mInsetsFrameOwner;
 
             @Nullable
             private IBinder mCaller;
@@ -2736,6 +2771,11 @@ public final class WindowContainerTransaction implements Parcelable {
 
             Builder setInsetsFrameProvider(InsetsFrameProvider provider) {
                 mInsetsFrameProvider = provider;
+                return this;
+            }
+
+            Builder setInsetsFrameOwner(@Nullable IBinder owner) {
+                mInsetsFrameOwner = owner;
                 return this;
             }
 
@@ -2863,6 +2903,7 @@ public final class WindowContainerTransaction implements Parcelable {
                         ? Arrays.copyOf(mActivityTypes, mActivityTypes.length)
                         : null;
                 hierarchyOp.mInsetsFrameProvider = mInsetsFrameProvider;
+                hierarchyOp.mInsetsFrameOwner = mInsetsFrameOwner;
                 hierarchyOp.mCaller = mCaller;
                 hierarchyOp.mToTop = mToTop;
                 hierarchyOp.mReparentTopOnly = mReparentTopOnly;
