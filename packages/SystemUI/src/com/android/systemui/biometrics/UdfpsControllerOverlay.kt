@@ -51,6 +51,7 @@ import com.android.systemui.keyguard.domain.interactor.KeyguardTransitionInterac
 import com.android.systemui.keyguard.shared.model.KeyguardState
 import com.android.systemui.power.domain.interactor.PowerInteractor
 import com.android.systemui.res.R
+import com.android.systemui.shade.domain.interactor.ShadeInteractor
 import com.android.systemui.statusbar.policy.KeyguardStateController
 import dagger.Lazy
 import kotlinx.coroutines.CoroutineScope
@@ -79,6 +80,7 @@ constructor(
     private val controllerCallback: IUdfpsOverlayControllerCallback,
     private val onTouch: (View, MotionEvent) -> Boolean,
     private val transitionInteractor: KeyguardTransitionInteractor,
+    private val shadeInteractor: ShadeInteractor,
     private val deviceEntryUdfpsTouchOverlayViewModel: Lazy<DeviceEntryUdfpsTouchOverlayViewModel>,
     private val defaultUdfpsTouchOverlayViewModel: Lazy<DefaultUdfpsTouchOverlayViewModel>,
     private val promptUdfpsTouchOverlayViewModel: Lazy<PromptUdfpsTouchOverlayViewModel>,
@@ -110,12 +112,13 @@ constructor(
 
     private var overlayTouchListener: TouchExplorationStateChangeListener? = null
 
-    private val useFrameworkDimming = context.resources.getBoolean(
+    private val useFrameworkDimming = inflater.context.resources.getBoolean(
         com.android.systemui.res.R.bool.config_udfpsFrameworkDimming
     )
 
     private val udfpsHelper: UdfpsHelper? = if (useFrameworkDimming) {
-        UdfpsHelper(context, windowManager, shadeInteractor, requestReason)
+        // Note: ShadeInteractor needs to be passed from UdfpsController for custom ROM functionality
+        UdfpsHelper(inflater.context, windowManager, shadeInteractor, requestReason)
     } else {
         null
     }

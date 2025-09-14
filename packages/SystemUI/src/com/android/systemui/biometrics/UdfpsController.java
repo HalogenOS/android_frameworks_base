@@ -290,6 +290,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
                             event
                         ),
                         mKeyguardTransitionInteractor,
+                        mShadeInteractor,
                         mDeviceEntryUdfpsTouchOverlayViewModel,
                         mDefaultUdfpsTouchOverlayViewModel,
                         mPromptUdfpsTouchOverlayViewModel,
