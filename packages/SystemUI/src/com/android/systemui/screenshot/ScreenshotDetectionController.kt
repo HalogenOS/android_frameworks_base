@@ -39,19 +39,8 @@ constructor(
      * notified.
      */
     fun maybeNotifyOfScreenshot(data: ScreenshotData): List<CharSequence> {
-        // No notification for screenshots from overview.
-        if (data.source == WindowManager.ScreenshotSource.SCREENSHOT_OVERVIEW) return listOf()
-
-        // Notify listeners, retrieve a list of listening components.
-        val components = windowManager.notifyScreenshotListeners(Display.DEFAULT_DISPLAY)
-
-        // Convert component names to app names.
-        return components.map {
-            packageManager
-                .getActivityInfo(it, ComponentInfoFlags.of(
-                    (MATCH_DISABLED_COMPONENTS or MATCH_ANY_USER).toLong()))
-                .loadLabel(packageManager)
-        }
+        // Return empty list to prevent apps from being notified
+        return listOf()
     }
 
     fun populateView(view: ViewGroup, appNames: List<CharSequence>) {
