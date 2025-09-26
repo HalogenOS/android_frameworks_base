@@ -9,6 +9,7 @@ import com.android.internal.pm.parsing.pkg.PackageImpl;
 import com.android.server.ext.AppCompatConf;
 import com.android.server.os.nano.AppCompatProtos;
 import com.android.server.pm.pkg.AndroidPackage;
+import com.android.server.pm.pkg.PackageState;
 
 public class PackageExt implements PackageExtIface {
     public static final PackageExt DEFAULT = new PackageExt(PackageId.UNKNOWN, 0);
@@ -24,6 +25,14 @@ public class PackageExt implements PackageExtIface {
             return (PackageExt) i;
         }
         return DEFAULT;
+    }
+
+    public static PackageExt get(PackageState pkgState) {
+        AndroidPackage pkg = pkgState.getAndroidPackage();
+        if (pkg == null) {
+            return DEFAULT;
+        }
+        return get(pkg);
     }
 
     public PackageExt(int packageId, int flags) {
