@@ -76,14 +76,18 @@ public final class DeviceIdentifiersPolicyService extends SystemService {
                                 + Binder.getCallingUid());
             }
 
-            if (!TelephonyPermissions.checkCallingOrSelfReadDeviceIdentifiers(mContext,
-                    callingPackage, callingFeatureId, "getSerial")) {
-                String perm = Manifest.permission.READ_DEVICE_SERIAL_NUMBER;
-                if (mContext.checkCallingPermission(perm) != PackageManager.PERMISSION_GRANTED) {
+            try {
+                if (!TelephonyPermissions.checkCallingOrSelfReadDeviceIdentifiers(mContext,
+                        callingPackage, callingFeatureId, "getSerial")) {
                     return Build.UNKNOWN;
-                } else {
+                }
+            } catch (SecurityException e) {
+                String perm = Manifest.permission.READ_DEVICE_SERIAL_NUMBER;
+                if (mContext.checkCallingPermission(perm) == PackageManager.PERMISSION_GRANTED) {
                     Slog.d(DeviceIdentifiersPolicyService.class.getSimpleName(),
                             callingPackage + " has " + perm + ", allowed serial number access");
+                } else {
+                    throw e;
                 }
             }
             return SystemProperties.get("ro.serialno", Build.UNKNOWN);
