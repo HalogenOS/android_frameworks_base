@@ -36,6 +36,7 @@ import android.annotation.SystemApi;
 import android.annotation.TestApi;
 import android.annotation.UiContext;
 import android.app.WindowConfiguration;
+import android.app.compat.gms.GmsCompat;
 import android.compat.annotation.UnsupportedAppUsage;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -1098,8 +1099,9 @@ public abstract class Window {
         // asynchronously.
         if (mContext.checkSelfPermission(HIDE_NON_SYSTEM_OVERLAY_WINDOWS) != PERMISSION_GRANTED
                 && mContext.checkSelfPermission(HIDE_OVERLAY_WINDOWS) != PERMISSION_GRANTED) {
-            throw new SecurityException(
+            var se = new SecurityException(
                     "Permission denial: setHideOverlayWindows: HIDE_OVERLAY_WINDOWS");
+            GmsCompat.catchOrRethrow(se);
         }
         setPrivateFlags(hide ? SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS : 0,
                 SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS);
