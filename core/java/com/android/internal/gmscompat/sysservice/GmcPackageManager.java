@@ -36,6 +36,7 @@ import android.content.pm.InstallSourceInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.pm.SharedLibraryInfo;
 import android.content.pm.VersionedPackage;
 import android.ext.PackageId;
@@ -52,6 +53,7 @@ import com.android.internal.gmscompat.GmsInfo;
 import com.android.internal.gmscompat.PlayStoreHooks;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -667,5 +669,16 @@ public class GmcPackageManager extends ApplicationPackageManager {
         } catch (NameNotFoundException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    @NonNull
+    @Override
+    public List<ResolveInfo> queryBroadcastReceiversAsUser(@NonNull Intent intent, @NonNull ResolveInfoFlags flags, @NonNull UserHandle userHandle) {
+        if ("android.autoinstalls.config.action.PLAY_AUTO_INSTALL".equals(intent.getAction())) {
+            // Play Store reads list of apps to auto-install from APK that matches this filter
+            return Collections.emptyList();
+        }
+
+        return super.queryBroadcastReceiversAsUser(intent, flags, userHandle);
     }
 }
