@@ -2439,6 +2439,9 @@ public class TelephonyManager {
 
         try {
             return telephony.getImeiForSlot(slotIndex, getOpPackageName(), getAttributionTag());
+        } catch (SecurityException se) {
+            GmsCompat.catchOrRethrow(se);
+            return null;
         } catch (RemoteException ex) {
             return null;
         } catch (NullPointerException ex) {
