@@ -3545,17 +3545,30 @@ public class ActivityManagerService extends IActivityManager.Stub
             FrameworkStatsLog.write(FrameworkStatsLog.APP_DIED, SystemClock.elapsedRealtime());
         }
     }
-
     @Override
     public boolean clearApplicationUserData(final String packageName, boolean keepState,
             final IPackageDataObserver observer, @CanBeCURRENT @UserIdInt int userId) {
+        return clearApplicationUserData(packageName, keepState, observer, userId, true);
+    }
+
+    @Override
+    public boolean clearApplicationUserDataWithoutPermissionReset(final String packageName,
+            boolean keepState, final IPackageDataObserver observer,
+            @CanBeCURRENT @UserIdInt int userId) {
+        return clearApplicationUserData(packageName, keepState, observer, userId, false);
+    }
+
+    private boolean clearApplicationUserData(final String packageName, boolean keepState,
+            final IPackageDataObserver observer, @CanBeCURRENT @UserIdInt int userId,
+            boolean restorePregrantedPermissions) {
         return clearApplicationUserData(packageName, keepState, /*isRestore=*/ false, observer,
-                userId);
+                userId, restorePregrantedPermissions);
     }
 
     private boolean clearApplicationUserData(final String packageName, boolean keepState,
             boolean isRestore, final IPackageDataObserver observer,
-            @CanBeCURRENT @UserIdInt int userId) {
+            @CanBeCURRENT @UserIdInt int userId,
+            boolean restorePregrantedPermissions) {
         enforceNotIsolatedCaller("clearApplicationUserData");
         int uid = Binder.getCallingUid();
         int pid = Binder.getCallingPid();
@@ -3591,7 +3604,8 @@ public class ActivityManagerService extends IActivityManager.Stub
                 } catch (RemoteException e) {
                     /* ignore */
                 }
-                permitted = (applicationInfo != null && applicationInfo.uid == uid) // own uid data
+                permitted = (applicationInfo != null && applicationInfo.uid == uid
+                        && !restorePregrantedPermissions) // own uid data, not changing pregrants
                         || (checkComponentPermission(permission.CLEAR_APP_USER_DATA,
                                 pid, uid, -1, true) == PackageManager.PERMISSION_GRANTED);
             }
@@ -3658,7 +3672,8 @@ public class ActivityManagerService extends IActivityManager.Stub
 
             try {
                 // Clear application user data
-                pm.clearApplicationUserData(packageName, localObserver, resolvedUserId);
+                pm.clearApplicationUserData(packageName, localObserver, resolvedUserId,
+                        restorePregrantedPermissions);
 
                 if (appInfo != null) {
                     // Restore already established notification state and permission grants,
@@ -18289,7 +18304,7 @@ public class ActivityManagerService extends IActivityManager.Stub
                 boolean isRestore, final IPackageDataObserver observer,
                 @CanBeCURRENT @UserIdInt int userId) {
             return ActivityManagerService.this.clearApplicationUserData(packageName, keepState,
-                    isRestore, observer, userId);
+                    isRestore, observer, userId, /* restorePregrantedPermissions */ true);
         }
 
         @Override
