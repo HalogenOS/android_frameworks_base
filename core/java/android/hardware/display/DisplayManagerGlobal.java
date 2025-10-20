@@ -236,6 +236,12 @@ public final class DisplayManagerGlobal {
         }
     }
 
+    public static void clearCachedInstance() {
+        synchronized (DisplayManagerGlobal.class) {
+            sInstance = null;
+        }
+    }
+
     /**
      * Get information about a particular logical display.
      *
