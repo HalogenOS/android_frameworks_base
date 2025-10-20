@@ -2,6 +2,7 @@ package com.android.server.pm.ext;
 
 import android.Manifest;
 import android.content.pm.ServiceInfo;
+import android.os.SystemProperties;
 import android.service.credentials.CredentialProviderService;
 
 import com.android.internal.gmscompat.GmcMediaProjectionService;
@@ -16,7 +17,20 @@ import com.android.internal.pm.pkg.parsing.ParsingPackage;
 import java.util.Collections;
 import java.util.List;
 
-class GmsCoreHooks {
+class GmsCoreHooks extends PackageHooks {
+
+    @Override
+    public int overridePermissionState(String permission, int userId) {
+        if (android.os.Flags.isDevBuild()) {
+            if (SystemProperties.getBoolean("sys.gmscore_grant." + permission, false)) {
+                return PERMISSION_OVERRIDE_GRANT;
+            }
+            if (SystemProperties.getBoolean("sys.gmscore_revoke." + permission, false)) {
+                return PERMISSION_OVERRIDE_REVOKE;
+            }
+        }
+        return NO_PERMISSION_OVERRIDE;
+    }
 
     static class ParsingHooks extends GmsCompatPkgParsingHooks {
 
