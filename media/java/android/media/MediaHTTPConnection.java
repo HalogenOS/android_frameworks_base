@@ -249,7 +249,7 @@ public class MediaHTTPConnection extends IMediaHTTPConnection.Stub {
                     throw new IOException("concurrently disconnecting");
                 }
                 if (noProxy) {
-                    mConnection = (HttpURLConnection)url.openConnection(Proxy.NO_PROXY);
+                    mConnection = (HttpURLConnection)url.openConnection(java.net.Proxy.NO_PROXY);
                 } else {
                     mConnection = (HttpURLConnection)url.openConnection();
                 }
