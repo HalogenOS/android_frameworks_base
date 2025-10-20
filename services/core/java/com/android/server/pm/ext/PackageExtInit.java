@@ -126,6 +126,10 @@ public class PackageExtInit implements ParsingPackageUtils.PackageExtInitIface {
         return PackageId.UNKNOWN;
     }
 
+    private int validate(int packageId, long minVersionCode, String validCertificateSha256) {
+        return validate(packageId, minVersionCode, new String[] { validCertificateSha256 });
+    }
+
     private int validate(int packageId, long minVersionCode, String... validCertificatesSha256) {
         if (pkg.getLongVersionCode() < minVersionCode) {
             Slog.d(TAG, "minVersionCode check failed, pkgName " + pkg.getPackageName() + "," +
