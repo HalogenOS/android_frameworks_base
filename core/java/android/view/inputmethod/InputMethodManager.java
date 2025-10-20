@@ -1714,6 +1714,13 @@ public final class InputMethodManager {
         }
     }
 
+    /** @hide */
+    public static boolean isInstanceCacheEmpty() {
+        synchronized (sLock) {
+            return sInstanceMap.size() == 0;
+        }
+    }
+
     /**
      * Deprecated. Do not use.
      *

@@ -6013,6 +6013,11 @@ public class ActivityManager {
         return IActivityManagerSingleton.get();
     }
 
+    /** @hide */
+    public static void clearCachedService() {
+        IActivityManagerSingleton.clear();
+    }
+
     private static IActivityTaskManager getTaskService() {
         return ActivityTaskManager.getService();
     }
