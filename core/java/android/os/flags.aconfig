@@ -2,6 +2,15 @@ package: "android.os"
 container: "system"
 container: "system"
 
+flag {
+    name: "is_dev_build"
+    is_exported: true
+    namespace: "system_performance"
+    description: "A flag that allows code optimizer to remove userdebug/eng-only code from production OS builds."
+    is_fixed_read_only: true
+    bug: "0" # required field
+}
+
 # keep-sorted start block=yes newline_separated=yes
 flag {
      # Holdback study for concurrent MessageQueue.
