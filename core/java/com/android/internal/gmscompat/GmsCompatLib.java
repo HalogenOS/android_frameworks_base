@@ -33,6 +33,6 @@ public class GmsCompatLib {
             throw new IllegalStateException(e);
         }
         instance = lib;
-        lib.init(appContext, processName);
+        lib.init(appContext, libCtx, processName);
     }
 }
