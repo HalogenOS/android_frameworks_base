@@ -2968,6 +2968,11 @@ public final class ActivityThread extends ClientTransactionHandler
         return sPackageManager;
     }
 
+    /** @hide */
+    public static void clearCachedPackageManager() {
+        sPackageManager = null;
+    }
+
     /** Returns the permission manager */
     public static IPermissionManager getPermissionManager() {
         if (sPermissionManager != null) {

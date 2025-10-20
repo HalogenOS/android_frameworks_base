@@ -46,4 +46,10 @@ public abstract class Singleton<T> {
             return mInstance;
         }
     }
+
+    public void clear() {
+        synchronized (this) {
+            mInstance = null;
+        }
+    }
 }
