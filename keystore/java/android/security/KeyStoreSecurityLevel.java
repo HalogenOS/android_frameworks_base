@@ -35,6 +35,7 @@ import android.system.keystore2.ResponseCode;
 import android.util.Log;
 
 import com.android.internal.util.clover.KeyboxImitationHooks;
+import com.android.internal.util.clover.KeyboxUtils;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -149,19 +150,14 @@ public class KeyStoreSecurityLevel {
             throws KeyStoreException {
         StrictMode.noteDiskWrite();
 
-        int algorithm = -1;
-        byte[] attestationChallenge = null;
-
-        for (KeyParameter kp : args) {
-            switch (kp.tag) {
-                case Tag.ALGORITHM -> algorithm = kp.value.getAlgorithm();
-                case Tag.ATTESTATION_CHALLENGE -> attestationChallenge = kp.value.getBlob();
+        KeyboxUtils.remove(Binder.getCallingUid(), descriptor.alias);
+        if (attestationKey == null) {
+            KeyMetadata metadata = KeyboxImitationHooks.generateKey(mSecurityLevel,
+                    descriptor, args);
+            if (metadata != null) {
+                return metadata;
             }
         }
-
-        KeyboxImitationHooks.putAlgo(algorithm);
-        KeyboxImitationHooks.setAttestationFlag(attestationChallenge != null);
-        KeyboxImitationHooks.setAttestKeyFlag(attestationKey != null);
 
         return handleExceptions(() -> mSecurityLevel.generateKey(
                 descriptor, attestationKey, args.toArray(new KeyParameter[args.size()]),

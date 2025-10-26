@@ -35,36 +35,15 @@ public class KeyboxImitationHooks {
 
     private static final String TAG = "KeyboxImitationHooks";
     private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
-    private static boolean mFailed = false;
-    private static boolean mIsAttestation = false;
-    private static boolean hasAttestKeyDescriptor = false;
-    private static Integer keyAlgo;
 
     public static KeyEntryResponse onGetKeyEntry(KeyDescriptor descriptor) {
         if (!KeyProviderManager.isKeyboxAvailable()) {
             return null;
         }
 
-        if (mFailed) {
-            return null;
-        }
-
-        if (keyAlgo == null || (keyAlgo != Algorithm.EC && keyAlgo != Algorithm.RSA)) {
-            return null;
-        }
-
-        if (!mIsAttestation) {
-            return null;
-        }
-
-        if (hasAttestKeyDescriptor) {
-            return null;
-        }
-
-        int uid = Binder.getCallingUid();
-        KeyEntryResponse spoofed = KeyboxUtils.retrieve(uid, descriptor.alias);
+        KeyEntryResponse spoofed = KeyboxUtils.retrieve(Binder.getCallingUid(), descriptor.alias);
         if (spoofed != null) {
-            dlog("Key entry spoofed, Algorithm: " + keyAlgo);
+            dlog("Key entry spoofed");
             return spoofed;
         }
 
@@ -106,8 +85,6 @@ public class KeyboxImitationHooks {
                 return null;
             }
             KeyboxUtils.append(uid, descriptor.alias, response);
-            mFailed = false;
-            putAlgo(params.algorithm);
             return response.metadata;
         } catch (Exception e) {
             Log.e(TAG, "Failed to generate key", e);
@@ -239,22 +216,6 @@ public class KeyboxImitationHooks {
             Log.e(TAG, "Failed to build key entry response", e);
             return null;
         }
-    }
-
-    public static void setFailFlag(boolean flag) {
-        mFailed = flag;
-    }
-
-    public static void putAlgo(int algo) {
-        keyAlgo = algo;
-    }
-
-    public static void setAttestationFlag(boolean flag) {
-        mIsAttestation = flag;
-    }
-
-    public static void setAttestKeyFlag(boolean flag) {
-        hasAttestKeyDescriptor = flag;
     }
 
     private static void dlog(String msg) {
