@@ -157,7 +157,7 @@ public class BackgroundLaunchProcessControllerTests {
                 BackgroundStartPrivileges.allowBackgroundActivityStarts(token));
         BalVerdict balVerdict = mController.areBackgroundActivityStartsAllowed(
                 mPid, mUid, mPackageName,
-                mAppSwitchState, mBalCheckConfiguration,
+                mAppSwitchState, mBalCheckConfiguration, mInPinnedWindoMode,
                 mHasActivityInVisibleTask, mHasBackgroundActivityStartPrivileges,
                 mLastStopAppSwitchesTime, mLastActivityLaunchTime,
                 mLastActivityFinishTime);
