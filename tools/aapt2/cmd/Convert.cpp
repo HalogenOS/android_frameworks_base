@@ -149,9 +149,13 @@ class BinaryApkSerializer : public IApkSerializer {
 };
 
 class ProtoApkSerializer : public IApkSerializer {
+ private:
+  bool for_adevtool_ = false;
+
  public:
-  ProtoApkSerializer(IAaptContext* context, const android::Source& source)
+  ProtoApkSerializer(IAaptContext* context, const android::Source& source, bool for_adevtool)
       : IApkSerializer(context, source) {
+    for_adevtool_ = for_adevtool;
   }
 
   bool SerializeXml(const xml::XmlResource* xml, const std::string& path, bool utf16,
@@ -165,7 +169,7 @@ class ProtoApkSerializer : public IApkSerializer {
     pb::ResourceTable pb_table;
     SerializeTableToPb(*table, &pb_table, context_->GetDiagnostics());
     return io::CopyProtoToArchive(context_, &pb_table, kProtoResourceTablePath,
-                                  ArchiveEntry::kCompress, writer);
+                                  for_adevtool_ ? 0u : ArchiveEntry::kCompress, writer);
   }
 
   bool SerializeFile(FileReference* file, IArchiveWriter* writer) override {
@@ -186,7 +190,7 @@ class ProtoApkSerializer : public IApkSerializer {
       }
 
       if (!SerializeXml(xml.get(), *file->path, false /*utf16*/, writer,
-                        file->file->WasCompressed() ? ArchiveEntry::kCompress : 0u)) {
+                        for_adevtool_ ? 0u : (file->file->WasCompressed() ? ArchiveEntry::kCompress : 0u))) {
         context_->GetDiagnostics()->Error(android::DiagMessage(source_)
                                           << "failed to serialize to proto XML: " << *file->path);
         return false;
@@ -194,7 +198,11 @@ class ProtoApkSerializer : public IApkSerializer {
 
       file->type = ResourceFile::Type::kProtoXml;
     } else {
-      if (!io::CopyFileToArchivePreserveCompression(context_, file->file, *file->path, writer)) {
+      bool res = for_adevtool_ ?
+        io::CopyFileToArchive(context_, file->file, *file->path, 0u, writer) :
+        io::CopyFileToArchivePreserveCompression(context_, file->file, *file->path, writer);
+
+      if (!res) {
         context_->GetDiagnostics()->Error(android::DiagMessage(source_)
                                           << "failed to copy file " << *file->path);
         return false;
@@ -272,13 +280,13 @@ class Context : public IAaptContext {
 
 int Convert(IAaptContext* context, LoadedApk* apk, IArchiveWriter* output_writer,
             ApkFormat output_format, TableFlattenerOptions table_flattener_options,
-            XmlFlattenerOptions xml_flattener_options) {
+            XmlFlattenerOptions xml_flattener_options, bool for_adevtool) {
   unique_ptr<IApkSerializer> serializer;
   if (output_format == ApkFormat::kBinary) {
     serializer.reset(new BinaryApkSerializer(context, apk->GetSource(), table_flattener_options,
                                              xml_flattener_options));
   } else if (output_format == ApkFormat::kProto) {
-    serializer.reset(new ProtoApkSerializer(context, apk->GetSource()));
+    serializer.reset(new ProtoApkSerializer(context, apk->GetSource(), for_adevtool));
   } else {
     context->GetDiagnostics()->Error(android::DiagMessage(apk->GetSource())
                                      << "Cannot convert APK to unknown format");
@@ -335,6 +343,10 @@ int Convert(IAaptContext* context, LoadedApk* apk, IArchiveWriter* output_writer
     }
   }
 
+  if (for_adevtool) {
+    return 0;
+  }
+
   // Other files
   std::unique_ptr<io::IFileCollectionIterator> iterator = apk->GetFileCollection()->Iterator();
   while (iterator->HasNext()) {
@@ -382,6 +394,7 @@ bool ExtractResourceConfig(const std::string& path, IAaptContext* context,
 }
 
 const char* ConvertCommand::kOutputFormatProto = "proto";
+const char* ConvertCommand::kOutputFormatProtoAdevtool = "proto-adevtool";
 const char* ConvertCommand::kOutputFormatBinary = "binary";
 
 int ConvertCommand::Action(const std::vector<std::string>& args) {
@@ -415,10 +428,14 @@ int ConvertCommand::Action(const std::vector<std::string>& args) {
   }
 
   ApkFormat format;
+  bool for_adevtool = false;
   if (!output_format_ || output_format_.value() == ConvertCommand::kOutputFormatBinary) {
     format = ApkFormat::kBinary;
   } else if (output_format_.value() == ConvertCommand::kOutputFormatProto) {
     format = ApkFormat::kProto;
+  } else if (output_format_.value() == ConvertCommand::kOutputFormatProtoAdevtool) {
+    format = ApkFormat::kProto;
+    for_adevtool = true;
   } else {
     context.GetDiagnostics()->Error(android::DiagMessage(path)
                                     << "Invalid value for flag --output-format: "
@@ -439,7 +456,7 @@ int ConvertCommand::Action(const std::vector<std::string>& args) {
   }
 
   return Convert(&context, apk.get(), writer.get(), format, table_flattener_options_,
-                 xml_flattener_options_);
+                 xml_flattener_options_, for_adevtool);
 }
 
 }  // namespace aapt
