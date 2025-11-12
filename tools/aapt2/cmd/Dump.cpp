@@ -23,6 +23,7 @@
 #include "Diagnostics.h"
 #include "LoadedApk.h"
 #include "Util.h"
+#include "ValueVisitor.h"
 #include "android-base/stringprintf.h"
 #include "android-base/utf8.h"
 #include "androidfw/ConfigDescription.h"
@@ -31,6 +32,7 @@
 #include "format/Container.h"
 #include "format/binary/BinaryResourceParser.h"
 #include "format/binary/XmlFlattener.h"
+#include "format/proto/ProtoSerialize.h"
 #include "format/proto/ProtoDeserialize.h"
 #include "io/ZipArchive.h"
 #include "process/IResourceTableConsumer.h"
@@ -278,6 +280,220 @@ int DumpConfigsCommand::Dump(LoadedApk* apk) {
   for (auto& config : configs) {
     GetPrinter()->Print(StringPrintf("%s\n", config.to_string().data()));
   }
+  return 0;
+}
+
+// copied from dump/DumpManifest.cpp
+static Value* BestConfigValue(ResourceEntry* entry,
+                              const ConfigDescription& match) {
+  if (!entry) {
+    return nullptr;
+  }
+
+  // Determine the config that best matches the desired config
+  ResourceConfigValue* best_value = nullptr;
+  for (auto& value : entry->values) {
+    if (!value->config.match(match)) {
+      continue;
+    }
+
+    if (best_value != nullptr) {
+      if (!value->config.isBetterThan(best_value->config, &match)) {
+        if (value->config.compare(best_value->config) != 0) {
+          continue;
+        }
+      }
+    }
+
+    best_value = value.get();
+  }
+
+  // The entry has no values
+  if (!best_value) {
+    return nullptr;
+  }
+
+  return best_value->value.get();
+}
+
+// copied from dump/DumpManifest.cpp
+static Value* FindValueById(const ResourceTable* table, const ResourceId& res_id,
+                     const ConfigDescription& config) {
+  if (table) {
+    for (auto& package : table->packages) {
+        for (auto& type : package->types) {
+          for (auto& entry : type->entries) {
+            if (entry->id && entry->id.value() == res_id.id) {
+              if (auto value = BestConfigValue(entry.get(), config)) {
+                return value;
+              }
+            }
+          }
+      }
+    }
+  }
+  return nullptr;
+}
+
+static int32_t GetInt(BinaryPrimitive& bp) {
+  CHECK(bp.value.dataType >= android::Res_value::TYPE_FIRST_INT && bp.value.dataType <= android::Res_value::TYPE_LAST_INT);
+  return static_cast<int32_t>(bp.value.data);
+}
+
+static bool GetBool(BinaryPrimitive& bp) {
+  CHECK(bp.value.dataType == android::Res_value::TYPE_INT_BOOLEAN);
+  return static_cast<bool>(bp.value.data);
+}
+
+static bool GetBoolAttr(xml::Attribute& attr) {
+  CHECK(attr.compiled_value != nullptr);
+  auto *attr_prim = ValueCast<BinaryPrimitive>(attr.compiled_value.get());
+  return GetBool(*attr_prim);
+}
+
+static int32_t GetIntAttr(xml::Attribute& attr) {
+  CHECK(attr.compiled_value != nullptr);
+  auto *attr_prim = ValueCast<BinaryPrimitive>(attr.compiled_value.get());
+  return GetInt(*attr_prim);
+}
+
+int DumpBriefPackageInfo::Action(const std::vector<std::string>& args) {
+  if (args.size() != 1) {
+    diag_->Error(android::DiagMessage() << "should specify exactly one apk.");
+    return 1;
+  }
+
+  const std::string &apk_path = args[0];
+  android::Source source(apk_path);
+  std::string error;
+  std::unique_ptr<io::ZipFileCollection> apk = io::ZipFileCollection::Create(apk_path, &error);
+  if (apk == nullptr) {
+    diag_->Error(android::DiagMessage(apk_path) << "failed opening zip: " << error);
+    return 1;
+  }
+  io::IFile* manifest_file = apk->FindFile(kAndroidManifestPath);
+  CHECK(manifest_file != nullptr);
+  std::unique_ptr<io::IData> manifest_data = manifest_file->OpenAsData();
+  CHECK(manifest_data != nullptr);
+
+  std::unique_ptr<xml::XmlResource> manifest =
+    xml::Inflate(manifest_data->data(), manifest_data->size(), &error);
+  CHECK(manifest != nullptr);
+  xml::Element* manifest_el = manifest->root.get();
+  CHECK(manifest_el != nullptr);
+
+  pb::BriefPackageInfo bpi;
+  {
+    xml::Attribute* attr = manifest_el->FindAttribute({}, "package");
+    CHECK(attr != nullptr);
+    CHECK(!attr->value.empty());
+    bpi.set_package_name(attr->value);
+  }
+  {
+    xml::Attribute* ver_code_major_attr = manifest_el->FindAttribute(xml::kSchemaAndroid, "versionCodeMajor");
+    int32_t ver_code_major = 0;
+    if (ver_code_major_attr != nullptr) {
+      ver_code_major = GetIntAttr(*ver_code_major_attr);
+    }
+    xml::Attribute* ver_code_attr = manifest_el->FindAttribute(xml::kSchemaAndroid, "versionCode");
+    CHECK(ver_code_attr != nullptr);
+    int32_t ver_code = GetIntAttr(*ver_code_attr);
+    bpi.set_version_code((static_cast<int64_t>(ver_code_major) << 32) | ver_code);
+  }
+  // initialized lazily, not needed in the vast majority of cases
+  std::unique_ptr<LoadedApk> loaded_apk = nullptr;
+
+  for (xml::Element* manifest_child : manifest_el->GetChildElements()) {
+    if (manifest_child->name == "permission" || manifest_child->name == "permission-tree") {
+      xml::Attribute* name = manifest_child->FindAttribute(xml::kSchemaAndroid, "name");
+      CHECK(!name->value.empty());
+      bpi.add_permission(name->value);
+    } else if (manifest_child->name == "permission-group") {
+      xml::Attribute* name = manifest_child->FindAttribute(xml::kSchemaAndroid, "name");
+      CHECK(!name->value.empty());
+      bpi.add_permission_group(name->value);
+    } else if (manifest_child->name == "uses-permission" || manifest_child->name == "uses-permission-sdk-23" || manifest_child->name == "uses-permission-sdk-m") {
+      xml::Attribute* max_sdk_attr = manifest_child->FindAttribute(xml::kSchemaAndroid, "maxSdkVersion");
+      if (max_sdk_attr != nullptr) {
+        int32_t max_sdk;
+        auto* ref = ValueCast<Reference>(max_sdk_attr->compiled_value.get());
+        if (ref != nullptr) {
+            ResourceId res_id = ref->id.value();
+            if (loaded_apk == nullptr) {
+                // this parses the whole resource table, which is expensive
+                loaded_apk = LoadedApk::LoadApkFromPath(apk_path, diag_);
+            }
+            ConfigDescription config;
+            config.sdkVersion = std::stoi(sdk_version_);
+            Value* val = FindValueById(loaded_apk->GetResourceTable(), res_id, config);
+            CHECK(val != nullptr);
+            auto *bp = ValueCast<BinaryPrimitive>(val);
+            CHECK(bp != nullptr);
+            max_sdk = GetInt(*bp);
+        } else {
+          max_sdk = GetIntAttr(*max_sdk_attr);
+        }
+
+        if (max_sdk < std::stoi(sdk_version_)) {
+          continue;
+        }
+      }
+      xml::Attribute* name = manifest_child->FindAttribute(xml::kSchemaAndroid, "name");
+      CHECK(!name->value.empty());
+      bpi.add_uses_permission(name->value);
+    } else if (manifest_child->name == "uses-sdk") {
+      xml::Attribute* target_sdk = manifest_child->FindAttribute(xml::kSchemaAndroid, "targetSdkVersion");
+      if (target_sdk == nullptr) {
+        bpi.set_target_sdk(std::stoi(sdk_version_));
+      } else {
+        bpi.set_target_sdk(GetIntAttr(*target_sdk));
+      }
+    } else if (manifest_child->name == "application") {
+      for (xml::Element* app_child : manifest_child->GetChildElements()) {
+        if (app_child->name == "provider") {
+          xml::Attribute* authorities = app_child->FindAttribute(xml::kSchemaAndroid, "authorities");
+          // authorities can be specified with a string resource reference
+          auto* ref = ValueCast<Reference>(authorities->compiled_value.get());
+          if (ref == nullptr) {
+            CHECK(!authorities->value.empty());
+            for (auto part : util::Split(authorities->value, ';')) {
+              bpi.add_content_provider_authority(part);
+            }
+          } else {
+            ResourceId res_id = ref->id.value();
+            if (loaded_apk == nullptr) {
+                // this parses the whole resource table, which is expensive
+                loaded_apk = LoadedApk::LoadApkFromPath(apk_path, diag_);
+            }
+            ConfigDescription config;
+            config.sdkVersion = std::stoi(sdk_version_);
+            Value* val = FindValueById(loaded_apk->GetResourceTable(), res_id, config);
+            CHECK(val != nullptr);
+
+            auto str = ValueCast<String>(val);
+            for (std::string part : util::Split(*str->value, ';')) {
+              bpi.add_content_provider_authority(part);
+            }
+          }
+        } else if (app_child->name == "uses-library") {
+          xml::Attribute* name = app_child->FindAttribute(xml::kSchemaAndroid, "name");
+          CHECK(!name->value.empty());
+          bool required = true;
+          xml::Attribute* required_attr = app_child->FindAttribute(xml::kSchemaAndroid, "required");
+          if (required_attr != nullptr) {
+            required = GetBoolAttr(*required_attr);
+          }
+
+          if (required) {
+            bpi.add_uses_library(name->value);
+          } else {
+            bpi.add_optional_uses_library(name->value);
+          }
+        }
+      }
+    }
+  }
+  bpi.SerializeToOstream(&std::cout);
   return 0;
 }
 

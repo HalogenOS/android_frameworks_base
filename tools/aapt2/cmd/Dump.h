@@ -168,6 +168,24 @@ class DumpPackageNameCommand : public DumpApkCommand {
   int Dump(LoadedApk* apk) override;
 };
 
+using ::android::ConfigDescription;
+
+class DumpBriefPackageInfo : public Command {
+  public:
+    explicit DumpBriefPackageInfo(android::IDiagnostics* diag)
+        : Command("brief-package-info"), diag_(diag) {
+      SetDescription("Print BriefPackageInfo protobuf.");
+      AddRequiredFlag("--sdk-version",
+          "ro.build.version.sdk value. Some package IDs are version-specific.", &sdk_version_);
+    }
+
+  int Action(const std::vector<std::string>& args) override;
+
+  private:
+    std::string sdk_version_;
+    android::IDiagnostics* diag_;
+};
+
 class DumpPermissionsCommand : public DumpApkCommand {
  public:
   explicit DumpPermissionsCommand(text::Printer* printer, android::IDiagnostics* diag)
@@ -280,6 +298,7 @@ class DumpCommand : public Command {
       : Command("dump", "d"), diag_(diag) {
     AddOptionalSubcommand(util::make_unique<DumpAPCCommand>(printer, diag_));
     AddOptionalSubcommand(util::make_unique<DumpBadgingCommand>(printer, diag_));
+    AddOptionalSubcommand(util::make_unique<DumpBriefPackageInfo>(diag_));
     AddOptionalSubcommand(util::make_unique<DumpConfigsCommand>(printer, diag_));
     AddOptionalSubcommand(util::make_unique<DumpPackageNameCommand>(printer, diag_));
     AddOptionalSubcommand(util::make_unique<DumpPermissionsCommand>(printer, diag_));

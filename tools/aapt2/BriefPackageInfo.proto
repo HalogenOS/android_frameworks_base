@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package aapt.pb;
+
+option java_package = "com.android.aapt";
+
+message BriefPackageInfo {
+  string package_name = 1;
+  int64 version_code = 2;
+  int32 target_sdk = 3;
+  // permission-trees are a part of this list since permission-tree is a subtype of permission
+  repeated string permission = 4;
+  repeated string permission_group = 5;
+  repeated string uses_permission = 6;
+  repeated string content_provider_authority = 7;
+  repeated string uses_library = 8;
+  repeated string optional_uses_library = 9;
+}
