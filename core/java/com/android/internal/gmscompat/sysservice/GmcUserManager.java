@@ -179,6 +179,11 @@ public class GmcUserManager extends UserManager {
     }
 
     @Override
+    public boolean isMainUser() {
+        return true;
+    }
+
+    @Override
     public UserHandle getBootUser() {
         return Process.myUserHandle();
     }
