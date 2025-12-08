@@ -17,7 +17,12 @@
 package com.android.systemui.volume.dialog
 
 import android.content.Context
+import android.database.ContentObserver
+import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.UserHandle
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -34,6 +39,7 @@ import com.android.systemui.volume.dialog.domain.interactor.DesktopAudioTileDeta
 import com.android.systemui.volume.dialog.domain.interactor.VolumeDialogVisibilityInteractor
 import javax.inject.Inject
 import kotlinx.coroutines.awaitCancellation
+import lineageos.providers.LineageSettings
 
 class VolumeDialog
 @Inject
@@ -45,6 +51,45 @@ constructor(
 ) : ComponentDialog(context, R.style.Theme_SystemUI_Dialog_Volume) {
     // Use horizontal volume dialog if the audio tile details view is enabled
     private val isVolumeDialogVertical = !desktopAudioTileDetailsFeatureInteractor.isEnabled()
+
+    private var volumePanelOnLeft: Boolean = false
+
+    private val volumePanelOnLeftObserver =
+        object : ContentObserver(Handler(Looper.getMainLooper())) {
+            override fun onChange(selfChange: Boolean) {
+                val onLeft =
+                    LineageSettings.Secure.getIntForUser(
+                        context.contentResolver,
+                        LineageSettings.Secure.VOLUME_PANEL_ON_LEFT,
+                        0,
+                        UserHandle.USER_CURRENT
+                    ) != 0
+
+                if (volumePanelOnLeft != onLeft) {
+                    volumePanelOnLeft = onLeft
+                    applyLayoutAndGravity()
+                }
+            }
+        }
+
+    private fun applyLayoutAndGravity() {
+        val win = window ?: return
+        val side = if (volumePanelOnLeft) Gravity.START else Gravity.END
+
+        if (isVolumeDialogVertical) {
+            win.setLayout(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+            win.setGravity(side)
+        } else {
+            win.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+            )
+            win.setGravity(Gravity.TOP or side)
+        }
+    }
 
     init {
         with(window!!) {
@@ -62,13 +107,6 @@ constructor(
                 attributes.apply {
                     title = "VolumeDialog" // Not the same as Window#setTitle
                 }
-            if (isVolumeDialogVertical) {
-                setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                setGravity(Gravity.END)
-            } else {
-                setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                setGravity(Gravity.TOP or Gravity.END)
-            }
         }
         setCancelable(false)
         setCanceledOnTouchOutside(false)
@@ -91,6 +129,26 @@ constructor(
                 awaitCancellation()
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        context.contentResolver.registerContentObserver(
+            LineageSettings.Secure.getUriFor(LineageSettings.Secure.VOLUME_PANEL_ON_LEFT),
+            false,
+            volumePanelOnLeftObserver,
+            UserHandle.USER_ALL
+        )
+        volumePanelOnLeft = LineageSettings.Secure.getIntForUser(
+            context.contentResolver, LineageSettings.Secure.VOLUME_PANEL_ON_LEFT,
+            0, UserHandle.USER_CURRENT
+        ) != 0
+        applyLayoutAndGravity()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        context.contentResolver.unregisterContentObserver(volumePanelOnLeftObserver)
     }
 
     /**
