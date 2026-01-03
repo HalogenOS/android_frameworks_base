@@ -33,7 +33,7 @@ import android.provider.Settings;
 import android.util.ArraySet;
 import android.util.Log;
 
-import com.android.internal.gmscompat.dynamite.server.FileProxyService;
+import com.android.internal.gmscompat.fileservice.FileProxyService;
 
 import static com.android.internal.gmscompat.GmsHooks.inPersistentGmsCoreProcess;
 
@@ -47,7 +47,7 @@ public final class GmsCompatApp {
     // written to fields to prevent GC from collecting them
     private static BinderGca2Gms binderGca2Gms;
     @SuppressWarnings("FieldCanBeLocal")
-    private static FileProxyService dynamiteFileProxyService;
+    private static FileProxyService gmsCoreFileProxyService;
 
     private static IGms2Gca binderGms2Gca;
 
@@ -64,11 +64,11 @@ public final class GmsCompatApp {
             if (GmsCompat.isGmsCore()) {
                 FileProxyService fileProxyService = null;
                 if (inPersistentGmsCoreProcess) {
-                    // FileProxyService binder needs to be always available to the Dynamite clients.
+                    // FileProxyService binder needs to be always available to the GmsCore clients.
                     // "persistent" process launches at bootup and is kept alive by the ServiceConnection
                     // from the GmsCompatApp, which makes it fit for the purpose of hosting the FileProxyService
                     fileProxyService = new FileProxyService(ctx);
-                    dynamiteFileProxyService = fileProxyService;
+                    gmsCoreFileProxyService = fileProxyService;
 
                     Handler handler = ctx.getMainThreadHandler();
                     handler.postDelayed(GmsCompatApp::maybeShowContactsSyncNotification, 3000L);
