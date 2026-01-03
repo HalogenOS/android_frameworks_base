@@ -53,6 +53,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ParceledListSlice;
 import android.content.pm.ShortcutInfo;
+import android.ext.PackageId;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Binder;
@@ -2180,7 +2181,9 @@ public class NotificationManager {
      */
     public boolean isNotificationListenerAccessGranted(ComponentName listener) {
         if (GmsCompat.isAndroidAuto()) {
-            return true;
+            if (PackageId.ANDROID_AUTO_NAME.equals(listener.getPackageName())) {
+                return true;
+            }
         }
 
         INotificationManager service = service();
