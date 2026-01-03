@@ -24,6 +24,8 @@ import android.util.Log;
 import com.android.internal.gmscompat.GmsCompatLib;
 import com.android.internal.gmscompat.GmsHooks;
 import com.android.internal.gmscompat.GmsInfo;
+import com.android.internal.gmscompat.dynamite.GmsDynamiteClientHooks;
+import com.android.internal.gmscompat.fileservice.GmsCoreFileServerClientHooks;
 import com.android.internal.util.ArrayUtils;
 
 /**
@@ -136,6 +138,10 @@ public final class GmsCompat {
         if (isEligibleForClientCompat && GmsCompatLib.get() == null) {
             GmsCompatLib.init(appCtx, Application.getProcessName());
         }
+
+        if (GmsCompat.isClientOfGmsCore()) {
+            GmsCoreFileServerClientHooks.init();
+        }
     }
 
     public static boolean isEnabledFor(@NonNull ApplicationInfo app) {
@@ -229,9 +235,13 @@ public final class GmsCompat {
             userId = UserHandle.myUserId();
         }
 
-        Context ctx = AppGlobals.getInitialApplication();
+        Context ctx = appContext;
         if (ctx == null) {
-            return false;
+            ctx = AppGlobals.getInitialApplication();
+        }
+
+        if (ctx == null) {
+            throw new IllegalStateException("GmsCompat.isEnabledFor: Context is null");
         }
 
         PackageManager pm = ctx.getPackageManager();

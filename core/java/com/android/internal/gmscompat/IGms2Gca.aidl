@@ -9,7 +9,7 @@ import android.os.BinderDef;
 
 import com.android.internal.gmscompat.GmsCompatConfig;
 import com.android.internal.gmscompat.IGca2Gms;
-import com.android.internal.gmscompat.dynamite.server.IFileProxyService;
+import com.android.internal.gmscompat.fileservice.IFileProxyService;
 
 // calls from GMS components to GmsCompatApp
 interface IGms2Gca {

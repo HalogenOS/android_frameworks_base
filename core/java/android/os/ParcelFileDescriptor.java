@@ -50,7 +50,7 @@ import android.util.CloseGuard;
 import android.util.Log;
 import android.util.Slog;
 
-import com.android.internal.gmscompat.dynamite.GmsDynamiteClientHooks;
+import com.android.internal.gmscompat.fileservice.GmsCoreFileServerClientHooks;
 
 import dalvik.system.VMRuntime;
 
@@ -353,8 +353,8 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
 
         final String path = file.getPath();
 
-        if (GmsDynamiteClientHooks.enabled()) {
-            FileDescriptor override = GmsDynamiteClientHooks.openFileDescriptor(path);
+        if (GmsCoreFileServerClientHooks.isEnabled()) {
+            FileDescriptor override = GmsCoreFileServerClientHooks.openParcelFileDescriptorHook(path);
             if (override != null) {
                 return override;
             }
