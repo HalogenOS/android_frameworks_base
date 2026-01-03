@@ -25,6 +25,9 @@ public class AndroidAutoHooks extends PackageHooks {
                     Manifest.permission.ASSOCIATE_COMPANION_DEVICES_RESTRICTED,
                     Manifest.permission.BLUETOOTH_PRIVILEGED_ANDROID_AUTO,
                     Manifest.permission.MANAGE_USB_ANDROID_AUTO,
+                    // MEDIA_CONTENT_CONTROL permission allows Android Auto to control media
+                    // playback without holding the broad notification listener permission
+                    Manifest.permission.MEDIA_CONTENT_CONTROL,
                     Manifest.permission.READ_DEVICE_SERIAL_NUMBER,
                     Manifest.permission.READ_PRIVILEGED_PHONE_STATE_ANDROID_AUTO,
                     Manifest.permission.WIFI_PRIVILEGED_ANDROID_AUTO
@@ -69,6 +72,7 @@ public class AndroidAutoHooks extends PackageHooks {
             /** @see android.app.UiModeManager#enableCarMode(int, int) */
             case Manifest.permission.ENTER_CAR_MODE_PRIORITIZED:
             case Manifest.permission.MANAGE_USB_ANDROID_AUTO:
+            case Manifest.permission.MEDIA_CONTENT_CONTROL:
             // allows to enable/disable dark mode
             case Manifest.permission.MODIFY_DAY_NIGHT_MODE:
             // allows to asssociate only with DEVICE_PROFILE_AUTOMOTIVE_PROJECTION
