@@ -2572,7 +2572,11 @@ public abstract class ContentResolver implements ContentInterface {
         if (auth != null) {
             GmsDynamiteClientHooks.maybeInit(auth);
 
-            return acquireUnstableProvider(mContext, uri.getAuthority());
+            try {
+                return acquireUnstableProvider(mContext, uri.getAuthority());
+            } catch (SecurityException e) {
+                GmsCompat.catchOrRethrow(e);
+            }
         }
         return null;
     }
