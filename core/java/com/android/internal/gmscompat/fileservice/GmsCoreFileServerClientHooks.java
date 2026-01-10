@@ -40,10 +40,9 @@ public class GmsCoreFileServerClientHooks {
     }
 
     public static void init() {
-        int userId = GmsCompat.appContext().getUserId();
         Context context;
         try {
-            context = GmsCompat.appContext().createPackageContext(PackageId.GMS_CORE_NAME, userId);
+            context = GmsCompat.appContext().createPackageContext(PackageId.GMS_CORE_NAME, 0);
         } catch (PackageManager.NameNotFoundException e) {
             throw new IllegalStateException(e);
         }
