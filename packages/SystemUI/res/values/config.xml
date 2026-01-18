@@ -110,6 +110,14 @@
         internet,bt,dnd,cast,flashlight,airplane,rotation,wallet,alarm,controls,screenrecord,battery
     </string>
 
+    <!-- Tiles that should be displayed as large (2 columns) by default -->
+    <string-array name="quick_settings_tiles_default_large" translatable="false">
+        <item>internet</item>
+        <item>bt</item>
+        <item>dnd</item>
+        <item>cast</item>
+    </string-array>
+
     <!-- The class path of the Safety Quick Settings Tile -->
     <string name="safety_quick_settings_tile_class" translatable="false">
         com.android.permissioncontroller.permission.service.v33.SafetyCenterQsTileService

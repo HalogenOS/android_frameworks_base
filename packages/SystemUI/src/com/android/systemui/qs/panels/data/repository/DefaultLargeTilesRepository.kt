@@ -16,8 +16,11 @@
 
 package com.android.systemui.qs.panels.data.repository
 
+import android.content.res.Resources
 import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.qs.pipeline.shared.TileSpec
+import com.android.systemui.res.R
+import com.android.systemui.shade.ShadeDisplayAware
 import javax.inject.Inject
 
 /** Repository for the default set of [TileSpec] that should be displayed as large tiles. */
@@ -26,13 +29,11 @@ interface DefaultLargeTilesRepository {
 }
 
 @SysUISingleton
-class DefaultLargeTilesRepositoryImpl @Inject constructor() : DefaultLargeTilesRepository {
-    override val defaultLargeTiles =
-        setOf(
-            TileSpec.create("internet"),
-            TileSpec.create("bt"),
-            TileSpec.create("dnd"),
-            TileSpec.create("cast"),
-            TileSpec.create("caffeine"),
-        )
+class DefaultLargeTilesRepositoryImpl @Inject constructor(
+    @ShadeDisplayAware resources: Resources,
+) : DefaultLargeTilesRepository {
+    override val defaultLargeTiles: Set<TileSpec> =
+        resources.getStringArray(R.array.quick_settings_tiles_default_large)
+            .map { TileSpec.create(it) }
+            .toSet()
 }
