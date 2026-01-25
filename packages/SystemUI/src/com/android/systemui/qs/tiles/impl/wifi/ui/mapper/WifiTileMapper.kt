@@ -67,7 +67,6 @@ constructor(
                 setOf(
                     QSTileState.UserAction.CLICK,
                     QSTileState.UserAction.LONG_CLICK,
-                    QSTileState.UserAction.TOGGLE_CLICK,
                 )
         }
 }
