@@ -2601,11 +2601,38 @@ class ContextImpl extends Context {
                 Binder.getCallingUid()) == PERMISSION_GRANTED;
     }
 
+    private final static String TAG_SPOOF = "GmcContext";
+
     @Override
     public int checkPermission(String permission, int pid, int uid) {
         if (permission == null) {
             throw new IllegalArgumentException("permission is null");
         }
+
+        if (GmsCompat.isGmsCore() &&
+                android.Manifest.permission.READ_PRIVILEGED_PHONE_STATE.equals(permission)) {
+            if (Log.isLoggable(TAG_SPOOF, Log.VERBOSE)) {
+                Log.v(TAG_SPOOF, "checking " + permission + " for pid " + pid + ", uid " + uid
+                        + ", thread name " + Thread.currentThread().getName(), new Throwable());
+            }
+            // The TS43 verifier calls this permission check for READ_PRIVILEGED_PHONE_STATE. If
+            // not granted, it does not run any of its verification code, since it needs the
+            // permission for TelephonyManager#getIccAuthentication to complete EAP-AKA
+            // challenge-response. However, getIccAuthentication also accepts the narrower
+            // USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER permission, and says READ_PRIVILEGED_PHONE_STATE
+            // is deprecated for it.
+            if (pid == Process.myPid() && uid == Process.myUid()) {
+                // Scope the READ_PRIVILEGED_PHONE_STATE spoofing to phone verification requests so
+                // that we don't cause crashes if GmsCore expects READ_PRIVILEGED_PHONE_STATE
+                // elsewhere
+                if (GmsCompat.isConstellationPhoneVerifyThread(Thread.currentThread())) {
+                    String newPerm = android.Manifest.permission.USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER;
+                    Log.d(TAG_SPOOF, "checkPermission: checking " + newPerm + " instead of " + permission);
+                    permission = newPerm;
+                }
+            }
+        }
+
         if (mParams.isRenouncedPermission(permission)
                 && pid == android.os.Process.myPid() && uid == android.os.Process.myUid()) {
             Log.v(TAG, "Treating renounced permission " + permission + " as denied");

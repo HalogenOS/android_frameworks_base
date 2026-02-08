@@ -2271,6 +2271,10 @@ package android.app.compat.gms {
     method public static boolean isEnabledFor(@NonNull String, int);
   }
 
+  public interface GmsCorePackageFlag {
+    field public static final int GRANT_PERMS_FOR_ICC_AUTHENTICATION = 0; // 0x0
+  }
+
   public class GmsUtils {
     method @NonNull public static android.content.Intent createAppPlayStoreIntent(@NonNull String);
   }
