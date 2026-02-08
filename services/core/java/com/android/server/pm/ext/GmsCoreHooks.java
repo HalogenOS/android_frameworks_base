@@ -1,7 +1,11 @@
 package com.android.server.pm.ext;
 
 import android.Manifest;
+import android.app.compat.gms.GmsCorePackageFlag;
+import android.content.pm.GosPackageState;
+import android.content.pm.PackageManagerInternal;
 import android.content.pm.ServiceInfo;
+import android.ext.PackageId;
 import android.os.SystemProperties;
 import android.service.credentials.CredentialProviderService;
 
@@ -13,6 +17,7 @@ import com.android.internal.pm.pkg.component.ParsedService;
 import com.android.internal.pm.pkg.component.ParsedServiceImpl;
 import com.android.internal.pm.pkg.component.ParsedUsesPermissionImpl;
 import com.android.internal.pm.pkg.parsing.ParsingPackage;
+import com.android.server.LocalServices;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +34,22 @@ class GmsCoreHooks extends PackageHooks {
                 return PERMISSION_OVERRIDE_REVOKE;
             }
         }
-        return NO_PERMISSION_OVERRIDE;
+
+        int flag = 0;
+        switch (permission) {
+            case Manifest.permission.USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER:
+                flag = GmsCorePackageFlag.GRANT_PERMS_FOR_ICC_AUTHENTICATION;
+                break;
+            default:
+                return NO_PERMISSION_OVERRIDE;
+        }
+
+        GosPackageState gosPs = LocalServices.getService(PackageManagerInternal.class)
+                .getGosPackageState(PackageId.GMS_CORE_NAME, userId);
+        if (gosPs.hasPackageFlag(flag)) {
+            return PERMISSION_OVERRIDE_GRANT;
+        }
+        return PERMISSION_OVERRIDE_REVOKE;
     }
 
     static class ParsingHooks extends GmsCompatPkgParsingHooks {
@@ -75,7 +95,11 @@ class GmsCoreHooks extends PackageHooks {
         @Override
         public List<ParsedUsesPermissionImpl> addUsesPermissions() {
             var res = super.addUsesPermissions();
-            var l = createUsesPerms(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Manifest.permission.READ_PHONE_NUMBERS);
+            var l = createUsesPerms(
+                    Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                    Manifest.permission.READ_PHONE_NUMBERS,
+                    Manifest.permission.USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER
+            );
             res.addAll(l);
             return res;
         }

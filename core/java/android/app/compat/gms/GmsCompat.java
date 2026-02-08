@@ -24,7 +24,6 @@ import android.util.Log;
 import com.android.internal.gmscompat.GmsCompatLib;
 import com.android.internal.gmscompat.GmsHooks;
 import com.android.internal.gmscompat.GmsInfo;
-import com.android.internal.gmscompat.dynamite.GmsDynamiteClientHooks;
 import com.android.internal.gmscompat.fileservice.GmsCoreFileServerClientHooks;
 import com.android.internal.util.ArrayUtils;
 
@@ -362,5 +361,14 @@ public final class GmsCompat {
     /** @hide */
     public static boolean isGmsCompatProcess(String processName) {
         return processName.endsWith(GMSCOMPAT_PROCESS_SUFFIX);
+    }
+
+    /** @hide */
+    public static boolean isConstellationPhoneVerifyThread(Thread t) {
+        var tName = t.getName();
+        // Full thread name:
+        // [com.google.android.gms.chimera.container.intentoperation.GmsIntentOperationChimeraService-Executor] processing com.google.android.gms.constellation.EventManager for action com.google.android.gms.constellation.eventmanager.SYNC_VERIFICATION
+        return tName != null &&
+                tName.endsWith("processing com.google.android.gms.constellation.EventManager for action com.google.android.gms.constellation.eventmanager.SYNC_VERIFICATION");
     }
 }
