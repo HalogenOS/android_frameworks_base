@@ -37,7 +37,9 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.ext.PackageId;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.DeadSystemRuntimeException;
 import android.os.IBinder;
@@ -670,6 +672,56 @@ public final class GmsHooks {
         tlPermissionsToSpoof.set(null);
         // invalidate the cache of permission state inside GmsCore
         GmcPackageManager.notifyPermissionsChangeListeners();
+    }
+
+    public static final String GMS_CONSTELLATION_SERVICE_INTERFACE_DESCRIPTOR =
+            "com.google.android.gms.constellation.internal.IConstellationApiService";
+
+    public static void onBeginGmsConstellationServiceCall(int transactionCode, Parcel data) {
+        if (transactionCode != 3) { // verifyPhoneNumber V2 method
+            return;
+        }
+
+        try {
+            final var ctx = GmsCompat.appContext();
+            if (ctx == null) return;
+            final var callingPkg = ctx.getPackageManager().getNameForUid(Binder.getCallingUid());
+            // Ensure we're only sending RCS permission notifications for Bugle phone number
+            // verification attempts.
+            //
+            // GmsServiceBroker also does validation of allowed packages, but it doesn't seem it's
+            // restricted to only Bugle. For the Constellation service (155), the
+            // VerifyPhoneNumberApi__packages_allowed_to_call flag (proto list) also includes other
+            // apps like com.google.android.dialer, etc. in its default value.
+            if (!PackageId.BUGLE_NAME.equals(callingPkg)) {
+                Log.d(TAG, "onBeginGmsConstellationServiceCall code " + transactionCode + ", unexpected callingPkg " + callingPkg);
+                return;
+            }
+
+            data.enforceInterface(GMS_CONSTELLATION_SERVICE_INTERFACE_DESCRIPTOR);
+            // IConstellationCallbacks binder
+            data.readStrongBinder();
+
+            if (data.readInt() == 1) { // VerifyPhoneNumberRequest is present
+                IGmsCompatLib lib = GmsCompatLib.get();
+                final String policyId = lib.parseVerifyPhoneNumberRequestForPolicy(data);
+                final boolean isTs43Verification = policyId != null &&
+                        policyId.startsWith("upi-") &&
+                        policyId.contains("ts43");
+                Log.d(TAG, "onBeginGmsConstellationServiceCall: policyId " + policyId);
+                // We could also decode the Bundle field in VerifyPhoneNumberRequest which
+                // stores the key-value "required_consumer_consent" -> "RCS", and check
+                // for this. However, this is set as an "API param", so it's not as backwards
+                // compatible or guaranteed as the String property in the VerifyPhoneNumberRequest
+                // class
+                GmsCompatApp.iGms2Gca()
+                        .maybeShowRcsRequirementsNotification(isTs43Verification);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "onBeginGmsConstellationServiceCall: failed", e);
+        } finally {
+            data.setDataPosition(0);
+        }
     }
 
     public static IBinder maybeOverrideBinder(IBinder binder) {
