@@ -2609,6 +2609,11 @@ class ContextImpl extends Context {
             throw new IllegalArgumentException("permission is null");
         }
 
+        // TODO: In Android 17, READ_PRIVILEGED_PHONE_STATE will no longer be accepted for
+        //  TelephonyManager#getIccAuthentication. However, Manifest.permission.USE_ICC_AUTH was
+        //  introduced. getIccAuthentication can accept this new permission along with preexisting
+        //  Manifest.permission.USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER. Need to pay attention to how
+        //  GmsCore uses USE_ICC_AUTH or USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER.
         if (GmsCompat.isGmsCore() &&
                 android.Manifest.permission.READ_PRIVILEGED_PHONE_STATE.equals(permission)) {
             if (Log.isLoggable(TAG_SPOOF, Log.VERBOSE)) {
