@@ -39,6 +39,7 @@ import android.annotation.Nullable;
 import android.annotation.SpecialUsers.CanBeALL;
 import android.annotation.UserIdInt;
 import android.app.ActivityManager;
+import android.app.AppGlobals;
 import android.app.AppOpsManager;
 import android.app.AppOpsManager.AttributionFlags;
 import android.app.IActivityManager;
@@ -493,6 +494,70 @@ public class PermissionManagerService extends IPermissionManager.Stub {
             }
         }, userId);
         return result;
+    }
+
+    @Override
+    public void updatePermissionStateAndInvalidateCache(String packageName, int userId) {
+        mContext.enforceCallingPermission(
+                android.Manifest.permission.UPDATE_AND_INVALIDATE_PERMISSION_STATE,
+                "updatePermissionStateAndInvalidateCache");
+
+        final int callingUid = Binder.getCallingUid();
+        if (UserHandle.getUserId(callingUid) != userId) {
+            final boolean isCallerAllowed = mContext.checkCallingPermission(
+                    Manifest.permission.INTERACT_ACROSS_USERS_FULL)
+                    == PackageManager.PERMISSION_GRANTED;
+            if (!isCallerAllowed) {
+                throw new SecurityException(
+                        "uid " + callingUid + " can't update state for " + userId);
+            }
+            Slog.w(LOG_TAG, "updatePermissionStateAndInvalidateCache: cross user granted for " + callingUid);
+        }
+
+        final String callingPackage;
+        {
+            final AndroidPackage callingAndroidPackage = mPackageManagerInt.getPackage(callingUid);
+            if (callingAndroidPackage == null) {
+                Slog.w(LOG_TAG, "updatePermissionStateAndInvalidateCache: no callingPackage "
+                        + "for uid " + callingUid);
+                return;
+            }
+            callingPackage = callingAndroidPackage.getPackageName();
+        }
+
+        PackageState packageState = mPackageManagerInt.getPackageStateInternal(packageName);
+        if (packageState == null) {
+            Slog.w(LOG_TAG, "updatePermissionStateAndInvalidateCache: no PackageState "
+                    + "for " + packageName);
+            return;
+        }
+        mPermissionManagerServiceImpl.updatePermissions(packageState, userId);
+
+        final var pm = AppGlobals.getPackageManager();
+
+        final long identity = Binder.clearCallingIdentity();
+        try {
+            final var appInfo = pm.getApplicationInfo(packageName, 0, userId);
+            if (appInfo == null) {
+                Slog.w(LOG_TAG, "updatePermissionStateAndInvalidateCache: no "
+                        + "appInfo for " + packageName);
+                return;
+            }
+
+            if (appInfo.enabled) {
+                // Invalidate cached system_server state; clearing identity, since this requires
+                // Manifest.permission.CHANGE_COMPONENT_ENABLED_STATE
+                pm.setApplicationEnabledSetting(packageName,
+                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0, userId, callingPackage);
+                pm.setApplicationEnabledSetting(packageName,
+                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED, 0, userId, callingPackage);
+            }
+        } catch (RemoteException e) {
+            Slog.e(LOG_TAG, "updatePermissionStateAndInvalidateCache: failed "
+                    + "for " + packageName, e);
+        } finally {
+            Binder.restoreCallingIdentity(identity);
+        }
     }
 
     /* Start of delegate methods to PermissionManagerServiceInterface */
