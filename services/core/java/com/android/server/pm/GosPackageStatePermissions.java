@@ -117,6 +117,7 @@ class GosPackageStatePermissions {
         builder()
                 .readFlags(playIntegrityFlags)
                 .readWriteFlag(SUPPRESS_PLAY_INTEGRITY_API_NOTIF)
+                .readWriteFields(FIELD_PACKAGE_FLAGS)
                 .apply(GmsCompatApp.PKG_NAME, computer);
 
         @GosPackageStateFlag.Enum int[] settingsReadWriteFlags = {
