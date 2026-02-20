@@ -6608,6 +6608,10 @@
     <permission android:name="android.permission.INSTALL_GRANT_RUNTIME_PERMISSIONS"
         android:protectionLevel="signature|installer|verifier" />
 
+    <!--- @hide -->
+    <permission android:name="android.permission.UPDATE_AND_INVALIDATE_PERMISSION_STATE"
+        android:protectionLevel="internal|preinstalled" />
+
     <!-- @SystemApi Allows an application to revoke specific permissions.
         @hide -->
     <permission android:name="android.permission.REVOKE_RUNTIME_PERMISSIONS"
