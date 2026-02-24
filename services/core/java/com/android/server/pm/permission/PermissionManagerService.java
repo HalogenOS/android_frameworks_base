@@ -85,6 +85,7 @@ import com.android.server.pm.permission.PermissionManagerServiceInternal.CheckPe
 import com.android.server.pm.permission.PermissionManagerServiceInternal.HotwordDetectionServiceProvider;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.pm.pkg.PackageState;
+import com.android.server.pm.pkg.PackageStateInternal;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -139,6 +140,34 @@ public class PermissionManagerService extends IPermissionManager.Stub {
 
     @Nullable
     private VirtualDeviceManagerInternal mVirtualDeviceManagerInternal;
+
+    private static final String ANDROID_AUTO_PACKAGE =
+            "com.google.android.projection.gearhead";
+    private static final Set<String> ANDROID_AUTO_CERT_DIGESTS = Set.of(
+            "FDB00C43DBDE8B51CB312AA81D3B5FA17713ADB94B28F598D77F8EB89DACEEDF");
+    private static final Set<String> ANDROID_AUTO_PRIVILEGED_PERMISSIONS = Set.of(
+            "android.permission.MODIFY_AUDIO_ROUTING",
+            "android.permission.REAL_GET_TASKS",
+            "android.permission.LOCAL_MAC_ADDRESS",
+            "android.permission.MANAGE_USB",
+            "android.permission.MANAGE_USERS",
+            "android.permission.BLUETOOTH_PRIVILEGED",
+            "android.permission.TOGGLE_AUTOMOTIVE_PROJECTION",
+            "android.permission.READ_PHONE_NUMBERS",
+            "android.permission.REQUEST_COMPANION_SELF_MANAGED",
+            "android.permission.ACTIVITY_EMBEDDING",
+            "android.permission.CALL_PRIVILEGED",
+            "android.permission.CHANGE_COMPONENT_ENABLED_STATE",
+            "android.permission.COMPANION_APPROVE_WIFI_CONNECTIONS",
+            "android.permission.CONTROL_INCALL_EXPERIENCE",
+            "android.permission.DUMP",
+            "android.permission.LOCATION_HARDWARE",
+            "android.permission.ENTER_CAR_MODE_PRIORITIZED",
+            "android.permission.MODIFY_DAY_NIGHT_MODE",
+            "android.permission.READ_PRIVILEGED_PHONE_STATE",
+            "android.permission.START_ACTIVITIES_FROM_BACKGROUND",
+            "android.permission.UPDATE_APP_OPS_STATS",
+            "android.permission.REQUEST_COMPANION_PROFILE_AUTOMOTIVE_PROJECTION");
 
     PermissionManagerService(@NonNull Context context,
             @NonNull ArrayMap<String, FeatureInfo> availableFeatures) {
@@ -219,6 +248,22 @@ public class PermissionManagerService extends IPermissionManager.Stub {
         }
     }
 
+    private boolean isAndroidAutoPermissionGranted(
+            @Nullable String packageName, @NonNull String permissionName) {
+        if (!ANDROID_AUTO_PRIVILEGED_PERMISSIONS.contains(permissionName)) {
+            return false;
+        }
+        if (!ANDROID_AUTO_PACKAGE.equals(packageName)) {
+            return false;
+        }
+        PackageStateInternal packageState = mPackageManagerInt.getPackageStateInternal(packageName);
+        if (packageState == null) {
+            return false;
+        }
+        return packageState.getSigningDetails()
+                .hasAncestorOrSelfWithDigest(ANDROID_AUTO_CERT_DIGESTS);
+    }
+
     @Override
     @PackageManager.PermissionResult
     public int checkPermission(String packageName, String permissionName, String persistentDeviceId,
@@ -226,6 +271,10 @@ public class PermissionManagerService extends IPermissionManager.Stub {
         // Not using Objects.requireNonNull() here for compatibility reasons.
         if (packageName == null || permissionName == null) {
             return PackageManager.PERMISSION_DENIED;
+        }
+
+        if (isAndroidAutoPermissionGranted(packageName, permissionName)) {
+            return PackageManager.PERMISSION_GRANTED;
         }
 
         final CheckPermissionDelegate checkPermissionDelegate;
@@ -247,6 +296,14 @@ public class PermissionManagerService extends IPermissionManager.Stub {
         // Not using Objects.requireNonNull() here for compatibility reasons.
         if (permissionName == null) {
             return PackageManager.PERMISSION_DENIED;
+        }
+
+        if (ANDROID_AUTO_PRIVILEGED_PERMISSIONS.contains(permissionName)) {
+            AndroidPackage pkg = mPackageManagerInt.getPackage(uid);
+            if (pkg != null
+                    && isAndroidAutoPermissionGranted(pkg.getPackageName(), permissionName)) {
+                return PackageManager.PERMISSION_GRANTED;
+            }
         }
 
         String persistentDeviceId = getPersistentDeviceId(deviceId);
