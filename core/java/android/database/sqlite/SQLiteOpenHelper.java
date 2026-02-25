@@ -19,6 +19,7 @@ package android.database.sqlite;
 import android.annotation.IntRange;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.app.compat.gms.GmsCompat;
 import android.compat.annotation.UnsupportedAppUsage;
 import android.content.Context;
 import android.database.DatabaseErrorHandler;
@@ -26,6 +27,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.os.FileUtils;
 import android.util.Log;
+
+import com.android.internal.gmscompat.GmsHooks;
 
 import java.io.File;
 import java.util.Objects;
@@ -184,6 +187,10 @@ public abstract class SQLiteOpenHelper implements AutoCloseable {
             lock = sDbLock.computeIfAbsent(mName, (String k) -> new Object());
         }
         mLock = lock;
+
+        if (GmsCompat.isEnabled()) {
+            GmsHooks.onSQLiteOpenHelperConstructed(this, context);
+        }
     }
 
     /**

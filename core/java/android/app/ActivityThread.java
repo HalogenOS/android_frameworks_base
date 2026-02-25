@@ -58,6 +58,7 @@ import android.app.backup.BackupAgent;
 import android.app.backup.BackupAnnotations.BackupDestination;
 import android.app.backup.BackupAnnotations.OperationType;
 import android.app.compat.CompatChanges;
+import android.app.compat.gms.GmsCompat;
 import android.app.sdksandbox.sandboxactivity.ActivityContextInfo;
 import android.app.sdksandbox.sandboxactivity.SdkSandboxActivityAuthority;
 import android.app.servertransaction.ActivityLifecycleItem;
@@ -91,6 +92,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.ComponentInfo;
+import android.content.pm.GosPackageState;
 import android.content.pm.IPackageManager;
 import android.content.pm.InstrumentationInfo;
 import android.content.pm.PackageInfo;
@@ -242,6 +244,7 @@ import com.android.internal.annotations.GuardedBy;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.app.IVoiceInteractor;
 import com.android.internal.content.ReferrerIntent;
+import com.android.internal.gmscompat.GmcDebug;
 import com.android.internal.os.ApplicationSharedMemory;
 import com.android.internal.os.BackgroundThread;
 import com.android.internal.os.BinderCallsStats;
@@ -2441,6 +2444,12 @@ public final class ActivityThread extends ClientTransactionHandler
                 throw e.rethrowFromSystemServer();
             }
         }
+
+        @Override
+        public void onGosPackageStateChanged(GosPackageState state) {
+            // this is a oneway method, caller (ActivityManager) will not be blocked
+            ActivityThreadHooks.onGosPackageStateChanged(mInitialApplication, state, false);
+        }
     }
 
     private @NonNull SafeCancellationTransport createSafeCancellationTransport(
@@ -3131,6 +3140,11 @@ public final class ActivityThread extends ClientTransactionHandler
         final IBinder b = ServiceManager.getService("package");
         sPackageManager = IPackageManager.Stub.asInterface(b);
         return sPackageManager;
+    }
+
+    /** @hide */
+    public static void clearCachedPackageManager() {
+        sPackageManager = null;
     }
 
     /** Returns the permission manager */
@@ -4219,6 +4233,10 @@ public final class ActivityThread extends ClientTransactionHandler
         }
     }
 
+    public int getProcessState() {
+        return mLastProcessState;
+    }
+
     @Override
     public void updateProcessState(int processState, boolean fromIpc) {
         synchronized (mAppThread) {
@@ -5298,6 +5316,9 @@ public final class ActivityThread extends ClientTransactionHandler
 
             sCurrentBroadcastIntent.set(data.intent);
             receiver.setPendingResult(data);
+            if (GmsCompat.isEnabled()) {
+                GmcDebug.maybeLogReceiveBroadcast(receiver, data.intent, true);
+            }
             receiver.onReceive(context.getReceiverRestrictedContext(),
                     data.intent);
         } catch (Exception e) {
@@ -5520,8 +5541,14 @@ public final class ActivityThread extends ClientTransactionHandler
             } else {
                 cl = packageInfo.getClassLoader();
             }
-            service = packageInfo.getAppFactory()
-                    .instantiateService(cl, data.info.name, data.intent);
+            {
+                String className = data.info.name;
+                service = ActivityThreadHooks.instantiateService(className);
+                if (service == null) {
+                    service = packageInfo.getAppFactory()
+                            .instantiateService(cl, className, data.intent);
+                }
+            }
             ContextImpl context = ContextImpl.getImpl(service
                     .createServiceBaseContext(this, packageInfo));
             if (data.info.splitName != null) {
@@ -5701,6 +5728,15 @@ public final class ActivityThread extends ClientTransactionHandler
                 r.mLocalProvider.dump(info.fd.getFileDescriptor(), pw, info.args);
                 pw.flush();
             }
+        } catch (NoSuchMethodError e) {
+            if (android.app.compat.gms.GmsCompat.isEnabled()) {
+                // one of the GSF content providers accesses a hidden method from ContentProvider.dump(),
+                // which leads to a confusing crash when a bugreport is being taken (dumps of all
+                // of the active ContentProviders are included in bugreports)
+                Log.d(TAG, "handleDumpProvider", e);
+            } else {
+                throw e;
+            }
         } finally {
             IoUtils.closeQuietly(info.fd);
             StrictMode.setThreadPolicy(oldPolicy);
@@ -5719,6 +5755,9 @@ public final class ActivityThread extends ClientTransactionHandler
                 }
                 int res;
                 if (!data.taskRemoved) {
+                    if (GmsCompat.isEnabled()) {
+                        GmcDebug.maybeLogServiceOnStartCommand(s, data.args, data.flags, data.startId);
+                    }
                     res = s.onStartCommand(data.args, data.flags, data.startId);
                 } else {
                     s.onTaskRemoved(data.args);
@@ -8007,6 +8046,7 @@ public final class ActivityThread extends ClientTransactionHandler
         final IActivityManager mgr = ActivityManager.getService();
         final ContextImpl appContext = ContextImpl.createAppContext(this, data.info);
         mConfigurationController.updateLocaleListFromAppContext(appContext);
+        final Bundle extraAppBindArgs = ActivityThreadHooks.onBind(appContext);
 
         // Initialize the default http proxy in this process.
         Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, "Setup proxies");
@@ -8064,6 +8104,10 @@ public final class ActivityThread extends ClientTransactionHandler
             // Small heap, clamp to the current growth limit and let the heap release
             // pages after the growth limit to the non growth limit capacity. b/18387825
             dalvik.system.VMRuntime.getRuntime().clampGrowthLimit();
+        }
+
+        if (extraAppBindArgs != null) {
+            ActivityThreadHooks.onBind2(appContext, extraAppBindArgs);
         }
 
         // Allow disk access during application and provider setup. This could

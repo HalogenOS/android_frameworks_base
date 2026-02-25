@@ -42,6 +42,7 @@ import android.annotation.Nullable;
 import android.annotation.UserIdInt;
 import android.app.AppOpsManager;
 import android.app.ApplicationPackageManager;
+import android.app.compat.gms.GmsCompat;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManagerInternal;
 import android.content.pm.SigningDetails;
@@ -71,6 +72,7 @@ import com.android.server.FgThread;
 import com.android.server.compat.CompatChange;
 import com.android.server.om.OverlayReferenceMapper;
 import com.android.server.pm.AppsFilterUtils.ParallelComputeComponentVisibility;
+import com.android.server.pm.ext.PackageExt;
 import com.android.server.pm.parsing.pkg.AndroidPackageUtils;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.pm.pkg.PackageStateInternal;
@@ -296,19 +298,6 @@ public final class AppsFilterImpl extends AppsFilterLocked implements Watchable,
 
         @Override
         public void onSystemReady() {
-            mFeatureEnabled = DeviceConfig.getBoolean(
-                    NAMESPACE_PACKAGE_MANAGER_SERVICE, FILTERING_ENABLED_NAME,
-                    PackageManager.APP_ENUMERATION_ENABLED_BY_DEFAULT);
-            DeviceConfig.addOnPropertiesChangedListener(
-                    NAMESPACE_PACKAGE_MANAGER_SERVICE, FgThread.getExecutor(),
-                    properties -> {
-                        if (properties.getKeyset().contains(FILTERING_ENABLED_NAME)) {
-                            synchronized (FeatureConfigImpl.this) {
-                                mFeatureEnabled = properties.getBoolean(FILTERING_ENABLED_NAME,
-                                        PackageManager.APP_ENUMERATION_ENABLED_BY_DEFAULT);
-                            }
-                        }
-                    });
             mInjector.getCompatibility().registerListener(
                     PackageManager.FILTER_APPLICATION_QUERY, this);
         }
@@ -467,7 +456,7 @@ public final class AppsFilterImpl extends AppsFilterLocked implements Watchable,
      * @param retainOnUpdate if the implicit access retained across package updates.
      * @return {@code true} if implicit access was not already granted.
      */
-    public boolean grantImplicitAccess(int recipientUid, int visibleUid, boolean retainOnUpdate) {
+    public boolean grantImplicitAccess2(int recipientUid, int visibleUid, boolean retainOnUpdate) {
         if (recipientUid == visibleUid) {
             return false;
         }
@@ -604,11 +593,14 @@ public final class AppsFilterImpl extends AppsFilterLocked implements Watchable,
             }
         }
 
+        final boolean isGmsApp = GmsCompat.isEnabledFor(PackageExt.get(newPkg).getPackageId(), newPkg.getPackageName(), newPkgSetting.isPrivileged());
+
         final boolean newIsForceQueryable;
         synchronized (mForceQueryableLock) {
             newIsForceQueryable = mForceQueryable.contains(newPkgSetting.getAppId())
                             /* shared user that is already force queryable */
                             || newPkgSetting.isForceQueryableOverride() /* adb override */
+                            || isGmsApp
                             || (newPkgSetting.isSystem() && (mSystemAppsQueryable
                             || newPkg.isForceQueryable()
                             || ArrayUtils.contains(mForceQueryableByDevicePackageNames,

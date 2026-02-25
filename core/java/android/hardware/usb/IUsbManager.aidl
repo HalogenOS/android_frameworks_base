@@ -146,14 +146,14 @@ interface IUsbManager
     boolean isUvcGadgetSupportEnabled();
 
     /* Sets the current USB function. */
-    @EnforcePermission("MANAGE_USB")
+    @EnforcePermission(anyOf={"MANAGE_USB", "MANAGE_USB_ANDROID_AUTO"})
     void setCurrentFunctions(long functions, int operationId);
 
     /* Compatibility version of setCurrentFunctions(long). */
     void setCurrentFunction(String function, boolean usbDataUnlocked, int operationId);
 
     /* Gets the current USB functions. */
-    @EnforcePermission("MANAGE_USB")
+    @EnforcePermission(anyOf={"MANAGE_USB", "MANAGE_USB_ANDROID_AUTO"})
     long getCurrentFunctions();
 
     /* Gets the current USB Speed. */
@@ -175,7 +175,7 @@ interface IUsbManager
     long getScreenUnlockedFunctions();
 
     /* Resets the USB gadget. */
-    @EnforcePermission("MANAGE_USB")
+    @EnforcePermission(anyOf={"MANAGE_USB", "MANAGE_USB_ANDROID_AUTO"})
     void resetUsbGadget();
 
     /* Resets the USB port. */
@@ -199,7 +199,7 @@ interface IUsbManager
     ParcelFileDescriptor getControlFd(long function);
 
     /* Gets the list of USB ports. */
-    @EnforcePermission("MANAGE_USB")
+    @EnforcePermission(anyOf={"MANAGE_USB", "MANAGE_USB_ANDROID_AUTO"})
     List<ParcelableUsbPort> getPorts();
 
     /* Gets the status of the specified USB port. */

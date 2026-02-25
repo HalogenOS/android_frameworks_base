@@ -90,6 +90,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.GosPackageState;
 import android.content.pm.IPackageManager;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManagerInternal;
@@ -2543,16 +2544,18 @@ public final class ProcessList implements ProcessStateController.ProcessLruUpdat
                 allowlistedAppDataInfoMap = null;
             }
 
-            boolean bindOverrideSysprops = false;
-            if (Build.IS_USERDEBUG || Build.IS_ENG) {
-                final String[] syspropOverridePkgNames = DeviceConfig.getString(
-                        DeviceConfig.NAMESPACE_APP_COMPAT,
-                                "appcompat_sysprop_override_pkgs", "").split(",");
-                final String[] pkgs = app.getProcessPackageNames();
-                for (int i = 0; i < pkgs.length; i++) {
-                    if (ArrayUtils.contains(syspropOverridePkgNames, pkgs[i])) {
-                        bindOverrideSysprops = true;
-                        break;
+            boolean bindOverrideSysprops = !app.info.isSystemApp();
+            if (!bindOverrideSysprops) {
+                if (Build.IS_USERDEBUG || Build.IS_ENG) {
+                    final String[] syspropOverridePkgNames = DeviceConfig.getString(
+                            DeviceConfig.NAMESPACE_APP_COMPAT,
+                                    "appcompat_sysprop_override_pkgs", "").split(",");
+                    final String[] pkgs = app.getProcessPackageNames();
+                    for (int i = 0; i < pkgs.length; i++) {
+                        if (ArrayUtils.contains(syspropOverridePkgNames, pkgs[i])) {
+                            bindOverrideSysprops = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -3669,6 +3672,27 @@ public final class ProcessList implements ProcessStateController.ProcessLruUpdat
                 } catch (RemoteException ex) {
                     Slog.w(TAG, "Failed to handle trust storage update for: " +
                             r.info.processName);
+                }
+            }
+        }
+    }
+
+    @GuardedBy(anyOf = {"mService", "mProcLock"})
+    void onGosPackageStateChangedLOSP(int uid, GosPackageState state) {
+        for (int i = mLruProcesses.size() - 1; i >= 0; i--) {
+            ProcessRecord r = mLruProcesses.get(i);
+            if (r.uid != uid) {
+                // isolated and "sdk sandbox" processes are skipped intentionally (they run in
+                // separate UIDs)
+                continue;
+            }
+            final IApplicationThread thread = r.getThread();
+            if (thread != null) {
+                try {
+                    thread.onGosPackageStateChanged(state);
+                } catch (RemoteException ex) {
+                    Slog.d(TAG, "onGosPackageStateChanged failed; uid " + uid
+                            + ", processName " + r.info.processName);
                 }
             }
         }

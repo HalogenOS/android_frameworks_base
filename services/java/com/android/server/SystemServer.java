@@ -112,6 +112,8 @@ import com.android.internal.os.BinderInternal;
 import com.android.internal.os.RuntimeInit;
 import com.android.internal.os.logging.MetricsLoggerWrapper;
 import com.android.internal.pm.RoSystemFeatures;
+import com.android.internal.pm.parsing.pkg.PackageImpl;
+import com.android.internal.pm.pkg.parsing.ParsingPackageUtils;
 import com.android.internal.policy.AttributeCache;
 import com.android.internal.protolog.ProtoLog;
 import com.android.internal.protolog.ProtoLogConfigurationServiceImpl;
@@ -231,6 +233,9 @@ import com.android.server.pm.PackageManagerService;
 import com.android.server.pm.ShortcutService;
 import com.android.server.pm.UserManagerService;
 import com.android.server.pm.dex.OdsignStatsLogger;
+import com.android.server.pm.ext.GmsCompatPkgParsingHooks;
+import com.android.server.pm.ext.PackageExtInit;
+import com.android.server.pm.ext.PackageHooksRegistry;
 import com.android.server.pm.permission.PermissionMigrationHelper;
 import com.android.server.pm.permission.PermissionMigrationHelperImpl;
 import com.android.server.pm.verify.domain.DomainVerificationService;
@@ -710,6 +715,12 @@ public final class SystemServer implements Dumpable {
      */
     public static void main(String[] args) {
         new SystemServer().run();
+    }
+
+    static {
+        PackageImpl.packageParsingHooksSupplier = PackageHooksRegistry::getParsingHooks;
+        ParsingPackageUtils.packageExtInitSupplier = PackageExtInit::new;
+        ParsingPackageUtils.gmsCompatClientServiceSupplier = GmsCompatPkgParsingHooks::maybeCreateClientService;
     }
 
     public SystemServer() {
@@ -3589,6 +3600,8 @@ public final class SystemServer implements Dumpable {
                 reportWtf("Triggering OdsignStatsLogger", e);
             }
             t.traceEnd();
+
+            com.android.server.ext.SystemServerExt.init(mSystemContext, mPackageManagerService);
         }, t);
 
         t.traceBegin("LockSettingsThirdPartyAppsStarted");

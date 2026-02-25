@@ -68,6 +68,7 @@ import com.android.server.PermissionThread
 import com.android.server.ServiceThread
 import com.android.server.SystemConfig
 import com.android.server.companion.virtual.VirtualDeviceManagerInternal
+import com.android.server.ext.PackageManagerHooks
 import com.android.server.permission.access.AccessCheckingService
 import com.android.server.permission.access.AccessState
 import com.android.server.permission.access.AppOpUri
@@ -91,12 +92,16 @@ import com.android.server.pm.PackageManagerService
 import com.android.server.pm.PackageMetrics
 import com.android.server.pm.UserManagerInternal
 import com.android.server.pm.UserManagerService
+import com.android.server.pm.ext.PackageExt
+import com.android.server.pm.ext.PackageHooks
 import com.android.server.pm.permission.LegacyPermission
 import com.android.server.pm.permission.LegacyPermissionSettings
 import com.android.server.pm.permission.LegacyPermissionState
 import com.android.server.pm.permission.Permission as LegacyPermission2
 import com.android.server.pm.permission.PermissionManagerServiceInterface
 import com.android.server.pm.permission.PermissionManagerServiceInternal
+import com.android.server.pm.permission.SpecialRuntimePermUtils
+import com.android.server.pm.permission.SpecialRuntimePermUtils.isSpecialRuntimePermission
 import com.android.server.pm.pkg.AndroidPackage
 import com.android.server.pm.pkg.PackageState
 import java.io.FileDescriptor
@@ -882,6 +887,18 @@ class PermissionService(private val service: AccessCheckingService) :
                 Manifest.permission.ADJUST_RUNTIME_PERMISSIONS_POLICY
             ) == PackageManager.PERMISSION_GRANTED
 
+        if (isGranted) {
+            if (PackageManagerHooks.shouldBlockGrantRuntimePermission(packageManagerInternal,
+                    permissionName, packageName, userId)) {
+                return
+            }
+        } else {
+            if (PackageExt.get(androidPackage).hooks().overridePermissionState(
+                    permissionName, userId) == PackageHooks.PERMISSION_OVERRIDE_GRANT) {
+                throw IllegalArgumentException("$permissionName is granted by PackageHooks for $packageName")
+            }
+        }
+
         service.mutateState {
             with(onPermissionFlagsChangedListener) {
                 if (skipKillUid) {
@@ -934,27 +951,41 @@ class PermissionService(private val service: AccessCheckingService) :
                     permission.isDevelopment || permission.isRuntime -> {
                         if (
                             permissionState ==
-                                PackageInstaller.SessionParams.PERMISSION_STATE_GRANTED
+                                PackageInstaller.SessionParams.PERMISSION_STATE_GRANTED ||
+                            permissionState ==
+                                PackageInstaller.SessionParams.PERMISSION_STATE_DENIED
                         ) {
                             setRuntimePermissionGranted(
                                 packageState,
                                 userId,
                                 permissionName,
                                 VirtualDeviceManager.PERSISTENT_DEVICE_ID_DEFAULT,
-                                isGranted = true,
+                                isGranted = permissionState == PackageInstaller.SessionParams.PERMISSION_STATE_GRANTED,
                                 canManageRolePermission = false,
                                 overridePolicyFixed = false,
                                 reportError = false,
                                 "setRequestedPermissionStates",
                             )
+
+                            var extraFlagMask = 0
+                            var extraFlags = 0
+                            if (permissionName == android.Manifest.permission.INTERNET) {
+                                // INTERNET permission is never set automatically pre-install
+                                // and PackageHooks checks USER_SET flag when overriding permission
+                                // state
+                                extraFlagMask = PackageManager.FLAG_PERMISSION_USER_SET
+                                extraFlags = PackageManager.FLAG_PERMISSION_USER_SET
+                            }
+
                             updatePermissionFlags(
                                 packageState.appId,
                                 userId,
                                 permissionName,
                                 VirtualDeviceManager.PERSISTENT_DEVICE_ID_DEFAULT,
                                 PackageManager.FLAG_PERMISSION_REVIEW_REQUIRED or
+                                    extraFlagMask or
                                     PackageManager.FLAG_PERMISSION_REVOKED_COMPAT,
-                                0,
+                                extraFlags,
                                 canUpdateSystemFlags = false,
                                 reportErrorForUnknownPermission = false,
                                 isPermissionRequested = true,
@@ -1012,7 +1043,8 @@ class PermissionService(private val service: AccessCheckingService) :
                 }
             }
             permission.isRuntime -> {
-                if (androidPackage.targetSdkVersion < Build.VERSION_CODES.M) {
+                if (androidPackage.targetSdkVersion < Build.VERSION_CODES.M
+                        && !isSpecialRuntimePermission(permissionName)) {
                     // If a permission review is required for legacy apps we represent
                     // their permissions as always granted
                     return
@@ -2500,7 +2532,17 @@ class PermissionService(private val service: AccessCheckingService) :
                 params.allowlistedRestrictedPermissions,
                 userId,
             )
-            setRequestedPermissionStates(packageState, userId, params.permissionStates)
+            val permissionStates = ArrayMap(params.permissionStates)
+            if (params.isNewlyInstalledInUserId(userId)) {
+                SpecialRuntimePermUtils.getAll().forEach { perm ->
+                    if (!permissionStates.contains(perm)) {
+                        if (SpecialRuntimePermUtils.shouldAutoGrant(context, androidPackage.packageName, userId, perm)) {
+                            permissionStates.set(perm, PackageInstaller.SessionParams.PERMISSION_STATE_GRANTED)
+                        }
+                    }
+                }
+            }
+            setRequestedPermissionStates(packageState, userId, permissionStates)
         }
     }
 
@@ -2869,5 +2911,13 @@ class PermissionService(private val service: AccessCheckingService) :
 
         fun getFullerPermission(permissionName: String): String? =
             FULLER_PERMISSIONS[permissionName]
+    }
+
+    override fun updatePermissions(pkgState: PackageState, userId: Int) {
+        service.mutateState {
+            with(policy) {
+                evaluateAllPermissionStatesForPackageAndUser(pkgState, userId, null)
+            }
+        }
     }
 }

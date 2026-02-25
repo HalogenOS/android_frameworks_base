@@ -21,6 +21,7 @@ import android.content.pm.PackageManager
 import android.content.pm.PermissionGroupInfo
 import android.content.pm.PermissionInfo
 import android.content.pm.SigningDetails
+import android.content.pm.SpecialRuntimePermAppUtils
 import android.health.connect.HealthPermissions
 import android.os.Build
 import android.permission.flags.Flags
@@ -44,7 +45,11 @@ import com.android.server.permission.access.util.hasAnyBit
 import com.android.server.permission.access.util.hasBits
 import com.android.server.permission.access.util.isInternal
 import com.android.server.pm.KnownPackages
+import com.android.server.pm.ext.PackageExt
+import com.android.server.pm.ext.PackageHooks
 import com.android.server.pm.parsing.PackageInfoUtils
+import com.android.server.pm.permission.SpecialRuntimePermUtils
+import com.android.server.pm.permission.SpecialRuntimePermUtils.isSpecialRuntimePermission
 import com.android.server.pm.pkg.AndroidPackage
 import com.android.server.pm.pkg.PackageState
 import libcore.util.EmptyArray
@@ -290,6 +295,9 @@ class AppIdPermissionPolicy : SchemePolicy() {
             }
             val oldFlags = getPermissionFlags(appId, userId, permissionName)
             if (oldFlags.hasAnyBit(SYSTEM_OR_POLICY_FIXED_MASK)) {
+                return@forEach
+            }
+            if (isSpecialRuntimePermission(permissionName)) {
                 return@forEach
             }
             var newFlags = oldFlags
@@ -938,18 +946,48 @@ class AppIdPermissionPolicy : SchemePolicy() {
         }
     }
 
-    private fun MutateStateScope.evaluateAllPermissionStatesForPackageAndUser(
+    fun MutateStateScope.evaluateAllPermissionStatesForPackageAndUser(
         packageState: PackageState,
         userId: Int,
         installedPackageState: PackageState?,
     ) {
-        packageState.androidPackage?.requestedPermissions?.forEach { permissionName ->
-            evaluatePermissionState(
-                packageState.appId,
-                userId,
-                permissionName,
-                installedPackageState,
-            )
+        val androidPackage = packageState.androidPackage
+        if (androidPackage != null) {
+            val pkgHooks = PackageExt.get(androidPackage).hooks()
+            androidPackage.requestedPermissions.forEach { permissionName ->
+                val appId = packageState.appId
+                evaluatePermissionState(
+                    appId,
+                    userId,
+                    permissionName,
+                    installedPackageState,
+                )
+
+                val override = pkgHooks.overridePermissionState(permissionName, userId)
+                var flags = -1
+                if (override == PackageHooks.PERMISSION_OVERRIDE_GRANT) {
+                    flags = PermissionFlags.SYSTEM_FIXED or PermissionFlags.RUNTIME_GRANTED
+                } else if (override == PackageHooks.PERMISSION_OVERRIDE_REVOKE) {
+                    if (!getPermissionFlags(appId, userId, permissionName).hasBits(PermissionFlags.USER_SET)) {
+                        flags = 0
+                    }
+                }
+
+                if (flags != -1) {
+                    val mask = PermissionFlags.ROLE or
+                            PermissionFlags.RUNTIME_GRANTED or
+                            PermissionFlags.USER_SET or
+                            PermissionFlags.USER_FIXED or
+                            PermissionFlags.POLICY_FIXED or
+                            PermissionFlags.SYSTEM_FIXED or
+                            PermissionFlags.PREGRANT or
+                            PermissionFlags.LEGACY_GRANTED or
+                            PermissionFlags.APP_OP_REVOKED or
+                            PermissionFlags.ONE_TIME or
+                            PermissionFlags.HIBERNATION
+                    updatePermissionFlags(appId, userId, permissionName, mask, flags)
+                }
+            }
         }
     }
 
@@ -1111,7 +1149,7 @@ class AppIdPermissionPolicy : SchemePolicy() {
                     packageState ->
                     targetSdkVersion.coerceAtMost(packageState.androidPackage!!.targetSdkVersion)
                 }
-            if (targetSdkVersion < Build.VERSION_CODES.M) {
+            if (targetSdkVersion < Build.VERSION_CODES.M && !isSpecialRuntimePermission(permissionName)) {
                 if (permission.isRuntimeOnly) {
                     // Different from the old implementation, which simply skips a runtime-only
                     // permission, we now only allow holding on to the restriction related flags,
@@ -1256,6 +1294,14 @@ class AppIdPermissionPolicy : SchemePolicy() {
                 } else {
                     newFlags andInv PermissionFlags.SOFT_RESTRICTED
                 }
+
+
+            if (!newFlags.hasBits(PermissionFlags.USER_SET)
+                    && isSpecialRuntimePermission(permissionName)
+                    && requestingPackageStates.anyIndexed { _, it -> it.isSystem }) {
+                newFlags = newFlags or PermissionFlags.RUNTIME_GRANTED
+            }
+
             setPermissionFlags(appId, userId, permissionName, newFlags)
         } else {
             Slog.e(

@@ -815,6 +815,15 @@ public class IntentFilter implements Parcelable {
         mActions.add(action.intern());
     }
 
+    /** @hide */
+    public final boolean replaceAction(String action, String replacement) {
+        if (mActions.remove(action)) {
+            mActions.add(replacement);
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Return the number of actions in the filter.
      */

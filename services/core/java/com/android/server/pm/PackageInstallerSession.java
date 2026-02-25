@@ -145,6 +145,7 @@ import android.content.res.ApkAssets;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.ext.PackageId;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.util.ULocale;
@@ -219,6 +220,7 @@ import com.android.server.Watchdog;
 import com.android.server.art.ArtManagedInstallFileHelper;
 import com.android.server.art.model.ValidationResult;
 import com.android.server.pm.Installer.InstallerException;
+import com.android.server.pm.ext.PackageExt;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.pm.pkg.PackageStateInternal;
 import com.android.server.pm.verify.developer.DeveloperVerificationStatusInternal;
@@ -4623,6 +4625,23 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
         final PackageManagerInternal pmi = LocalServices.getService(PackageManagerInternal.class);
         final PackageStateInternal existingPkgSetting = pmi.getPackageStateInternal(mPackageName);
 
+        if (existingPkgSetting != null && (existingPkgSetting.isSystem() || existingPkgSetting.isUpdatedSystemApp())) {
+            String firstPartyInstaller = android.util.PackageUtils.getFirstPartyAppSourcePackageName(mContext);
+            boolean isFirstPartyInstaller = firstPartyInstaller.equals(mInstallSource.mInitiatingPackageName);
+            if (!isFirstPartyInstaller && mInstallerUid != Process.SHELL_UID) {
+                String debugSysprop = "persist.allow_unknown_system_app_updates";
+                boolean allow = Build.IS_DEBUGGABLE
+                        && SystemProperties.getBoolean(debugSysprop, false);
+                if (!allow) {
+                    String msg = "System app updates from unknown sources are blocked";
+                    if (Build.IS_DEBUGGABLE) {
+                        msg += ". To unblock them, run setprop persist.allow_unknown_system_app_updates 1";
+                    }
+                    throw new PackageManagerException(PackageManager.INSTALL_FAILED_SESSION_INVALID, msg);
+                }
+            }
+        }
+
         if (!isInstallationAllowed(existingPkgSetting)) {
             throw new PackageManagerException(
                     PackageManager.INSTALL_FAILED_SESSION_INVALID,
@@ -4906,6 +4925,64 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
         // {@link #sendPendingUserActionIntentIfNeeded} needs to use
         // {@link PackageLite#getTargetSdk()}
         mValidatedTargetSdk = packageLite.getTargetSdk();
+
+        if (mPackageName.equals(PackageId.GSF_NAME)) {
+            // Installation of GSF is not needed for GmsCompat. However, other apps might use
+            // package that holds the GSF package name without permission checks since GSF is a
+            // preinstalled package on GMS Android.
+            throw new PackageManagerException(INSTALL_FAILED_SESSION_INVALID, "GSF installation is not allowed");
+        }
+
+        final String initiatingPackageName = mInstallSource.mInitiatingPackageName;
+        if (initiatingPackageName != null && !isInstallerShell
+                && !android.util.PackageUtils.getFirstPartyAppSourcePackageName(mContext)
+                        .equals(initiatingPackageName)) {
+            final int errorCode = PackageManager.INSTALL_FAILED_SESSION_INVALID;
+
+            boolean isInstallerPlayStore = false;
+            if (PackageId.PLAY_STORE_NAME.equals(initiatingPackageName)) {
+                AndroidPackage pkg = pmi.getPackage(PackageId.PLAY_STORE_NAME);
+                isInstallerPlayStore = pkg != null && PackageExt.get(pkg).getPackageId() == PackageId.PLAY_STORE;
+            }
+
+            boolean skipExtraChecks = isInstallerPlayStore &&
+                     com.android.internal.gmscompat.PlayStoreHooks.isInstallAllowed(mPackageName,
+                             mContext.getContentResolver());
+
+            if (!skipExtraChecks) {
+                switch (mPackageName) {
+                    case PackageId.GMS_CORE_NAME:
+                    case PackageId.PLAY_STORE_NAME: {
+                        if (isInstallerPlayStore) {
+                            if (mVersionCode <= params.maxAllowedVersion) {
+                                break;
+                            }
+
+                            // lock that is held at this point is per-session lock, call into
+                            // PackageManager is safe
+                            AndroidPackage pkg = pmi.getPackage(mPackageName);
+                            if (pkg != null && pkg.getLongVersionCode() == mVersionCode) {
+                                break;
+                            }
+
+                            String msg = "Installation of " + mPackageName + " version " + mVersionCode
+                                        + " is blocked to prevent breaking gmscompat. " +
+                                        "Max allowed version is " + params.maxAllowedVersion;
+                            throw new PackageManagerException(errorCode, msg);
+                        }
+
+                        String msg = "Installation of " + mPackageName
+                                + " is blocked to prevent breaking gmscompat";
+                        throw new PackageManagerException(errorCode, msg);
+                    }
+                    case PackageId.ANDROID_AUTO_NAME:
+                    case PackageId.PIXEL_HEALTH_NAME:
+                        throw new PackageManagerException(errorCode,
+                                "Only the first-party package source and shell are allowed " +
+                                        "to install " + PackageId.PIXEL_HEALTH_NAME);
+                }
+            }
+        }
 
         return packageLite;
     }
@@ -6160,6 +6237,11 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
     }
 
     @Override
+    public int getId() {
+        return sessionId;
+    }
+
+    @Override
     public int getParentSessionId() {
         synchronized (mLock) {
             return mParentSessionId;
@@ -7224,5 +7306,23 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
                 developerVerifierController,
                 initialVerificationPolicy, currentVerificationPolicy, installDependencyHelper,
                 /* restoredOnReboot= */ true);
+    }
+
+    void updatePermissionStates(String[] permissionNames, int[] states) {
+        int num = permissionNames.length;
+        if (num != states.length) {
+            throw new IllegalArgumentException("array length mismatch");
+        }
+
+        synchronized (mLock) {
+            ArrayMap<String, Integer> updatedStates = new ArrayMap<>(params.getPermissionStates());
+            for (int i = 0; i < num; ++i) {
+                PackageInstaller.SessionParams.setPermissionState(updatedStates,
+                        permissionNames[i], states[i]);
+            }
+            params.replacePermissionStates(updatedStates);
+        }
+
+        mCallback.onSessionChanged(this);
     }
 }

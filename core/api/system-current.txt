@@ -106,6 +106,7 @@ package android {
     field public static final String BIND_WALLPAPER_EFFECTS_GENERATION_SERVICE = "android.permission.BIND_WALLPAPER_EFFECTS_GENERATION_SERVICE";
     field public static final String BIND_WEARABLE_SENSING_SERVICE = "android.permission.BIND_WEARABLE_SENSING_SERVICE";
     field public static final String BLUETOOTH_MAP = "android.permission.BLUETOOTH_MAP";
+    field public static final String BLUETOOTH_PRIVILEGED_ANDROID_AUTO = "android.permission.BLUETOOTH_PRIVILEGED_ANDROID_AUTO";
     field public static final String BRICK = "android.permission.BRICK";
     field public static final String BRIGHTNESS_SLIDER_USAGE = "android.permission.BRIGHTNESS_SLIDER_USAGE";
     field public static final String BROADCAST_CLOSE_SYSTEM_DIALOGS = "android.permission.BROADCAST_CLOSE_SYSTEM_DIALOGS";
@@ -455,6 +456,7 @@ package android {
     field public static final String WHITELIST_AUTO_REVOKE_PERMISSIONS = "android.permission.WHITELIST_AUTO_REVOKE_PERMISSIONS";
     field public static final String WHITELIST_RESTRICTED_PERMISSIONS = "android.permission.WHITELIST_RESTRICTED_PERMISSIONS";
     field public static final String WIFI_ACCESS_COEX_UNSAFE_CHANNELS = "android.permission.WIFI_ACCESS_COEX_UNSAFE_CHANNELS";
+    field public static final String WIFI_PRIVILEGED_ANDROID_AUTO = "android.permission.WIFI_PRIVILEGED_ANDROID_AUTO";
     field public static final String WIFI_SET_DEVICE_MOBILITY_STATE = "android.permission.WIFI_SET_DEVICE_MOBILITY_STATE";
     field public static final String WIFI_UPDATE_COEX_UNSAFE_CHANNELS = "android.permission.WIFI_UPDATE_COEX_UNSAFE_CHANNELS";
     field public static final String WIFI_UPDATE_USABILITY_STATS_SCORE = "android.permission.WIFI_UPDATE_USABILITY_STATS_SCORE";
@@ -1213,6 +1215,24 @@ package android.app {
     method public boolean isRecentsDisabled();
     method public boolean isSearchDisabled();
     method public boolean isStatusBarExpansionDisabled();
+  }
+
+  public final class StorageScope {
+    ctor public StorageScope(@NonNull String, int);
+    method @NonNull public static android.content.Intent createConfigActivityIntent(@NonNull String);
+    method @NonNull public static android.app.StorageScope[] deserializeArray(@NonNull android.content.pm.GosPackageState);
+    method public boolean isDirectory();
+    method public boolean isFile();
+    method public boolean isWritable();
+    method public static int maxArrayLength();
+    method @Nullable public static byte[] serializeArray(@NonNull android.app.StorageScope[]);
+    field public static final String EXTERNAL_STORAGE_PROVIDER_METHOD_CONVERT_DOC_ID_TO_PATH = "StorageScopes_convertDocIdToPath";
+    field public static final int FLAG_ALLOW_WRITES = 1; // 0x1
+    field public static final int FLAG_IS_DIR = 2; // 0x2
+    field public static final String MEDIA_PROVIDER_METHOD_INVALIDATE_MEDIA_PROVIDER_CACHE = "StorageScopes_invalidateCache";
+    field public static final String MEDIA_PROVIDER_METHOD_MEDIA_ID_TO_FILE_PATH = "StorageScopes_mediaIdToFilePath";
+    field public final int flags;
+    field @NonNull public final String path;
   }
 
   public final class SystemServiceRegistry {
@@ -2229,6 +2249,30 @@ package android.app.compat {
     method @NonNull public android.app.compat.PackageOverride.Builder setEnabled(boolean);
     method @NonNull public android.app.compat.PackageOverride.Builder setMaxVersionCode(long);
     method @NonNull public android.app.compat.PackageOverride.Builder setMinVersionCode(long);
+  }
+
+}
+
+package android.app.compat.gms {
+
+  public interface AndroidAutoPackageFlag {
+    field public static final int GRANT_AUDIO_ROUTING_PERM = 2; // 0x2
+    field public static final int GRANT_PERMS_FOR_ANDROID_AUTO_PHONE_CALLS = 3; // 0x3
+    field public static final int GRANT_PERMS_FOR_WIRED_ANDROID_AUTO = 0; // 0x0
+    field public static final int GRANT_PERMS_FOR_WIRELESS_ANDROID_AUTO = 1; // 0x1
+  }
+
+  public final class GmsCompat {
+    method public static void catchOrRethrow(@NonNull SecurityException);
+    method public static boolean hasPermission(@NonNull String);
+    method public static boolean isAndroidAuto();
+    method public static boolean isEnabled();
+    method public static boolean isEnabledFor(@NonNull android.content.pm.ApplicationInfo);
+    method public static boolean isEnabledFor(@NonNull String, int);
+  }
+
+  public class GmsUtils {
+    method @NonNull public static android.content.Intent createAppPlayStoreIntent(@NonNull String);
   }
 
 }
@@ -4023,6 +4067,7 @@ package android.content {
     method public abstract android.content.Context createCredentialProtectedStorageContext();
     method @NonNull public android.content.Context createPackageContextAsUser(@NonNull String, int, @NonNull android.os.UserHandle) throws android.content.pm.PackageManager.NameNotFoundException;
     method @Nullable public abstract java.io.File getPreloadsFileCache();
+    method @NonNull public android.os.UserHandle getUser();
     method public abstract boolean isCredentialProtectedStorage();
     method @Nullable @RequiresPermission(android.Manifest.permission.INTERACT_ACROSS_USERS_FULL) public android.content.Intent registerReceiverForAllUsers(@Nullable android.content.BroadcastReceiver, @NonNull android.content.IntentFilter, @Nullable String, @Nullable android.os.Handler);
     method @Nullable @RequiresPermission(android.Manifest.permission.INTERACT_ACROSS_USERS_FULL) public android.content.Intent registerReceiverForAllUsers(@Nullable android.content.BroadcastReceiver, @NonNull android.content.IntentFilter, @Nullable String, @Nullable android.os.Handler, int);
@@ -4267,7 +4312,13 @@ package android.content.om {
 
 package android.content.pm {
 
+  public class AppPermissionUtils {
+    method public static boolean shouldSkipPermissionRequestDialog(@NonNull android.content.pm.GosPackageState, @NonNull String);
+    method public static boolean shouldSpoofPermissionRequestResult(@NonNull android.content.pm.GosPackageState, @NonNull String);
+  }
+
   public class ApplicationInfo extends android.content.pm.PackageItemInfo implements android.os.Parcelable {
+    method @NonNull public android.ext.AppInfoExt ext();
     method @RequiresPermission(android.Manifest.permission.DELETE_PACKAGES) public boolean hasFragileUserData();
     method public boolean isEncryptionAware();
     method public boolean isInstantApp();
@@ -4290,6 +4341,46 @@ package android.content.pm {
     method @NonNull public final String getArguments();
     method @NonNull public final android.content.ComponentName getComponentName();
     method @NonNull public final int getType();
+  }
+
+  public final class GosPackageState implements android.os.Parcelable {
+    method @NonNull public android.content.pm.GosPackageState.Editor createEditor(@NonNull String, @NonNull android.os.UserHandle);
+    method @NonNull public android.content.pm.GosPackageState.Editor createEditor(@NonNull String, int);
+    method public int describeContents();
+    method @NonNull public static android.content.pm.GosPackageState.Editor edit(@NonNull String, @NonNull android.os.UserHandle);
+    method @NonNull public static android.content.pm.GosPackageState.Editor edit(@NonNull String, int);
+    method @NonNull public static android.content.pm.GosPackageState get(@NonNull String, @NonNull android.os.UserHandle);
+    method @NonNull public static android.content.pm.GosPackageState get(@NonNull String, int);
+    method @NonNull public static android.content.pm.GosPackageState getForSelf(@NonNull android.content.Context);
+    method public boolean hasDerivedFlag(int);
+    method public boolean hasDerivedFlags(int);
+    method public boolean hasFlag(int);
+    method public boolean hasPackageFlag(int);
+    method public boolean isNone();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.content.pm.GosPackageState> CREATOR;
+    field @Nullable public final byte[] contactScopes;
+    field @Nullable public final byte[] storageScopes;
+  }
+
+  public static class GosPackageState.Editor {
+    method @NonNull public android.content.pm.GosPackageState.Editor addFlag(int);
+    method @NonNull public android.content.pm.GosPackageState.Editor addPackageFlag(int);
+    method public boolean apply();
+    method @NonNull public android.content.pm.GosPackageState.Editor clearFlag(int);
+    method @NonNull public android.content.pm.GosPackageState.Editor clearPackageFlag(int);
+    method @NonNull public android.content.pm.GosPackageState.Editor killUidAfterApply();
+    method @NonNull public android.content.pm.GosPackageState.Editor setContactScopes(@Nullable byte[]);
+    method @NonNull public android.content.pm.GosPackageState.Editor setFlagState(int, boolean);
+    method @NonNull public android.content.pm.GosPackageState.Editor setKillUidAfterApply(boolean);
+    method @NonNull public android.content.pm.GosPackageState.Editor setNotifyUidAfterApply(boolean);
+    method @NonNull public android.content.pm.GosPackageState.Editor setPackageFlagState(int, boolean);
+    method @NonNull public android.content.pm.GosPackageState.Editor setStorageScopes(@Nullable byte[]);
+  }
+
+  public interface GosPackageStateFlag {
+    field public static final int CONTACT_SCOPES_ENABLED = 5; // 0x5
+    field public static final int STORAGE_SCOPES_ENABLED = 0; // 0x0
   }
 
   public final class InstallationFile {
@@ -4541,6 +4632,7 @@ package android.content.pm {
     method @FlaggedApi("android.content.pm.uid_based_provider_lookup") @Nullable @RequiresPermission(android.Manifest.permission.RESOLVE_COMPONENT_FOR_UID) public android.content.pm.ProviderInfo resolveContentProviderForUid(@NonNull String, @NonNull android.content.pm.PackageManager.ComponentInfoFlags, int);
     method @RequiresPermission(android.Manifest.permission.REVOKE_RUNTIME_PERMISSIONS) public abstract void revokeRuntimePermission(@NonNull String, @NonNull String, @NonNull android.os.UserHandle);
     method @RequiresPermission(android.Manifest.permission.REVOKE_RUNTIME_PERMISSIONS) public void revokeRuntimePermission(@NonNull String, @NonNull String, @NonNull android.os.UserHandle, @NonNull String);
+    method @RequiresPermission(android.Manifest.permission.GRANT_RUNTIME_PERMISSIONS) public void sendBootCompletedBroadcastToPackage(@NonNull String, boolean, int);
     method public void sendDeviceCustomizationReadyBroadcast();
     method @RequiresPermission(allOf={android.Manifest.permission.SET_PREFERRED_APPLICATIONS, android.Manifest.permission.INTERACT_ACROSS_USERS_FULL}) public abstract boolean setDefaultBrowserPackageNameAsUser(@Nullable String, int);
     method @NonNull @RequiresPermission(android.Manifest.permission.SUSPEND_APPS) public String[] setDistractingPackageRestrictions(@NonNull String[], int);
@@ -4735,6 +4827,9 @@ package android.content.pm {
     method @NonNull public android.content.ComponentName getTargetComponent();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.content.pm.ShortcutManager.ShareShortcutInfo> CREATOR;
+  }
+
+  public class SpecialRuntimePermAppUtils {
   }
 
   public final class SuspendDialogInfo implements android.os.Parcelable {
@@ -5136,6 +5231,161 @@ package android.debug {
   public class AdbManager {
     method @RequiresPermission(android.Manifest.permission.MANAGE_DEBUGGING) public boolean isAdbWifiQrSupported();
     method @RequiresPermission(android.Manifest.permission.MANAGE_DEBUGGING) public boolean isAdbWifiSupported();
+  }
+
+}
+
+package android.ext {
+
+  public final class AppInfoExt implements android.os.Parcelable {
+    ctor public AppInfoExt(int, int, long);
+    method public int describeContents();
+    method public static int getInitialPackageId();
+    method public int getPackageId();
+    method public boolean hasCompatChange(int);
+    method public boolean hasCompatConfig();
+    method public boolean hasFlag(int);
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.ext.AppInfoExt> CREATOR;
+  }
+
+  public interface AppInfoExtFlag {
+    field public static final int HAS_GMSCORE_CLIENT_LIBRARY = 0; // 0x0
+  }
+
+  public interface DerivedPackageFlag {
+    field public static final int DFLAGS_SET = 1; // 0x1
+    field public static final int EXPECTS_ACCESS_TO_MEDIA_FILES_ONLY = 4; // 0x4
+    field public static final int EXPECTS_ALL_FILES_ACCESS = 2; // 0x2
+    field public static final int EXPECTS_LEGACY_EXTERNAL_STORAGE = 8192; // 0x2000
+    field public static final int EXPECTS_STORAGE_WRITE_ACCESS = 8; // 0x8
+    field public static final int HAS_ACCESS_MEDIA_LOCATION_DECLARATION = 256; // 0x100
+    field public static final int HAS_GET_ACCOUNTS_DECLARATION = 4194304; // 0x400000
+    field public static final int HAS_MANAGE_EXTERNAL_STORAGE_DECLARATION = 64; // 0x40
+    field public static final int HAS_MANAGE_MEDIA_DECLARATION = 128; // 0x80
+    field public static final int HAS_READ_CONTACTS_DECLARATION = 1048576; // 0x100000
+    field public static final int HAS_READ_EXTERNAL_STORAGE_DECLARATION = 16; // 0x10
+    field public static final int HAS_READ_MEDIA_AUDIO_DECLARATION = 512; // 0x200
+    field public static final int HAS_READ_MEDIA_IMAGES_DECLARATION = 1024; // 0x400
+    field public static final int HAS_READ_MEDIA_VIDEO_DECLARATION = 2048; // 0x800
+    field public static final int HAS_READ_MEDIA_VISUAL_USER_SELECTED_DECLARATION = 4096; // 0x1000
+    field public static final int HAS_WRITE_CONTACTS_DECLARATION = 2097152; // 0x200000
+    field public static final int HAS_WRITE_EXTERNAL_STORAGE_DECLARATION = 32; // 0x20
+  }
+
+  public interface KnownSystemPackage {
+    field public static final int SETTINGS = 0; // 0x0
+    field public static final int SHELL = 1; // 0x1
+    field public static final int SYSTEM_UI = 2; // 0x2
+  }
+
+  public final class KnownSystemPackages {
+    method @NonNull public static android.ext.KnownSystemPackages get(@NonNull android.content.Context);
+    method @NonNull public String getById(int);
+    field @NonNull public final String contactsProvider;
+    field @NonNull public final String launcher;
+    field @NonNull public final String mediaProvider;
+    field @NonNull public final String permissionController;
+    field @NonNull public final String settings;
+    field @NonNull public final String shell;
+    field @NonNull public final String systemUi;
+  }
+
+  public interface PackageId {
+    field public static final int ANDROID_AUTO = 10; // 0xa
+    field public static final String ANDROID_AUTO_NAME = "com.google.android.projection.gearhead";
+    field public static final int EUICC_SUPPORT_PIXEL = 5; // 0x5
+    field public static final String EUICC_SUPPORT_PIXEL_NAME = "com.google.euiccpixel";
+    field public static final int GMS_CORE = 2; // 0x2
+    field public static final String GMS_CORE_NAME = "com.google.android.gms";
+    field public static final String GSF_NAME = "com.google.android.gsf";
+    field public static final int G_CAMERA = 8; // 0x8
+    field public static final String G_CAMERA_NAME = "com.google.android.GoogleCamera";
+    field public static final int G_CARRIER_SETTINGS = 7; // 0x7
+    field public static final String G_CARRIER_SETTINGS_NAME = "com.google.android.carrier";
+    field public static final int G_EUICC_LPA = 6; // 0x6
+    field public static final String G_EUICC_LPA_NAME = "com.google.android.euicc";
+    field public static final int G_SEARCH_APP = 4; // 0x4
+    field public static final String G_SEARCH_APP_NAME = "com.google.android.googlequicksearchbox";
+    field public static final int PIXEL_CAMERA_SERVICES = 9; // 0x9
+    field public static final String PIXEL_CAMERA_SERVICES_NAME = "com.google.android.apps.camera.services";
+    field public static final int PIXEL_HEALTH = 13; // 0xd
+    field public static final String PIXEL_HEALTH_NAME = "com.google.android.apps.pixel.health";
+    field public static final int PLAY_STORE = 3; // 0x3
+    field public static final String PLAY_STORE_NAME = "com.android.vending";
+    field public static final int TYCHO = 11; // 0xb
+    field public static final String TYCHO_NAME = "com.google.android.apps.tycho";
+    field public static final int UNKNOWN = 0; // 0x0
+  }
+
+}
+
+package android.ext.settings {
+
+  public class BoolSetting extends android.ext.settings.Setting<android.ext.settings.BoolSetting> {
+    ctor public BoolSetting(@NonNull android.ext.settings.Setting.Scope, @NonNull String, boolean);
+    ctor public BoolSetting(@NonNull android.ext.settings.Setting.Scope, @NonNull String, @NonNull java.util.function.Function<android.content.Context,java.lang.Boolean>);
+    method public final boolean get(@NonNull android.content.Context);
+    method public final boolean get(@NonNull android.content.Context, int);
+    method public final boolean put(@NonNull android.content.Context, boolean);
+  }
+
+  public class BoolSysProperty extends android.ext.settings.BoolSetting {
+    ctor public BoolSysProperty(@NonNull String, boolean);
+    ctor public BoolSysProperty(@NonNull String, @NonNull java.util.function.Function<android.content.Context,java.lang.Boolean>);
+    method public boolean get();
+    method public boolean put(boolean);
+  }
+
+  public class IntSetting extends android.ext.settings.Setting<android.ext.settings.IntSetting> {
+    ctor public IntSetting(@NonNull android.ext.settings.Setting.Scope, @NonNull String, int);
+    ctor public IntSetting(@NonNull android.ext.settings.Setting.Scope, @NonNull String, int, @NonNull int...);
+    ctor public IntSetting(@NonNull android.ext.settings.Setting.Scope, @NonNull String, @NonNull java.util.function.ToIntFunction<android.content.Context>);
+    ctor public IntSetting(@NonNull android.ext.settings.Setting.Scope, @NonNull String, @NonNull java.util.function.ToIntFunction<android.content.Context>, @NonNull int...);
+    method public final int get(@NonNull android.content.Context);
+    method public final int get(@NonNull android.content.Context, int);
+    method public final boolean put(@NonNull android.content.Context, int);
+    method public boolean validateValue(int);
+  }
+
+  public class IntSysProperty extends android.ext.settings.IntSetting {
+    ctor public IntSysProperty(@NonNull String, int);
+    ctor public IntSysProperty(@NonNull String, int, @NonNull int...);
+    ctor public IntSysProperty(@NonNull String, @NonNull java.util.function.ToIntFunction<android.content.Context>);
+    ctor public IntSysProperty(@NonNull String, @NonNull java.util.function.ToIntFunction<android.content.Context>, @NonNull int...);
+    method public int get();
+    method public boolean put(int);
+  }
+
+  public abstract class Setting<SelfType extends android.ext.settings.Setting> {
+    method public final boolean canObserveState();
+    method @NonNull public final String getKey();
+    method @NonNull public final android.ext.settings.Setting.Scope getScope();
+    method @NonNull public final Object registerObserver(@NonNull android.content.Context, @NonNull android.os.Handler, @NonNull java.util.function.Consumer<SelfType>);
+    method @NonNull public final Object registerObserver(@NonNull android.content.Context, int, @NonNull android.os.Handler, @NonNull java.util.function.Consumer<SelfType>);
+    method public final void unregisterObserver(@NonNull android.content.Context, @NonNull Object);
+  }
+
+  public enum Setting.Scope {
+    enum_constant public static final android.ext.settings.Setting.Scope GLOBAL;
+    enum_constant public static final android.ext.settings.Setting.Scope PER_USER;
+    enum_constant public static final android.ext.settings.Setting.Scope SYSTEM_PROPERTY;
+  }
+
+  public class StringSetting extends android.ext.settings.Setting<android.ext.settings.StringSetting> {
+    ctor public StringSetting(@NonNull android.ext.settings.Setting.Scope, @NonNull String, @NonNull String);
+    ctor public StringSetting(@NonNull android.ext.settings.Setting.Scope, @NonNull String, @NonNull java.util.function.Function<android.content.Context,java.lang.String>);
+    method @NonNull public final String get(@NonNull android.content.Context);
+    method @NonNull public final String get(@NonNull android.content.Context, int);
+    method public final boolean put(@NonNull android.content.Context, @NonNull String);
+    method public boolean validateValue(@NonNull String);
+  }
+
+  public class StringSysProperty extends android.ext.settings.StringSetting {
+    ctor public StringSysProperty(@NonNull String, @NonNull String);
+    ctor public StringSysProperty(@NonNull String, @NonNull java.util.function.Function<android.content.Context,java.lang.String>);
+    method @NonNull public String get();
+    method public boolean put(@NonNull String);
   }
 
 }
@@ -11362,6 +11612,11 @@ package android.nfc.cardemulation {
 
 package android.os {
 
+  public class BaseBundle {
+    method @Nullable public Boolean getBoolean2(@NonNull String);
+    method @Nullable public <T extends java.lang.Number> T getNumber(@NonNull String);
+  }
+
   public class BatteryManager {
     method @RequiresPermission(android.Manifest.permission.POWER_SAVER) public boolean setChargingStateUpdateDelayMillis(int);
     field @RequiresPermission(android.Manifest.permission.BATTERY_STATS) public static final int BATTERY_PROPERTY_CHARGING_POLICY = 9; // 0x9
@@ -12514,6 +12769,7 @@ package android.permission {
     method @RequiresPermission(android.Manifest.permission.MANAGE_ONE_TIME_PERMISSION_SESSIONS) public void startOneTimePermissionSession(@NonNull String, long, long, int, int);
     method @RequiresPermission(android.Manifest.permission.MANAGE_ONE_TIME_PERMISSION_SESSIONS) public void stopOneTimePermissionSession(@NonNull String);
     method @FlaggedApi("android.permission.flags.device_aware_permission_apis_enabled") @RequiresPermission(anyOf={android.Manifest.permission.GRANT_RUNTIME_PERMISSIONS, android.Manifest.permission.REVOKE_RUNTIME_PERMISSIONS}) public void updatePermissionFlags(@NonNull String, @NonNull String, @NonNull String, int, int);
+    method public void updatePermissionState(@NonNull String, int);
     field @RequiresPermission(android.Manifest.permission.START_REVIEW_PERMISSION_DECISIONS) public static final String ACTION_REVIEW_PERMISSION_DECISIONS = "android.permission.action.REVIEW_PERMISSION_DECISIONS";
     field public static final String EXTRA_PERMISSION_USAGES = "android.permission.extra.PERMISSION_USAGES";
     field public static final int PERMISSION_GRANTED = 0; // 0x0

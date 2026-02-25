@@ -86,6 +86,20 @@ package android.app.admin {
 
 }
 
+package android.app.compat.gms {
+
+  public class GmsModuleHooks {
+    method @Nullable public static String deviceConfigGetProperty(@NonNull String, @NonNull String);
+    method public static boolean deviceConfigSetProperties(@NonNull android.provider.DeviceConfig.Properties);
+    method public static boolean deviceConfigSetProperty(@NonNull String, @NonNull String, @Nullable String);
+    method @Nullable public static Boolean enableBluetoothAdapter();
+    method public static void enableNfc();
+    method public static boolean interceptSynchronousResultReceiverException(@NonNull RuntimeException);
+    method public static void makeBluetoothAdapterDiscoverable();
+  }
+
+}
+
 package android.content {
 
   public abstract class ContentProvider implements android.content.ComponentCallbacks2 {
@@ -99,7 +113,6 @@ package android.content {
   public abstract class Context {
     method @NonNull public android.content.Context createContextForSdkInSandbox(@NonNull android.content.pm.ApplicationInfo, int) throws android.content.pm.PackageManager.NameNotFoundException;
     method @NonNull public android.os.IBinder getProcessToken();
-    method @NonNull public android.os.UserHandle getUser();
     field @FlaggedApi("android.os.profiling.anomaly.flags.anomaly_detector_core") public static final String ANOMALY_DETECTOR_SERVICE = "anomaly_detector";
     field @FlaggedApi("android.app.ondeviceintelligence.flags.enable_on_device_intelligence_module") public static final int BIND_FOREGROUND_SERVICE = 67108864; // 0x4000000
     field public static final String PAC_PROXY_SERVICE = "pac_proxy";

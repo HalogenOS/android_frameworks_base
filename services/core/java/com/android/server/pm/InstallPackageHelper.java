@@ -139,6 +139,7 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.os.SELinux;
 import android.os.SystemClock;
+import android.os.SystemProperties;
 import android.os.Trace;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -156,6 +157,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
 import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 
 import com.android.internal.annotations.GuardedBy;
@@ -761,6 +763,7 @@ final class InstallPackageHelper {
                         permissionParamsBuilder.setAllowlistedRestrictedPermissions(
                                 new ArrayList<>(pkgSetting.getPkg().getRequestedPermissions()));
                     }
+                    permissionParamsBuilder.setNewlyInstalledInUserId(userId);
                     mPm.mPermissionManager.onPackageInstalled(pkgSetting.getPkg(),
                             Process.INVALID_UID /* previousAppId */,
                             permissionParamsBuilder.build(), userId);
@@ -2007,6 +2010,45 @@ final class InstallPackageHelper {
             parsedPackage.setBaseApkPath(request.getApexInfo().modulePath);
         }
 
+        final AndroidPackage systemPackage = PackageVerityExt.getSystemPackage(parsedPackage);
+
+        if (systemPackage != null) {
+            // this is an update to a system package
+
+            try {
+                PackageVerityExt.checkFsVerity(parsedPackage);
+            } catch (PackageManagerException e) {
+                String message = "fs-verity not set up for system package update " + e;
+                boolean abortInstall = true;
+
+                if (Build.IS_DEBUGGABLE) {
+                    if (SystemProperties.getBoolean("persist.disable_install_time_fsverity_check", false)) {
+                        Slog.d(TAG, message);
+                        abortInstall = false;
+                    }
+                }
+
+                if (abortInstall) {
+                    throw new PrepareFailure(PackageManager.INSTALL_FAILED_INTERNAL_ERROR, message);
+                }
+            }
+
+            if (parsedPackage.getLongVersionCode() == systemPackage.getLongVersionCode()) {
+                String message = "Not allowed to update system package to the same versionCode";
+                boolean abortInstall = true;
+
+                if (Build.IS_DEBUGGABLE) {
+                    if (SystemProperties.getBoolean("persist.disable_same_versionCode_sys_pkg_update_check", false)) {
+                        Slog.d(TAG, message + ": " + parsedPackage.getManifestPackageName());
+                        abortInstall = false;
+                    }
+                }
+                if (abortInstall) {
+                    throw new PrepareFailure(PackageManager.INSTALL_FAILED_INTERNAL_ERROR, message);
+                }
+            }
+        }
+
         final PackageSetting oldPackageState;
         final AndroidPackage oldPackage;
         String renamedPackage;
@@ -2615,7 +2657,13 @@ final class InstallPackageHelper {
                     }
                 }
 
+                final SparseBooleanArray archivedInUserIds = new SparseBooleanArray();
+
                 if (userId != UserHandle.USER_ALL) {
+                    if (PackageArchiver.isArchived(ps.getUserStateOrDefault(userId))) {
+                        archivedInUserIds.put(userId, true);
+                    }
+
                     // It's implied that when a user requests installation, they want the app to
                     // be installed and enabled. The caller, however, can explicitly specify to
                     // keep the existing enabled state.
@@ -2643,6 +2691,10 @@ final class InstallPackageHelper {
                     // Thus, updating the settings to install the app for all users.
                     final boolean isPackageExisted = installRequest.getOriginUsers() != null;
                     for (int currentUserId : allUsers) {
+                        if (PackageArchiver.isArchived(ps.getUserStateOrDefault(currentUserId))) {
+                            archivedInUserIds.put(currentUserId, true);
+                        }
+
                         // If the app is already installed for the currentUser,
                         // keep it as installed as we might be updating the app at this place.
                         // If not currently installed, check if the currentUser is restricted by
@@ -2701,16 +2753,26 @@ final class InstallPackageHelper {
                     }
                 }
 
+                final PermissionManagerServiceInternal.PackageInstalledParams.Builder
+                        permissionParamsBuilder =
+                        new PermissionManagerServiceInternal.PackageInstalledParams.Builder();
+
                 // Set install reason for users that are having the package newly installed.
                 if (userId == UserHandle.USER_ALL) {
                     for (int currentUserId : allUsers) {
                         if (!previousUserIds.contains(currentUserId)
                                 && ps.getInstalled(currentUserId)) {
                             ps.setInstallReason(installReason, currentUserId);
+                            if (!archivedInUserIds.get(currentUserId, false)) {
+                                permissionParamsBuilder.setNewlyInstalledInUserId(currentUserId);
+                            }
                         }
                     }
                 } else if (!previousUserIds.contains(userId)) {
                     ps.setInstallReason(installReason, userId);
+                    if (!archivedInUserIds.get(userId, false)) {
+                        permissionParamsBuilder.setNewlyInstalledInUserId(userId);
+                    }
                 }
 
                 // TODO(b/169721400): generalize Incremental States and create a Callback object
@@ -2731,9 +2793,6 @@ final class InstallPackageHelper {
 
                 mPm.mSettings.writeKernelMappingLPr(ps);
 
-                final PermissionManagerServiceInternal.PackageInstalledParams.Builder
-                        permissionParamsBuilder =
-                        new PermissionManagerServiceInternal.PackageInstalledParams.Builder();
                 final boolean grantRequestedPermissions = (installRequest.getInstallFlags()
                         & PackageManager.INSTALL_GRANT_ALL_REQUESTED_PERMISSIONS) != 0;
                 if (grantRequestedPermissions) {
@@ -4333,7 +4392,14 @@ final class InstallPackageHelper {
         try {
             final boolean scanSystemPartition =
                 (parseFlags & ParsingPackageUtils.PARSE_IS_SYSTEM_DIR) != 0;
-            final ScanRequest initialScanRequest = prepareInitialScanRequest(parsedPackage,
+            if ((scanFlags & SCAN_BOOTING) != 0) {
+            if (scanSystemPartition) {
+                PackageVerityExt.addSystemPackage(parsedPackage);
+            } else {
+                PackageVerityExt.checkSystemPackageUpdate(parsedPackage);
+            }
+        }
+        final ScanRequest initialScanRequest = prepareInitialScanRequest(parsedPackage,
                     parseFlags, scanFlags, user, null /*cpuAbiOverride*/, null /*installSource*/);
             final PackageSetting installedPkgSetting = initialScanRequest.mPkgSetting;
             final PackageSetting originalPkgSetting = initialScanRequest.mOriginalPkgSetting;

@@ -28,6 +28,7 @@ import android.content.PermissionChecker;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManagerInternal;
+import android.ext.PackageId;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Process;
@@ -36,11 +37,13 @@ import android.os.UserHandle;
 import android.permission.ILegacyPermissionManager;
 import android.util.EventLog;
 import android.util.Log;
+import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.LocalServices;
 import com.android.server.pm.PackageManagerServiceUtils;
 import com.android.server.pm.UserManagerService;
+import com.android.server.pm.ext.PackageExt;
 
 /**
  * Legacy permission manager service.
@@ -116,6 +119,21 @@ public class LegacyPermissionManagerService extends ILegacyPermissionManager.Stu
                 if (appOpsManager.noteOpNoThrow(AppOpsManager.OPSTR_READ_DEVICE_IDENTIFIERS, uid,
                         packageName, callingFeatureId, message) == AppOpsManager.MODE_ALLOWED) {
                     return PackageManager.PERMISSION_GRANTED;
+                }
+                if (packageName.equals(PackageId.GMS_CORE_NAME)) {
+                    var pm = LocalServices.getService(PackageManagerInternal.class);
+                    var pkg = pm.getPackage(uid);
+                    if (pkg != null && PackageExt.get(pkg).getPackageId() == PackageId.GMS_CORE) {
+                        var buglePkgState = pm.getPackageStateInternal(PackageId.BUGLE_NAME);
+                        if (buglePkgState != null && PackageExt.get(buglePkgState).getPackageId() == PackageId.BUGLE) {
+                            int bugleUid = UserHandle.getUid(UserHandle.getUserId(uid), buglePkgState.getAppId());
+                            if (appOpsManager.noteOpNoThrow(AppOpsManager.OPSTR_READ_DEVICE_IDENTIFIERS, bugleUid,
+                                    PackageId.BUGLE_NAME, null, null) == AppOpsManager.MODE_ALLOWED) {
+                                Slog.d(TAG, "checkDeviceIdentifierAccess: Bugle has READ_DEVICE_IDENTIFIERS, allowed access to GmsCore");
+                                return PackageManager.PERMISSION_GRANTED;
+                            }
+                        }
+                    }
                 }
             } finally {
                 mInjector.restoreCallingIdentity(token);

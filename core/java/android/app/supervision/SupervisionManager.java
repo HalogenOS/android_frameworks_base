@@ -32,6 +32,7 @@ import android.annotation.SystemService;
 import android.annotation.TestApi;
 import android.annotation.UserHandleAware;
 import android.annotation.UserIdInt;
+import android.app.compat.gms.GmsCompat;
 import android.app.supervision.flags.Flags;
 import android.compat.annotation.UnsupportedAppUsage;
 import android.content.Context;
@@ -195,6 +196,9 @@ public class SupervisionManager {
                 return mService.isSupervisionEnabledForUser(userId);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
+            } catch (SecurityException e) {
+                GmsCompat.catchOrRethrow(e);
+                return false;
             }
         }
         return false;
