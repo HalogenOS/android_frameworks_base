@@ -2279,7 +2279,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
             }
 
             mCacheDir = PackageManagerServiceUtils.preparePackageParserCache(
-                    mIsEngBuild, mIsUserDebugBuild, mIncrementalVersion, mIsUpgrade);
+                    mIsEngBuild, mIsUserDebugBuild, mIncrementalVersion);
 
             mInitialNonStoppedSystemPackages = mInjector.getSystemConfig()
                     .getInitialNonStoppedSystemPackages();
