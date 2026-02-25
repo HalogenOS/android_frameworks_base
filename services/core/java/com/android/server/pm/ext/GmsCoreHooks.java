@@ -26,7 +26,7 @@ class GmsCoreHooks extends PackageHooks {
 
     @Override
     public int overridePermissionState(String permission, int userId) {
-        if (android.os.Flags.isDevBuild()) {
+        if (android.os.Build.IS_ENG) {
             if (SystemProperties.getBoolean("sys.gmscore_grant." + permission, false)) {
                 return PERMISSION_OVERRIDE_GRANT;
             }
