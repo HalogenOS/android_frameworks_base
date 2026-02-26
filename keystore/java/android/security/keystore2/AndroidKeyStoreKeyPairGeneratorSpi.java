@@ -55,7 +55,6 @@ import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
 
-import com.android.internal.util.clover.KeyboxImitationHooks;
 
 import libcore.util.EmptyArray;
 
@@ -698,37 +697,8 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
         try {
             KeyStoreSecurityLevel iSecurityLevel = mKeyStore.getSecurityLevel(securityLevel);
             KeyMetadata metadata;
-            if (mSpec.getAttestationChallenge() != null) {
-                KeyboxImitationHooks.setAttestationFlag(true);
-                if (mAttestKeyDescriptor == null) {
-                    KeyboxImitationHooks.setAttestKeyFlag(false);
-                    if ((KeyProperties.KEY_ALGORITHM_EC.equals(mJcaKeyAlgorithm) ||
-                      KeyProperties.KEY_ALGORITHM_RSA.equals(mJcaKeyAlgorithm))) {
-                        metadata = KeyboxImitationHooks.generateKey(
-                            iSecurityLevel.getBinderInterface(),
-                            descriptor,
-                            constructKeyGenerationArguments()
-                        );
-                        if (metadata == null) {
-                            KeyboxImitationHooks.setFailFlag(true);
-                            metadata = iSecurityLevel.generateKey(descriptor, mAttestKeyDescriptor,
-                                    constructKeyGenerationArguments(), flags, additionalEntropy);
-                        }
-                    } else {
-                        metadata = iSecurityLevel.generateKey(descriptor, mAttestKeyDescriptor,
-                                constructKeyGenerationArguments(), flags, additionalEntropy);
-                    }
-                } else {
-                    KeyboxImitationHooks.setAttestKeyFlag(true);
-                    metadata = iSecurityLevel.generateKey(descriptor, mAttestKeyDescriptor,
-                            constructKeyGenerationArguments(), flags, additionalEntropy);
-                }
-            } else {
-                KeyboxImitationHooks.setAttestationFlag(false);
-                KeyboxImitationHooks.setAttestKeyFlag(false);
-                metadata = iSecurityLevel.generateKey(descriptor, mAttestKeyDescriptor,
-                        constructKeyGenerationArguments(), flags, additionalEntropy);
-            }
+            metadata = iSecurityLevel.generateKey(descriptor, mAttestKeyDescriptor,
+                    constructKeyGenerationArguments(), flags, additionalEntropy);
             AndroidKeyStorePublicKey publicKey =
                     AndroidKeyStoreProvider.makeAndroidKeyStorePublicKeyFromKeyEntryResponse(
                             descriptor, metadata, iSecurityLevel, mKeymasterAlgorithm);
