@@ -1052,6 +1052,8 @@
     <!-- Permission required for CTS test - CtsMediaProjectionTestCases -->
     <uses-permission android:name="android.permission.MANAGE_MEDIA_PROJECTION" />
 
+    <!--  Permission required for GrapheneOS package state updates -->
+    <uses-permission android:name="android.permission.UPDATE_AND_INVALIDATE_PERMISSION_STATE" />
 
     <application
         android:label="@string/app_label"
