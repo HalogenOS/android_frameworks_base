@@ -341,7 +341,8 @@ public class GosPackageStatePmHooks {
                     return 1;
                 }
                 if (updatePermissionState) {
-                    cmd.mPermissionManager.updatePermissionState(packageName, userId);
+                    cmd.mPermissionManager.updatePermissionStateAndInvalidateCache(
+                            packageName, userId);
                 }
                 return 0;
             }
