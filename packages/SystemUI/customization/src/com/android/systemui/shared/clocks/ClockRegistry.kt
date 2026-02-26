@@ -528,6 +528,10 @@ open class ClockRegistry(
 
                 val currentClock = availableClocks[currentClockId]
                 if (currentClock == null) {
+                    if (settings == null) {
+                        logger.i("verifyLoadedProviders: settings not loaded yet, skipping")
+                        return@launch
+                    }
                     logger.i("verifyLoadedProviders: currentClock=null")
                     // Current Clock missing, load no plugins and use default
                     for ((_, info) in availableClocks) {
