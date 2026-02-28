@@ -55,6 +55,8 @@ import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
 
+import com.android.internal.util.clover.KeyboxImitationHooks;
+import com.android.internal.util.clover.KeyProviderManager;
 
 import libcore.util.EmptyArray;
 
@@ -697,8 +699,35 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
         try {
             KeyStoreSecurityLevel iSecurityLevel = mKeyStore.getSecurityLevel(securityLevel);
             KeyMetadata metadata;
-            metadata = iSecurityLevel.generateKey(descriptor, mAttestKeyDescriptor,
-                    constructKeyGenerationArguments(), flags, additionalEntropy);
+            try {
+                metadata = iSecurityLevel.generateKey(descriptor, mAttestKeyDescriptor,
+                        constructKeyGenerationArguments(), flags, additionalEntropy);
+            } catch (KeyStoreException e) {
+                if (mSpec.getAttestationChallenge() != null
+                        && KeyProviderManager.isKeyboxAvailable()) {
+                    Log.w(TAG, "Attestation failed, retrying without attestation"
+                            + " (keybox will handle certs)");
+                    KeyboxImitationHooks.setAttestationChallenge(
+                            mSpec.getAttestationChallenge());
+                    List<KeyParameter> args = new ArrayList<>(
+                            constructKeyGenerationArguments());
+                    args.removeIf(p -> p.tag == Tag.ATTESTATION_CHALLENGE
+                            || p.tag == Tag.ATTESTATION_APPLICATION_ID
+                            || p.tag == Tag.ATTESTATION_ID_BRAND
+                            || p.tag == Tag.ATTESTATION_ID_DEVICE
+                            || p.tag == Tag.ATTESTATION_ID_PRODUCT
+                            || p.tag == Tag.ATTESTATION_ID_MANUFACTURER
+                            || p.tag == Tag.ATTESTATION_ID_MODEL
+                            || p.tag == Tag.ATTESTATION_ID_SERIAL
+                            || p.tag == Tag.ATTESTATION_ID_IMEI
+                            || p.tag == Tag.ATTESTATION_ID_SECOND_IMEI
+                            || p.tag == Tag.ATTESTATION_ID_MEID);
+                    metadata = iSecurityLevel.generateKey(descriptor, null,
+                            args, flags, additionalEntropy);
+                } else {
+                    throw e;
+                }
+            }
             AndroidKeyStorePublicKey publicKey =
                     AndroidKeyStoreProvider.makeAndroidKeyStorePublicKeyFromKeyEntryResponse(
                             descriptor, metadata, iSecurityLevel, mKeymasterAlgorithm);

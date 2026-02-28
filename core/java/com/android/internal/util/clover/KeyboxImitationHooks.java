@@ -49,6 +49,12 @@ public class KeyboxImitationHooks {
     private static final ASN1ObjectIdentifier KEY_ATTESTATION_OID = new ASN1ObjectIdentifier(
             "1.3.6.1.4.1.11129.2.1.17");
 
+    private static volatile byte[] sPendingChallenge;
+
+    public static void setAttestationChallenge(byte[] challenge) {
+        sPendingChallenge = challenge;
+    }
+
     public static KeyEntryResponse onGetKeyEntry(KeyEntryResponse response) {
         if (!KeyProviderManager.isKeyboxAvailable()) {
             dlog("Key attestation spoofing is disabled because no keybox is defined to spoof");
@@ -64,13 +70,24 @@ public class KeyboxImitationHooks {
             }
 
             X509Certificate certificate = KeyChain.toCertificate(response.metadata.certificate);
-            if (certificate.getExtensionValue(KEY_ATTESTATION_OID.getId()) == null) {
-                Log.e(TAG, "Key attestation OID not found, skipping modification");
-                return response;
-            }
-
             String keyAlgorithm = certificate.getPublicKey().getAlgorithm();
-            response.metadata.certificate = modifyLeafCertificate(certificate, keyAlgorithm);
+
+            if (certificate.getExtensionValue(KEY_ATTESTATION_OID.getId()) != null) {
+                dlog("Modifying existing attestation extension");
+                response.metadata.certificate = modifyLeafCertificate(
+                        certificate, keyAlgorithm);
+            } else {
+                byte[] challenge = sPendingChallenge;
+                if (challenge != null) {
+                    sPendingChallenge = null;
+                    dlog("Creating attestation extension from scratch"
+                            + " (hardware attestation was unavailable)");
+                    response.metadata.certificate = createLeafCertificate(
+                            certificate, keyAlgorithm, challenge);
+                } else {
+                    return response;
+                }
+            }
             response.metadata.certificateChain = KeyboxUtils.getCertificateChain(keyAlgorithm);
         } catch (Exception e) {
             Log.e(TAG, "Error in onGetKeyEntry", e);
@@ -98,7 +115,68 @@ public class KeyboxImitationHooks {
             }
             teeEnforcedVector.add(teeEnforcedEncodable);
         }
-        
+
+        addBootAndPatchInfo(teeEnforcedVector);
+
+        keyAttestationEncodables[7] = new DERSequence(teeEnforcedVector);
+        ASN1Sequence newKeyAttestationSequence = new DERSequence(keyAttestationEncodables);
+
+        return buildCertificate(leafCertificate, certificateHolder, keyAlgorithm,
+                new Extension(KEY_ATTESTATION_OID, false,
+                        new DEROctetString(newKeyAttestationSequence)));
+    }
+
+    private static byte[] createLeafCertificate(X509Certificate leafCertificate,
+            String keyAlgorithm, byte[] challenge) throws Exception {
+        X509CertificateHolder certificateHolder = new X509CertificateHolder(
+                leafCertificate.getEncoded());
+
+        // Build teeEnforced with purpose, algorithm, keySize, digest, noAuthRequired
+        ASN1EncodableVector teeEnforcedVector = new ASN1EncodableVector();
+        // Tag 1: purpose (SIGN=2)
+        ASN1EncodableVector purposeSet = new ASN1EncodableVector();
+        purposeSet.add(new ASN1Integer(2));
+        teeEnforcedVector.add(new DERTaggedObject(1, new DERSequence(purposeSet)));
+        // Tag 3: algorithm
+        int algValue = KeyProperties.KEY_ALGORITHM_EC.equals(keyAlgorithm) ? 3 : 1;
+        teeEnforcedVector.add(new DERTaggedObject(3, new ASN1Integer(algValue)));
+        // Tag 4: keySize
+        int keySize = KeyProperties.KEY_ALGORITHM_EC.equals(keyAlgorithm) ? 256 : 2048;
+        teeEnforcedVector.add(new DERTaggedObject(4, new ASN1Integer(keySize)));
+        // Tag 5: digest (SHA-256=4)
+        ASN1EncodableVector digestSet = new ASN1EncodableVector();
+        digestSet.add(new ASN1Integer(4));
+        teeEnforcedVector.add(new DERTaggedObject(5, new DERSequence(digestSet)));
+        // Tag 10: ecCurve (P-256=1) for EC keys
+        if (KeyProperties.KEY_ALGORITHM_EC.equals(keyAlgorithm)) {
+            teeEnforcedVector.add(new DERTaggedObject(10, new ASN1Integer(1)));
+        }
+        // Tag 303: noAuthRequired
+        teeEnforcedVector.add(new DERTaggedObject(303, ASN1Boolean.TRUE));
+        // Tag 702: origin (GENERATED=0)
+        teeEnforcedVector.add(new DERTaggedObject(702, new ASN1Integer(0)));
+
+        addBootAndPatchInfo(teeEnforcedVector);
+
+        // KeyDescription sequence
+        ASN1EncodableVector keyDescription = new ASN1EncodableVector();
+        keyDescription.add(new ASN1Integer(300)); // attestationVersion
+        keyDescription.add(new ASN1Enumerated(1)); // attestationSecurityLevel: TEE
+        keyDescription.add(new ASN1Integer(300)); // keymasterVersion
+        keyDescription.add(new ASN1Enumerated(1)); // keymasterSecurityLevel: TEE
+        keyDescription.add(new DEROctetString(challenge)); // attestationChallenge
+        keyDescription.add(new DEROctetString(new byte[0])); // uniqueId
+        keyDescription.add(new DERSequence()); // softwareEnforced (empty)
+        keyDescription.add(new DERSequence(teeEnforcedVector)); // teeEnforced
+
+        return buildCertificate(leafCertificate, certificateHolder, keyAlgorithm,
+                new Extension(KEY_ATTESTATION_OID, false,
+                        new DEROctetString(new DERSequence(keyDescription))));
+    }
+
+    private static byte[] buildCertificate(X509Certificate leafCertificate,
+            X509CertificateHolder certificateHolder, String keyAlgorithm,
+            Extension attestationExtension) throws Exception {
         PrivateKey privateKey = KeyboxUtils.getPrivateKey(keyAlgorithm);
         X509CertificateHolder providerCertHolder = KeyboxUtils.getCertificateHolder(keyAlgorithm);
 
@@ -114,32 +192,50 @@ public class KeyboxImitationHooks {
         ContentSigner contentSigner = new JcaContentSignerBuilder(
                 leafCertificate.getSigAlgName()).build(privateKey);
 
+        certificateBuilder.addExtension(attestationExtension);
+
+        if (certificateHolder.getExtensions() != null) {
+            for (ASN1ObjectIdentifier extensionOID :
+                    certificateHolder.getExtensions().getExtensionOIDs()) {
+                if (KEY_ATTESTATION_OID.getId().equals(extensionOID.getId())) continue;
+                certificateBuilder.addExtension(certificateHolder.getExtension(extensionOID));
+            }
+        }
+
+        return certificateBuilder.build(contentSigner).getEncoded();
+    }
+
+    private static void addBootAndPatchInfo(ASN1EncodableVector teeEnforcedVector)
+            throws Exception {
         Context context = ActivityThread.currentApplication();
         if (context == null) {
-            Log.e(TAG, "Context is null in modifyLeafCertificate");
-            return null;
+            throw new IllegalStateException("Context is null");
         }
         SecureRandom secureRandom = new SecureRandom();
 
-        String key = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.VBOOT_KEY);
+        String key = Settings.Secure.getString(
+                context.getContentResolver(), Settings.Secure.VBOOT_KEY);
         byte[] verifiedBootKey;
         if (key == null) {
             byte[] randomBytes = new byte[32];
             secureRandom.nextBytes(randomBytes);
             String encoded = Base64.encodeToString(randomBytes, Base64.NO_WRAP);
-            Settings.Secure.putString(context.getContentResolver(), Settings.Secure.VBOOT_KEY, encoded);
+            Settings.Secure.putString(
+                    context.getContentResolver(), Settings.Secure.VBOOT_KEY, encoded);
             verifiedBootKey = randomBytes;
         } else {
             verifiedBootKey = Base64.decode(key, Base64.NO_WRAP);
         }
 
-        String hash = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.VBOOT_HASH);
+        String hash = Settings.Secure.getString(
+                context.getContentResolver(), Settings.Secure.VBOOT_HASH);
         byte[] verifiedBootHash;
         if (hash == null) {
             byte[] randomBytes = new byte[32];
             secureRandom.nextBytes(randomBytes);
             String encoded = Base64.encodeToString(randomBytes, Base64.NO_WRAP);
-            Settings.Secure.putString(context.getContentResolver(), Settings.Secure.VBOOT_HASH, encoded);
+            Settings.Secure.putString(
+                    context.getContentResolver(), Settings.Secure.VBOOT_HASH, encoded);
             verifiedBootHash = randomBytes;
         } else {
             verifiedBootHash = Base64.decode(hash, Base64.NO_WRAP);
@@ -152,35 +248,11 @@ public class KeyboxImitationHooks {
                 new DEROctetString(verifiedBootHash)
         };
 
-        ASN1Sequence newRootOfTrustSequence = new DERSequence(rootOfTrustEncodables);
-        ASN1TaggedObject rootOfTrustTaggedObject = new DERTaggedObject(704, newRootOfTrustSequence);
-        teeEnforcedVector.add(rootOfTrustTaggedObject);
-        teeEnforcedVector.add(new DERTaggedObject(705,
-                new ASN1Integer(getOsVersion())));
-        teeEnforcedVector.add(new DERTaggedObject(706,
-                new ASN1Integer(getPatchLevel())));
-        teeEnforcedVector.add(new DERTaggedObject(718,
-                new ASN1Integer(getPatchLevelLong())));
-        teeEnforcedVector.add(new DERTaggedObject(719,
-                new ASN1Integer(getPatchLevelLong())));
-
-        ASN1Sequence newTeeEnforcedSequence = new DERSequence(teeEnforcedVector);
-        keyAttestationEncodables[7] = newTeeEnforcedSequence;
-        ASN1Sequence newKeyAttestationSequence = new DERSequence(keyAttestationEncodables);
-        ASN1OctetString newKeyAttestationOctetString = new DEROctetString(
-                newKeyAttestationSequence);
-        Extension newKeyAttestationExtension = new Extension(KEY_ATTESTATION_OID, false,
-                newKeyAttestationOctetString);
-
-        certificateBuilder.addExtension(newKeyAttestationExtension);
-
-        for (ASN1ObjectIdentifier extensionOID :
-                certificateHolder.getExtensions().getExtensionOIDs()) {
-            if (KEY_ATTESTATION_OID.getId().equals(extensionOID.getId())) continue;
-            certificateBuilder.addExtension(certificateHolder.getExtension(extensionOID));
-        }
-
-        return certificateBuilder.build(contentSigner).getEncoded();
+        teeEnforcedVector.add(new DERTaggedObject(704, new DERSequence(rootOfTrustEncodables)));
+        teeEnforcedVector.add(new DERTaggedObject(705, new ASN1Integer(getOsVersion())));
+        teeEnforcedVector.add(new DERTaggedObject(706, new ASN1Integer(getPatchLevel())));
+        teeEnforcedVector.add(new DERTaggedObject(718, new ASN1Integer(getPatchLevelLong())));
+        teeEnforcedVector.add(new DERTaggedObject(719, new ASN1Integer(getPatchLevelLong())));
     }
 
     private static int getOsVersion() {
