@@ -76,13 +76,12 @@ public class SimplePropImitation {
             return;
         }
 
+        Log.i(TAG, "Spoofing props for " + processName);
+
         // We handle all GMS processes, but special handling for unstable
         if (PROCESS_GMS_UNSTABLE.equals(processName)) {
-            dlog("Setting certified props for GMS unstable process");
             setCertifiedPropsForGms(context);
         } else if (processName.startsWith(PACKAGE_GMS)) {
-            // Handle other GMS processes (persistent, gapps, gservice, etc.)
-            dlog("Setting certified props for GMS process: " + processName);
             loadAndSetCertifiedProps(context);
         }
     }
@@ -164,6 +163,7 @@ public class SimplePropImitation {
             return;
         }
 
+        Log.i(TAG, "Applying " + sCertifiedProps.size() + " certified props");
         for (String entry : sCertifiedProps) {
             // Each entry must be of the format FIELD:value
             final String[] parts = entry.split(":", 2);
@@ -173,6 +173,7 @@ public class SimplePropImitation {
             }
             setPropValue(parts[0], parts[1]);
         }
+        Log.i(TAG, "FINGERPRINT is now: " + Build.FINGERPRINT);
     }
 
     /**
