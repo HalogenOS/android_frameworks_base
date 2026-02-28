@@ -15,7 +15,6 @@ import org.xmlpull.v1.XmlPullParser;
 
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,8 +97,18 @@ public final class KeyProviderManager {
                                     return false;
                                 }
                                 p.next();
-                                if (currentAlg != null) {
-                                    keyboxData.put(currentAlg + ".PRIV", p.getText().trim());
+                                if (p.getEventType() == XmlPullParser.TEXT) {
+                                    String pem = p.getText().trim();
+                                    if (pem.contains("BEGIN EC PRIVATE KEY")
+                                            || pem.contains("BEGIN EC PARAMETERS")) {
+                                        currentAlg = "EC";
+                                    } else if (pem.contains("BEGIN RSA PRIVATE KEY")
+                                            || pem.contains("BEGIN PRIVATE KEY")) {
+                                        currentAlg = "RSA";
+                                    }
+                                    if (currentAlg != null) {
+                                        keyboxData.put(currentAlg + ".PRIV", pem);
+                                    }
                                 }
                                 break;
                             }
@@ -194,14 +203,10 @@ public final class KeyProviderManager {
 
         private String[] getCertificateChain(String prefix) {
             List<String> dataList = new ArrayList<>();
-            for (String key : keyboxData.keySet()) {
-                if (key.startsWith(prefix + ".CERT_")) {
-                    dataList.add(keyboxData.get(key));
-                }
+            for (int i = 1; keyboxData.containsKey(prefix + ".CERT_" + i); i++) {
+                dataList.add(keyboxData.get(prefix + ".CERT_" + i));
             }
-            String[] chain = dataList.toArray(String[]::new);
-            Arrays.sort(chain);
-            return chain;
+            return dataList.toArray(String[]::new);
         }
     }
 }
