@@ -259,10 +259,14 @@ public class KeyboxImitationHooks {
         String release = Build.VERSION.RELEASE;
         int major = 0, minor = 0, patch = 0;
 
-        String[] parts = release.split("\\.");
-        if (parts.length > 0) major = Integer.parseInt(parts[0]);
-        if (parts.length > 1) minor = Integer.parseInt(parts[1]);
-        if (parts.length > 2) patch = Integer.parseInt(parts[2]);
+        try {
+            String[] parts = release.split("\\.");
+            if (parts.length > 0) major = Integer.parseInt(parts[0]);
+            if (parts.length > 1) minor = Integer.parseInt(parts[1]);
+            if (parts.length > 2) patch = Integer.parseInt(parts[2]);
+        } catch (NumberFormatException e) {
+            major = 17;
+        }
 
         return major * 10000 + minor * 100 + patch;
     }
