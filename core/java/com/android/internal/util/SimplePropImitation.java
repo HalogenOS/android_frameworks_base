@@ -32,6 +32,7 @@ import com.android.internal.R;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * SimplePropImitation - Simplified property imitation for GMS
@@ -49,11 +50,30 @@ public class SimplePropImitation {
     private static final ComponentName GMS_ADD_ACCOUNT_ACTIVITY = ComponentName.unflattenFromString(
             "com.google.android.gms/.auth.uiflows.minutemaid.MinuteMaidActivity");
 
+    // Build field name → system property name mapping
+    private static final Map<String, String> FIELD_TO_SYSPROP = Map.ofEntries(
+            Map.entry("PRODUCT", "ro.product.name"),
+            Map.entry("DEVICE", "ro.product.device"),
+            Map.entry("MANUFACTURER", "ro.product.manufacturer"),
+            Map.entry("BRAND", "ro.product.brand"),
+            Map.entry("MODEL", "ro.product.model"),
+            Map.entry("FINGERPRINT", "ro.build.fingerprint"),
+            Map.entry("ID", "ro.build.id"),
+            Map.entry("TYPE", "ro.build.type"),
+            Map.entry("TAGS", "ro.build.tags"),
+            Map.entry("VERSION.INCREMENTAL", "ro.build.version.incremental"),
+            Map.entry("VERSION.RELEASE", "ro.build.version.release"),
+            Map.entry("VERSION.SECURITY_PATCH", "ro.build.version.security_patch"),
+            Map.entry("VERSION.DEVICE_INITIAL_SDK_INT", "ro.product.first_api_level")
+    );
+
     private static volatile List<String> sCertifiedProps = null;
     private static volatile String sProcessName = "";
 
+    private static native void nativeSpoofSysProp(String name, String value);
+    private static native void nativeEnableSysPropSpoof();
+
     private SimplePropImitation() {
-        // Private constructor to prevent instantiation
     }
 
     /**
@@ -71,19 +91,19 @@ public class SimplePropImitation {
 
         sProcessName = processName;
 
-        // Only handle GMS package
-        if (!PACKAGE_GMS.equals(packageName)) {
-            return;
+        if (PACKAGE_GMS.equals(packageName)) {
+            Log.i(TAG, "Spoofing props for " + processName);
+
+            // We handle all GMS processes, but special handling for unstable
+            if (PROCESS_GMS_UNSTABLE.equals(processName)) {
+                setCertifiedPropsForGms(context);
+            } else if (processName.startsWith(PACKAGE_GMS)) {
+                loadAndSetCertifiedProps(context);
+            }
         }
 
-        Log.i(TAG, "Spoofing props for " + processName);
-
-        // We handle all GMS processes, but special handling for unstable
-        if (PROCESS_GMS_UNSTABLE.equals(processName)) {
-            setCertifiedPropsForGms(context);
-        } else if (processName.startsWith(PACKAGE_GMS)) {
-            loadAndSetCertifiedProps(context);
-        }
+        // Lock the native spoof table for all processes
+        nativeEnableSysPropSpoof();
     }
 
     /**
@@ -165,13 +185,17 @@ public class SimplePropImitation {
 
         Log.i(TAG, "Applying " + sCertifiedProps.size() + " certified props");
         for (String entry : sCertifiedProps) {
-            // Each entry must be of the format FIELD:value
             final String[] parts = entry.split(":", 2);
             if (parts.length != 2) {
                 Log.e(TAG, "Invalid entry in certified props: " + entry);
                 continue;
             }
             setPropValue(parts[0], parts[1]);
+            // Also spoof the corresponding system property at native level
+            final String sysProp = FIELD_TO_SYSPROP.get(parts[0]);
+            if (sysProp != null) {
+                nativeSpoofSysProp(sysProp, parts[1]);
+            }
         }
         Log.i(TAG, "FINGERPRINT is now: " + Build.FINGERPRINT);
     }

@@ -265,6 +265,7 @@ cc_defaults_for_libandroid_runtime {
                 "com_android_internal_os_KernelCpuUidBpfMapReader.cpp",
                 "com_android_internal_os_KernelSingleProcessCpuThreadReader.cpp",
                 "com_android_internal_os_KernelSingleUidTimeReader.cpp",
+                "com_android_internal_util_SimplePropImitation.cpp",
                 "com_android_internal_os_LongArrayMultiStateCounter.cpp",
                 "com_android_internal_os_LongMultiStateCounter.cpp",
                 "com_android_internal_os_Zygote.cpp",

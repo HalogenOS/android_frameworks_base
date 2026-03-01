@@ -223,6 +223,7 @@ extern int register_com_android_internal_os_KernelCpuTotalBpfMapReader(JNIEnv* e
 extern int register_com_android_internal_os_KernelCpuUidBpfMapReader(JNIEnv *env);
 extern int register_com_android_internal_os_KernelSingleProcessCpuThreadReader(JNIEnv* env);
 extern int register_com_android_internal_os_KernelSingleUidTimeReader(JNIEnv *env);
+extern int register_com_android_internal_util_SimplePropImitation(JNIEnv* env);
 extern int register_com_android_internal_os_LongArrayMultiStateCounter(JNIEnv* env);
 extern int register_com_android_internal_os_LongMultiStateCounter(JNIEnv* env);
 extern int register_com_android_internal_os_Zygote(JNIEnv *env);
@@ -1725,6 +1726,7 @@ static const RegJNIRec gRegJNI[] = {
         REG_JNI(register_com_android_internal_os_KernelCpuUidBpfMapReader),
         REG_JNI(register_com_android_internal_os_KernelSingleProcessCpuThreadReader),
         REG_JNI(register_com_android_internal_os_KernelSingleUidTimeReader),
+        REG_JNI(register_com_android_internal_util_SimplePropImitation),
 
         REG_JNI(register_android_window_WindowInfosListener),
         REG_JNI(register_android_window_ScreenCapture),
