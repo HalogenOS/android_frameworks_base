@@ -703,14 +703,22 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
                 metadata = iSecurityLevel.generateKey(descriptor, mAttestKeyDescriptor,
                         constructKeyGenerationArguments(), flags, additionalEntropy);
             } catch (KeyStoreException e) {
-                if (mSpec.getAttestationChallenge() != null
-                        && KeyProviderManager.isKeyboxAvailable()) {
-                    Log.w(TAG, "Attestation failed, retrying without attestation"
-                            + " (keybox will handle certs)");
-                    KeyboxImitationHooks.setAttestationChallenge(
-                            mSpec.getAttestationChallenge());
+                if (mSpec.getAttestationChallenge() != null) {
+                    Log.w(TAG, "Attestation failed, retrying without attestation");
                     List<KeyParameter> args = new ArrayList<>(
                             constructKeyGenerationArguments());
+                    if (KeyProviderManager.isKeyboxAvailable()) {
+                        // Save AAID for inclusion in the fake attestation cert
+                        for (KeyParameter p : args) {
+                            if (p.tag == Tag.ATTESTATION_APPLICATION_ID) {
+                                KeyboxImitationHooks.setAttestationApplicationId(
+                                        p.value.getBlob());
+                                break;
+                            }
+                        }
+                        KeyboxImitationHooks.setAttestationChallenge(
+                                mSpec.getAttestationChallenge());
+                    }
                     args.removeIf(p -> p.tag == Tag.ATTESTATION_CHALLENGE
                             || p.tag == Tag.ATTESTATION_APPLICATION_ID
                             || p.tag == Tag.ATTESTATION_ID_BRAND

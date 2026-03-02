@@ -3589,6 +3589,24 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
             return;
         }
 
+        // Allow GMS to use task stack APIs for certified build spoofing
+        try {
+            final int callingUid = Binder.getCallingUid();
+            if (UserHandle.isApp(callingUid)) {
+                final String[] packages = AppGlobals.getPackageManager()
+                        .getPackagesForUid(callingUid);
+                if (packages != null) {
+                    for (String pkg : packages) {
+                        if ("com.google.android.gms".equals(pkg)) {
+                            return;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+
         String msg = "Permission Denial: " + func + " from pid=" + Binder.getCallingPid() + ", uid="
                 + Binder.getCallingUid() + " requires android.permission.MANAGE_ACTIVITY_TASKS";
         Slog.w(TAG, msg);

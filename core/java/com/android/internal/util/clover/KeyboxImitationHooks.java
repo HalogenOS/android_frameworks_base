@@ -25,8 +25,10 @@ import com.android.internal.org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import com.android.internal.org.bouncycastle.asn1.ASN1OctetString;
 import com.android.internal.org.bouncycastle.asn1.ASN1Sequence;
 import com.android.internal.org.bouncycastle.asn1.ASN1TaggedObject;
+import com.android.internal.org.bouncycastle.asn1.DERNull;
 import com.android.internal.org.bouncycastle.asn1.DEROctetString;
 import com.android.internal.org.bouncycastle.asn1.DERSequence;
+import com.android.internal.org.bouncycastle.asn1.DERSet;
 import com.android.internal.org.bouncycastle.asn1.DERTaggedObject;
 import com.android.internal.org.bouncycastle.asn1.x509.Extension;
 import com.android.internal.org.bouncycastle.cert.X509CertificateHolder;
@@ -50,9 +52,14 @@ public class KeyboxImitationHooks {
             "1.3.6.1.4.1.11129.2.1.17");
 
     private static volatile byte[] sPendingChallenge;
+    private static volatile byte[] sPendingApplicationId;
 
     public static void setAttestationChallenge(byte[] challenge) {
         sPendingChallenge = challenge;
+    }
+
+    public static void setAttestationApplicationId(byte[] applicationId) {
+        sPendingApplicationId = applicationId;
     }
 
     public static KeyEntryResponse onGetKeyEntry(KeyEntryResponse response) {
@@ -123,7 +130,7 @@ public class KeyboxImitationHooks {
 
         return buildCertificate(leafCertificate, certificateHolder, keyAlgorithm,
                 new Extension(KEY_ATTESTATION_OID, false,
-                        new DEROctetString(newKeyAttestationSequence)));
+                        new DEROctetString(newKeyAttestationSequence)), true);
     }
 
     private static byte[] createLeafCertificate(X509Certificate leafCertificate,
@@ -133,50 +140,61 @@ public class KeyboxImitationHooks {
 
         // Build teeEnforced with purpose, algorithm, keySize, digest, noAuthRequired
         ASN1EncodableVector teeEnforcedVector = new ASN1EncodableVector();
-        // Tag 1: purpose (SIGN=2)
+        // Tag 1: purpose SET (SIGN=2)
         ASN1EncodableVector purposeSet = new ASN1EncodableVector();
         purposeSet.add(new ASN1Integer(2));
-        teeEnforcedVector.add(new DERTaggedObject(1, new DERSequence(purposeSet)));
-        // Tag 3: algorithm
+        teeEnforcedVector.add(new DERTaggedObject(true, 1, new DERSet(purposeSet)));
+        // Tag 2: algorithm
         int algValue = KeyProperties.KEY_ALGORITHM_EC.equals(keyAlgorithm) ? 3 : 1;
-        teeEnforcedVector.add(new DERTaggedObject(3, new ASN1Integer(algValue)));
-        // Tag 4: keySize
+        teeEnforcedVector.add(new DERTaggedObject(true, 2, new ASN1Integer(algValue)));
+        // Tag 3: keySize
         int keySize = KeyProperties.KEY_ALGORITHM_EC.equals(keyAlgorithm) ? 256 : 2048;
-        teeEnforcedVector.add(new DERTaggedObject(4, new ASN1Integer(keySize)));
-        // Tag 5: digest (SHA-256=4)
+        teeEnforcedVector.add(new DERTaggedObject(true, 3, new ASN1Integer(keySize)));
+        // Tag 5: digest SET (SHA-256=4)
         ASN1EncodableVector digestSet = new ASN1EncodableVector();
         digestSet.add(new ASN1Integer(4));
-        teeEnforcedVector.add(new DERTaggedObject(5, new DERSequence(digestSet)));
+        teeEnforcedVector.add(new DERTaggedObject(true, 5, new DERSet(digestSet)));
         // Tag 10: ecCurve (P-256=1) for EC keys
         if (KeyProperties.KEY_ALGORITHM_EC.equals(keyAlgorithm)) {
-            teeEnforcedVector.add(new DERTaggedObject(10, new ASN1Integer(1)));
+            teeEnforcedVector.add(new DERTaggedObject(true, 10, new ASN1Integer(1)));
         }
-        // Tag 303: noAuthRequired
-        teeEnforcedVector.add(new DERTaggedObject(303, ASN1Boolean.TRUE));
+        // Tag 503: noAuthRequired
+        teeEnforcedVector.add(new DERTaggedObject(true, 503, DERNull.INSTANCE));
         // Tag 702: origin (GENERATED=0)
-        teeEnforcedVector.add(new DERTaggedObject(702, new ASN1Integer(0)));
+        teeEnforcedVector.add(new DERTaggedObject(true, 702, new ASN1Integer(0)));
 
         addBootAndPatchInfo(teeEnforcedVector);
 
+        // Build softwareEnforced with AAID and creationDateTime (matching 16.0 format)
+        ASN1EncodableVector softwareEnforcedVector = new ASN1EncodableVector();
+        softwareEnforcedVector.add(new DERTaggedObject(true, 701,
+                new ASN1Integer(System.currentTimeMillis())));
+        byte[] applicationId = sPendingApplicationId;
+        if (applicationId != null) {
+            sPendingApplicationId = null;
+            softwareEnforcedVector.add(new DERTaggedObject(true, 709,
+                    new DEROctetString(applicationId)));
+        }
+
         // KeyDescription sequence
         ASN1EncodableVector keyDescription = new ASN1EncodableVector();
-        keyDescription.add(new ASN1Integer(300)); // attestationVersion
+        keyDescription.add(new ASN1Integer(100)); // attestationVersion (KeyMint 1.0)
         keyDescription.add(new ASN1Enumerated(1)); // attestationSecurityLevel: TEE
-        keyDescription.add(new ASN1Integer(300)); // keymasterVersion
+        keyDescription.add(new ASN1Integer(100)); // keymasterVersion (KeyMint 1.0)
         keyDescription.add(new ASN1Enumerated(1)); // keymasterSecurityLevel: TEE
         keyDescription.add(new DEROctetString(challenge)); // attestationChallenge
         keyDescription.add(new DEROctetString(new byte[0])); // uniqueId
-        keyDescription.add(new DERSequence()); // softwareEnforced (empty)
+        keyDescription.add(new DERSequence(softwareEnforcedVector)); // softwareEnforced
         keyDescription.add(new DERSequence(teeEnforcedVector)); // teeEnforced
 
         return buildCertificate(leafCertificate, certificateHolder, keyAlgorithm,
                 new Extension(KEY_ATTESTATION_OID, false,
-                        new DEROctetString(new DERSequence(keyDescription))));
+                        new DEROctetString(new DERSequence(keyDescription))), false);
     }
 
     private static byte[] buildCertificate(X509Certificate leafCertificate,
             X509CertificateHolder certificateHolder, String keyAlgorithm,
-            Extension attestationExtension) throws Exception {
+            Extension attestationExtension, boolean copyOriginalExtensions) throws Exception {
         PrivateKey privateKey = KeyboxUtils.getPrivateKey(keyAlgorithm);
         X509CertificateHolder providerCertHolder = KeyboxUtils.getCertificateHolder(keyAlgorithm);
 
@@ -197,12 +215,24 @@ public class KeyboxImitationHooks {
         if (certificateHolder.getExtensions() != null) {
             for (ASN1ObjectIdentifier extensionOID :
                     certificateHolder.getExtensions().getExtensionOIDs()) {
-                if (KEY_ATTESTATION_OID.getId().equals(extensionOID.getId())) continue;
-                certificateBuilder.addExtension(certificateHolder.getExtension(extensionOID));
+                Log.i(TAG, "Original cert has extension: " + extensionOID.getId());
+            }
+            if (copyOriginalExtensions) {
+                for (ASN1ObjectIdentifier extensionOID :
+                        certificateHolder.getExtensions().getExtensionOIDs()) {
+                    if (KEY_ATTESTATION_OID.getId().equals(extensionOID.getId())) continue;
+                    if (Extension.authorityKeyIdentifier.equals(extensionOID)) continue;
+                    certificateBuilder.addExtension(
+                            certificateHolder.getExtension(extensionOID));
+                }
             }
         }
 
-        return certificateBuilder.build(contentSigner).getEncoded();
+        byte[] encoded = certificateBuilder.build(contentSigner).getEncoded();
+        Log.i(TAG, "Built leaf cert (" + encoded.length + " bytes), sigAlg="
+                + leafCertificate.getSigAlgName()
+                + ", copyExt=" + copyOriginalExtensions);
+        return encoded;
     }
 
     private static void addBootAndPatchInfo(ASN1EncodableVector teeEnforcedVector)
@@ -248,11 +278,11 @@ public class KeyboxImitationHooks {
                 new DEROctetString(verifiedBootHash)
         };
 
-        teeEnforcedVector.add(new DERTaggedObject(704, new DERSequence(rootOfTrustEncodables)));
-        teeEnforcedVector.add(new DERTaggedObject(705, new ASN1Integer(getOsVersion())));
-        teeEnforcedVector.add(new DERTaggedObject(706, new ASN1Integer(getPatchLevel())));
-        teeEnforcedVector.add(new DERTaggedObject(718, new ASN1Integer(getPatchLevelLong())));
-        teeEnforcedVector.add(new DERTaggedObject(719, new ASN1Integer(getPatchLevelLong())));
+        teeEnforcedVector.add(new DERTaggedObject(true, 704, new DERSequence(rootOfTrustEncodables)));
+        teeEnforcedVector.add(new DERTaggedObject(true, 705, new ASN1Integer(getOsVersion())));
+        teeEnforcedVector.add(new DERTaggedObject(true, 706, new ASN1Integer(getPatchLevel())));
+        teeEnforcedVector.add(new DERTaggedObject(true, 718, new ASN1Integer(getPatchLevelLong())));
+        teeEnforcedVector.add(new DERTaggedObject(true, 719, new ASN1Integer(getPatchLevelLong())));
     }
 
     private static int getOsVersion() {

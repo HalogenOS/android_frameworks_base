@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Process;
+import android.os.SystemProperties;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -44,6 +45,7 @@ public class SimplePropImitation {
     private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
 
     private static final String PACKAGE_GMS = "com.google.android.gms";
+    private static final String PACKAGE_FINSKY = "com.android.vending";
     private static final String PROCESS_GMS_UNSTABLE = PACKAGE_GMS + ".unstable";
 
     // GMS Add Account Activity - we need to skip imitation when this is on top
@@ -58,6 +60,7 @@ public class SimplePropImitation {
             Map.entry("BRAND", "ro.product.brand"),
             Map.entry("MODEL", "ro.product.model"),
             Map.entry("FINGERPRINT", "ro.build.fingerprint"),
+            Map.entry("HARDWARE", "ro.hardware"),
             Map.entry("ID", "ro.build.id"),
             Map.entry("TYPE", "ro.build.type"),
             Map.entry("TAGS", "ro.build.tags"),
@@ -67,8 +70,24 @@ public class SimplePropImitation {
             Map.entry("VERSION.DEVICE_INITIAL_SDK_INT", "ro.product.first_api_level")
     );
 
+    // Product property suffix for fields that have partition variants
+    private static final Map<String, String> PRODUCT_PROP_SUFFIX = Map.of(
+            "PRODUCT", "name",
+            "DEVICE", "device",
+            "MANUFACTURER", "manufacturer",
+            "BRAND", "brand",
+            "MODEL", "model"
+    );
+
+    // Partition prefixes for product properties that DroidGuard reads via native code
+    private static final String[] PARTITION_PREFIXES = {
+            "ro.product.vendor.", "ro.product.system.",
+            "ro.product.odm.", "ro.product.system_ext.",
+    };
+
     private static volatile List<String> sCertifiedProps = null;
     private static volatile String sProcessName = "";
+    private static volatile boolean sSupportsHardwareAttestation = false;
 
     private static native void nativeSpoofSysProp(String name, String value);
     private static native void nativeEnableSysPropSpoof();
@@ -91,6 +110,18 @@ public class SimplePropImitation {
 
         sProcessName = processName;
 
+        // Read the real bootloader state before any spoofing.
+        // "green" = locked BL = hardware attestation works, no spoofing needed.
+        // "orange" = unlocked BL = hardware attestation broken, must spoof.
+        String bootState = SystemProperties.get("ro.boot.verifiedbootstate", "");
+        sSupportsHardwareAttestation = "green".equals(bootState);
+
+        if (sSupportsHardwareAttestation) {
+            Log.i(TAG, "Locked bootloader, hardware attestation supported — skipping spoofing");
+            nativeEnableSysPropSpoof();
+            return;
+        }
+
         if (PACKAGE_GMS.equals(packageName)) {
             Log.i(TAG, "Spoofing props for " + processName);
 
@@ -100,6 +131,9 @@ public class SimplePropImitation {
             } else if (processName.startsWith(PACKAGE_GMS)) {
                 loadAndSetCertifiedProps(context);
             }
+        } else if (PACKAGE_FINSKY.equals(packageName)) {
+            Log.i(TAG, "Spoofing props for " + processName);
+            loadAndSetCertifiedProps(context);
         }
 
         // Lock the native spoof table for all processes
@@ -184,6 +218,7 @@ public class SimplePropImitation {
         }
 
         Log.i(TAG, "Applying " + sCertifiedProps.size() + " certified props");
+        String firstApiLevel = null;
         for (String entry : sCertifiedProps) {
             final String[] parts = entry.split(":", 2);
             if (parts.length != 2) {
@@ -191,13 +226,61 @@ public class SimplePropImitation {
                 continue;
             }
             setPropValue(parts[0], parts[1]);
-            // Also spoof the corresponding system property at native level
+            if ("VERSION.DEVICE_INITIAL_SDK_INT".equals(parts[0])) {
+                firstApiLevel = parts[1];
+            }
+            // Spoof the primary system property at native level
             final String sysProp = FIELD_TO_SYSPROP.get(parts[0]);
             if (sysProp != null) {
                 nativeSpoofSysProp(sysProp, parts[1]);
             }
+            // For product properties, also spoof all partition variants
+            final String suffix = PRODUCT_PROP_SUFFIX.get(parts[0]);
+            if (suffix != null) {
+                for (String prefix : PARTITION_PREFIXES) {
+                    nativeSpoofSysProp(prefix + suffix, parts[1]);
+                }
+                nativeSpoofSysProp("ro.product." + suffix + "_for_attestation", parts[1]);
+            }
         }
-        Log.i(TAG, "FINGERPRINT is now: " + Build.FINGERPRINT);
+
+        // Spoof boot attestation properties (migrated from system/core init)
+        nativeSpoofSysProp("ro.boot.flash.locked", "1");
+        nativeSpoofSysProp("ro.boot.verifiedbootstate", "green");
+        nativeSpoofSysProp("ro.boot.veritymode", "enforcing");
+        nativeSpoofSysProp("ro.boot.vbmeta.device_state", "locked");
+
+        // Spoof properties that DroidGuard checks for device integrity
+        if (firstApiLevel != null) {
+            nativeSpoofSysProp("ro.vendor.api_level", firstApiLevel);
+        }
+        nativeSpoofSysProp("ro.revision", "");
+        nativeSpoofSysProp("init.svc.adbd", "stopped");
+        nativeSpoofSysProp("persist.sys.usb.config", "none");
+        nativeSpoofSysProp("sys.usb.config", "none");
+
+        // Spoof build fingerprint across all partition variants
+        String fp = Build.FINGERPRINT;
+        if (fp != null && !fp.isEmpty()) {
+            for (String partition : new String[]{
+                    "vendor", "system", "system_ext", "odm", "bootimage"}) {
+                nativeSpoofSysProp("ro." + partition + ".build.fingerprint", fp);
+            }
+        }
+        Log.i(TAG, "Build.FINGERPRINT = " + Build.FINGERPRINT);
+        Log.i(TAG, "Build.PRODUCT = " + Build.PRODUCT);
+        Log.i(TAG, "Build.DEVICE = " + Build.DEVICE);
+        Log.i(TAG, "Build.MANUFACTURER = " + Build.MANUFACTURER);
+        Log.i(TAG, "Build.BRAND = " + Build.BRAND);
+        Log.i(TAG, "Build.MODEL = " + Build.MODEL);
+        Log.i(TAG, "Build.ID = " + Build.ID);
+        Log.i(TAG, "Build.TYPE = " + Build.TYPE);
+        Log.i(TAG, "Build.TAGS = " + Build.TAGS);
+        Log.i(TAG, "Build.VERSION.INCREMENTAL = " + Build.VERSION.INCREMENTAL);
+        Log.i(TAG, "Build.VERSION.RELEASE = " + Build.VERSION.RELEASE);
+        Log.i(TAG, "Build.VERSION.SECURITY_PATCH = " + Build.VERSION.SECURITY_PATCH);
+        Log.i(TAG, "Build.VERSION.DEVICE_INITIAL_SDK_INT = "
+                + Build.VERSION.DEVICE_INITIAL_SDK_INT);
     }
 
     /**
@@ -244,6 +327,14 @@ public class SimplePropImitation {
             Log.e(TAG, "Unable to get top activity!", e);
         }
         return false;
+    }
+
+    /**
+     * Whether the device has a locked bootloader and supports hardware attestation.
+     * When true, spoofing is unnecessary — stock behavior suffices.
+     */
+    public static boolean supportsHardwareAttestation() {
+        return sSupportsHardwareAttestation;
     }
 
     /**
