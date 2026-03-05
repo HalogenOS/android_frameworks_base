@@ -745,6 +745,9 @@
     <!-- Whether to use window background blur for the volume dialog. -->
     <bool name="config_volumeDialogUseBackgroundBlur">false</bool>
 
+    <!-- Whether to show the volume panel on the left side of the screen. -->
+    <bool name="config_volumePanelOnLeft">false</bool>
+
     <!-- The properties of the face auth front camera for outer display in pixels -->
     <integer-array name="config_face_auth_props">
         <!-- sensorLocationX -->

@@ -17,12 +17,7 @@
 package com.android.systemui.volume.dialog
 
 import android.content.Context
-import android.database.ContentObserver
-import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.UserHandle
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -39,7 +34,6 @@ import com.android.systemui.volume.dialog.domain.interactor.DesktopAudioTileDeta
 import com.android.systemui.volume.dialog.domain.interactor.VolumeDialogVisibilityInteractor
 import javax.inject.Inject
 import kotlinx.coroutines.awaitCancellation
-import lineageos.providers.LineageSettings
 
 class VolumeDialog
 @Inject
@@ -52,25 +46,8 @@ constructor(
     // Use horizontal volume dialog if the audio tile details view is enabled
     private val isVolumeDialogVertical = !desktopAudioTileDetailsFeatureInteractor.isEnabled()
 
-    private var volumePanelOnLeft: Boolean = false
-
-    private val volumePanelOnLeftObserver =
-        object : ContentObserver(Handler(Looper.getMainLooper())) {
-            override fun onChange(selfChange: Boolean) {
-                val onLeft =
-                    LineageSettings.Secure.getIntForUser(
-                        context.contentResolver,
-                        LineageSettings.Secure.VOLUME_PANEL_ON_LEFT,
-                        0,
-                        UserHandle.USER_CURRENT
-                    ) != 0
-
-                if (volumePanelOnLeft != onLeft) {
-                    volumePanelOnLeft = onLeft
-                    applyLayoutAndGravity()
-                }
-            }
-        }
+    private val volumePanelOnLeft: Boolean =
+        context.resources.getBoolean(R.bool.config_volumePanelOnLeft)
 
     private fun applyLayoutAndGravity() {
         val win = window ?: return
@@ -140,22 +117,7 @@ constructor(
 
     override fun onStart() {
         super.onStart()
-        context.contentResolver.registerContentObserver(
-            LineageSettings.Secure.getUriFor(LineageSettings.Secure.VOLUME_PANEL_ON_LEFT),
-            false,
-            volumePanelOnLeftObserver,
-            UserHandle.USER_ALL
-        )
-        volumePanelOnLeft = LineageSettings.Secure.getIntForUser(
-            context.contentResolver, LineageSettings.Secure.VOLUME_PANEL_ON_LEFT,
-            0, UserHandle.USER_CURRENT
-        ) != 0
         applyLayoutAndGravity()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        context.contentResolver.unregisterContentObserver(volumePanelOnLeftObserver)
     }
 
     /**
