@@ -46,8 +46,14 @@ constructor(
     // Use horizontal volume dialog if the audio tile details view is enabled
     private val isVolumeDialogVertical = !desktopAudioTileDetailsFeatureInteractor.isEnabled()
 
-    private val volumePanelOnLeft: Boolean =
-        context.resources.getBoolean(R.bool.config_volumePanelOnLeft)
+    private val volumePanelOnLeft: Boolean by lazy {
+        val gravity = context.resources.getInteger(R.integer.volume_dialog_gravity)
+        if (gravity and Gravity.LEFT != 0) {
+            true
+        } else {
+            context.resources.getBoolean(R.bool.config_volumePanelOnLeft)
+        }
+    }
 
     private fun applyLayoutAndGravity() {
         val win = window ?: return
