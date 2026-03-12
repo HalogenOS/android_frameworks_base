@@ -56,7 +56,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.ContentObserver;
+
 import android.graphics.Color;
 import android.graphics.Insets;
 import android.graphics.Rect;
@@ -68,7 +68,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.Trace;
-import android.provider.Settings;
+
 import android.util.IndentingPrintWriter;
 import android.util.Log;
 import android.util.MathUtils;
@@ -294,7 +294,7 @@ public final class NotificationPanelViewController implements
     private final ShadeHeadsUpChangedListener mOnHeadsUpChangedListener =
             new ShadeHeadsUpChangedListener();
     private final ConfigurationListener mConfigurationListener = new ConfigurationListener();
-    private final ContentObserver mDoubleTapToSleepObserver;
+
     private final StatusBarStateListener mStatusBarStateListener = new StatusBarStateListener();
     private final NotificationPanelView mView;
     private final VibratorHelper mVibratorHelper;
@@ -480,7 +480,6 @@ public final class NotificationPanelViewController implements
     private final NotificationShadeDepthController mDepthController;
     private final NavigationBarController mNavigationBarController;
     private final int mDisplayId;
-    private boolean mDoubleTapToSleepEnabled;
     private GestureDetector mDoubleTapGesture;
 
     private final KeyguardIndicationController mKeyguardIndicationController;
@@ -797,13 +796,6 @@ public final class NotificationPanelViewController implements
                 return true;
             }
         });
-        mDoubleTapToSleepObserver = new ContentObserver(handler) {
-            @Override
-            public void onChange(boolean selfChange) {
-                mDoubleTapToSleepEnabled = Settings.Secure.getInt(mContentResolver,
-                        Settings.Secure.DOUBLE_TAP_TO_SLEEP, 0) != 0;
-            }
-        };
         mConversationNotificationManager = conversationNotificationManager;
         mScreenOffAnimationController = screenOffAnimationController;
         mUnlockedScreenOffAnimationController = unlockedScreenOffAnimationController;
@@ -3711,10 +3703,6 @@ public final class NotificationPanelViewController implements
                 mStatusBarStateListener.onStateChanged(mStatusBarStateController.getState(), true);
             }
             mConfigurationController.addCallback(mConfigurationListener);
-            mContentResolver.registerContentObserver(Settings.Secure.getUriFor(
-                    Settings.Secure.DOUBLE_TAP_TO_SLEEP), false,
-                    mDoubleTapToSleepObserver);
-            mDoubleTapToSleepObserver.onChange(true);
             // Theme might have changed between inflating this view and attaching it to the
             // window, so
             // force a call to onThemeChanged
@@ -3725,7 +3713,6 @@ public final class NotificationPanelViewController implements
 
         @Override
         public void onViewDetachedFromWindow(View v) {
-            mContentResolver.unregisterContentObserver(mDoubleTapToSleepObserver);
             mFragmentService.getFragmentHostManager(mView)
                     .removeTagListener(QS.TAG, mQsController.getQsFragmentListener());
             mStatusBarStateController.removeCallback(mStatusBarStateListener);
@@ -4018,6 +4005,9 @@ public final class NotificationPanelViewController implements
                 if (isLockedShadeHomeGestureEvent(event)) {
                     mShadeLog.d("onTouch: down motion event in home gesture area");
                 } else {
+                    if (!mPulsing && !mDozing) {
+                        mDoubleTapGesture.onTouchEvent(event);
+                    }
                     mShadeLog.d("onTouch: external touch handling disabled");
                     // Consume touches below notifications on keyguard to allow for expansion
                     return mStatusBarStateController.getState() == StatusBarState.KEYGUARD;
@@ -4057,7 +4047,7 @@ public final class NotificationPanelViewController implements
                 return false;
             }
 
-            if (mDoubleTapToSleepEnabled && !mPulsing && !mDozing) {
+            if (!mPulsing && !mDozing) {
                 mDoubleTapGesture.onTouchEvent(event);
             }
 

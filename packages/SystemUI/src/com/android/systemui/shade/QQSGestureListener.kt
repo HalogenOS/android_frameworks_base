@@ -17,11 +17,9 @@
 package com.android.systemui.shade
 
 import android.content.Context
-import android.database.ContentObserver
 import android.os.PowerManager
 import android.view.GestureDetector
 import android.view.MotionEvent
-import android.provider.Settings
 import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.plugins.FalsingManager
 import com.android.systemui.plugins.statusbar.StatusBarStateController
@@ -35,30 +33,14 @@ class QQSGestureListener @Inject constructor(
         private val statusBarStateController: StatusBarStateController,
 ) : GestureDetector.SimpleOnGestureListener() {
 
-    private var doubleTapToSleepEnabled = false
-    private val quickQsOffsetHeight: Int
-
-    init {
-        val contentObserver = object : ContentObserver(null) {
-            override fun onChange(selfChange: Boolean) {
-                doubleTapToSleepEnabled = Settings.Secure.getInt(
-                        context.contentResolver, Settings.Secure.DOUBLE_TAP_TO_SLEEP, 0) != 0
-            }
-        }
-        context.contentResolver.registerContentObserver(
-                Settings.Secure.getUriFor(Settings.Secure.DOUBLE_TAP_TO_SLEEP),
-                false, contentObserver)
-        contentObserver.onChange(true)
-
-        quickQsOffsetHeight = context.resources.getDimensionPixelSize(
+    private val quickQsOffsetHeight: Int =
+        context.resources.getDimensionPixelSize(
                 com.android.internal.R.dimen.quick_qs_offset_height)
-    }
 
     override fun onDoubleTapEvent(e: MotionEvent): Boolean {
         // Go to sleep on double tap the QQS status bar
         if (e.actionMasked == MotionEvent.ACTION_UP &&
                 !statusBarStateController.isDozing &&
-                doubleTapToSleepEnabled &&
                 e.getY() < quickQsOffsetHeight &&
                 !falsingManager.isFalseDoubleTap
         ) {
