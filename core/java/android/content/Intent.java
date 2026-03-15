@@ -7145,6 +7145,15 @@ public class Intent implements Parcelable, Cloneable {
             "android.intent.extra.VISIBILITY_ALLOW_LIST";
 
     /**
+     * Broadcast action: notify system apps that the battery charge level has changed.
+     * Unlike {@link #ACTION_BATTERY_CHANGED}, this is not sticky and can be received by
+     * manifest-declared receivers without registering at runtime.
+     * @hide
+     */
+    public static final String ACTION_BATTERY_CHARGE_CHANGED =
+            "custom.intent.action.BATTERY_CHARGE_CHANGED";
+
+    /**
      * A boolean extra used with {@link #ACTION_PACKAGE_DATA_CLEARED} which indicates if the intent
      * is broadcast as part of a restore operation.
      *

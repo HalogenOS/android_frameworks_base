@@ -23,6 +23,10 @@
     <string name="accessibility_quick_settings_caffeine_off">Caffeine off.</string>
     <string name="accessibility_quick_settings_caffeine_on">Caffeine on.</string>
 
+    <!-- Charging limit QS tile -->
+    <string name="quick_settings_charging_limit_label">Charge limit</string>
+    <string name="quick_settings_charging_limit_off">Off</string>
+
     <!-- Screen record -->
     <string name="screenrecord_lowquality_label">Lower quality</string>
     <string name="screenrecord_lowquality_summary">For smaller file size</string>

@@ -19,7 +19,9 @@ filegroup {
 
 filegroup {
     name: "services.core-sources",
-    srcs: ["java/**/*.java"],
+    srcs: [
+        "java/**/*.java",
+    ],
     exclude_srcs: [
         ":services.core-sources-am-wm",
     ],
@@ -261,6 +263,8 @@ java_library_static {
         "clipboard_flags_lib",
         "aconfig_adbdauth_flags_java_lib",
         "AvfBuildFlags",
+        "custom.system.service.charging",
+        "vendor.lineage.health-V2-java",
     ],
     javac_shard_size: 50,
     javacflags: [

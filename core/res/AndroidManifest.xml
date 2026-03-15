@@ -9512,6 +9512,9 @@
     <attribution android:tag="DevicePolicyManagerService"
         android:label="@string/device_policy_manager_service"/>
 
+    <!-- Battery charge change broadcast for charging control -->
+    <protected-broadcast android:name="custom.intent.action.BATTERY_CHARGE_CHANGED" />
+
     <application android:process="system"
                  android:persistent="true"
                  android:hasCode="false"

@@ -1481,6 +1481,11 @@ public final class SystemServer implements Dumpable {
         mSystemServiceManager.startService(BatteryService.class);
         t.traceEnd();
 
+        t.traceBegin("StartChargingControlService");
+        mSystemServiceManager.startService(
+                com.android.server.charging.ChargingControlService.class);
+        t.traceEnd();
+
         // Tracks application usage stats.
         t.traceBegin("StartUsageService");
         mSystemServiceManager.startService(UsageStatsService.class);

@@ -591,6 +591,7 @@ android_library {
         "kairos",
         "displaylib",
         "aconfig_settings_flags_lib",
+        "custom.system.service.charging",
         "vendor.lineage.powershare-V1-java",
     ],
     javacflags: [
