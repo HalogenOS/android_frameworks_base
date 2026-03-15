@@ -4047,7 +4047,9 @@ public final class NotificationPanelViewController implements
                 return false;
             }
 
-            if (!mPulsing && !mDozing) {
+            // DT2S for status bar: only when the touch originates from the status bar
+            // (external touch) and the shade is not yet expanded.
+            if (mUseExternalTouch && !mPulsing && !mDozing && isFullyCollapsed()) {
                 mDoubleTapGesture.onTouchEvent(event);
             }
 
