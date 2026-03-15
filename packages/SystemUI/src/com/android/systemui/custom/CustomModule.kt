@@ -11,6 +11,7 @@ import com.android.systemui.qs.tileimpl.QSTileImpl
 import com.android.systemui.qs.tiles.CaffeineTile
 import com.android.systemui.qs.tiles.ChargingLimitTile
 import com.android.systemui.qs.tiles.PowerShareTile
+import com.android.systemui.qs.tiles.ScreenshotTile
 import com.android.systemui.qs.tiles.base.shared.model.QSTileConfig
 import com.android.systemui.qs.tiles.base.shared.model.QSTileUIConfig
 import com.android.systemui.res.R
@@ -41,9 +42,16 @@ interface CustomModule {
     @StringKey(PowerShareTile.TILE_SPEC)
     fun bindPowerShareTile(powerShareTile: PowerShareTile): QSTileImpl<*>
 
+    /** Inject ScreenshotTile into tileMap in QSModule */
+    @Binds
+    @IntoMap
+    @StringKey(ScreenshotTile.TILE_SPEC)
+    fun bindScreenshotTile(screenshotTile: ScreenshotTile): QSTileImpl<*>
+
     companion object {
         const val CAFFEINE_TILE_SPEC = "caffeine"
         const val CHARGING_LIMIT_TILE_SPEC = "charging_limit"
+        const val SCREENSHOT_TILE_SPEC = "screenshot"
 
         @Provides
         @IntoMap
@@ -70,6 +78,21 @@ interface CustomModule {
                     QSTileUIConfig.Resource(
                         iconRes = R.drawable.ic_qs_charging_limit,
                         labelRes = R.string.quick_settings_charging_limit_label
+                    ),
+                instanceId = uiEventLogger.getNewInstanceId(),
+                category = TileCategory.UTILITIES,
+            )
+
+        @Provides
+        @IntoMap
+        @StringKey(SCREENSHOT_TILE_SPEC)
+        fun provideScreenshotTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+            QSTileConfig(
+                tileSpec = TileSpec.create(SCREENSHOT_TILE_SPEC),
+                uiConfig =
+                    QSTileUIConfig.Resource(
+                        iconRes = com.android.internal.R.drawable.ic_screenshot,
+                        labelRes = com.android.internal.R.string.global_action_screenshot
                     ),
                 instanceId = uiEventLogger.getNewInstanceId(),
                 category = TileCategory.UTILITIES,
