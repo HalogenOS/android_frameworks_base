@@ -115,7 +115,7 @@ public class ChargingControlService extends SystemService {
             public void onReceive(Context context, Intent intent) {
                 onBatteryChanged(intent);
             }
-        }, new IntentFilter(Intent.ACTION_BATTERY_CHARGE_CHANGED), null, null);
+        }, new IntentFilter(Intent.ACTION_BATTERY_CHANGED), null, null);
 
         if (mConfiguredLimit > 0) {
             applyLimit(mConfiguredLimit);
