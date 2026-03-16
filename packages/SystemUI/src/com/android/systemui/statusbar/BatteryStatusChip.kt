@@ -58,7 +58,7 @@ class BatteryStatusChip @JvmOverloads constructor(context: Context, attrs: Attri
 
     fun setBatteryLevel(@IntRange(from = 0, to = 100) batteryLevel: Int) {
         batteryMeterView.setForceShowPercent(true)
-        batteryMeterView.onBatteryLevelChanged(batteryLevel, true)
+        batteryMeterView.onBatteryLevelChanged(batteryLevel, true, true)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

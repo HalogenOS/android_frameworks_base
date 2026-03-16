@@ -85,6 +85,7 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
     private boolean mShowPercentAvailable;
     private String mEstimateText = null;
     private boolean mPluggedIn;
+    private boolean mCharging;
     private boolean mPowerSaveEnabled;
     private boolean mIsBatteryDefender;
     private boolean mIsIncompatibleCharging;
@@ -234,9 +235,11 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
      * @param level     int between 0 and 100 (representing percentage value)
      * @param pluggedIn whether the device is plugged in or not
      */
-    public void onBatteryLevelChanged(@IntRange(from = 0, to = 100) int level, boolean pluggedIn) {
+    public void onBatteryLevelChanged(
+            @IntRange(from = 0, to = 100) int level, boolean pluggedIn, boolean charging) {
         boolean wasCharging = isCharging();
         mPluggedIn = pluggedIn;
+        mCharging = charging;
         mLevel = level;
         boolean isCharging = isCharging();
         mDrawable.setCharging(isCharging);
@@ -758,7 +761,7 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
 
     @VisibleForTesting
     boolean isCharging() {
-        return mPluggedIn && !mIsIncompatibleCharging;
+        return mCharging && !mIsIncompatibleCharging;
     }
 
     public void dump(PrintWriter pw, String[] args) {
