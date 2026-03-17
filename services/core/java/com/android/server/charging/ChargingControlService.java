@@ -36,8 +36,6 @@ public class ChargingControlService extends SystemService {
     private boolean mHasLimit;
     private boolean mHasToggle;
     private int mConfiguredLimit;
-    private int mLastBatteryLevel;
-    private boolean mChargingDisabled;
 
     private final IChargingControlManager.Stub mManagerService =
             new IChargingControlManager.Stub() {
@@ -105,7 +103,6 @@ public class ChargingControlService extends SystemService {
                             resetCharging();
                         } else {
                             applyLimit(mConfiguredLimit);
-                            reevaluateToggle();
                         }
                     }
                 });
@@ -128,25 +125,22 @@ public class ChargingControlService extends SystemService {
         if (mConfiguredLimit == 0) return;
 
         int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
+        int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_UNKNOWN);
         if (level < 0) return;
-        mLastBatteryLevel = level;
 
         // HAL LIMIT mode handles it autonomously
         if (mHasLimit) return;
 
-        // TOGGLE mode: manage on/off based on battery level
-        if (plugged == 0) {
-            if (mChargingDisabled) setChargingEnabled(true);
-            return;
-        }
-
-        if (level >= mConfiguredLimit && !mChargingDisabled) {
-            Slog.i(TAG, "Battery at " + level + "%, limit " + mConfiguredLimit
-                    + "%, disabling charging");
-            setChargingEnabled(false);
-        } else if (level <= mConfiguredLimit - RECHARGE_MARGIN && mChargingDisabled) {
-            Slog.i(TAG, "Battery at " + level + "%, resuming charging");
+        // TOGGLE mode: purely reactive, no state tracking
+        if (status == BatteryManager.BATTERY_STATUS_CHARGING) {
+            if (level >= mConfiguredLimit) {
+                Slog.i(TAG, "Battery at " + level + "%, limit " + mConfiguredLimit
+                        + "%, disabling charging");
+                setChargingEnabled(false);
+            } else {
+                setChargingEnabled(true);
+            }
+        } else if (level < mConfiguredLimit - RECHARGE_MARGIN) {
             setChargingEnabled(true);
         }
     }
@@ -165,14 +159,6 @@ public class ChargingControlService extends SystemService {
         }
     }
 
-    private void reevaluateToggle() {
-        if (!mHasToggle || mLastBatteryLevel <= 0) return;
-        if (mChargingDisabled && mLastBatteryLevel < mConfiguredLimit) {
-            Slog.i(TAG, "Limit raised above battery level, resuming charging");
-            setChargingEnabled(true);
-        }
-    }
-
     private void resetCharging() {
         if (mHasLimit) {
             try {
@@ -184,13 +170,12 @@ public class ChargingControlService extends SystemService {
                 Slog.e(TAG, "Failed to reset charging limit", e);
             }
         }
-        if (mChargingDisabled) setChargingEnabled(true);
+        setChargingEnabled(true);
     }
 
     private void setChargingEnabled(boolean enabled) {
         try {
             mChargingControl.setChargingEnabled(enabled);
-            mChargingDisabled = !enabled;
         } catch (Exception e) {
             Slog.e(TAG, "Failed to set charging enabled: " + enabled, e);
         }
