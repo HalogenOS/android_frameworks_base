@@ -48,7 +48,8 @@ class ChargingLimitTile @Inject constructor(
     companion object {
         const val TILE_SPEC = "charging_limit"
         private const val SETTING = "charging_limit"
-        private val LIMITS = intArrayOf(0, 80, 85, 90)
+        private const val DISABLED = Int.MAX_VALUE
+        private val LIMITS = intArrayOf(DISABLED, 80, 85, 90)
     }
 
     private var icon: Icon? = null
@@ -75,7 +76,7 @@ class ChargingLimitTile @Inject constructor(
 
     override fun handleLongClick(expandable: Expandable?) {
         // Long press disables
-        Settings.System.putInt(mContext.contentResolver, SETTING, 0)
+        Settings.System.putInt(mContext.contentResolver, SETTING, DISABLED)
         refreshState()
     }
 
@@ -89,13 +90,14 @@ class ChargingLimitTile @Inject constructor(
 
     override fun handleUpdateState(state: BooleanState, arg: Any?) {
         val limit = getCurrentLimit()
-        state.value = limit > 0
+        val active = limit in 1..<100
+        state.value = active
         if (icon == null) {
             icon = maybeLoadResourceIcon(R.drawable.ic_qs_charging_limit)
         }
         state.icon = icon
         state.label = mContext.getString(R.string.quick_settings_charging_limit_label)
-        if (limit > 0) {
+        if (active) {
             state.secondaryLabel = "$limit%"
             state.state = Tile.STATE_ACTIVE
         } else {
@@ -107,5 +109,5 @@ class ChargingLimitTile @Inject constructor(
     override fun handleSetListening(listening: Boolean) {}
 
     private fun getCurrentLimit(): Int =
-        Settings.System.getInt(mContext.contentResolver, SETTING, 0)
+        Settings.System.getInt(mContext.contentResolver, SETTING, DISABLED)
 }

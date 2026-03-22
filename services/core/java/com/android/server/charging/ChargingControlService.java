@@ -31,6 +31,7 @@ public class ChargingControlService extends SystemService {
     private static final String SERVICE_NAME = "custom.system.service.charging";
     private static final String SETTING = "charging_limit";
     private static final int RECHARGE_MARGIN = 4;
+    private static final int DISABLED = Integer.MAX_VALUE;
 
     private IChargingControl mChargingControl;
     private boolean mHasLimit;
@@ -89,7 +90,7 @@ public class ChargingControlService extends SystemService {
         var resolver = getContext().getContentResolver();
 
         mConfiguredLimit = Settings.System.getIntForUser(
-                resolver, SETTING, 0, UserHandle.USER_CURRENT);
+                resolver, SETTING, DISABLED, UserHandle.USER_CURRENT);
 
         resolver.registerContentObserver(
                 Settings.System.getUriFor(SETTING), false,
@@ -97,9 +98,9 @@ public class ChargingControlService extends SystemService {
                     @Override
                     public void onChange(boolean selfChange) {
                         mConfiguredLimit = Settings.System.getIntForUser(
-                                resolver, SETTING, 0, UserHandle.USER_CURRENT);
+                                resolver, SETTING, DISABLED, UserHandle.USER_CURRENT);
                         Slog.i(TAG, "Charging limit changed to: " + mConfiguredLimit);
-                        if (mConfiguredLimit == 0) {
+                        if (isDisabled()) {
                             resetCharging();
                         } else {
                             applyLimit(mConfiguredLimit);
@@ -114,15 +115,19 @@ public class ChargingControlService extends SystemService {
             }
         }, new IntentFilter(Intent.ACTION_BATTERY_CHANGED), null, null);
 
-        if (mConfiguredLimit > 0) {
+        if (!isDisabled()) {
             applyLimit(mConfiguredLimit);
         }
 
         Slog.i(TAG, "Boot completed, configured limit: " + mConfiguredLimit);
     }
 
+    private boolean isDisabled() {
+        return mConfiguredLimit >= 100;
+    }
+
     private void onBatteryChanged(Intent intent) {
-        if (mConfiguredLimit == 0) return;
+        if (isDisabled()) return;
 
         int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_UNKNOWN);
