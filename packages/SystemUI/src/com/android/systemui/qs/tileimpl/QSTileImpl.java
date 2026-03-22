@@ -455,6 +455,19 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
     }
 
     /**
+     * Called when the user drags the slider to a new value.
+     * Override in subclasses that use {@link QSTile.SliderState}.
+     *
+     * @param value normalized slider value between 0.0 and 1.0
+     */
+    protected void handleSliderChanged(float value) {}
+
+    @Override
+    public void sliderChanged(float value) {
+        mHandler.post(() -> handleSliderChanged(value));
+    }
+
+    /**
      * Handles long click on the tile by launching the {@link Intent} defined in
      * {@link QSTileImpl#getLongClickIntent}.
      *

@@ -43,6 +43,9 @@ data class TileUiState(
     val handlesSecondaryClick: Boolean,
     val sideDrawable: Drawable?,
     val accessibilityUiState: AccessibilityUiState,
+    val sliderEnabled: Boolean = false,
+    val sliderValue: Float = 0f,
+    val sliderShortLabel: String = "",
 ) {
     val isToggleable: Boolean
         get() = accessibilityUiState.toggleableState != null
@@ -103,7 +106,10 @@ fun QSTile.State.toUiState(resources: Resources): TileUiState {
         handlesLongClick = handlesLongClick,
         handlesSecondaryClick = handlesSecondaryClick,
         sideDrawable = sideViewCustomDrawable,
-        AccessibilityUiState(
+        sliderEnabled = sliderEnabled,
+        sliderValue = sliderValue,
+        sliderShortLabel = sliderShortLabel?.toString() ?: "",
+        accessibilityUiState = AccessibilityUiState(
             contentDescription?.toString() ?: "",
             stateDescription.toString(),
             accessibilityRole,

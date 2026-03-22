@@ -77,6 +77,13 @@ public interface QSTile {
      */
     void longClick(@Nullable Expandable expandable);
 
+    /**
+     * The tile's slider value was changed by the user dragging.
+     *
+     * @param value normalized slider value between 0.0 and 1.0
+     */
+    default void sliderChanged(float value) {}
+
     void userSwitch(int currentUser);
     int getCurrentTileUser();
 
@@ -207,6 +214,13 @@ public interface QSTile {
         public Drawable sideViewCustomDrawable;
         public String spec;
 
+        /** Whether this tile supports horizontal drag-to-adjust. */
+        public boolean sliderEnabled;
+        /** Current slider position, 0.0 to 1.0. Only used when {@code sliderEnabled} is true. */
+        public float sliderValue;
+        /** Short label for 1x1 tiles (e.g. "5:00" instead of "05:00 remaining"). */
+        @Nullable public CharSequence sliderShortLabel;
+
         /** Get the state text. */
         public CharSequence getStateText(int arrayResId, Resources resources) {
             if (state == Tile.STATE_UNAVAILABLE || this instanceof QSTile.BooleanState) {
@@ -250,7 +264,10 @@ public interface QSTile {
                     || !Objects.equals(other.dualTarget, dualTarget)
                     || !Objects.equals(other.handlesLongClick, handlesLongClick)
                     || !Objects.equals(other.handlesSecondaryClick, handlesSecondaryClick)
-                    || !Objects.equals(other.sideViewCustomDrawable, sideViewCustomDrawable);
+                    || !Objects.equals(other.sideViewCustomDrawable, sideViewCustomDrawable)
+                    || other.sliderEnabled != sliderEnabled
+                    || Float.compare(other.sliderValue, sliderValue) != 0
+                    || !Objects.equals(other.sliderShortLabel, sliderShortLabel);
             other.spec = spec;
             other.icon = icon;
             other.iconSupplier = iconSupplier;
@@ -267,6 +284,9 @@ public interface QSTile {
             other.handlesLongClick = handlesLongClick;
             other.handlesSecondaryClick = handlesSecondaryClick;
             other.sideViewCustomDrawable = sideViewCustomDrawable;
+            other.sliderEnabled = sliderEnabled;
+            other.sliderValue = sliderValue;
+            other.sliderShortLabel = sliderShortLabel;
             return changed;
         }
 
@@ -354,4 +374,5 @@ public interface QSTile {
             return state;
         }
     }
+
 }

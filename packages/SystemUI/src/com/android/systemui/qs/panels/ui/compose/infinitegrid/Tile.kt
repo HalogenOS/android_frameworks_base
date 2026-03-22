@@ -30,11 +30,16 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import kotlin.math.abs
+import kotlinx.coroutines.withTimeoutOrNull
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -43,6 +48,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +56,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -57,9 +64,11 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalResources
@@ -197,7 +206,9 @@ fun ContentScope.Tile(
             }
 
         // TODO(b/361789146): Draw the shapes instead of clipping
-        val tileShape by TileDefaults.animateTileShapeAsState(uiState.state)
+        val effectiveState = if (uiState.sliderEnabled && uiState.sliderShortLabel.isNotEmpty())
+            STATE_ACTIVE else uiState.state
+        val tileShape by TileDefaults.animateTileShapeAsState(effectiveState)
         val animatedColor by animateColorAsState(colors.background, label = "QSTileBackgroundColor")
         val isDualTarget = uiState.handlesSecondaryClick
 
@@ -261,6 +272,10 @@ fun ContentScope.Tile(
                 }
             TileContainer(
                 interactionSource = interactionSource.takeIf { bounceContainer },
+                sliderEnabled = uiState.sliderEnabled,
+                sliderValue = uiState.sliderValue,
+                sliderFillColor = MaterialTheme.colorScheme.primary,
+                onSliderChanged = { tile.sliderChanged(it) },
                 onClick = onClick@{
                         if (!isClickable) return@onClick
 
@@ -306,16 +321,38 @@ fun ContentScope.Tile(
             ) {
                 val iconProvider: Context.() -> Icon = { getTileIcon(icon = icon) }
                 if (iconOnly) {
-                    SmallTileContent(
-                        iconProvider = iconProvider,
-                        color = colors.icon,
-                        modifier =
-                            Modifier.align(Alignment.Center).bounceScale {
-                                contentBounceable.iconBounceScale
-                            },
-                    )
+                    if (uiState.sliderEnabled && uiState.sliderShortLabel.isNotEmpty()) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier.align(Alignment.Center),
+                        ) {
+                            SmallTileContent(
+                                iconProvider = iconProvider,
+                                color = colors.icon,
+                                modifier = Modifier.bounceScale {
+                                    contentBounceable.iconBounceScale
+                                },
+                            )
+                            BasicText(
+                                text = uiState.sliderShortLabel,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = { colors.secondaryLabel },
+                                maxLines = 1,
+                            )
+                        }
+                    } else {
+                        SmallTileContent(
+                            iconProvider = iconProvider,
+                            color = colors.icon,
+                            modifier =
+                                Modifier.align(Alignment.Center).bounceScale {
+                                    contentBounceable.iconBounceScale
+                                },
+                        )
+                    }
                 } else {
-                    val iconShape by TileDefaults.animateIconShapeAsState(uiState.state)
+                    val iconShape by TileDefaults.animateIconShapeAsState(effectiveState)
                     val secondaryClick: (() -> Unit)? =
                         {
                                 hapticsViewModel?.setTileInteractionState(
@@ -373,8 +410,19 @@ fun TileContainer(
     isDualTarget: Boolean,
     interactionSource: MutableInteractionSource?,
     modifier: Modifier = Modifier,
+    sliderEnabled: Boolean = false,
+    sliderValue: Float = 0f,
+    sliderFillColor: Color = Color.Unspecified,
+    onSliderChanged: ((Float) -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit,
 ) {
+    val dragValue = remember { mutableFloatStateOf(sliderValue) }
+    val isDragging = remember { mutableStateOf(false) }
+    if (!isDragging.value) {
+        dragValue.floatValue = sliderValue
+    } else if (abs(sliderValue - dragValue.floatValue) < 0.01f) {
+        isDragging.value = false
+    }
     Box(
         modifier =
             modifier
@@ -388,6 +436,51 @@ fun TileContainer(
                     isDualTarget = isDualTarget,
                     interactionSource = interactionSource,
                 )
+                .thenIf(sliderEnabled) {
+                    Modifier
+                        .pointerInput(Unit) {
+                            awaitEachGesture {
+                                val down = awaitFirstDown()
+                                val startX = down.position.x
+                                // Wait for a brief hold; if the finger moves past
+                                // touch slop before the timeout, it's a page swipe.
+                                val held = withTimeoutOrNull(120L) {
+                                    while (true) {
+                                        val event = awaitPointerEvent()
+                                        val change = event.changes.firstOrNull() ?: return@withTimeoutOrNull false
+                                        if (!change.pressed) return@withTimeoutOrNull false
+                                        if (abs(change.position.x - startX) > viewConfiguration.touchSlop) {
+                                            return@withTimeoutOrNull false
+                                        }
+                                    }
+                                    @Suppress("UNREACHABLE_CODE") true
+                                } ?: true // timeout = finger held still = slider mode
+                                if (held == true) {
+                                isDragging.value = true
+                                var dragged = false
+                                do {
+                                    val event = awaitPointerEvent()
+                                    val change = event.changes.firstOrNull() ?: break
+                                    if (change.pressed) {
+                                        dragged = true
+                                        change.consume()
+                                        dragValue.floatValue =
+                                            (change.position.x / size.width).coerceIn(0f, 1f)
+                                    }
+                                } while (event.changes.any { it.pressed })
+                                if (dragged) {
+                                    onSliderChanged?.invoke(dragValue.floatValue)
+                                }
+                                }
+                            }
+                        }
+                        .drawBehind {
+                            drawRect(
+                                color = sliderFillColor.copy(alpha = 0.4f),
+                                size = Size(size.width * dragValue.floatValue, size.height),
+                            )
+                        }
+                }
                 .tileTestTag(iconOnly),
         content = content,
     )

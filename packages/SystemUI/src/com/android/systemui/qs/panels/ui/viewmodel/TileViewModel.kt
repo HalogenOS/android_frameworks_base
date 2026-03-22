@@ -71,6 +71,10 @@ data class TileViewModel(private val tile: QSTile, val spec: TileSpec) {
         tile.secondaryClick(null)
     }
 
+    fun sliderChanged(value: Float) {
+        tile.sliderChanged(value)
+    }
+
     fun startListening(token: Any) = tile.setListening(token, true)
 
     fun stopListening(token: Any) = tile.setListening(token, false)
