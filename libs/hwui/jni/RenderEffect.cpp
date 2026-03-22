@@ -36,16 +36,33 @@ static jlong createOffsetEffect(
     return reinterpret_cast<jlong>(offset.release());
 }
 
+static constexpr float kDownscaleBlurThreshold = 10.0f;
+static constexpr float kDownscaleFactor = 0.5f;
+
 static jlong createBlurEffect(JNIEnv* env , jobject, jfloat radiusX,
         jfloat radiusY, jlong inputFilterHandle, jint edgeTreatment) {
     auto* inputImageFilter = reinterpret_cast<SkImageFilter*>(inputFilterHandle);
-    sk_sp<SkImageFilter> blurFilter =
-            SkImageFilters::Blur(
-                    Blur::convertRadiusToSigma(radiusX),
-                    Blur::convertRadiusToSigma(radiusY),
-                    static_cast<SkTileMode>(edgeTreatment),
-                    sk_ref_sp(inputImageFilter),
-                    nullptr);
+    auto input = sk_ref_sp(inputImageFilter);
+    auto tileMode = static_cast<SkTileMode>(edgeTreatment);
+
+    float sigmaX = Blur::convertRadiusToSigma(radiusX);
+    float sigmaY = Blur::convertRadiusToSigma(radiusY);
+
+    sk_sp<SkImageFilter> blurFilter;
+    if (sigmaX > kDownscaleBlurThreshold || sigmaY > kDownscaleBlurThreshold) {
+        // Downscale → blur at reduced resolution → upscale.
+        // Reduces pixel throughput by 4x while bilinear filtering acts as a pre-blur.
+        auto sampling = SkSamplingOptions(SkFilterMode::kLinear);
+        auto down = SkImageFilters::MatrixTransform(
+                SkMatrix::Scale(kDownscaleFactor, kDownscaleFactor), sampling, input);
+        auto blur = SkImageFilters::Blur(
+                sigmaX * kDownscaleFactor, sigmaY * kDownscaleFactor, tileMode, down, nullptr);
+        blurFilter = SkImageFilters::MatrixTransform(
+                SkMatrix::Scale(1.0f / kDownscaleFactor, 1.0f / kDownscaleFactor),
+                sampling, blur);
+    } else {
+        blurFilter = SkImageFilters::Blur(sigmaX, sigmaY, tileMode, input, nullptr);
+    }
     return reinterpret_cast<jlong>(blurFilter.release());
 }
 

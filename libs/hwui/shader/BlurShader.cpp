@@ -19,18 +19,30 @@
 #include "SkRefCnt.h"
 #include "utils/Blur.h"
 
+static constexpr float kDownscaleBlurThreshold = 10.0f;
+static constexpr float kDownscaleFactor = 0.5f;
+
 namespace android::uirenderer {
 BlurShader::BlurShader(float radiusX, float radiusY, Shader* inputShader, SkTileMode edgeTreatment,
         const SkMatrix* matrix)
-    : Shader(matrix)
-    , skImageFilter(
-            SkImageFilters::Blur(
-                    Blur::convertRadiusToSigma(radiusX),
-                    Blur::convertRadiusToSigma(radiusY),
-                    edgeTreatment,
-                    inputShader ? inputShader->asSkImageFilter() : nullptr,
-                    nullptr)
-            ) { }
+    : Shader(matrix) {
+    float sigmaX = Blur::convertRadiusToSigma(radiusX);
+    float sigmaY = Blur::convertRadiusToSigma(radiusY);
+    auto input = inputShader ? inputShader->asSkImageFilter() : nullptr;
+
+    if (sigmaX > kDownscaleBlurThreshold || sigmaY > kDownscaleBlurThreshold) {
+        auto sampling = SkSamplingOptions(SkFilterMode::kLinear);
+        auto down = SkImageFilters::MatrixTransform(
+                SkMatrix::Scale(kDownscaleFactor, kDownscaleFactor), sampling, input);
+        auto blur = SkImageFilters::Blur(
+                sigmaX * kDownscaleFactor, sigmaY * kDownscaleFactor, edgeTreatment, down, nullptr);
+        skImageFilter = SkImageFilters::MatrixTransform(
+                SkMatrix::Scale(1.0f / kDownscaleFactor, 1.0f / kDownscaleFactor),
+                sampling, blur);
+    } else {
+        skImageFilter = SkImageFilters::Blur(sigmaX, sigmaY, edgeTreatment, input, nullptr);
+    }
+}
 
 sk_sp<SkImageFilter> BlurShader::makeSkImageFilter() {
     return skImageFilter;
