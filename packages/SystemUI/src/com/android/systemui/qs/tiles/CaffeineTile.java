@@ -53,19 +53,27 @@ public class CaffeineTile extends QSTileImpl<BooleanState> {
 
     public static final String TILE_SPEC = "caffeine";
 
-    @Nullable
-    private Icon mIcon = null;
+    // Slider maps 0.0–1.0 to 1 minute–8 hours via x^1.2 curve
+    private static final int MIN_SECONDS = 60;
+    private static final int MAX_SECONDS = 8 * 60 * 60;
+    // 0.5^3 ≈ 0.125 → maps slider midpoint to ~1 hour
+    private static final double EXPONENT = 3.0;
 
-    private final PowerManager.WakeLock mWakeLock;
-    private int mSecondsRemaining;
-    private int mDuration;
-    private static int[] DURATIONS = new int[] {
+    private static final int[] DURATIONS = new int[] {
         5 * 60,   // 5 min
         10 * 60,  // 10 min
         30 * 60,  // 30 min
         -1,       // infinity
     };
     private static final int INFINITE_DURATION_INDEX = DURATIONS.length - 1;
+
+    @Nullable
+    private Icon mIcon = null;
+
+    private final PowerManager.WakeLock mWakeLock;
+    private int mSecondsRemaining;
+    private int mDuration; // current total duration in seconds, -1 = infinite
+    private int mDurationIndex;
     private CountDownTimer mCountdownTimer = null;
     public long mLastClickTime = -1;
     private final Receiver mReceiver = new Receiver();
@@ -110,36 +118,31 @@ public class CaffeineTile extends QSTileImpl<BooleanState> {
 
     @Override
     protected void handleClick(@Nullable Expandable expandable) {
-        // If last user clicks < 5 seconds
-        // we cycle different duration
-        // otherwise toggle on/off
         if (mWakeLock.isHeld() && (mLastClickTime != -1) &&
                 (SystemClock.elapsedRealtime() - mLastClickTime < 5000)) {
-            // cycle duration
-            mDuration++;
-            if (mDuration >= DURATIONS.length) {
-                // all durations cycled, turn if off
-                mDuration = -1;
+            mDurationIndex++;
+            if (mDurationIndex >= DURATIONS.length) {
+                mDurationIndex = -1;
                 stopCountDown();
                 if (mWakeLock.isHeld()) {
                     mWakeLock.release();
                 }
             } else {
-                // change duration
-                startCountDown(DURATIONS[mDuration]);
+                mDuration = DURATIONS[mDurationIndex];
+                startCountDown(mDuration);
                 if (!mWakeLock.isHeld()) {
                     mWakeLock.acquire();
                 }
             }
         } else {
-            // toggle
             if (mWakeLock.isHeld()) {
                 mWakeLock.release();
                 stopCountDown();
             } else {
                 mWakeLock.acquire();
-                mDuration = 0;
-                startCountDown(DURATIONS[mDuration]);
+                mDurationIndex = 0;
+                mDuration = DURATIONS[mDurationIndex];
+                startCountDown(mDuration);
             }
         }
         mLastClickTime = SystemClock.elapsedRealtime();
@@ -147,16 +150,26 @@ public class CaffeineTile extends QSTileImpl<BooleanState> {
     }
 
     @Override
-    protected void handleLongClick(@Nullable Expandable expandable) {
-        if (mWakeLock.isHeld()) {
-            if (mDuration == INFINITE_DURATION_INDEX) {
-                return;
-            }
-        } else {
+    protected void handleSliderChanged(float value) {
+        mDuration = sliderToDuration(value);
+        if (!mWakeLock.isHeld()) {
             mWakeLock.acquire();
         }
-        mDuration = INFINITE_DURATION_INDEX;
-        startCountDown(DURATIONS[INFINITE_DURATION_INDEX]);
+        startCountDown(mDuration);
+        refreshState();
+    }
+
+    @Override
+    protected void handleLongClick(@Nullable Expandable expandable) {
+        if (mWakeLock.isHeld() && mDuration == -1) {
+            return;
+        }
+        if (!mWakeLock.isHeld()) {
+            mWakeLock.acquire();
+        }
+        mDurationIndex = INFINITE_DURATION_INDEX;
+        mDuration = -1;
+        startCountDown(-1);
         refreshState();
     }
 
@@ -175,11 +188,22 @@ public class CaffeineTile extends QSTileImpl<BooleanState> {
         return VIEW_UNKNOWN;
     }
 
+    private static int sliderToDuration(float value) {
+        double curved = Math.pow(value, EXPONENT);
+        return (int) (MIN_SECONDS + curved * (MAX_SECONDS - MIN_SECONDS));
+    }
+
+    private static float durationToSlider(int seconds) {
+        if (seconds <= MIN_SECONDS) return 0f;
+        if (seconds >= MAX_SECONDS) return 1f;
+        double normalized = (double) (seconds - MIN_SECONDS) / (MAX_SECONDS - MIN_SECONDS);
+        return (float) Math.pow(normalized, 1.0 / EXPONENT);
+    }
+
     private void startCountDown(long duration) {
         stopCountDown();
         mSecondsRemaining = (int) duration;
         if (duration == -1) {
-            // infinity timing, no need to start timer
             return;
         }
         mCountdownTimer = new CountDownTimer(duration * 1000, 1000) {
@@ -211,33 +235,42 @@ public class CaffeineTile extends QSTileImpl<BooleanState> {
         if (mSecondsRemaining == -1) {
             return "\u221E"; // infinity
         }
-        return String.format("%02d:%02d", mSecondsRemaining / 60 % 60, mSecondsRemaining % 60);
+        if (mSecondsRemaining >= 3600) {
+            return String.format("%d:%02d",
+                    mSecondsRemaining / 3600,
+                    mSecondsRemaining / 60 % 60);
+        }
+        return String.format("%d:%02d", mSecondsRemaining / 60, mSecondsRemaining % 60);
     }
 
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
         state.value = mWakeLock.isHeld();
+        state.sliderEnabled = true;
         if (mIcon == null) {
             mIcon = maybeLoadResourceIcon(R.drawable.ic_qs_caffeine);
         }
         state.icon = mIcon;
         state.label = mContext.getString(R.string.quick_settings_caffeine_label);
+        state.state = Tile.STATE_INACTIVE;
         if (state.value) {
-            state.secondaryLabel = formatValueWithRemainingTime();
-            state.contentDescription =  mContext.getString(
+            String timeLabel = formatValueWithRemainingTime();
+            state.secondaryLabel = timeLabel;
+            state.sliderShortLabel = timeLabel;
+            state.contentDescription = mContext.getString(
                     R.string.accessibility_quick_settings_caffeine_on);
-            state.state = Tile.STATE_ACTIVE;
+            state.sliderValue = mDuration == -1 ? 1f : durationToSlider(mSecondsRemaining);
         } else {
             state.secondaryLabel = null;
-            state.contentDescription =  mContext.getString(
+            state.sliderShortLabel = null;
+            state.contentDescription = mContext.getString(
                     R.string.accessibility_quick_settings_caffeine_off);
-            state.state = Tile.STATE_INACTIVE;
+            state.sliderValue = 0f;
         }
     }
 
     private final class Receiver extends BroadcastReceiver {
         public void init() {
-            // Register for Intent broadcasts for...
             IntentFilter filter = new IntentFilter();
             filter.addAction(Intent.ACTION_SCREEN_OFF);
             mContext.registerReceiver(this, filter, null, mHandler);
@@ -251,7 +284,6 @@ public class CaffeineTile extends QSTileImpl<BooleanState> {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (Intent.ACTION_SCREEN_OFF.equals(action)) {
-                // disable caffeine if user force off (power button)
                 stopCountDown();
                 if (mWakeLock.isHeld()) {
                     mWakeLock.release();
