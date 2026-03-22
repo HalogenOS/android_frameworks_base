@@ -20,8 +20,8 @@ import com.android.systemui.dagger.qualifiers.Background
 import com.android.systemui.dagger.qualifiers.Main
 import com.android.systemui.plugins.ActivityStarter
 import com.android.systemui.plugins.FalsingManager
-import com.android.systemui.plugins.qs.QSTile.BooleanState
 import com.android.systemui.plugins.qs.QSTile.Icon
+import com.android.systemui.plugins.qs.QSTile.BooleanState
 import com.android.systemui.plugins.statusbar.StatusBarStateController
 import com.android.systemui.qs.QSHost
 import com.android.systemui.qs.QsEventLogger
@@ -30,6 +30,7 @@ import com.android.systemui.qs.tileimpl.QSTileImpl
 import com.android.systemui.res.R
 
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class ChargingLimitTile @Inject constructor(
     host: QSHost,
@@ -49,7 +50,9 @@ class ChargingLimitTile @Inject constructor(
         const val TILE_SPEC = "charging_limit"
         private const val SETTING = "charging_limit"
         private const val DISABLED = Int.MAX_VALUE
-        private val LIMITS = intArrayOf(DISABLED, 80, 85, 90)
+        private const val MIN_LIMIT = 50
+        private const val MAX_LIMIT = 95
+        private val PRESETS = intArrayOf(DISABLED, 80, 85, 90)
     }
 
     private var icon: Icon? = null
@@ -67,15 +70,19 @@ class ChargingLimitTile @Inject constructor(
 
     override fun handleClick(expandable: Expandable?) {
         val current = getCurrentLimit()
-        val currentIndex = LIMITS.indexOf(current).let { if (it < 0) 0 else it }
-        val nextIndex = (currentIndex + 1) % LIMITS.size
-        val newLimit = LIMITS[nextIndex]
+        val currentIndex = PRESETS.indexOf(current).let { if (it < 0) 0 else it }
+        val newLimit = PRESETS[(currentIndex + 1) % PRESETS.size]
         Settings.System.putInt(mContext.contentResolver, SETTING, newLimit)
         refreshState()
     }
 
+    override fun handleSliderChanged(value: Float) {
+        val limit = MIN_LIMIT + ((MAX_LIMIT - MIN_LIMIT) * value).roundToInt()
+        Settings.System.putInt(mContext.contentResolver, SETTING, limit)
+        refreshState()
+    }
+
     override fun handleLongClick(expandable: Expandable?) {
-        // Long press disables
         Settings.System.putInt(mContext.contentResolver, SETTING, DISABLED)
         refreshState()
     }
@@ -90,19 +97,23 @@ class ChargingLimitTile @Inject constructor(
 
     override fun handleUpdateState(state: BooleanState, arg: Any?) {
         val limit = getCurrentLimit()
-        val active = limit in 1..<100
+        val active = limit in MIN_LIMIT..MAX_LIMIT
         state.value = active
+        state.sliderEnabled = true
         if (icon == null) {
             icon = maybeLoadResourceIcon(R.drawable.ic_qs_charging_limit)
         }
         state.icon = icon
         state.label = mContext.getString(R.string.quick_settings_charging_limit_label)
+        state.state = Tile.STATE_INACTIVE
         if (active) {
             state.secondaryLabel = "$limit%"
-            state.state = Tile.STATE_ACTIVE
+            state.sliderShortLabel = "$limit%"
+            state.sliderValue = (limit - MIN_LIMIT).toFloat() / (MAX_LIMIT - MIN_LIMIT)
         } else {
             state.secondaryLabel = mContext.getString(R.string.quick_settings_charging_limit_off)
-            state.state = Tile.STATE_INACTIVE
+            state.sliderShortLabel = null
+            state.sliderValue = 0f
         }
     }
 
