@@ -104,6 +104,10 @@ public class ChargingControlService extends SystemService {
                             resetCharging();
                         } else {
                             applyLimit(mConfiguredLimit);
+                            var bm = getContext().getSystemService(BatteryManager.class);
+                            evaluateCharging(
+                                    bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY),
+                                    bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS));
                         }
                     }
                 });
@@ -128,11 +132,13 @@ public class ChargingControlService extends SystemService {
 
     private void onBatteryChanged(Intent intent) {
         if (isDisabled()) return;
-
         int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_UNKNOWN);
         if (level < 0) return;
+        evaluateCharging(level, status);
+    }
 
+    private void evaluateCharging(int level, int status) {
         // HAL LIMIT mode handles it autonomously
         if (mHasLimit) return;
 
