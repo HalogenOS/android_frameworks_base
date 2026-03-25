@@ -897,6 +897,37 @@
     -->
     <integer name="config_defaultNightMode">1</integer>
 
+    <!-- HCT tone (0-100) for each palette shade stop.
+         Indices map to shade keys: 0, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000.
+         Default values match AOSP formula: tone = (1000 - shade) / 10.
+         Themes can overlay this to adjust the palette generation. -->
+    <integer-array name="config_paletteShadeTones">
+        <item>100</item>
+        <item>99</item>
+        <item>95</item>
+        <item>90</item>
+        <item>80</item>
+        <item>70</item>
+        <item>60</item>
+        <item>50</item>
+        <item>40</item>
+        <item>30</item>
+        <item>20</item>
+        <item>10</item>
+        <item>0</item>
+    </integer-array>
+
+    <!-- HCT tone (0-100) for each dark mode surface level.
+         Themes can overlay these to produce darker or lighter surfaces. -->
+    <integer name="config_darkToneSurface">4</integer>
+    <integer name="config_darkToneSurfaceDim">4</integer>
+    <integer name="config_darkToneSurfaceBright">18</integer>
+    <integer name="config_darkToneSurfaceContainerLowest">0</integer>
+    <integer name="config_darkToneSurfaceContainerLow">6</integer>
+    <integer name="config_darkToneSurfaceContainer">9</integer>
+    <integer name="config_darkToneSurfaceContainerHigh">12</integer>
+    <integer name="config_darkToneSurfaceContainerHighest">15</integer>
+
     <!-- Boolean indicating whether the HWC setColorTransform function can be performed efficiently
          in hardware. -->
     <bool name="config_setColorTransformAccelerated">false</bool>

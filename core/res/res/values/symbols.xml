@@ -3089,6 +3089,16 @@
 
   <java-symbol type="integer" name="config_defaultNightMode" />
 
+  <java-symbol type="array" name="config_paletteShadeTones" />
+  <java-symbol type="integer" name="config_darkToneSurface" />
+  <java-symbol type="integer" name="config_darkToneSurfaceDim" />
+  <java-symbol type="integer" name="config_darkToneSurfaceBright" />
+  <java-symbol type="integer" name="config_darkToneSurfaceContainerLowest" />
+  <java-symbol type="integer" name="config_darkToneSurfaceContainerLow" />
+  <java-symbol type="integer" name="config_darkToneSurfaceContainer" />
+  <java-symbol type="integer" name="config_darkToneSurfaceContainerHigh" />
+  <java-symbol type="integer" name="config_darkToneSurfaceContainerHighest" />
+
   <java-symbol type="integer" name="config_jobSchedulerBackgroundJobsDelay" />
   <java-symbol type="integer" name="config_jobSchedulerInactivityIdleThreshold" />
   <java-symbol type="integer" name="config_jobSchedulerInactivityIdleThresholdOnStablePower" />

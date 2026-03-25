@@ -91,6 +91,7 @@ import com.android.systemui.util.kotlin.JavaAdapter;
 import com.android.systemui.util.settings.SecureSettings;
 
 import com.google.ux.material.libmonet.dynamiccolor.DynamicColor;
+import com.google.ux.material.libmonet.dynamiccolor.DynamicScheme;
 import com.google.ux.material.libmonet.dynamiccolor.MaterialDynamicColors;
 
 import kotlinx.coroutines.flow.Flow;
@@ -183,6 +184,8 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
     private boolean mDeferredThemeEvaluation;
     // Determines if we should ignore THEME_CUSTOMIZATION_OVERLAY_PACKAGES setting changes.
     private boolean mSkipSettingChange;
+    // Determines if we should ignore ACTION_OVERLAY_CHANGED (to avoid re-entrant loop).
+    private boolean mSkipOverlayChange;
 
     private final DeviceProvisionedListener mDeviceProvisionedListener =
             new DeviceProvisionedListener() {
@@ -485,6 +488,39 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
         filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
         mBroadcastDispatcher.registerReceiver(mBroadcastReceiver, filter, mMainExecutor,
                 UserHandle.ALL);
+
+        IntentFilter overlayFilter = new IntentFilter(Intent.ACTION_OVERLAY_CHANGED);
+        overlayFilter.addDataScheme("package");
+        overlayFilter.addDataSchemeSpecificPart("android",
+                android.os.PatternMatcher.PATTERN_LITERAL);
+        mContext.registerReceiver(new BroadcastReceiver() {
+            private String mLastOverlayState = getExternalOverlayState();
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String current = getExternalOverlayState();
+                if (current.equals(mLastOverlayState)) {
+                    return;
+                }
+                mLastOverlayState = current;
+                Log.d(TAG, "External overlay changed on android, re-evaluating theme");
+                reevaluateSystemTheme(true /* forceReload */);
+            }
+
+            private String getExternalOverlayState() {
+                StringBuilder sb = new StringBuilder();
+                android.content.om.OverlayManager om = mContext.getSystemService(
+                        android.content.om.OverlayManager.class);
+                for (android.content.om.OverlayInfo info :
+                        om.getOverlayInfosForTarget("android", UserHandle.SYSTEM)) {
+                    if (!info.isFabricated()) {
+                        sb.append(info.getOverlayIdentifier()).append('=')
+                                .append(info.isEnabled()).append(';');
+                    }
+                }
+                return sb.toString();
+            }
+        }, overlayFilter, null, mBgHandler);
         mSecureSettings.registerContentObserverForUserSync(
                 Settings.Secure.THEME_CUSTOMIZATION_OVERLAY_PACKAGES,
                 false,
@@ -687,15 +723,25 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
     }
 
     private void createOverlays(int color) {
-        mDarkColorScheme = new ColorScheme(color, true /* isDark */, mThemeStyle, mContrast);
-        mLightColorScheme = new ColorScheme(color, false /* isDark */, mThemeStyle, mContrast);
+        int[] toneMapping = mResources.getIntArray(
+                com.android.internal.R.array.config_paletteShadeTones);
+        Log.d(TAG, "createOverlays: config_paletteShadeTones length=" + toneMapping.length
+                + " values=" + java.util.Arrays.toString(toneMapping));
+        if (toneMapping.length == 0) toneMapping = null;
+
+        mDarkColorScheme = new ColorScheme(color, true /* isDark */, mThemeStyle, mContrast,
+                toneMapping);
+        mLightColorScheme = new ColorScheme(color, false /* isDark */, mThemeStyle, mContrast,
+                toneMapping);
         mColorScheme = isNightMode() ? mDarkColorScheme : mLightColorScheme;
 
         mAccentOverlay = newFabricatedOverlay("accent");
-        assignColorsToOverlay(mAccentOverlay, DynamicColors.getAllAccentPalette(), false);
+        assignColorsToOverlay(mAccentOverlay, DynamicColors.getAllAccentPalette(toneMapping),
+                false);
 
         mNeutralOverlay = newFabricatedOverlay("neutral");
-        assignColorsToOverlay(mNeutralOverlay, DynamicColors.getAllNeutralPalette(), false);
+        assignColorsToOverlay(mNeutralOverlay, DynamicColors.getAllNeutralPalette(toneMapping),
+                false);
 
         mDynamicOverlay = newFabricatedOverlay("dynamic");
         // Themed Colors
@@ -704,6 +750,47 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
         assignColorsToOverlay(mDynamicOverlay, DynamicColors.getFixedColorsMapped(), true);
         // Custom Colors
         assignColorsToOverlay(mDynamicOverlay, DynamicColors.getCustomColorsMapped(), false);
+
+        assignDarkSurfaceToneOverrides(mDynamicOverlay);
+    }
+
+    private void assignDarkSurfaceToneOverrides(FabricatedOverlay overlay) {
+        final int[] defaultTones = {4, 4, 4, 18, 0, 6, 9, 12, 15};
+        final int[] configIds = {
+                com.android.internal.R.integer.config_darkToneSurface,
+                com.android.internal.R.integer.config_darkToneSurfaceDim,
+                com.android.internal.R.integer.config_darkToneSurface, // background = surface
+                com.android.internal.R.integer.config_darkToneSurfaceBright,
+                com.android.internal.R.integer.config_darkToneSurfaceContainerLowest,
+                com.android.internal.R.integer.config_darkToneSurfaceContainerLow,
+                com.android.internal.R.integer.config_darkToneSurfaceContainer,
+                com.android.internal.R.integer.config_darkToneSurfaceContainerHigh,
+                com.android.internal.R.integer.config_darkToneSurfaceContainerHighest,
+        };
+        final String[] colorNames = {
+                "surface", "surface_dim", "background", "surface_bright",
+                "surface_container_lowest", "surface_container_low", "surface_container",
+                "surface_container_high", "surface_container_highest",
+        };
+
+        DynamicScheme darkScheme = mDarkColorScheme.getMaterialScheme();
+
+        for (int i = 0; i < configIds.length; i++) {
+            int configuredTone = mResources.getInteger(configIds[i]);
+            if (configuredTone != defaultTones[i]) {
+                DynamicColor dc = new DynamicColor(
+                        /* name= */ colorNames[i],
+                        /* palette= */ (s) -> s.neutralPalette,
+                        /* tone= */ (s) -> (double) configuredTone,
+                        /* isBackground= */ true,
+                        /* background= */ null,
+                        /* secondBackground= */ null,
+                        /* contrastCurve= */ null,
+                        /* toneDeltaPair= */ null);
+                overlay.setResourceValue("android:color/system_" + colorNames[i] + "_dark",
+                        TYPE_INT_COLOR_ARGB8, dc.getArgb(darkScheme), null);
+            }
+        }
     }
 
     private void assignColorsToOverlay(FabricatedOverlay overlay,
