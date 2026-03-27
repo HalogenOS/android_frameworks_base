@@ -444,12 +444,12 @@ fun TileContainer(
                                 val startX = down.position.x
                                 // Wait for a brief hold; if the finger moves past
                                 // touch slop before the timeout, it's a page swipe.
-                                val held = withTimeoutOrNull(120L) {
+                                val held = withTimeoutOrNull(100L) {
                                     while (true) {
                                         val event = awaitPointerEvent()
                                         val change = event.changes.firstOrNull() ?: return@withTimeoutOrNull false
                                         if (!change.pressed) return@withTimeoutOrNull false
-                                        if (abs(change.position.x - startX) > viewConfiguration.touchSlop) {
+                                        if (abs(change.position.x - startX) > viewConfiguration.touchSlop * 1.5f) {
                                             return@withTimeoutOrNull false
                                         }
                                     }
