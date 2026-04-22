@@ -267,29 +267,34 @@ public final class FontUpdateRequest implements Parcelable {
         }
 
         /**
-         * Read a {@link Family} instance from &lt;family&gt; element in XML
+         * Read a {@link Family} instance from a family-shaped element in XML.
+         *
+         * <p>The parser is assumed to be positioned on the opening tag. The wrapping tag name is
+         * captured dynamically so the same reader works for both {@code <family>} and wrappers
+         * like {@code <customFamily>}.
          *
          * For the XML format, see {@link Font} class comment.
          *
-         * @param parser an XML parser that points &lt;family&gt; element.
+         * @param parser an XML parser that points at the family start tag.
          * @return an {@link Family} instance
          */
         public static @NonNull Family readFromXml(@NonNull XmlPullParser parser)
                 throws XmlPullParserException, IOException {
             List<Font> fonts = new ArrayList<>();
-            if (parser.getEventType() != XmlPullParser.START_TAG
-                    || !parser.getName().equals(TAG_FAMILY)) {
-                throw new IOException("Unexpected parser state: must be START_TAG with family");
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                throw new IOException("Unexpected parser state: must be START_TAG");
             }
+            final String wrappingTag = parser.getName();
             String name = parser.getAttributeValue(null, ATTR_NAME);
             if (name == null) {
-                throw new IOException("name attribute is missing in family tag.");
+                throw new IOException("name attribute is missing in " + wrappingTag + " tag.");
             }
             int type = 0;
             while ((type = parser.next()) != XmlPullParser.END_DOCUMENT) {
                 if (type == XmlPullParser.START_TAG && parser.getName().equals(TAG_FONT)) {
                     fonts.add(Font.readFromXml(parser));
-                } else if (type == XmlPullParser.END_TAG && parser.getName().equals(TAG_FAMILY)) {
+                } else if (type == XmlPullParser.END_TAG
+                        && parser.getName().equals(wrappingTag)) {
                     break;
                 }
             }

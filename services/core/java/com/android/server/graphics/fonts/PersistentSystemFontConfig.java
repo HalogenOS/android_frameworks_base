@@ -19,6 +19,7 @@ package com.android.server.graphics.fonts;
 import android.annotation.NonNull;
 import android.graphics.fonts.FontUpdateRequest;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Slog;
 import android.util.Xml;
@@ -34,6 +35,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /* package */ class PersistentSystemFontConfig {
@@ -42,13 +44,21 @@ import java.util.Set;
     private static final String TAG_ROOT = "fontConfig";
     private static final String TAG_LAST_MODIFIED_DATE = "lastModifiedDate";
     private static final String TAG_UPDATED_FONT_DIR = "updatedFontDir";
+    private static final String TAG_CUSTOM_FONT_DIR = "customFontDir";
     private static final String TAG_FAMILY = "family";
+    private static final String TAG_CUSTOM_FAMILY = "customFamily";
+    private static final String TAG_ACTIVE_CUSTOM_FAMILY_FOR_USER = "activeCustomFamilyForUser";
     private static final String ATTR_VALUE = "value";
+    private static final String ATTR_USER_ID = "userId";
 
     /* package */ static class Config {
         public long lastModifiedMillis;
         public final Set<String> updatedFontDirs = new ArraySet<>();
+        public final Set<String> customFontDirs = new ArraySet<>();
         public final List<FontUpdateRequest.Family> fontFamilies = new ArrayList<>();
+        public final List<FontUpdateRequest.Family> customFontFamilies = new ArrayList<>();
+        /** Per-user active custom family, keyed by userId. Absence means "use stock". */
+        public final Map<Integer, String> activeCustomFontFamilyByUser = new ArrayMap<>();
     }
 
     /**
@@ -78,11 +88,26 @@ import java.util.Set;
                     case TAG_UPDATED_FONT_DIR:
                         out.updatedFontDirs.add(getAttribute(parser, ATTR_VALUE));
                         break;
+                    case TAG_CUSTOM_FONT_DIR:
+                        out.customFontDirs.add(getAttribute(parser, ATTR_VALUE));
+                        break;
                     case TAG_FAMILY:
                         // updatableFontMap is not ready here. We get the base file names by passing
                         // empty fontDir, and resolve font paths later.
                         out.fontFamilies.add(FontUpdateRequest.Family.readFromXml(parser));
                         break;
+                    case TAG_CUSTOM_FAMILY:
+                        out.customFontFamilies.add(
+                                FontUpdateRequest.Family.readFromXml(parser));
+                        break;
+                    case TAG_ACTIVE_CUSTOM_FAMILY_FOR_USER: {
+                        final int userId = parseIntAttribute(parser, ATTR_USER_ID, -1);
+                        final String active = getAttribute(parser, ATTR_VALUE);
+                        if (userId >= 0 && !active.isEmpty()) {
+                            out.activeCustomFontFamilyByUser.put(userId, active);
+                        }
+                        break;
+                    }
                     default:
                         Slog.w(TAG, "Skipping unknown tag: " + tag);
                 }
@@ -108,6 +133,11 @@ import java.util.Set;
             out.attribute(null, ATTR_VALUE, dir);
             out.endTag(null, TAG_UPDATED_FONT_DIR);
         }
+        for (String dir : config.customFontDirs) {
+            out.startTag(null, TAG_CUSTOM_FONT_DIR);
+            out.attribute(null, ATTR_VALUE, dir);
+            out.endTag(null, TAG_CUSTOM_FONT_DIR);
+        }
         List<FontUpdateRequest.Family> fontFamilies = config.fontFamilies;
         for (int i = 0; i < fontFamilies.size(); i++) {
             FontUpdateRequest.Family fontFamily = fontFamilies.get(i);
@@ -115,9 +145,37 @@ import java.util.Set;
             FontUpdateRequest.Family.writeFamilyToXml(out, fontFamily);
             out.endTag(null, TAG_FAMILY);
         }
+        List<FontUpdateRequest.Family> customFamilies = config.customFontFamilies;
+        for (int i = 0; i < customFamilies.size(); i++) {
+            FontUpdateRequest.Family fontFamily = customFamilies.get(i);
+            out.startTag(null, TAG_CUSTOM_FAMILY);
+            FontUpdateRequest.Family.writeFamilyToXml(out, fontFamily);
+            out.endTag(null, TAG_CUSTOM_FAMILY);
+        }
+        for (Map.Entry<Integer, String> entry : config.activeCustomFontFamilyByUser.entrySet()) {
+            if (entry.getValue() == null || entry.getValue().isEmpty()) {
+                continue;
+            }
+            out.startTag(null, TAG_ACTIVE_CUSTOM_FAMILY_FOR_USER);
+            out.attributeInt(null, ATTR_USER_ID, entry.getKey());
+            out.attribute(null, ATTR_VALUE, entry.getValue());
+            out.endTag(null, TAG_ACTIVE_CUSTOM_FAMILY_FOR_USER);
+        }
         out.endTag(null, TAG_ROOT);
 
         out.endDocument();
+    }
+
+    private static int parseIntAttribute(TypedXmlPullParser parser, String attr, int defValue) {
+        final String value = parser.getAttributeValue(null /* namespace */, attr);
+        if (TextUtils.isEmpty(value)) {
+            return defValue;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return defValue;
+        }
     }
 
     private static long parseLongAttribute(TypedXmlPullParser parser, String attr, long defValue) {

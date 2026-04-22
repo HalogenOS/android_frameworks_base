@@ -32,4 +32,25 @@ interface IFontManager {
     FontConfig getFontConfig();
 
     int updateFontFamily(in List<FontUpdateRequest> request, int baseVersion);
+
+    @EnforcePermission("INSTALL_CUSTOM_FONTS")
+    int installCustomFontFile(in ParcelFileDescriptor fd);
+
+    @EnforcePermission("INSTALL_CUSTOM_FONTS")
+    int installCustomFontFamily(in List<FontUpdateRequest> familyRequests);
+
+    @EnforcePermission("INSTALL_CUSTOM_FONTS")
+    int removeCustomFontFamily(String familyName);
+
+    @EnforcePermission("INSTALL_CUSTOM_FONTS")
+    List<String> getCustomFontFamilyNames();
+
+    @EnforcePermission("INSTALL_CUSTOM_FONTS")
+    int setActiveCustomFontFamily(@nullable String familyName);
+
+    @EnforcePermission("INSTALL_CUSTOM_FONTS")
+    @nullable String getActiveCustomFontFamily();
+
+    @EnforcePermission("INSTALL_CUSTOM_FONTS")
+    String installCustomFontFamilyFromFile(in ParcelFileDescriptor fd);
 }

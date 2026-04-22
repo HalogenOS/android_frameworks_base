@@ -31,6 +31,7 @@ import android.compat.annotation.UnsupportedAppUsage;
 import android.content.res.AssetManager;
 import android.graphics.fonts.Font;
 import android.graphics.fonts.FontFamily;
+import android.graphics.fonts.FontFamilyResolver;
 import android.graphics.fonts.FontStyle;
 import android.graphics.fonts.FontVariationAxis;
 import android.graphics.fonts.SystemFonts;
@@ -1381,7 +1382,8 @@ public class Typeface {
     }
 
     private static Typeface getSystemDefaultTypeface(@NonNull String familyName) {
-        Typeface tf = sSystemFontMap.get(familyName);
+        String resolved = FontFamilyResolver.resolve(null, familyName);
+        Typeface tf = sSystemFontMap.get(resolved);
         return tf == null ? Typeface.DEFAULT : tf;
     }
 

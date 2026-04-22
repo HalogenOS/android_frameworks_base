@@ -21,10 +21,12 @@ import android.annotation.IntDef;
 import android.annotation.IntRange;
 import android.annotation.NonNull;
 import android.annotation.RequiresPermission;
+import android.annotation.Nullable;
 import android.annotation.SystemApi;
 import android.annotation.SystemService;
 import android.annotation.TestApi;
 import android.content.Context;
+import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 import android.text.FontConfig;
 
@@ -298,6 +300,139 @@ public class FontManager {
         }
         try {
             return mIFontManager.updateFontFamily(requests, baseVersion);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Installs a user-provided font file to the system without fs-verity verification.
+     *
+     * <p>The caller must hold {@code INSTALL_CUSTOM_FONTS}. The font file is validated as a
+     * valid OpenType file but is not gated on a trusted-provider signature.
+     *
+     * @param fd a file descriptor opened for reading on the font file
+     * @return a result code
+     * @hide
+     */
+    @RequiresPermission(Manifest.permission.INSTALL_CUSTOM_FONTS)
+    public @ResultCode int installCustomFontFile(@NonNull ParcelFileDescriptor fd) {
+        try {
+            return mIFontManager.installCustomFontFile(fd);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Registers a font family composed of already-installed custom font files.
+     *
+     * <p>Each request in {@code familyRequests} must describe a family via
+     * {@link FontUpdateRequest#TYPE_UPDATE_FONT_FAMILY}. The caller must hold
+     * {@code INSTALL_CUSTOM_FONTS}.
+     *
+     * @param familyRequests family-definition requests to commit
+     * @return a result code
+     * @hide
+     */
+    @RequiresPermission(Manifest.permission.INSTALL_CUSTOM_FONTS)
+    public @ResultCode int installCustomFontFamily(
+            @NonNull List<FontUpdateRequest> familyRequests) {
+        try {
+            return mIFontManager.installCustomFontFamily(familyRequests);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Removes a previously installed custom font family.
+     *
+     * <p>If the family is currently set as the active system font, the activation overlay is
+     * also cleared. The caller must hold {@code INSTALL_CUSTOM_FONTS}.
+     *
+     * @param familyName the family name to remove
+     * @return a result code
+     * @hide
+     */
+    @RequiresPermission(Manifest.permission.INSTALL_CUSTOM_FONTS)
+    public @ResultCode int removeCustomFontFamily(@NonNull String familyName) {
+        try {
+            return mIFontManager.removeCustomFontFamily(familyName);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Returns the list of currently installed custom font family names.
+     *
+     * <p>The caller must hold {@code INSTALL_CUSTOM_FONTS}.
+     *
+     * @hide
+     */
+    @RequiresPermission(Manifest.permission.INSTALL_CUSTOM_FONTS)
+    public @NonNull List<String> getCustomFontFamilyNames() {
+        try {
+            return mIFontManager.getCustomFontFamilyNames();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Sets the active custom font family.
+     *
+     * <p>When a non-null family name is provided, a fabricated RRO that overrides the framework
+     * {@code config_*FontFamily} resources with the given family is registered and enabled for
+     * every user. Pass {@code null} to clear the overlay and revert to the stock font.
+     *
+     * <p>The caller must hold {@code INSTALL_CUSTOM_FONTS}.
+     *
+     * @param familyName the installed custom family to activate, or {@code null} to clear
+     * @return a result code
+     * @hide
+     */
+    @RequiresPermission(Manifest.permission.INSTALL_CUSTOM_FONTS)
+    public @ResultCode int setActiveCustomFontFamily(@Nullable String familyName) {
+        try {
+            return mIFontManager.setActiveCustomFontFamily(familyName);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Returns the currently active custom font family, or {@code null} if none is set.
+     *
+     * <p>The caller must hold {@code INSTALL_CUSTOM_FONTS}.
+     *
+     * @hide
+     */
+    @RequiresPermission(Manifest.permission.INSTALL_CUSTOM_FONTS)
+    public @Nullable String getActiveCustomFontFamily() {
+        try {
+            return mIFontManager.getActiveCustomFontFamily();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Installs a user-provided font file and registers it as a single-font family in one call.
+     *
+     * <p>The font file is parsed inside the system service to extract its PostScript name, which
+     * is used as the family identifier. The caller must hold {@code INSTALL_CUSTOM_FONTS}.
+     *
+     * @param fd a file descriptor opened for reading on the font file
+     * @return the family name (PostScript name) of the installed font
+     * @throws android.os.ServiceSpecificException with a {@link ResultCode} on failure
+     * @hide
+     */
+    @RequiresPermission(Manifest.permission.INSTALL_CUSTOM_FONTS)
+    public @NonNull String installCustomFontFamilyFromFile(@NonNull ParcelFileDescriptor fd) {
+        try {
+            return mIFontManager.installCustomFontFamilyFromFile(fd);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

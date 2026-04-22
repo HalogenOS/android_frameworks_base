@@ -4278,6 +4278,55 @@
   <java-symbol type="string" name="config_bodyFontFamily" />
   <java-symbol type="string" name="config_bodyFontFamilyMedium" />
 
+  <!-- Font family aliases for per-user custom font theming -->
+  <java-symbol type="string" name="config_fontFamilyAlias_sans_serif" />
+  <java-symbol type="string" name="config_fontFamilyAlias_sans_serif_medium" />
+  <java-symbol type="string" name="config_fontFamilyAlias_sans_serif_light" />
+  <java-symbol type="string" name="config_fontFamilyAlias_sans_serif_thin" />
+  <java-symbol type="string" name="config_fontFamilyAlias_sans_serif_black" />
+  <java-symbol type="string" name="config_fontFamilyAlias_sans_serif_regular" />
+  <java-symbol type="string" name="config_fontFamilyAlias_sans_serif_condensed" />
+  <java-symbol type="string" name="config_fontFamilyAlias_sans_serif_condensed_medium" />
+  <java-symbol type="string" name="config_fontFamilyAlias_sans_serif_condensed_light" />
+  <java-symbol type="string" name="config_fontFamilyAlias_google_sans" />
+  <java-symbol type="string" name="config_fontFamilyAlias_google_sans_clock" />
+  <java-symbol type="string" name="config_fontFamilyAlias_google_sans_flex" />
+  <java-symbol type="string" name="config_fontFamilyAlias_google_sans_medium" />
+  <java-symbol type="string" name="config_fontFamilyAlias_google_sans_text" />
+  <java-symbol type="string" name="config_fontFamilyAlias_google_sans_text_medium" />
+  <java-symbol type="string" name="config_fontFamilyAlias_roboto_regular" />
+  <java-symbol type="string" name="config_fontFamilyAlias_font_family_flex_device_default" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_display_large" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_display_large_emphasized" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_display_medium" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_display_medium_emphasized" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_display_small" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_display_small_emphasized" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_headline_large" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_headline_large_emphasized" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_headline_medium" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_headline_medium_emphasized" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_headline_small" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_headline_small_emphasized" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_title_large" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_title_large_emphasized" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_title_medium" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_title_medium_emphasized" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_title_small" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_title_small_emphasized" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_label_large" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_label_large_emphasized" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_label_medium" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_label_medium_emphasized" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_label_small" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_label_small_emphasized" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_body_large" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_body_large_emphasized" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_body_medium" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_body_medium_emphasized" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_body_small" />
+  <java-symbol type="string" name="config_fontFamilyAlias_variable_body_small_emphasized" />
+
   <java-symbol type="integer" name="config_pressedStateDurationMillis" />
   <java-symbol type="integer" name="config_tapTimeoutMillis" />
   <java-symbol type="integer" name="config_jumpTapTimeoutMillis" />

@@ -5202,6 +5202,12 @@
     <permission android:name="android.permission.UPDATE_FONTS"
         android:protectionLevel="signature|privileged" />
 
+    <!-- Allows a privileged application to install custom font files without requiring
+         fs-verity signatures. The font files are still validated as valid OpenType fonts.
+         @hide -->
+    <permission android:name="android.permission.INSTALL_CUSTOM_FONTS"
+        android:protectionLevel="signature|privileged" />
+
     <!-- Allows an application to use the AttestationVerificationService.
          @hide -->
     <permission android:name="android.permission.USE_ATTESTATION_VERIFICATION_SERVICE"

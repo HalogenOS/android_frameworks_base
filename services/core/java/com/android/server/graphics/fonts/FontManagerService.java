@@ -20,15 +20,26 @@ import android.Manifest;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.RequiresPermission;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.om.FabricatedOverlay;
+import android.content.om.OverlayIdentifier;
+import android.content.om.OverlayManagerTransaction;
 import android.graphics.Typeface;
 import android.graphics.fonts.FontFamily;
+import android.graphics.fonts.FontFileUtil;
 import android.graphics.fonts.FontManager;
 import android.graphics.fonts.FontUpdateRequest;
+import android.graphics.fonts.FontStyle;
 import android.graphics.fonts.SystemFonts;
+import android.os.Binder;
 import android.os.Build;
+import android.os.ServiceSpecificException;
 import android.os.ParcelFileDescriptor;
 import android.os.ResultReceiver;
+import android.os.UserHandle;
 import android.os.SharedMemory;
 import android.os.ShellCallback;
 import android.system.ErrnoException;
@@ -38,6 +49,7 @@ import android.util.ArrayMap;
 import android.util.IndentingPrintWriter;
 import android.util.Log;
 import android.util.Slog;
+import android.util.TypedValue;
 
 import com.android.internal.R;
 import com.android.internal.annotations.GuardedBy;
@@ -47,6 +59,7 @@ import com.android.internal.util.DumpUtils;
 import com.android.internal.util.Preconditions;
 import com.android.server.LocalServices;
 import com.android.server.SystemServerInitThreadPool;
+import com.android.server.om.OverlayManagerInternal;
 import com.android.server.SystemService;
 import com.android.text.flags.Flags;
 
@@ -59,10 +72,13 @@ import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.DirectByteBuffer;
 import java.nio.NioUtils;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 /** A service for managing system fonts. */
@@ -71,6 +87,10 @@ public final class FontManagerService extends IFontManager.Stub {
 
     private static final String FONT_FILES_DIR = "/data/fonts/files";
     private static final String CONFIG_XML_FILE = "/data/fonts/config/config.xml";
+
+    // 'wght' as a big-endian 4-byte tag, matching FontFileUtil.getSupportedAxes().
+    private static final int WGHT_AXIS_TAG =
+            ('w' << 24) | ('g' << 16) | ('h' << 8) | 't';
 
     @android.annotation.EnforcePermission(android.Manifest.permission.UPDATE_FONTS)
     @RequiresPermission(Manifest.permission.UPDATE_FONTS)
@@ -98,6 +118,335 @@ public final class FontManagerService extends IFontManager.Stub {
             }
         } finally {
             closeFileDescriptors(requests);
+        }
+    }
+
+    @android.annotation.EnforcePermission(android.Manifest.permission.INSTALL_CUSTOM_FONTS)
+    @Override
+    public int installCustomFontFile(@NonNull ParcelFileDescriptor fd) {
+        super.installCustomFontFile_enforcePermission();
+        try {
+            synchronized (mUpdatableFontDirLock) {
+                if (mUpdatableFontDir == null) {
+                    return FontManager.RESULT_ERROR_FONT_UPDATER_DISABLED;
+                }
+                mUpdatableFontDir.installCustomFontFile(fd.getFileDescriptor());
+                updateSerializedFontMap();
+                return FontManager.RESULT_SUCCESS;
+            }
+        } catch (SystemFontException e) {
+            Slog.e(TAG, "Failed to install custom font file", e);
+            return e.getErrorCode();
+        } finally {
+            try {
+                fd.close();
+            } catch (IOException e) {
+                Slog.w(TAG, "Failed to close fd", e);
+            }
+        }
+    }
+
+    @android.annotation.EnforcePermission(android.Manifest.permission.INSTALL_CUSTOM_FONTS)
+    @Override
+    public int installCustomFontFamily(@NonNull List<FontUpdateRequest> familyRequests) {
+        super.installCustomFontFamily_enforcePermission();
+        try {
+            synchronized (mUpdatableFontDirLock) {
+                if (mUpdatableFontDir == null) {
+                    return FontManager.RESULT_ERROR_FONT_UPDATER_DISABLED;
+                }
+                mUpdatableFontDir.updateCustomFonts(familyRequests);
+                updateSerializedFontMap();
+                return FontManager.RESULT_SUCCESS;
+            }
+        } catch (SystemFontException e) {
+            Slog.e(TAG, "Failed to install custom font family", e);
+            return e.getErrorCode();
+        } finally {
+            closeFileDescriptors(familyRequests);
+        }
+    }
+
+    @android.annotation.EnforcePermission(android.Manifest.permission.INSTALL_CUSTOM_FONTS)
+    @Override
+    public int removeCustomFontFamily(@NonNull String familyName) {
+        super.removeCustomFontFamily_enforcePermission();
+        final List<Integer> affectedUsers = new ArrayList<>();
+        try {
+            synchronized (mUpdatableFontDirLock) {
+                if (mUpdatableFontDir == null) {
+                    return FontManager.RESULT_ERROR_FONT_UPDATER_DISABLED;
+                }
+                for (Map.Entry<Integer, String> entry :
+                        mUpdatableFontDir.getActiveCustomFontFamiliesByUser().entrySet()) {
+                    if (familyName.equals(entry.getValue())) {
+                        affectedUsers.add(entry.getKey());
+                    }
+                }
+                mUpdatableFontDir.removeCustomFontFamily(familyName);
+                for (int userId : affectedUsers) {
+                    mUpdatableFontDir.setActiveCustomFontFamily(userId, null);
+                }
+                updateSerializedFontMap();
+            }
+        } catch (SystemFontException e) {
+            Slog.e(TAG, "Failed to remove custom font family", e);
+            return e.getErrorCode();
+        }
+        for (int userId : affectedUsers) {
+            try {
+                applyCustomFontOverlayForUser(null, userId);
+            } catch (RuntimeException e) {
+                Slog.e(TAG, "Failed to auto-disable font overlay after removal for user "
+                        + userId, e);
+            }
+        }
+        return FontManager.RESULT_SUCCESS;
+    }
+
+    @android.annotation.EnforcePermission(android.Manifest.permission.INSTALL_CUSTOM_FONTS)
+    @Override
+    public @NonNull List<String> getCustomFontFamilyNames() {
+        super.getCustomFontFamilyNames_enforcePermission();
+        synchronized (mUpdatableFontDirLock) {
+            if (mUpdatableFontDir == null) {
+                return new ArrayList<>();
+            }
+            return mUpdatableFontDir.getCustomFontFamilyNames();
+        }
+    }
+
+    private static final String CUSTOM_FONT_OVERLAY_PACKAGE = "android";
+    private static final String CUSTOM_FONT_OVERLAY_NAME_PREFIX = "custom_font_family_u";
+    private static final String[] CUSTOM_FONT_OVERLAY_RESOURCES = {
+            // Legacy config_* entries — styles reference these directly via
+            // @*android:string/config_... rather than passing a hardcoded name
+            // to Typeface.create, so they bypass the alias resolver.
+            "android:string/config_bodyFontFamily",
+            "android:string/config_bodyFontFamilyMedium",
+            "android:string/config_headlineFontFamily",
+            "android:string/config_headlineFontFamilyMedium",
+            "android:string/config_regularFontFamily",
+            "android:string/config_lightFontFamily",
+            "android:string/config_clockFontFamily",
+            // Alias resources — cover hardcoded fontFamily names that flow
+            // through Typeface.create(String, ...) and FontFamilyResolver.
+            // Sans-serif variants
+            "android:string/config_fontFamilyAlias_sans_serif",
+            "android:string/config_fontFamilyAlias_sans_serif_medium",
+            "android:string/config_fontFamilyAlias_sans_serif_light",
+            "android:string/config_fontFamilyAlias_sans_serif_thin",
+            "android:string/config_fontFamilyAlias_sans_serif_black",
+            "android:string/config_fontFamilyAlias_sans_serif_regular",
+            "android:string/config_fontFamilyAlias_sans_serif_condensed",
+            "android:string/config_fontFamilyAlias_sans_serif_condensed_medium",
+            "android:string/config_fontFamilyAlias_sans_serif_condensed_light",
+            // GMS / Pixel / Roboto
+            "android:string/config_fontFamilyAlias_google_sans",
+            "android:string/config_fontFamilyAlias_google_sans_clock",
+            "android:string/config_fontFamilyAlias_google_sans_flex",
+            "android:string/config_fontFamilyAlias_google_sans_medium",
+            "android:string/config_fontFamilyAlias_google_sans_text",
+            "android:string/config_fontFamilyAlias_google_sans_text_medium",
+            "android:string/config_fontFamilyAlias_roboto_regular",
+            "android:string/config_fontFamilyAlias_font_family_flex_device_default",
+            // Variable-axis: display
+            "android:string/config_fontFamilyAlias_variable_display_large",
+            "android:string/config_fontFamilyAlias_variable_display_large_emphasized",
+            "android:string/config_fontFamilyAlias_variable_display_medium",
+            "android:string/config_fontFamilyAlias_variable_display_medium_emphasized",
+            "android:string/config_fontFamilyAlias_variable_display_small",
+            "android:string/config_fontFamilyAlias_variable_display_small_emphasized",
+            // Variable-axis: headline
+            "android:string/config_fontFamilyAlias_variable_headline_large",
+            "android:string/config_fontFamilyAlias_variable_headline_large_emphasized",
+            "android:string/config_fontFamilyAlias_variable_headline_medium",
+            "android:string/config_fontFamilyAlias_variable_headline_medium_emphasized",
+            "android:string/config_fontFamilyAlias_variable_headline_small",
+            "android:string/config_fontFamilyAlias_variable_headline_small_emphasized",
+            // Variable-axis: title
+            "android:string/config_fontFamilyAlias_variable_title_large",
+            "android:string/config_fontFamilyAlias_variable_title_large_emphasized",
+            "android:string/config_fontFamilyAlias_variable_title_medium",
+            "android:string/config_fontFamilyAlias_variable_title_medium_emphasized",
+            "android:string/config_fontFamilyAlias_variable_title_small",
+            "android:string/config_fontFamilyAlias_variable_title_small_emphasized",
+            // Variable-axis: label
+            "android:string/config_fontFamilyAlias_variable_label_large",
+            "android:string/config_fontFamilyAlias_variable_label_large_emphasized",
+            "android:string/config_fontFamilyAlias_variable_label_medium",
+            "android:string/config_fontFamilyAlias_variable_label_medium_emphasized",
+            "android:string/config_fontFamilyAlias_variable_label_small",
+            "android:string/config_fontFamilyAlias_variable_label_small_emphasized",
+            // Variable-axis: body
+            "android:string/config_fontFamilyAlias_variable_body_large",
+            "android:string/config_fontFamilyAlias_variable_body_large_emphasized",
+            "android:string/config_fontFamilyAlias_variable_body_medium",
+            "android:string/config_fontFamilyAlias_variable_body_medium_emphasized",
+            "android:string/config_fontFamilyAlias_variable_body_small",
+            "android:string/config_fontFamilyAlias_variable_body_small_emphasized",
+    };
+
+    @android.annotation.EnforcePermission(android.Manifest.permission.INSTALL_CUSTOM_FONTS)
+    @Override
+    public int setActiveCustomFontFamily(@Nullable String familyName) {
+        super.setActiveCustomFontFamily_enforcePermission();
+        final int userId = UserHandle.getCallingUserId();
+        synchronized (mUpdatableFontDirLock) {
+            if (mUpdatableFontDir == null) {
+                return FontManager.RESULT_ERROR_FONT_UPDATER_DISABLED;
+            }
+            if (familyName != null
+                    && !mUpdatableFontDir.getCustomFontFamilyNames().contains(familyName)) {
+                Slog.e(TAG, "Custom font family not installed: " + familyName);
+                return FontManager.RESULT_ERROR_FONT_NOT_FOUND;
+            }
+        }
+        try {
+            applyCustomFontOverlayForUser(familyName, userId);
+        } catch (RuntimeException e) {
+            Slog.e(TAG, "Failed to apply custom font overlay", e);
+            return FontManager.RESULT_ERROR_FAILED_UPDATE_CONFIG;
+        }
+        try {
+            synchronized (mUpdatableFontDirLock) {
+                mUpdatableFontDir.setActiveCustomFontFamily(userId, familyName);
+            }
+        } catch (SystemFontException e) {
+            Slog.e(TAG, "Failed to persist active custom font family", e);
+            return e.getErrorCode();
+        }
+        return FontManager.RESULT_SUCCESS;
+    }
+
+    @android.annotation.EnforcePermission(android.Manifest.permission.INSTALL_CUSTOM_FONTS)
+    @Override
+    public @Nullable String getActiveCustomFontFamily() {
+        super.getActiveCustomFontFamily_enforcePermission();
+        final int userId = UserHandle.getCallingUserId();
+        synchronized (mUpdatableFontDirLock) {
+            if (mUpdatableFontDir == null) {
+                return null;
+            }
+            return mUpdatableFontDir.getActiveCustomFontFamily(userId);
+        }
+    }
+
+    @android.annotation.EnforcePermission(android.Manifest.permission.INSTALL_CUSTOM_FONTS)
+    @Override
+    public @NonNull String installCustomFontFamilyFromFile(@NonNull ParcelFileDescriptor fd) {
+        Slog.d(TAG, "installCustomFontFamilyFromFile: enforcing permission");
+        super.installCustomFontFamilyFromFile_enforcePermission();
+        Slog.d(TAG, "installCustomFontFamilyFromFile: permission OK, entering try block");
+        try {
+            synchronized (mUpdatableFontDirLock) {
+                if (mUpdatableFontDir == null) {
+                    throw new ServiceSpecificException(
+                            FontManager.RESULT_ERROR_FONT_UPDATER_DISABLED,
+                            "Font updater disabled");
+                }
+                Slog.d(TAG, "installCustomFontFamilyFromFile: calling installCustomFontFile");
+                final String psName =
+                        mUpdatableFontDir.installCustomFontFile(fd.getFileDescriptor());
+                Slog.d(TAG, "installCustomFontFamilyFromFile: psName=" + psName);
+
+                // Reject static fonts — only variable fonts with a wght axis are supported
+                // so that a single file can serve all weights.
+                final File fontFile = mUpdatableFontDir.getPostScriptMap().get(psName);
+                if (fontFile == null) {
+                    throw new SystemFontException(
+                            FontManager.RESULT_ERROR_FONT_NOT_FOUND,
+                            "Installed font file not found for: " + psName);
+                }
+                try (FileInputStream fis = new FileInputStream(fontFile);
+                        FileChannel channel = fis.getChannel()) {
+                    final ByteBuffer buffer =
+                            channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
+                    final Set<Integer> supportedAxes = FontFileUtil.getSupportedAxes(buffer, 0);
+                    if (!supportedAxes.contains(WGHT_AXIS_TAG)) {
+                        // Clean up the installed file before rejecting.
+                        mUpdatableFontDir.removeCustomFontFileByPsName(psName);
+                        throw new SystemFontException(
+                                FontManager.RESULT_ERROR_INVALID_FONT_FILE,
+                                "Only variable fonts with a weight (wght) axis are supported");
+                    }
+                } catch (IOException e) {
+                    mUpdatableFontDir.removeCustomFontFileByPsName(psName);
+                    throw new SystemFontException(
+                            FontManager.RESULT_ERROR_INVALID_FONT_FILE,
+                            "Failed to parse font axes", e);
+                }
+
+                final FontUpdateRequest.Font font = new FontUpdateRequest.Font(
+                        psName,
+                        new FontStyle(FontStyle.FONT_WEIGHT_NORMAL, FontStyle.FONT_SLANT_UPRIGHT),
+                        0 /* index */,
+                        "" /* fontVariationSettings */);
+                final FontUpdateRequest.Family family = new FontUpdateRequest.Family(
+                        psName, Collections.singletonList(font));
+                Slog.d(TAG, "installCustomFontFamilyFromFile: registering family " + psName);
+                mUpdatableFontDir.updateCustomFonts(
+                        Collections.singletonList(new FontUpdateRequest(family)));
+                updateSerializedFontMap();
+                Slog.d(TAG, "installCustomFontFamilyFromFile: success, returning " + psName);
+                return psName;
+            }
+        } catch (SystemFontException e) {
+            Slog.e(TAG, "Failed to install custom font family from file", e);
+            throw new ServiceSpecificException(e.getErrorCode(), e.getMessage());
+        } finally {
+            try {
+                fd.close();
+            } catch (IOException e) {
+                Slog.w(TAG, "Failed to close fd", e);
+            }
+        }
+    }
+
+    private void applyCustomFontOverlayForUser(@Nullable String familyName, int userId) {
+        final OverlayManagerInternal om =
+                LocalServices.getService(OverlayManagerInternal.class);
+        if (om == null) {
+            Slog.w(TAG, "OverlayManagerInternal not available; cannot apply font overlay");
+            return;
+        }
+        // One fabricated overlay per user — name embeds the user id so overlays do not collide.
+        final String overlayName = CUSTOM_FONT_OVERLAY_NAME_PREFIX + userId;
+        final OverlayIdentifier id = new OverlayIdentifier(
+                CUSTOM_FONT_OVERLAY_PACKAGE, overlayName);
+
+        // OverlayManagerInternal delegates back through the binder interface, which uses
+        // Binder.getCallingUid() to enforce ownership of the overlay's target package. Callers
+        // here typically carry an app UID (e.g. ThemePicker) that does not own "android", so the
+        // commit would fail with SecurityException. Run as system for the duration of the call.
+        final long token = Binder.clearCallingIdentity();
+        try {
+            if (familyName == null) {
+                if (om.getOverlayInfo(id, UserHandle.of(userId)) == null) {
+                    return;
+                }
+                final OverlayManagerTransaction.Builder disable =
+                        new OverlayManagerTransaction.Builder()
+                                .setEnabled(id, false, userId)
+                                .unregisterFabricatedOverlay(id);
+                om.commit(disable.build());
+                return;
+            }
+
+            final FabricatedOverlay overlay = new FabricatedOverlay(
+                    overlayName, CUSTOM_FONT_OVERLAY_PACKAGE);
+            overlay.setOwningPackage(CUSTOM_FONT_OVERLAY_PACKAGE);
+            for (String resName : CUSTOM_FONT_OVERLAY_RESOURCES) {
+                overlay.setResourceValue(resName, TypedValue.TYPE_STRING, familyName,
+                        null /* configuration */);
+            }
+            final OverlayManagerTransaction.Builder enable =
+                    new OverlayManagerTransaction.Builder()
+                            .registerFabricatedOverlay(overlay)
+                            .setEnabled(id, true, userId);
+            om.commit(enable.build());
+        } finally {
+            Binder.restoreCallingIdentity(token);
         }
     }
 
@@ -162,6 +511,7 @@ public final class FontManagerService extends IFontManager.Stub {
                     });
             publishBinderService(Context.FONT_SERVICE, mService);
         }
+
 
         @Override
         public void onBootPhase(int phase) {
@@ -322,6 +672,38 @@ public final class FontManagerService extends IFontManager.Stub {
             mUpdatableFontDir.loadFontFileMap();
             updateSerializedFontMap();
         }
+        registerUserRemovedReceiver();
+    }
+
+    private void registerUserRemovedReceiver() {
+        final IntentFilter filter = new IntentFilter(Intent.ACTION_USER_REMOVED);
+        mContext.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (!Intent.ACTION_USER_REMOVED.equals(intent.getAction())) {
+                    return;
+                }
+                final int userId = intent.getIntExtra(Intent.EXTRA_USER_HANDLE, -1);
+                if (userId < 0) {
+                    return;
+                }
+                try {
+                    synchronized (mUpdatableFontDirLock) {
+                        if (mUpdatableFontDir != null
+                                && mUpdatableFontDir.getActiveCustomFontFamily(userId) != null) {
+                            mUpdatableFontDir.setActiveCustomFontFamily(userId, null);
+                        }
+                    }
+                } catch (SystemFontException e) {
+                    Slog.e(TAG, "Failed to purge font config for removed user " + userId, e);
+                }
+                try {
+                    applyCustomFontOverlayForUser(null, userId);
+                } catch (RuntimeException e) {
+                    Slog.e(TAG, "Failed to remove font overlay for removed user " + userId, e);
+                }
+            }
+        }, filter, null /* broadcastPermission */, null /* handler */);
     }
 
     @NonNull

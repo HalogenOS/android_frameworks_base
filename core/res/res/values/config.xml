@@ -5522,6 +5522,72 @@
     <!-- Name of the font family to use in the default lockscreen clock -->
     <string name="config_clockFontFamily" translatable="false"></string>
 
+    <!-- Font family aliases for per-user custom font theming.
+         Each entry maps a hardcoded font family name to itself by default.
+         Per-user Runtime Resource Overlays can override these to redirect
+         hardcoded names to a user-selected custom font. -->
+
+    <!-- Sans-serif variants -->
+    <string name="config_fontFamilyAlias_sans_serif" translatable="false">sans-serif</string>
+    <string name="config_fontFamilyAlias_sans_serif_medium" translatable="false">sans-serif-medium</string>
+    <string name="config_fontFamilyAlias_sans_serif_light" translatable="false">sans-serif-light</string>
+    <string name="config_fontFamilyAlias_sans_serif_thin" translatable="false">sans-serif-thin</string>
+    <string name="config_fontFamilyAlias_sans_serif_black" translatable="false">sans-serif-black</string>
+    <string name="config_fontFamilyAlias_sans_serif_regular" translatable="false">sans-serif-regular</string>
+    <string name="config_fontFamilyAlias_sans_serif_condensed" translatable="false">sans-serif-condensed</string>
+    <string name="config_fontFamilyAlias_sans_serif_condensed_medium" translatable="false">sans-serif-condensed-medium</string>
+    <string name="config_fontFamilyAlias_sans_serif_condensed_light" translatable="false">sans-serif-condensed-light</string>
+
+    <!-- GMS / Pixel / Roboto -->
+    <string name="config_fontFamilyAlias_google_sans" translatable="false">google-sans</string>
+    <string name="config_fontFamilyAlias_google_sans_clock" translatable="false">google-sans-clock</string>
+    <string name="config_fontFamilyAlias_google_sans_flex" translatable="false">google-sans-flex</string>
+    <string name="config_fontFamilyAlias_google_sans_medium" translatable="false">google-sans-medium</string>
+    <string name="config_fontFamilyAlias_google_sans_text" translatable="false">google-sans-text</string>
+    <string name="config_fontFamilyAlias_google_sans_text_medium" translatable="false">google-sans-text-medium</string>
+    <string name="config_fontFamilyAlias_roboto_regular" translatable="false">roboto-regular</string>
+    <string name="config_fontFamilyAlias_font_family_flex_device_default" translatable="false">font-family-flex-device-default</string>
+
+    <!-- Variable-axis set: display -->
+    <string name="config_fontFamilyAlias_variable_display_large" translatable="false">variable-display-large</string>
+    <string name="config_fontFamilyAlias_variable_display_large_emphasized" translatable="false">variable-display-large-emphasized</string>
+    <string name="config_fontFamilyAlias_variable_display_medium" translatable="false">variable-display-medium</string>
+    <string name="config_fontFamilyAlias_variable_display_medium_emphasized" translatable="false">variable-display-medium-emphasized</string>
+    <string name="config_fontFamilyAlias_variable_display_small" translatable="false">variable-display-small</string>
+    <string name="config_fontFamilyAlias_variable_display_small_emphasized" translatable="false">variable-display-small-emphasized</string>
+
+    <!-- Variable-axis set: headline -->
+    <string name="config_fontFamilyAlias_variable_headline_large" translatable="false">variable-headline-large</string>
+    <string name="config_fontFamilyAlias_variable_headline_large_emphasized" translatable="false">variable-headline-large-emphasized</string>
+    <string name="config_fontFamilyAlias_variable_headline_medium" translatable="false">variable-headline-medium</string>
+    <string name="config_fontFamilyAlias_variable_headline_medium_emphasized" translatable="false">variable-headline-medium-emphasized</string>
+    <string name="config_fontFamilyAlias_variable_headline_small" translatable="false">variable-headline-small</string>
+    <string name="config_fontFamilyAlias_variable_headline_small_emphasized" translatable="false">variable-headline-small-emphasized</string>
+
+    <!-- Variable-axis set: title -->
+    <string name="config_fontFamilyAlias_variable_title_large" translatable="false">variable-title-large</string>
+    <string name="config_fontFamilyAlias_variable_title_large_emphasized" translatable="false">variable-title-large-emphasized</string>
+    <string name="config_fontFamilyAlias_variable_title_medium" translatable="false">variable-title-medium</string>
+    <string name="config_fontFamilyAlias_variable_title_medium_emphasized" translatable="false">variable-title-medium-emphasized</string>
+    <string name="config_fontFamilyAlias_variable_title_small" translatable="false">variable-title-small</string>
+    <string name="config_fontFamilyAlias_variable_title_small_emphasized" translatable="false">variable-title-small-emphasized</string>
+
+    <!-- Variable-axis set: label -->
+    <string name="config_fontFamilyAlias_variable_label_large" translatable="false">variable-label-large</string>
+    <string name="config_fontFamilyAlias_variable_label_large_emphasized" translatable="false">variable-label-large-emphasized</string>
+    <string name="config_fontFamilyAlias_variable_label_medium" translatable="false">variable-label-medium</string>
+    <string name="config_fontFamilyAlias_variable_label_medium_emphasized" translatable="false">variable-label-medium-emphasized</string>
+    <string name="config_fontFamilyAlias_variable_label_small" translatable="false">variable-label-small</string>
+    <string name="config_fontFamilyAlias_variable_label_small_emphasized" translatable="false">variable-label-small-emphasized</string>
+
+    <!-- Variable-axis set: body -->
+    <string name="config_fontFamilyAlias_variable_body_large" translatable="false">variable-body-large</string>
+    <string name="config_fontFamilyAlias_variable_body_large_emphasized" translatable="false">variable-body-large-emphasized</string>
+    <string name="config_fontFamilyAlias_variable_body_medium" translatable="false">variable-body-medium</string>
+    <string name="config_fontFamilyAlias_variable_body_medium_emphasized" translatable="false">variable-body-medium-emphasized</string>
+    <string name="config_fontFamilyAlias_variable_body_small" translatable="false">variable-body-small</string>
+    <string name="config_fontFamilyAlias_variable_body_small_emphasized" translatable="false">variable-body-small-emphasized</string>
+
     <!-- Size of icon shown beside a preference locked by admin -->
     <dimen name="config_restrictedIconSize">@dimen/restricted_icon_size_material</dimen>
 
