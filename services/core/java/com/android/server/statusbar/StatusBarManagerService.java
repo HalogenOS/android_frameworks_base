@@ -1998,11 +1998,16 @@ public class StatusBarManagerService extends IStatusBarService.Stub implements D
     }
 
     /**
-     * Allows SystemUI restart only
+     * Restarts the SystemUI process by killing it and letting the activity manager relaunch
+     * the persistent app. Gated on {@link android.Manifest.permission#RESTART_SYSTEM_UI}
+     * so any platform-signed or privileged caller can trigger this without holding the
+     * broader STATUS_BAR_SERVICE permission.
      */
     @Override
     public void restartSystemUI() {
-        enforceStatusBarService();
+        mContext.enforceCallingOrSelfPermission(
+                android.Manifest.permission.RESTART_SYSTEM_UI,
+                "restartSystemUI requires RESTART_SYSTEM_UI permission");
         enforceValidCallingUser();
 
         final long identity = Binder.clearCallingIdentity();

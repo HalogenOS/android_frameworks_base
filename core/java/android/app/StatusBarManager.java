@@ -816,7 +816,7 @@ public class StatusBarManager {
      *
      * @hide
      */
-    @RequiresPermission(android.Manifest.permission.STATUS_BAR_SERVICE)
+    @RequiresPermission(android.Manifest.permission.RESTART_SYSTEM_UI)
     public void restartSystemUI() {
         try {
             final IStatusBarService svc = getService();

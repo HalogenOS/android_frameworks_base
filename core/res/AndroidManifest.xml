@@ -5620,6 +5620,14 @@
     <permission android:name="android.permission.STATUS_BAR_SERVICE"
         android:protectionLevel="signature|recents" />
 
+    <!-- Allows a platform-signed or privileged application to trigger a restart of the
+         System UI process, e.g. so a newly activated customization (font, theme) takes
+         effect in every system surface without requiring a reboot. Privileged callers
+         must also be listed in a privapp-permissions allowlist.
+         @hide -->
+    <permission android:name="android.permission.RESTART_SYSTEM_UI"
+        android:protectionLevel="signature|privileged" />
+
     <!-- Allows an application to bind to third party quick settings tiles.
          <p>Should only be requested by the System, should be required by
          TileService declarations.-->
