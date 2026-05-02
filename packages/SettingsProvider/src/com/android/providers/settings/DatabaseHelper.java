@@ -2450,6 +2450,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
             loadSetting(stmt, Settings.Global.DEVICE_NAME, getDefaultDeviceName());
 
+            loadIntegerSetting(stmt, Settings.Global.DISABLE_WINDOW_BLURS,
+                    R.integer.def_disable_window_blurs);
+
             // Set default lid/cover behaviour according to legacy device config
             final int defaultLidBehavior;
             if (res.getBoolean(com.android.internal.R.bool.config_lidControlsSleep)) {
