@@ -5522,6 +5522,11 @@
     <!-- Name of the font family to use in the default lockscreen clock -->
     <string name="config_clockFontFamily" translatable="false"></string>
 
+    <!-- Default custom font family applied per-user at boot via a fabricated overlay.
+         If empty, no overlay is created and the system falls back to stock fonts.
+         Product overlays may set this to a pre-installed font family name. -->
+    <string name="config_defaultCustomFontFamily" translatable="false"></string>
+
     <!-- Font family aliases for per-user custom font theming.
          Each entry maps a hardcoded font family name to itself by default.
          Per-user Runtime Resource Overlays can override these to redirect
