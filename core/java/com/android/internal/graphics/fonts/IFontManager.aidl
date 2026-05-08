@@ -21,6 +21,7 @@ import android.graphics.fonts.FontUpdateRequest;
 import android.text.FontConfig;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * System private interface for talking with
@@ -46,10 +47,16 @@ interface IFontManager {
     List<String> getCustomFontFamilyNames();
 
     @EnforcePermission("INSTALL_CUSTOM_FONTS")
+    Map getCustomFontFamilyDisplayNames();
+
+    @EnforcePermission("INSTALL_CUSTOM_FONTS")
     int setActiveCustomFontFamily(@nullable String familyName);
 
     @EnforcePermission("INSTALL_CUSTOM_FONTS")
     @nullable String getActiveCustomFontFamily();
+
+    @EnforcePermission("INSTALL_CUSTOM_FONTS")
+    @nullable String getDefaultFontFamily();
 
     @EnforcePermission("INSTALL_CUSTOM_FONTS")
     String installCustomFontFamilyFromFile(in ParcelFileDescriptor fd);

@@ -36,6 +36,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -381,6 +382,23 @@ public class FontManager {
     }
 
     /**
+     * Returns a map from font family ID to human-readable display name for
+     * pre-installed font families shipped in the system image.
+     *
+     * <p>The caller must hold {@code INSTALL_CUSTOM_FONTS}.
+     *
+     * @hide
+     */
+    @RequiresPermission(Manifest.permission.INSTALL_CUSTOM_FONTS)
+    public @NonNull Map<String, String> getCustomFontFamilyDisplayNames() {
+        try {
+            return mIFontManager.getCustomFontFamilyDisplayNames();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
      * Sets the active custom font family.
      *
      * <p>When a non-null family name is provided, a fabricated RRO that overrides the framework
@@ -413,6 +431,24 @@ public class FontManager {
     public @Nullable String getActiveCustomFontFamily() {
         try {
             return mIFontManager.getActiveCustomFontFamily();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Returns the default font family name for this device, taking build-time overlays into
+     * account. This is the family that should be previewed for the "Default / Stock" option in
+     * a font picker. The returned name is safe to pass to {@link Typeface#create(String, int)}.
+     *
+     * <p>The caller must hold {@code INSTALL_CUSTOM_FONTS}.
+     *
+     * @hide
+     */
+    @RequiresPermission(Manifest.permission.INSTALL_CUSTOM_FONTS)
+    public @Nullable String getDefaultFontFamily() {
+        try {
+            return mIFontManager.getDefaultFontFamily();
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

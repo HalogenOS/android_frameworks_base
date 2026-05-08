@@ -76,6 +76,7 @@ import java.nio.NioUtils;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +98,13 @@ public final class FontManagerService extends IFontManager.Stub {
     /** Pre-installed named font families discovered from the system image. */
     @NonNull
     private final Set<String> mPreinstalledFontFamilies = new HashSet<>();
+
+    /**
+     * Maps pre-installed font family ID (font map key) to its display name
+     * (PostScript name from the font file). Populated at boot.
+     */
+    @NonNull
+    private final Map<String, String> mPreinstalledFontDisplayNames = new HashMap<>();
 
     @android.annotation.EnforcePermission(android.Manifest.permission.UPDATE_FONTS)
     @RequiresPermission(Manifest.permission.UPDATE_FONTS)
@@ -348,6 +356,23 @@ public final class FontManagerService extends IFontManager.Stub {
             }
             return mUpdatableFontDir.getActiveCustomFontFamily(userId);
         }
+    }
+
+    @android.annotation.EnforcePermission(android.Manifest.permission.INSTALL_CUSTOM_FONTS)
+    @Override
+    public @Nullable String getDefaultFontFamily() {
+        super.getDefaultFontFamily_enforcePermission();
+        String defaultFamily = mContext.getResources().getString(
+                com.android.internal.R.string.config_defaultCustomFontFamily);
+        if (defaultFamily != null && !defaultFamily.isEmpty()) {
+            return defaultFamily;
+        }
+        String bodyFamily = mContext.getResources().getString(
+                com.android.internal.R.string.config_bodyFontFamily);
+        if (bodyFamily != null && !bodyFamily.isEmpty()) {
+            return bodyFamily;
+        }
+        return null;
     }
 
     @android.annotation.EnforcePermission(android.Manifest.permission.INSTALL_CUSTOM_FONTS)
@@ -698,14 +723,32 @@ public final class FontManagerService extends IFontManager.Stub {
 
     /**
      * Discovers named font families shipped in the system image and populates
-     * {@link #mPreinstalledFontFamilies} so they are surfaced through the custom
-     * font API alongside user-installed fonts.
+     * {@link #mPreinstalledFontFamilies} (IDs) and
+     * {@link #mPreinstalledFontDisplayNames} (ID → display name) so they are
+     * surfaced through the custom font API alongside user-installed fonts.
      */
     private void loadPreinstalledFontFamilies() {
         FontConfig config = SystemFonts.getSystemPreinstalledFontConfig();
-        for (FontConfig.NamedFamilyList family : config.getNamedFamilyLists()) {
-            mPreinstalledFontFamilies.add(family.getName());
+        for (FontConfig.NamedFamilyList namedList : config.getNamedFamilyLists()) {
+            String key = namedList.getName();
+            String displayName = key;
+            List<FontConfig.FontFamily> families = namedList.getFamilies();
+            if (!families.isEmpty()) {
+                List<FontConfig.Font> fonts = families.get(0).getFontList();
+                if (!fonts.isEmpty()) {
+                    displayName = fonts.get(0).getPostScriptName();
+                }
+            }
+            mPreinstalledFontFamilies.add(key);
+            mPreinstalledFontDisplayNames.put(key, displayName);
         }
+    }
+
+    @android.annotation.EnforcePermission(android.Manifest.permission.INSTALL_CUSTOM_FONTS)
+    @Override
+    public @NonNull Map<String, String> getCustomFontFamilyDisplayNames() {
+        super.getCustomFontFamilyDisplayNames_enforcePermission();
+        return new HashMap<>(mPreinstalledFontDisplayNames);
     }
 
     /**
