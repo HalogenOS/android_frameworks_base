@@ -88,6 +88,10 @@ public class SimplePropImitation {
     private static volatile List<String> sCertifiedProps = null;
     private static volatile String sProcessName = "";
     private static volatile boolean sSupportsHardwareAttestation = false;
+    // Cached at first setProps() call, BEFORE any sysprop spoofing is applied.
+    // True when ro.boot.verifiedbootstate=="orange" (bootloader unlocked).
+    private static volatile boolean sBootloaderUnlocked = false;
+    private static volatile boolean sBootStateChecked = false;
 
     private static native void nativeSpoofSysProp(String name, String value);
     private static native void nativeEnableSysPropSpoof();
@@ -110,14 +114,24 @@ public class SimplePropImitation {
 
         sProcessName = processName;
 
-        // Read the real bootloader state before any spoofing.
-        // "green" = locked BL = hardware attestation works, no spoofing needed.
-        // "orange" = unlocked BL = hardware attestation broken, must spoof.
-        String bootState = SystemProperties.get("ro.boot.verifiedbootstate", "");
-        sSupportsHardwareAttestation = "green".equals(bootState);
+        // Read the real bootloader state BEFORE any spoofing is applied. This
+        // value gets cached and consumed by KeyboxImitationHooks too — once
+        // we spoof ro.boot.verifiedbootstate to "green", a later
+        // SystemProperties.get would return the spoofed value.
+        if (!sBootStateChecked) {
+            String bootState = SystemProperties.get("ro.boot.verifiedbootstate", "");
+            sBootloaderUnlocked = "orange".equals(bootState);
+            sSupportsHardwareAttestation = "green".equals(bootState);
+            sBootStateChecked = true;
+            Log.i(TAG, "verifiedbootstate=" + bootState
+                    + " (unlocked=" + sBootloaderUnlocked + ")");
+        }
 
-        if (sSupportsHardwareAttestation) {
-            Log.i(TAG, "Locked bootloader, hardware attestation supported — skipping spoofing");
+        // Only spoof on orange (unlocked) — on yellow and green the bootloader's
+        // own attestation chain is the authoritative source; tampering with it
+        // would weaken rather than improve PI verdicts.
+        if (!sBootloaderUnlocked) {
+            Log.i(TAG, "Bootloader locked — skipping prop spoofing for " + processName);
             nativeEnableSysPropSpoof();
             return;
         }
@@ -335,6 +349,15 @@ public class SimplePropImitation {
      */
     public static boolean supportsHardwareAttestation() {
         return sSupportsHardwareAttestation;
+    }
+
+    /**
+     * True when ro.boot.verifiedbootstate=="orange" (bootloader unlocked).
+     * Captured at the first setProps() call before any sysprop spoofing.
+     * Both prop and keybox spoofing should only activate when unlocked.
+     */
+    public static boolean isBootloaderUnlocked() {
+        return sBootloaderUnlocked;
     }
 
     /**

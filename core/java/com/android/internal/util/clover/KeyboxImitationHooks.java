@@ -63,6 +63,16 @@ public class KeyboxImitationHooks {
     }
 
     public static KeyEntryResponse onGetKeyEntry(KeyEntryResponse response) {
+        // Only spoof key attestation when the bootloader is unlocked (orange).
+        // On green/yellow the device's own attestation chain is authoritative —
+        // replacing it with our forgery would weaken security and likely fail
+        // server-side verification. The value is cached by SimplePropImitation
+        // before any sysprop spoofing, so reading it here is safe.
+        if (!com.android.internal.util.SimplePropImitation.isBootloaderUnlocked()) {
+            dlog("Bootloader locked — skipping key attestation spoofing");
+            return response;
+        }
+
         if (!KeyProviderManager.isKeyboxAvailable()) {
             dlog("Key attestation spoofing is disabled because no keybox is defined to spoof");
             return response;
