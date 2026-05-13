@@ -291,6 +291,22 @@ public class KeyboxImitationHooks {
         teeEnforcedVector.add(new DERTaggedObject(true, 704, new DERSequence(rootOfTrustEncodables)));
         teeEnforcedVector.add(new DERTaggedObject(true, 705, new ASN1Integer(getOsVersion())));
         teeEnforcedVector.add(new DERTaggedObject(true, 706, new ASN1Integer(getPatchLevel())));
+        // ATTESTATION_ID_* tags (710-717). Build.<X>_FOR_ATTESTATION is the
+        // canonical source used by AndroidKeyStore attestation; we already
+        // overwrite those fields via SimplePropImitation reflection. The 16.0
+        // KeyboxChainGenerator included these in teeEnforced and it worked;
+        // 16.2 createLeafCertificate omitted them, which leaves the cert
+        // without device identity and Google's PI server can't verify.
+        teeEnforcedVector.add(new DERTaggedObject(true, 710,
+                new DEROctetString(Build.BRAND_FOR_ATTESTATION.getBytes())));
+        teeEnforcedVector.add(new DERTaggedObject(true, 711,
+                new DEROctetString(Build.DEVICE_FOR_ATTESTATION.getBytes())));
+        teeEnforcedVector.add(new DERTaggedObject(true, 712,
+                new DEROctetString(Build.PRODUCT_FOR_ATTESTATION.getBytes())));
+        teeEnforcedVector.add(new DERTaggedObject(true, 716,
+                new DEROctetString(Build.MANUFACTURER_FOR_ATTESTATION.getBytes())));
+        teeEnforcedVector.add(new DERTaggedObject(true, 717,
+                new DEROctetString(Build.MODEL_FOR_ATTESTATION.getBytes())));
         teeEnforcedVector.add(new DERTaggedObject(true, 718, new ASN1Integer(getPatchLevelLong())));
         teeEnforcedVector.add(new DERTaggedObject(true, 719, new ASN1Integer(getPatchLevelLong())));
     }
