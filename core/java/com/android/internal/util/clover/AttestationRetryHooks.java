@@ -14,6 +14,8 @@ import android.system.keystore2.KeyMetadata;
 import android.security.KeyStoreSecurityLevel;
 import android.util.Log;
 
+import com.android.internal.util.SimplePropImitation;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -68,6 +70,14 @@ public final class AttestationRetryHooks {
             int flags,
             byte[] additionalEntropy) {
         if (originalError.getErrorCode() != KeymasterDefs.KM_ERROR_CANNOT_ATTEST_IDS) {
+            return null;
+        }
+
+        // Only fire when spoofing is active (bootloader unlocked). On locked
+        // devices the caller would otherwise lose legitimate device-ID
+        // attestation by falling into the strip path — leave the original
+        // failure to surface so normal Android security flow takes over.
+        if (!SimplePropImitation.isBootloaderUnlocked()) {
             return null;
         }
 
