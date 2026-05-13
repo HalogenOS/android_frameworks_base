@@ -255,6 +255,14 @@ public class SimplePropImitation {
                     nativeSpoofSysProp(prefix + suffix, parts[1]);
                 }
                 nativeSpoofSysProp("ro.product." + suffix + "_for_attestation", parts[1]);
+                // Build.<X>_FOR_ATTESTATION is a static final field initialised
+                // from ro.product.<x>_for_attestation at Build class load time —
+                // long before our JNI sysprop spoof is active. AndroidKeyStore
+                // attestation reads Build.<X>_FOR_ATTESTATION directly (preferred
+                // over Build.<X>), so we must reflectively overwrite the cached
+                // field too, otherwise keystore2 gets the real device IDs in
+                // ATTESTATION_ID_* and Google's PI server rejects as inconsistent.
+                setPropValue(parts[0] + "_FOR_ATTESTATION", parts[1]);
             }
         }
 
