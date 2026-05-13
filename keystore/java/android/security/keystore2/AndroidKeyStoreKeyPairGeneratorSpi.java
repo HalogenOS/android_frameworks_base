@@ -55,6 +55,7 @@ import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
 
+import com.android.internal.util.clover.AttestationRetryHooks;
 import com.android.internal.util.clover.KeyboxImitationHooks;
 import com.android.internal.util.clover.KeyProviderManager;
 
@@ -704,6 +705,21 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
                         constructKeyGenerationArguments(), flags, additionalEntropy);
             } catch (KeyStoreException e) {
                 if (mSpec.getAttestationChallenge() != null) {
+                    // XOS: try one intermediate retry without device-ID tags but
+                    // keeping the challenge, so RKP-attested key generation can
+                    // still succeed when the caller (e.g. sandboxed GMS) lacks
+                    // READ_PRIVILEGED_PHONE_STATE for ATTESTATION_ID_* validation.
+                    metadata = AttestationRetryHooks.maybeRetryWithoutIds(
+                            e, iSecurityLevel, descriptor, mAttestKeyDescriptor,
+                            constructKeyGenerationArguments(), flags, additionalEntropy);
+                    if (metadata != null) {
+                        AndroidKeyStorePublicKey publicKey = AndroidKeyStoreProvider
+                                .makeAndroidKeyStorePublicKeyFromKeyEntryResponse(
+                                        descriptor, metadata, iSecurityLevel,
+                                        mKeymasterAlgorithm);
+                        success = true;
+                        return new KeyPair(publicKey, publicKey.getPrivateKey());
+                    }
                     Log.w(TAG, "Attestation failed, retrying without attestation");
                     List<KeyParameter> args = new ArrayList<>(
                             constructKeyGenerationArguments());
