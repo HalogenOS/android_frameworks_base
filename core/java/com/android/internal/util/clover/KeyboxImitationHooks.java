@@ -219,8 +219,18 @@ public class KeyboxImitationHooks {
                 certificateHolder.getSubjectPublicKeyInfo()
         );
 
-        ContentSigner contentSigner = new JcaContentSignerBuilder(
-                leafCertificate.getSigAlgName()).build(privateKey);
+        // The original leaf's sigAlgName describes how its real HW-attestation
+        // parent signed it — that parent could be EC even when the leaf's own
+        // public key is RSA (and vice versa). Our re-sign uses the keybox's
+        // private key, so the signature algorithm must match the keybox key's
+        // type, otherwise Conscrypt's OpenSSLSignature.checkEngineType throws
+        // "Signature initialized as EC (not EC)" (it compares native pkey
+        // type IDs internally).
+        String sigAlg = KeyProperties.KEY_ALGORITHM_EC.equals(keyAlgorithm)
+                ? "SHA256withECDSA"
+                : "SHA256withRSA";
+        ContentSigner contentSigner = new JcaContentSignerBuilder(sigAlg)
+                .build(privateKey);
 
         certificateBuilder.addExtension(attestationExtension);
 
@@ -242,7 +252,7 @@ public class KeyboxImitationHooks {
 
         byte[] encoded = certificateBuilder.build(contentSigner).getEncoded();
         Log.i(TAG, "Built leaf cert (" + encoded.length + " bytes), sigAlg="
-                + leafCertificate.getSigAlgName()
+                + sigAlg + " (orig=" + leafCertificate.getSigAlgName() + ")"
                 + ", copyExt=" + copyOriginalExtensions);
         return encoded;
     }
