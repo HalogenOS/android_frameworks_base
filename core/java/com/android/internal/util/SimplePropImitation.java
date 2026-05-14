@@ -89,8 +89,12 @@ public class SimplePropImitation {
     private static volatile String sProcessName = "";
     private static volatile boolean sSupportsHardwareAttestation = false;
     // Cached at first setProps() call, BEFORE any sysprop spoofing is applied.
-    // True when ro.boot.verifiedbootstate=="orange" (bootloader unlocked).
-    private static volatile boolean sBootloaderUnlocked = false;
+    // True when spoofing should run — i.e. ro.boot.verifiedbootstate is anything
+    // other than "green". On orange (unlocked) AVB is bypassed entirely; on
+    // yellow our test key signed vbmeta but Google does not trust it as an OEM
+    // root, so the attestation chain Google sees still needs the same spoof
+    // treatment. Only green (Spacewar-style, real OEM-trusted key) bypasses it.
+    private static volatile boolean sShouldSpoof = false;
     private static volatile boolean sBootStateChecked = false;
 
     private static native void nativeSpoofSysProp(String name, String value);
@@ -120,18 +124,21 @@ public class SimplePropImitation {
         // SystemProperties.get would return the spoofed value.
         if (!sBootStateChecked) {
             String bootState = SystemProperties.get("ro.boot.verifiedbootstate", "");
-            sBootloaderUnlocked = "orange".equals(bootState);
+            // Spoof on anything except green: orange (no AVB) and yellow (AVB
+            // with a custom key Google does not recognise as an OEM root) both
+            // need the full prop + keybox spoof to pass Play Integrity.
+            sShouldSpoof = !"green".equals(bootState);
             sSupportsHardwareAttestation = "green".equals(bootState);
             sBootStateChecked = true;
             Log.i(TAG, "verifiedbootstate=" + bootState
-                    + " (unlocked=" + sBootloaderUnlocked + ")");
+                    + " (shouldSpoof=" + sShouldSpoof + ")");
         }
 
-        // Only spoof on orange (unlocked) — on yellow and green the bootloader's
-        // own attestation chain is the authoritative source; tampering with it
-        // would weaken rather than improve PI verdicts.
-        if (!sBootloaderUnlocked) {
-            Log.i(TAG, "Bootloader locked — skipping prop spoofing for " + processName);
+        // Skip spoofing only when the bootloader is genuinely OEM-verified
+        // (green). On orange and yellow the chain Google sees still doesn't
+        // chain to a key it trusts, so we run the full spoof path.
+        if (!sShouldSpoof) {
+            Log.i(TAG, "Bootloader OEM-verified (green) — skipping prop spoofing for " + processName);
             nativeEnableSysPropSpoof();
             return;
         }
@@ -360,12 +367,15 @@ public class SimplePropImitation {
     }
 
     /**
-     * True when ro.boot.verifiedbootstate=="orange" (bootloader unlocked).
-     * Captured at the first setProps() call before any sysprop spoofing.
-     * Both prop and keybox spoofing should only activate when unlocked.
+     * True when spoofing should run, i.e. ro.boot.verifiedbootstate is not
+     * "green". Orange (unlocked) and yellow (locked with a non-OEM key) both
+     * return true because, in either case, Google's Play Integrity backend
+     * does not trust the device's native attestation chain and the full prop
+     * + keybox spoof is required. Captured at the first setProps() call,
+     * before any sysprop spoofing.
      */
-    public static boolean isBootloaderUnlocked() {
-        return sBootloaderUnlocked;
+    public static boolean shouldSpoof() {
+        return sShouldSpoof;
     }
 
     /**

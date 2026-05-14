@@ -63,13 +63,15 @@ public class KeyboxImitationHooks {
     }
 
     public static KeyEntryResponse onGetKeyEntry(KeyEntryResponse response) {
-        // Only spoof key attestation when the bootloader is unlocked (orange).
-        // On green/yellow the device's own attestation chain is authoritative —
-        // replacing it with our forgery would weaken security and likely fail
-        // server-side verification. The value is cached by SimplePropImitation
-        // before any sysprop spoofing, so reading it here is safe.
-        if (!com.android.internal.util.SimplePropImitation.isBootloaderUnlocked()) {
-            dlog("Bootloader locked — skipping key attestation spoofing");
+        // Spoof key attestation whenever the bootloader isn't OEM-verified
+        // (green). On orange (no AVB) and yellow (AVB with our custom test
+        // key — not trusted by Google) the native attestation chain chains
+        // to a key Google does not recognise, so PI would reject it; we have
+        // to substitute our keybox chain in both cases. The value is cached
+        // by SimplePropImitation before any sysprop spoofing, so reading it
+        // here is safe.
+        if (!com.android.internal.util.SimplePropImitation.shouldSpoof()) {
+            dlog("Bootloader OEM-verified (green) — skipping key attestation spoofing");
             return response;
         }
 

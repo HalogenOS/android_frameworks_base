@@ -73,11 +73,12 @@ public final class AttestationRetryHooks {
             return null;
         }
 
-        // Only fire when spoofing is active (bootloader unlocked). On locked
-        // devices the caller would otherwise lose legitimate device-ID
-        // attestation by falling into the strip path — leave the original
-        // failure to surface so normal Android security flow takes over.
-        if (!SimplePropImitation.isBootloaderUnlocked()) {
+        // Only fire when the spoofing path is active (any verified-boot state
+        // other than green). On a real OEM-verified (green) boot the caller
+        // would otherwise lose legitimate device-ID attestation by falling
+        // into the strip path — leave the original failure to surface so
+        // normal Android security flow takes over.
+        if (!SimplePropImitation.shouldSpoof()) {
             return null;
         }
 
