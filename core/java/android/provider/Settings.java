@@ -13431,6 +13431,24 @@ public final class Settings {
         public static final String VBOOT_HASH = "vboot_hash";
 
         /**
+         * User toggle that gates the attestation / build-property spoof
+         * layer. Read by SimplePropImitation at first {@code setProps()}
+         * call; the value is then cached for the lifetime of the calling
+         * process, so changes take effect for newly started apps only.
+         *
+         * <p>Has no effect when {@code ro.boot.verifiedbootstate} is
+         * {@code green}: an OEM-verified boot already provides a chain
+         * Play Integrity trusts, so spoofing only weakens it. The Settings
+         * UI exposes the toggle as disabled in that case.
+         *
+         * <p>Stored as int: 0 = disabled, 1 (default) = enabled.
+         * @hide
+         */
+        @Readable
+        public static final String ATTESTATION_SPOOF_ENABLED =
+                "attestation_spoof_enabled";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *

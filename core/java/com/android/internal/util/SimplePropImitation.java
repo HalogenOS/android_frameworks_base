@@ -25,6 +25,7 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Process;
 import android.os.SystemProperties;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -124,13 +125,23 @@ public class SimplePropImitation {
         // SystemProperties.get would return the spoofed value.
         if (!sBootStateChecked) {
             String bootState = SystemProperties.get("ro.boot.verifiedbootstate", "");
+            boolean isGreen = "green".equals(bootState);
+            // User toggle gates the whole spoofing layer. Defaults to enabled
+            // so existing installs keep working; the Settings UI exposes the
+            // switch under Apps. Read once per process — runtime toggling
+            // takes effect for newly started apps only.
+            boolean userEnabled = Settings.Secure.getInt(
+                    context.getContentResolver(),
+                    Settings.Secure.ATTESTATION_SPOOF_ENABLED, 1) != 0;
             // Spoof on anything except green: orange (no AVB) and yellow (AVB
             // with a custom key Google does not recognise as an OEM root) both
-            // need the full prop + keybox spoof to pass Play Integrity.
-            sShouldSpoof = !"green".equals(bootState);
-            sSupportsHardwareAttestation = "green".equals(bootState);
+            // need the full prop + keybox spoof to pass Play Integrity. The
+            // user toggle can disable the path regardless on orange/yellow.
+            sShouldSpoof = !isGreen && userEnabled;
+            sSupportsHardwareAttestation = isGreen;
             sBootStateChecked = true;
             Log.i(TAG, "verifiedbootstate=" + bootState
+                    + " userEnabled=" + userEnabled
                     + " (shouldSpoof=" + sShouldSpoof + ")");
         }
 
