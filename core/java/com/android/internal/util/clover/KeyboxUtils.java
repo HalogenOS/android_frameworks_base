@@ -72,10 +72,7 @@ public class KeyboxUtils {
     }
 
     public static byte[] getCertificateChain(String algorithm) throws Exception {
-        String[] chain = KeyProperties.KEY_ALGORITHM_EC.equals(algorithm)
-                ? KeyProviderManager.getProvider().getEcCertificateChain()
-                : KeyProviderManager.getProvider().getRsaCertificateChain();
-
+        String[] chain = getOrderedChain(algorithm);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         for (String cert : chain) out.write(decodePemOrBase64(cert));
         return out.toByteArray();
@@ -91,13 +88,48 @@ public class KeyboxUtils {
     }
 
     public static X509CertificateHolder getCertificateHolder(String algorithm) throws Exception {
+        // The leaf-parent — the cert whose private key matches the keybox's
+        // PrivateKey — is element 0 of the leaf-first ordered chain. Its
+        // subject becomes the issuer DN that our synthesised leaf claims.
+        String[] chain = getOrderedChain(algorithm);
+        return new X509CertificateHolder(decodePemOrBase64(chain[0]));
+    }
+
+    /**
+     * Return the keybox certificate chain in X.509 leaf-first order:
+     * {@code [leaf-parent, intermediate, ..., root]}.
+     *
+     * <p>Some keybox XML files store their chain in root-first order
+     * ({@code [root, intermediate, ..., leaf-parent]}). Strict X.509
+     * validators (OpenSSL, AOSP key attestation app) walk the chain
+     * positionally — verifying {@code cert[i].signature} against
+     * {@code cert[i+1].publicKey} — and reject a root-first chain with
+     * {@code WRONG_PUBLIC_KEY_TYPE} because the leaf was signed with the
+     * leaf-parent's key (typically EC) but the chain claims the next link
+     * is the root (typically RSA for a Google Hardware Attestation root).
+     *
+     * <p>We detect root-first order by checking whether {@code chain[0]} is
+     * self-signed (issuer == subject), which is the defining property of a
+     * root certificate. In that case we reverse so callers always see the
+     * canonical X.509 order.
+     */
+    private static String[] getOrderedChain(String algorithm) throws Exception {
         IKeyboxProvider provider = KeyProviderManager.getProvider();
-        String cert = KeyProperties.KEY_ALGORITHM_EC.equals(algorithm)
-                ? provider.getEcCertificateChain()[0]
-                : provider.getRsaCertificateChain()[0];
-
-        byte[] certBytes = decodePemOrBase64(cert);
-
-        return new X509CertificateHolder(certBytes);
+        String[] chain = KeyProperties.KEY_ALGORITHM_EC.equals(algorithm)
+                ? provider.getEcCertificateChain()
+                : provider.getRsaCertificateChain();
+        if (chain.length <= 1) {
+            return chain;
+        }
+        X509CertificateHolder first = new X509CertificateHolder(
+                decodePemOrBase64(chain[0]));
+        if (!first.getIssuer().equals(first.getSubject())) {
+            return chain;
+        }
+        String[] reversed = new String[chain.length];
+        for (int i = 0; i < chain.length; i++) {
+            reversed[i] = chain[chain.length - 1 - i];
+        }
+        return reversed;
     }
 }
