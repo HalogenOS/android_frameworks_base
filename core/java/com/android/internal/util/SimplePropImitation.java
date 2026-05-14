@@ -279,6 +279,30 @@ public class SimplePropImitation {
         nativeSpoofSysProp("ro.boot.veritymode", "enforcing");
         nativeSpoofSysProp("ro.boot.vbmeta.device_state", "locked");
 
+        // Mask AVB/dm-verity digest properties that uniquely identify this
+        // build. On an unlocked bootloader libavb does not populate these,
+        // so Play Integrity has no extra data to cross-check against the
+        // claimed (spoofed) Pixel fingerprint. On a yellow-locked bootloader
+        // libavb fills them with our XOS-specific hashes — those leak the
+        // mismatch between "I claim to be a Pixel" and "my dm-verity tree
+        // hash doesn't match any Pixel ever produced", which is the silent
+        // reject channel we observed (deviceRecognitionVerdict absent /
+        // everything UNEVALUATED). Returning empty strings makes the yellow
+        // path look as data-sparse as the orange path.
+        nativeSpoofSysProp("ro.boot.vbmeta.digest", "");
+        nativeSpoofSysProp("ro.boot.vbmeta.hash_alg", "");
+        nativeSpoofSysProp("ro.boot.vbmeta.size", "");
+        nativeSpoofSysProp("ro.boot.vbmeta.invalidate_on_error", "");
+        for (String partition : new String[]{
+                "system", "system_ext", "product",
+                "vendor", "odm", "vendor_dlkm"}) {
+            String base = "partition." + partition + ".verified";
+            nativeSpoofSysProp(base, "");
+            nativeSpoofSysProp(base + ".hash_alg", "");
+            nativeSpoofSysProp(base + ".root_digest", "");
+            nativeSpoofSysProp(base + ".check_at_most_once", "");
+        }
+
         // Spoof properties that DroidGuard checks for device integrity
         if (firstApiLevel != null) {
             nativeSpoofSysProp("ro.vendor.api_level", firstApiLevel);
