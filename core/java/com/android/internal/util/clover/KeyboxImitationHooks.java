@@ -255,33 +255,10 @@ public class KeyboxImitationHooks {
         }
         SecureRandom secureRandom = new SecureRandom();
 
-        String key = Settings.Secure.getString(
-                context.getContentResolver(), Settings.Secure.VBOOT_KEY);
-        byte[] verifiedBootKey;
-        if (key == null) {
-            byte[] randomBytes = new byte[32];
-            secureRandom.nextBytes(randomBytes);
-            String encoded = Base64.encodeToString(randomBytes, Base64.NO_WRAP);
-            Settings.Secure.putString(
-                    context.getContentResolver(), Settings.Secure.VBOOT_KEY, encoded);
-            verifiedBootKey = randomBytes;
-        } else {
-            verifiedBootKey = Base64.decode(key, Base64.NO_WRAP);
-        }
-
-        String hash = Settings.Secure.getString(
-                context.getContentResolver(), Settings.Secure.VBOOT_HASH);
-        byte[] verifiedBootHash;
-        if (hash == null) {
-            byte[] randomBytes = new byte[32];
-            secureRandom.nextBytes(randomBytes);
-            String encoded = Base64.encodeToString(randomBytes, Base64.NO_WRAP);
-            Settings.Secure.putString(
-                    context.getContentResolver(), Settings.Secure.VBOOT_HASH, encoded);
-            verifiedBootHash = randomBytes;
-        } else {
-            verifiedBootHash = Base64.decode(hash, Base64.NO_WRAP);
-        }
+        byte[] verifiedBootKey = getOrInitSecureRandomBytes(context, secureRandom,
+                Settings.Secure.VBOOT_KEY);
+        byte[] verifiedBootHash = getOrInitSecureRandomBytes(context, secureRandom,
+                Settings.Secure.VBOOT_HASH);
 
         ASN1Encodable[] rootOfTrustEncodables = {
                 new DEROctetString(verifiedBootKey),
@@ -311,6 +288,37 @@ public class KeyboxImitationHooks {
                 new DEROctetString(Build.MODEL_FOR_ATTESTATION.getBytes())));
         teeEnforcedVector.add(new DERTaggedObject(true, 718, new ASN1Integer(getPatchLevelLong())));
         teeEnforcedVector.add(new DERTaggedObject(true, 719, new ASN1Integer(getPatchLevelLong())));
+    }
+
+    /**
+     * Read a 32-byte random value from Settings.Secure, populating it on first
+     * access. The persisted value is what gives Play Integrity a stable
+     * "verified boot key" / "verified boot hash" across reboots.
+     *
+     * <p>Writing to Settings.Secure requires {@code WRITE_SECURE_SETTINGS},
+     * which an arbitrary 3rd-party app does not hold. If the write fails the
+     * caller still gets a usable random value for the current attestation; a
+     * later call from a privileged process (Play Store, sandboxed GMS) will
+     * succeed and seed the persistent cache, after which every subsequent
+     * caller agrees on the same bytes.
+     */
+    private static byte[] getOrInitSecureRandomBytes(Context context,
+            SecureRandom secureRandom, String settingName) {
+        String existing = Settings.Secure.getString(
+                context.getContentResolver(), settingName);
+        if (existing != null) {
+            return Base64.decode(existing, Base64.NO_WRAP);
+        }
+        byte[] randomBytes = new byte[32];
+        secureRandom.nextBytes(randomBytes);
+        try {
+            Settings.Secure.putString(context.getContentResolver(), settingName,
+                    Base64.encodeToString(randomBytes, Base64.NO_WRAP));
+        } catch (SecurityException e) {
+            Log.w(TAG, "Unable to persist " + settingName
+                    + " (caller lacks WRITE_SECURE_SETTINGS); using ephemeral value");
+        }
+        return randomBytes;
     }
 
     private static int getOsVersion() {
