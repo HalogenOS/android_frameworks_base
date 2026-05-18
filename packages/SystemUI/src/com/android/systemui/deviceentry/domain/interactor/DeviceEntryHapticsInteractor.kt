@@ -24,6 +24,7 @@ import com.android.systemui.dump.DumpManager
 import com.android.systemui.keyevent.domain.interactor.KeyEventInteractor
 import com.android.systemui.keyguard.data.repository.BiometricSettingsRepository
 import com.android.systemui.keyguard.domain.interactor.KeyguardInteractor
+import com.android.systemui.keyguard.shared.model.BiometricUnlockSource
 import com.android.systemui.power.domain.interactor.PowerInteractor
 import com.android.systemui.power.shared.model.WakeSleepReason
 import com.android.systemui.util.kotlin.FlowDumperImpl
@@ -83,7 +84,14 @@ constructor(
                 emit(recentPowerButtonPressThresholdMs * -1L - 1L)
             }
 
-    private val playSuccessHapticOnDeviceEntryFromBiometricSource: Flow<Unit> =
+    /**
+     * Biometric-source unlock events that have passed the power-button-related
+     * filters and are eligible to play a success haptic. Preserves the source
+     * (FINGERPRINT_SENSOR vs FACE_SENSOR) so consumers can render different
+     * haptics per source (e.g. a single tap for fingerprint, the multi-step
+     * default for face).
+     */
+    private val biometricUnlockSourceForHaptic: Flow<BiometricUnlockSource> =
         deviceEntrySourceInteractor.deviceEntryFromBiometricSource
             .sample(
                 combine(
@@ -92,8 +100,9 @@ constructor(
                     lastPowerButtonWakeup,
                     ::Triple,
                 )
-            )
-            .filter { (sideFpsEnrolled, powerButtonDown, lastPowerButtonWakeup) ->
+            ) { source, triple -> source to triple }
+            .filter { (_, triple) ->
+                val (sideFpsEnrolled, powerButtonDown, lastPowerButtonWakeup) = triple
                 val sideFpsAllowsHaptic =
                     !powerButtonDown &&
                         systemClock.uptimeMillis() - lastPowerButtonWakeup >
@@ -104,8 +113,31 @@ constructor(
                 }
                 allowHaptic
             }
+            .map { (source, _) -> source }
+
+    private val playSuccessHapticOnDeviceEntryFromBiometricSource: Flow<Unit> =
+        biometricUnlockSourceForHaptic
+            // XOS: route fingerprint-sensor unlocks to a separate single-tap flow
+            // (playSingleTapHapticOnFingerprintEntry). The default MSDL/
+            // BIOMETRIC_CONFIRM haptic expands to a multi-step amplitude-modulated
+            // waveform on Pong's libaacvibrator and feels like a double/triple
+            // tap; users perceive that as the vibrator hanging up. Face stays
+            // on the default haptic since it has no sensor-side feedback.
+            .filter { it != BiometricUnlockSource.FINGERPRINT_SENSOR }
             // map to Unit
             .map {}
+
+    /**
+     * XOS: dedicated single-tap haptic for fingerprint sensor unlocks. The
+     * consumer should render this as a plain EFFECT_CLICK so the user feels
+     * one clean tap on Pong, instead of the framework's multi-step
+     * BIOMETRIC_CONFIRM / MSDLToken.UNLOCK pattern.
+     */
+    val playSingleTapHapticOnFingerprintEntry: Flow<Unit> =
+        biometricUnlockSourceForHaptic
+            .filter { it == BiometricUnlockSource.FINGERPRINT_SENSOR }
+            .map {}
+            .dumpWhileCollecting("playSingleTapHapticOnFingerprintEntry")
 
     private val playSuccessHapticOnDeviceEntryFromDeviceEntryIcon: Flow<Unit> =
         deviceEntrySourceInteractor.attemptEnterDeviceFromDeviceEntryIcon

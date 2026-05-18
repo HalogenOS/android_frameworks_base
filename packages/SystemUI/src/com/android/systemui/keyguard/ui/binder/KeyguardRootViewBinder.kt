@@ -162,6 +162,24 @@ object KeyguardRootViewBinder {
                             }
                         }
 
+                        // XOS: fingerprint-sensor unlocks get the simple EFFECT_CLICK
+                        // via vibrateAuthSuccess() — the existing AOSP helper made for
+                        // exactly this purpose. The default MSDLToken.UNLOCK path
+                        // (when msdl_feedback is on) expands into a multi-step
+                        // amplitude-modulated waveform on libaacvibrator which feels
+                        // like a double/triple tap stacked on top of the touch event.
+                        // vibrateAuthSuccess uses COMMUNICATION_REQUEST attributes
+                        // which take the prebaked-CLICK fast path (single tap).
+                        launch {
+                            deviceEntryHapticsInteractor
+                                .playSingleTapHapticOnFingerprintEntry
+                                .collect {
+                                    vibratorHelper.vibrateAuthSuccess(
+                                        "KeyguardRootView#fingerprintUnlock"
+                                    )
+                                }
+                        }
+
                         launch {
                             deviceEntryHapticsInteractor.playErrorHaptic.collect {
                                 if (msdlFeedback()) {
