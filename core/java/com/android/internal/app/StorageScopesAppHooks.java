@@ -140,9 +140,7 @@ public class StorageScopesAppHooks {
             }
         }
 
-        if (shouldModify) {
-            i.setAction(action + "_PROMPT");
-        }
+
     }
 
     public static int getSpoofablePermissionDflag(String permName) {
