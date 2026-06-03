@@ -71,6 +71,8 @@ final class UpdatableFontDir {
     interface FontFileParser {
         String getPostScriptName(File file) throws IOException;
 
+        String getFamilyName(File file) throws IOException;
+
         String buildFontFileName(File file) throws IOException;
 
         long getRevision(File file) throws IOException;
@@ -483,6 +485,21 @@ final class UpdatableFontDir {
             names.add(config.customFontFamilies.get(i).getName());
         }
         return names;
+    }
+
+    /**
+     * Returns the installed custom font family with the given name, or {@code null} if no such
+     * family exists. Used to merge newly installed variants into an existing family.
+     */
+    /* package */ @Nullable FontUpdateRequest.Family getCustomFontFamily(@NonNull String name) {
+        PersistentSystemFontConfig.Config config = readPersistentConfig();
+        for (int i = 0; i < config.customFontFamilies.size(); ++i) {
+            FontUpdateRequest.Family family = config.customFontFamilies.get(i);
+            if (name.equals(family.getName())) {
+                return family;
+            }
+        }
+        return null;
     }
 
     private void writePersistentConfigPreservingAll(

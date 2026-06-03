@@ -78,6 +78,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -90,10 +91,6 @@ public final class FontManagerService extends IFontManager.Stub {
 
     private static final String FONT_FILES_DIR = "/data/fonts/files";
     private static final String CONFIG_XML_FILE = "/data/fonts/config/config.xml";
-
-    // 'wght' as a big-endian 4-byte tag, matching FontFileUtil.getSupportedAxes().
-    private static final int WGHT_AXIS_TAG =
-            ('w' << 24) | ('g' << 16) | ('h' << 8) | 't';
 
     /** Pre-installed named font families discovered from the system image. */
     @NonNull
@@ -378,9 +375,43 @@ public final class FontManagerService extends IFontManager.Stub {
     @android.annotation.EnforcePermission(android.Manifest.permission.INSTALL_CUSTOM_FONTS)
     @Override
     public @NonNull String installCustomFontFamilyFromFile(@NonNull ParcelFileDescriptor fd) {
-        Slog.d(TAG, "installCustomFontFamilyFromFile: enforcing permission");
         super.installCustomFontFamilyFromFile_enforcePermission();
-        Slog.d(TAG, "installCustomFontFamilyFromFile: permission OK, entering try block");
+        final List<String> families =
+                installCustomFontFamiliesFromFiles(Collections.singletonList(fd));
+        if (families.isEmpty()) {
+            throw new ServiceSpecificException(
+                    FontManager.RESULT_ERROR_INVALID_FONT_FILE,
+                    "Failed to install font file");
+        }
+        // A single file resolves to exactly one family.
+        return families.get(0);
+    }
+
+    @android.annotation.EnforcePermission(android.Manifest.permission.INSTALL_CUSTOM_FONTS)
+    @Override
+    public @NonNull List<String> installCustomFontFamilyFromFiles(
+            @NonNull List<ParcelFileDescriptor> fds) {
+        super.installCustomFontFamilyFromFiles_enforcePermission();
+        return installCustomFontFamiliesFromFiles(fds);
+    }
+
+    /**
+     * Installs one or more font files, clustering them into font families by typographic family
+     * name and augmenting any already-installed families that share a name.
+     *
+     * <p>Each file is written to {@code /data/fonts} individually. Files are then grouped by their
+     * embedded family name (e.g. all "Lato" variants together). Within a family, a variant is keyed
+     * by its {@link FontStyle} (weight + slant); a newly installed variant replaces any existing
+     * one with the same style, and otherwise extends the family. This makes installing variants
+     * one-at-a-time and all-at-once converge to the same result.
+     *
+     * <p>Installation is partial-success tolerant: a file that fails to install or parse is skipped
+     * and logged rather than aborting the whole batch.
+     *
+     * @return the names of the families that were created or augmented, in stable order.
+     */
+    private @NonNull List<String> installCustomFontFamiliesFromFiles(
+            @NonNull List<ParcelFileDescriptor> fds) {
         try {
             synchronized (mUpdatableFontDirLock) {
                 if (mUpdatableFontDir == null) {
@@ -388,62 +419,147 @@ public final class FontManagerService extends IFontManager.Stub {
                             FontManager.RESULT_ERROR_FONT_UPDATER_DISABLED,
                             "Font updater disabled");
                 }
-                Slog.d(TAG, "installCustomFontFamilyFromFile: calling installCustomFontFile");
-                final String psName =
-                        mUpdatableFontDir.installCustomFontFile(fd.getFileDescriptor());
-                Slog.d(TAG, "installCustomFontFamilyFromFile: psName=" + psName);
 
-                // Reject static fonts — only variable fonts with a wght axis are supported
-                // so that a single file can serve all weights.
-                final File fontFile = mUpdatableFontDir.getPostScriptMap().get(psName);
-                if (fontFile == null) {
-                    throw new SystemFontException(
-                            FontManager.RESULT_ERROR_FONT_NOT_FOUND,
-                            "Installed font file not found for: " + psName);
-                }
-                try (FileInputStream fis = new FileInputStream(fontFile);
-                        FileChannel channel = fis.getChannel()) {
-                    final ByteBuffer buffer =
-                            channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
-                    final Set<Integer> supportedAxes = FontFileUtil.getSupportedAxes(buffer, 0);
-                    if (!supportedAxes.contains(WGHT_AXIS_TAG)) {
-                        // Clean up the installed file before rejecting.
-                        mUpdatableFontDir.removeCustomFontFileByPsName(psName);
-                        throw new SystemFontException(
-                                FontManager.RESULT_ERROR_INVALID_FONT_FILE,
-                                "Only variable fonts with a weight (wght) axis are supported");
+                // Install each file and collect its parsed descriptor. Preserve insertion order so
+                // families and their variants appear deterministically.
+                final List<InstalledFont> installed = new ArrayList<>(fds.size());
+                for (ParcelFileDescriptor fd : fds) {
+                    try {
+                        installed.add(installAndParse(fd.getFileDescriptor()));
+                    } catch (SystemFontException e) {
+                        Slog.e(TAG, "Skipping font file that failed to install", e);
                     }
-                } catch (IOException e) {
-                    mUpdatableFontDir.removeCustomFontFileByPsName(psName);
-                    throw new SystemFontException(
-                            FontManager.RESULT_ERROR_INVALID_FONT_FILE,
-                            "Failed to parse font axes", e);
+                }
+                if (installed.isEmpty()) {
+                    return Collections.emptyList();
                 }
 
-                final FontUpdateRequest.Font font = new FontUpdateRequest.Font(
-                        psName,
-                        new FontStyle(FontStyle.FONT_WEIGHT_NORMAL, FontStyle.FONT_SLANT_UPRIGHT),
-                        0 /* index */,
-                        "" /* fontVariationSettings */);
-                final FontUpdateRequest.Family family = new FontUpdateRequest.Family(
-                        psName, Collections.singletonList(font));
-                Slog.d(TAG, "installCustomFontFamilyFromFile: registering family " + psName);
-                mUpdatableFontDir.updateCustomFonts(
-                        Collections.singletonList(new FontUpdateRequest(family)));
+                // Cluster by family name, preserving first-seen order of families.
+                final Map<String, List<InstalledFont>> clusters = new LinkedHashMap<>();
+                for (InstalledFont font : installed) {
+                    clusters.computeIfAbsent(font.familyName, k -> new ArrayList<>()).add(font);
+                }
+
+                final List<FontUpdateRequest> requests = new ArrayList<>();
+                for (Map.Entry<String, List<InstalledFont>> entry : clusters.entrySet()) {
+                    requests.add(new FontUpdateRequest(
+                            buildMergedFamily(entry.getKey(), entry.getValue())));
+                }
+
+                try {
+                    mUpdatableFontDir.updateCustomFonts(requests);
+                } catch (SystemFontException e) {
+                    // The family registration failed as a unit; drop the orphaned font files so a
+                    // retry starts clean.
+                    for (InstalledFont font : installed) {
+                        mUpdatableFontDir.removeCustomFontFileByPsName(font.psName);
+                    }
+                    throw e;
+                }
                 updateSerializedFontMap();
-                Slog.d(TAG, "installCustomFontFamilyFromFile: success, returning " + psName);
-                return psName;
+                return new ArrayList<>(clusters.keySet());
             }
         } catch (SystemFontException e) {
-            Slog.e(TAG, "Failed to install custom font family from file", e);
+            Slog.e(TAG, "Failed to install custom font families from files", e);
             throw new ServiceSpecificException(e.getErrorCode(), e.getMessage());
         } finally {
-            try {
-                fd.close();
-            } catch (IOException e) {
-                Slog.w(TAG, "Failed to close fd", e);
+            for (ParcelFileDescriptor fd : fds) {
+                try {
+                    fd.close();
+                } catch (IOException e) {
+                    Slog.w(TAG, "Failed to close fd", e);
+                }
             }
         }
+    }
+
+    /** A font file that has been written to /data/fonts, with its parsed identity and style. */
+    private static final class InstalledFont {
+        final String psName;
+        final String familyName;
+        final FontStyle style;
+
+        InstalledFont(String psName, String familyName, FontStyle style) {
+            this.psName = psName;
+            this.familyName = familyName;
+            this.style = style;
+        }
+    }
+
+    /**
+     * Installs a single font file and parses the metadata needed to cluster it: PostScript name,
+     * typographic family name, and {@link FontStyle}. Static fonts are supported — the style is
+     * read from the OS/2 table; variable fonts report their default instance's weight/slant.
+     */
+    @GuardedBy("mUpdatableFontDirLock")
+    private InstalledFont installAndParse(FileDescriptor fd) throws SystemFontException {
+        final String psName = mUpdatableFontDir.installCustomFontFile(fd);
+        final File fontFile = mUpdatableFontDir.getPostScriptMap().get(psName);
+        if (fontFile == null) {
+            throw new SystemFontException(
+                    FontManager.RESULT_ERROR_FONT_NOT_FOUND,
+                    "Installed font file not found for: " + psName);
+        }
+        try (FileInputStream fis = new FileInputStream(fontFile);
+                FileChannel channel = fis.getChannel()) {
+            final ByteBuffer buffer =
+                    channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
+
+            String familyName = FontFileUtil.getFamilyName(buffer, 0);
+            if (familyName == null || familyName.isEmpty()) {
+                // Fall back to the PostScript name so the font still installs as its own family.
+                familyName = psName;
+            }
+
+            final int packed = FontFileUtil.analyzeStyle(buffer, 0, null /* varSettings */);
+            final FontStyle style;
+            if (FontFileUtil.isSuccess(packed)) {
+                style = new FontStyle(
+                        FontFileUtil.unpackWeight(packed),
+                        FontFileUtil.unpackItalic(packed)
+                                ? FontStyle.FONT_SLANT_ITALIC : FontStyle.FONT_SLANT_UPRIGHT);
+            } else {
+                style = new FontStyle(
+                        FontStyle.FONT_WEIGHT_NORMAL, FontStyle.FONT_SLANT_UPRIGHT);
+            }
+            return new InstalledFont(psName, familyName, style);
+        } catch (IOException e) {
+            mUpdatableFontDir.removeCustomFontFileByPsName(psName);
+            throw new SystemFontException(
+                    FontManager.RESULT_ERROR_INVALID_FONT_FILE,
+                    "Failed to parse font metadata", e);
+        }
+    }
+
+    /**
+     * Builds a {@link FontUpdateRequest.Family} for {@code familyName} combining the existing
+     * installed variants (if any) with {@code newFonts}. Variants are keyed by {@link FontStyle};
+     * a new variant replaces a same-styled existing one, otherwise it is added.
+     */
+    @GuardedBy("mUpdatableFontDirLock")
+    private FontUpdateRequest.Family buildMergedFamily(
+            String familyName, List<InstalledFont> newFonts) {
+        // Keyed by packed weight|slant so a re-installed style overwrites the previous file.
+        final Map<Integer, FontUpdateRequest.Font> byStyle = new LinkedHashMap<>();
+
+        final FontUpdateRequest.Family existing =
+                mUpdatableFontDir.getCustomFontFamily(familyName);
+        if (existing != null) {
+            for (FontUpdateRequest.Font font : existing.getFonts()) {
+                byStyle.put(styleKey(font.getFontStyle()), font);
+            }
+        }
+        for (InstalledFont font : newFonts) {
+            final FontUpdateRequest.Font f = new FontUpdateRequest.Font(
+                    font.psName, font.style, 0 /* index */, "" /* fontVariationSettings */);
+            byStyle.put(styleKey(font.style), f);
+        }
+        return new FontUpdateRequest.Family(
+                familyName, new ArrayList<>(byStyle.values()));
+    }
+
+    private static int styleKey(FontStyle style) {
+        return style.getWeight() | (style.getSlant() << 16);
     }
 
     private void applyCustomFontOverlayForUser(@Nullable String familyName, int userId) {

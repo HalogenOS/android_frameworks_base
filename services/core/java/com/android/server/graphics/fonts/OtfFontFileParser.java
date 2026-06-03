@@ -47,6 +47,16 @@ import java.nio.channels.FileChannel;
     }
 
     @Override
+    public String getFamilyName(File file) throws IOException {
+        ByteBuffer buffer = mmap(file);
+        try {
+            return FontFileUtil.getFamilyName(buffer, 0);
+        } finally {
+            unmap(buffer);
+        }
+    }
+
+    @Override
     public String buildFontFileName(File file) throws IOException {
         ByteBuffer buffer = mmap(file);
         try {

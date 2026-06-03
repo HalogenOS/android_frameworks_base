@@ -60,4 +60,7 @@ interface IFontManager {
 
     @EnforcePermission("INSTALL_CUSTOM_FONTS")
     String installCustomFontFamilyFromFile(in ParcelFileDescriptor fd);
+
+    @EnforcePermission("INSTALL_CUSTOM_FONTS")
+    List<String> installCustomFontFamilyFromFiles(in List<ParcelFileDescriptor> fds);
 }

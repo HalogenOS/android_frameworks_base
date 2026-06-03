@@ -172,6 +172,26 @@ public class FontFileUtil {
     }
 
     /**
+     * Analyze name OpenType table and return the typographic family name.
+     *
+     * <p>Returns the preferred (typographic) family name, name ID 16, falling back to the legacy
+     * font family name, name ID 1. This is the name that groups all weights and styles of a type
+     * family together (e.g. "Lato" for Lato-Regular, Lato-Bold, ...), and is used as the cluster
+     * key when installing individual font variants.
+     *
+     * IllegalArgumentException will be thrown for invalid font data.
+     * null will be returned if not found.
+     *
+     * @param buffer a buffer of OpenType font
+     * @param index a font index
+     * @return a family name or null if it is not found.
+     */
+    public static String getFamilyName(@NonNull ByteBuffer buffer,
+            @IntRange(from = 0) int index) {
+        return nGetFontFamilyName(buffer, index);
+    }
+
+    /**
      * Analyze name OpenType table and return true if the font has PostScript Type 1 glyphs.
      *
      * IllegalArgumentException will be thrown for invalid font data.
@@ -278,6 +298,10 @@ public class FontFileUtil {
 
     @FastNative
     private static native String nGetFontPostScriptName(@NonNull ByteBuffer buffer,
+            @IntRange(from = 0) int index);
+
+    @FastNative
+    private static native String nGetFontFamilyName(@NonNull ByteBuffer buffer,
             @IntRange(from = 0) int index);
 
     @FastNative

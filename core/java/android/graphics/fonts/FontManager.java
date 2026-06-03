@@ -475,6 +475,30 @@ public class FontManager {
     }
 
     /**
+     * Installs one or more user-provided font files, clustering them into font families by their
+     * embedded typographic family name and augmenting any already-installed family of the same
+     * name with the new weight/style variants.
+     *
+     * <p>Use this to install a complete family at once (e.g. Regular + Bold + Italic) or to add
+     * variants to a family that was installed earlier. Both static and variable fonts are
+     * supported. The caller must hold {@code INSTALL_CUSTOM_FONTS}.
+     *
+     * @param fds file descriptors opened for reading on the font files
+     * @return the names of the families that were created or augmented
+     * @throws android.os.ServiceSpecificException with a {@link ResultCode} on failure
+     * @hide
+     */
+    @RequiresPermission(Manifest.permission.INSTALL_CUSTOM_FONTS)
+    public @NonNull List<String> installCustomFontFamilyFromFiles(
+            @NonNull List<ParcelFileDescriptor> fds) {
+        try {
+            return mIFontManager.installCustomFontFamilyFromFiles(fds);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
      * Factory method of the FontManager.
      *
      * Do not use this method directly. Use getSystemService(Context.FONT_SERVICE) instead.

@@ -375,6 +375,27 @@ static jstring FontFileUtil_getFontPostScriptName(JNIEnv* env, jobject, jobject 
     return env->NewStringUTF(psName->c_str());
 }
 
+static jstring FontFileUtil_getFontFamilyName(JNIEnv* env, jobject, jobject buffer, jint index) {
+    NPE_CHECK_RETURN_ZERO(env, buffer);
+    const void* fontPtr = env->GetDirectBufferAddress(buffer);
+    if (fontPtr == nullptr) {
+        jniThrowException(env, "java/lang/IllegalArgumentException", "Not a direct buffer");
+        return nullptr;
+    }
+    jlong fontSize = env->GetDirectBufferCapacity(buffer);
+    if (fontSize <= 0) {
+        jniThrowException(env, "java/lang/IllegalArgumentException",
+                          "buffer size must not be zero or negative");
+        return nullptr;
+    }
+    minikin::FontFileParser parser(fontPtr, fontSize, index);
+    std::optional<std::string> familyName = parser.getFamilyName();
+    if (!familyName.has_value()) {
+        return nullptr;  // null
+    }
+    return env->NewStringUTF(familyName->c_str());
+}
+
 static jint FontFileUtil_isPostScriptType1Font(JNIEnv* env, jobject, jobject buffer, jint index) {
     NPE_CHECK_RETURN_ZERO(env, buffer);
     const void* fontPtr = env->GetDirectBufferAddress(buffer);
@@ -431,6 +452,8 @@ static const JNINativeMethod gFontFileUtilMethods[] = {
     { "nGetFontRevision", "(Ljava/nio/ByteBuffer;I)J", (void*) FontFileUtil_getFontRevision },
     { "nGetFontPostScriptName", "(Ljava/nio/ByteBuffer;I)Ljava/lang/String;",
         (void*) FontFileUtil_getFontPostScriptName },
+    { "nGetFontFamilyName", "(Ljava/nio/ByteBuffer;I)Ljava/lang/String;",
+        (void*) FontFileUtil_getFontFamilyName },
     { "nIsPostScriptType1Font", "(Ljava/nio/ByteBuffer;I)I",
         (void*) FontFileUtil_isPostScriptType1Font },
 };

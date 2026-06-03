@@ -88,6 +88,15 @@ public final class UpdatableFontDirTest {
         }
 
         @Override
+        public String getFamilyName(File file) throws IOException {
+            String content = FileUtils.readTextFile(file, 100, "");
+            String[] parts = content.split(",");
+            // Optional 4th field carries the family name; absent it, fall back to the
+            // PostScript name so existing single-font fixtures behave as before.
+            return parts.length > 3 ? parts[3] : parts[2];
+        }
+
+        @Override
         public String buildFontFileName(File file) throws IOException {
             String content = FileUtils.readTextFile(file, 100, "");
             return content.split(",")[0];
@@ -721,6 +730,11 @@ public final class UpdatableFontDirTest {
                     }
 
                     @Override
+                    public String getFamilyName(File file) throws IOException {
+                        return null;
+                    }
+
+                    @Override
                     public String buildFontFileName(File file) throws IOException {
                         return null;
                     }
@@ -754,6 +768,11 @@ public final class UpdatableFontDirTest {
                 new UpdatableFontDir.FontFileParser() {
                     @Override
                     public String getPostScriptName(File file) throws IOException {
+                        throw new IOException();
+                    }
+
+                    @Override
+                    public String getFamilyName(File file) throws IOException {
                         throw new IOException();
                     }
 
@@ -792,6 +811,11 @@ public final class UpdatableFontDirTest {
                     @Override
                     public String getPostScriptName(File file) throws IOException {
                         return mParser.getPostScriptName(file);
+                    }
+
+                    @Override
+                    public String getFamilyName(File file) throws IOException {
+                        return mParser.getFamilyName(file);
                     }
 
                     @Override
