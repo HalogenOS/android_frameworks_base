@@ -100,7 +100,7 @@ const val DISMISS_AMOUNT_EXIT_KEYGUARD_THRESHOLD = 0.3f
  * from a tap on the unlock icon, or from the bouncer. This is not relevant if the lockscreen is
  * swiped away via a touch gesture, or when it's flinging expanded/collapsed after a swipe.
  */
-const val UNLOCK_ANIMATION_DURATION_MS = 300L
+const val UNLOCK_ANIMATION_DURATION_MS = 240L
 
 /**
  * If there are two different wallpapers on home and lock screen, duration and delay of the lock
@@ -116,7 +116,7 @@ const val LOCK_WALLPAPER_FADE_OUT_START_DELAY_MS = 150L
  * This animation will take place entirely within the Launcher window. We can safely unlock the
  * device, end remote animations, etc. even if this is still running.
  */
-const val LAUNCHER_ICONS_ANIMATION_DURATION_MS = 633L
+const val LAUNCHER_ICONS_ANIMATION_DURATION_MS = 506L
 
 /**
  * How long to wait for the shade to get out of the way before starting the canned unlock animation.

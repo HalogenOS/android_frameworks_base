@@ -152,11 +152,11 @@ constructor(
         @JvmField
         val TIMINGS =
             TransitionAnimator.Timings(
-                totalDuration = 500L,
+                totalDuration = 400L,
                 contentBeforeFadeOutDelay = 0L,
-                contentBeforeFadeOutDuration = 150L,
-                contentAfterFadeInDelay = 150L,
-                contentAfterFadeInDuration = 183L,
+                contentBeforeFadeOutDuration = 120L,
+                contentAfterFadeInDelay = 120L,
+                contentAfterFadeInDuration = 146L,
             )
 
         /**

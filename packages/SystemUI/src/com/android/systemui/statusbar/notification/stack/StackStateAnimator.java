@@ -53,21 +53,21 @@ import java.util.function.Consumer;
  */
 public class StackStateAnimator {
 
-    public static final int ANIMATION_DURATION_STANDARD = 360;
+    public static final int ANIMATION_DURATION_STANDARD = 290;
     public static final int ANIMATION_DURATION_CORNER_RADIUS = 200;
     public static final int ANIMATION_DURATION_WAKEUP = 500;
     public static final int ANIMATION_DURATION_WAKEUP_SCRIM = 667;
-    public static final int ANIMATION_DURATION_GO_TO_FULL_SHADE = 448;
-    public static final int ANIMATION_DURATION_APPEAR_DISAPPEAR = 464;
+    public static final int ANIMATION_DURATION_GO_TO_FULL_SHADE = 360;
+    public static final int ANIMATION_DURATION_APPEAR_DISAPPEAR = 370;
     public static final int ANIMATION_DURATION_SWIPE = 200;
     public static final int ANIMATION_DURATION_DIMMED_ACTIVATED = 220;
     public static final int ANIMATION_DURATION_CLOSE_REMOTE_INPUT = 150;
-    public static final int ANIMATION_DURATION_HEADS_UP_APPEAR = 400;
-    public static final int ANIMATION_DURATION_HEADS_UP_DISAPPEAR = 400;
-    public static final int ANIMATION_DURATION_HEADS_UP_CYCLING = 400;
+    public static final int ANIMATION_DURATION_HEADS_UP_APPEAR = 320;
+    public static final int ANIMATION_DURATION_HEADS_UP_DISAPPEAR = 320;
+    public static final int ANIMATION_DURATION_HEADS_UP_CYCLING = 320;
     public static final int ANIMATION_DURATION_FOLD_TO_AOD =
             AnimatableClockView.ANIMATION_DURATION_FOLD_TO_AOD;
-    public static final int ANIMATION_DURATION_PRIORITY_CHANGE = 500;
+    public static final int ANIMATION_DURATION_PRIORITY_CHANGE = 400;
     public static final int ANIMATION_DELAY_PER_ELEMENT_INTERRUPTING = 80;
     public static final int ANIMATION_DELAY_PER_ELEMENT_MANUAL = 32;
     public static final int ANIMATION_DELAY_PER_ELEMENT_GO_TO_FULL_SHADE = 48;
