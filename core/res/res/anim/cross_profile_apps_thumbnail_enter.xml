@@ -30,12 +30,12 @@
         android:fillAfter="true"
         android:interpolator="@interpolator/fast_out_extra_slow_in"
         android:startOffset="0"
-        android:duration="500"/>
+        android:duration="400"/>
 
     <!-- To keep the thumbnail around longer and fade out the thumbnail -->
     <alpha android:fromAlpha="1.0" android:toAlpha="0"
            android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"
            android:interpolator="@interpolator/decelerate_quint"
-           android:startOffset="717"
-           android:duration="200"/>
+           android:startOffset="574"
+           android:duration="160"/>
 </set>
