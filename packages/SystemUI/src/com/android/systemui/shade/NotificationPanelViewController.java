@@ -723,7 +723,7 @@ public final class NotificationPanelViewController implements
                 .build();
         mFlingAnimationUtilsDismissing = fauBuilder
                 .reset()
-                .setMaxLengthSeconds(0.5f)
+                .setMaxLengthSeconds(0.4f)
                 .setSpeedUpFactor(0.6f)
                 .setX2(0.6f)
                 .setY2(0.84f)
@@ -999,7 +999,7 @@ public final class NotificationPanelViewController implements
         mHintDistance = mResources.getDimension(R.dimen.hint_move_distance);
         mPanelFlingOvershootAmount = mResources.getDimension(R.dimen.panel_overshoot_amount);
         mFlingAnimationUtils = mFlingAnimationUtilsBuilder.get()
-                .setMaxLengthSeconds(0.4f).build();
+                .setMaxLengthSeconds(0.32f).build();
         mStatusBarMinHeight = SystemBarUtils.getStatusBarHeight(mView.getContext());
         mStatusBarHeaderHeightKeyguard = Utils.getStatusBarHeaderHeightKeyguard(mView.getContext());
         mClockPositionAlgorithm.loadDimens(mView.getContext(), mResources);

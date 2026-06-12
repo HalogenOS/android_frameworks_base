@@ -113,9 +113,9 @@ interface ShadeViewController {
         }
 
         const val WAKEUP_ANIMATION_DELAY_MS = 250
-        const val FLING_MAX_LENGTH_SECONDS = 0.6f
+        const val FLING_MAX_LENGTH_SECONDS = 0.48f
         const val FLING_SPEED_UP_FACTOR = 0.6f
-        const val FLING_CLOSING_MAX_LENGTH_SECONDS = 0.6f
+        const val FLING_CLOSING_MAX_LENGTH_SECONDS = 0.48f
         const val FLING_CLOSING_SPEED_UP_FACTOR = 0.6f
 
         /** Fling expanding QS. */

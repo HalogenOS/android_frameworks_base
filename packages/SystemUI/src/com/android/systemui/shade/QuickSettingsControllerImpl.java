@@ -1982,7 +1982,7 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
                 mExpansionHeight, target);
         if (isClick) {
             animator.setInterpolator(Interpolators.TOUCH_RESPONSE);
-            animator.setDuration(368);
+            animator.setDuration(295);
         } else {
             if (mFlingQsWithoutClickListener != null) {
                 mFlingQsWithoutClickListener.onFlingQsWithoutClick(animator, mExpansionHeight,
@@ -1990,7 +1990,7 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
             }
         }
         if (oppositeDirection) {
-            animator.setDuration(350);
+            animator.setDuration(280);
         }
         animator.addUpdateListener(
                 animation -> setExpansionHeight((Float) animation.getAnimatedValue()));
