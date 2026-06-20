@@ -12,6 +12,7 @@ import com.android.systemui.qs.tiles.CaffeineTile
 import com.android.systemui.qs.tiles.ChargingLimitTile
 import com.android.systemui.qs.tiles.PowerShareTile
 import com.android.systemui.qs.tiles.ScreenshotTile
+import com.android.systemui.qs.tiles.impl.audioinfo.ui.model.AudioInfoTileModule
 import com.android.systemui.qs.tiles.base.shared.model.QSTileConfig
 import com.android.systemui.qs.tiles.base.shared.model.QSTileUIConfig
 import com.android.systemui.res.R
@@ -22,7 +23,7 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
-@Module
+@Module(includes = [AudioInfoTileModule::class])
 interface CustomModule {
     /** Inject CaffeineTile into tileMap in QSModule */
     @Binds

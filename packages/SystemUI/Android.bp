@@ -529,6 +529,7 @@ android_library {
         "SystemUI-shared-utils",
         "SystemUI-statsd",
         "SettingsLib",
+        "AudioStateCompose",
         "com_android_server_accessibility_flags_lib",
         "com_android_systemui_flags_lib",
         "//frameworks/libs/systemui:com_android_systemui_shared_flags_lib",
