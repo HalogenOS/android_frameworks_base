@@ -19,6 +19,7 @@ package com.android.systemui.qs.tiles.impl.audioinfo.domain.interactor
 import android.content.Context
 import android.os.Handler
 import android.os.UserHandle
+import com.android.settingslib.audiostate.AudioFlingerInfoProvider
 import com.android.settingslib.audiostate.AudioStateRepository
 import com.android.settingslib.audiostate.LocalBluetoothBatteryProvider
 import com.android.settingslib.bluetooth.LocalBluetoothManager
@@ -54,6 +55,7 @@ constructor(
             context.applicationContext,
             bgHandler,
             deviceBatteryProvider = LocalBluetoothBatteryProvider(localBluetoothManager),
+            outputThreadProvider = AudioFlingerInfoProvider(),
         )
 
     override fun tileData(

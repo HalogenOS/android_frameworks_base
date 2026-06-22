@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.compose.PlatformButton
 import com.android.compose.PlatformOutlinedButton
 import com.android.compose.theme.PlatformTheme
+import com.android.settingslib.audiostate.AudioFlingerInfoProvider
 import com.android.settingslib.audiostate.AudioStateRepository
 import com.android.settingslib.audiostate.AudioStateSnapshot
 import com.android.settingslib.audiostate.LocalBluetoothBatteryProvider
@@ -67,6 +68,7 @@ constructor(
             context.applicationContext,
             bgHandler,
             deviceBatteryProvider = LocalBluetoothBatteryProvider(localBluetoothManager),
+            outputThreadProvider = AudioFlingerInfoProvider(),
         )
 
     override fun createDialog(): SystemUIDialog =

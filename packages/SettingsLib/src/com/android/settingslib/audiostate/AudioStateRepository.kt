@@ -57,8 +57,8 @@ import kotlinx.coroutines.flow.onStart
  *   the handler thread only posts change *triggers*, the heavy mapping runs on the collector.
  * @param codecProvider optional hook supplying the active Bluetooth codec; injected so the data
  *   layer does not hard-depend on the Bluetooth stack and remains unit-testable. May return null.
- * @param outputThreadProvider optional hook supplying AudioFlinger output-thread internals
- *   (mix format, flags, resampling, effects). Null in phase 1; wired to the @hide accessors later.
+ * @param outputThreadProvider optional hook supplying the per-thread AudioFlinger snapshot (sources,
+ *   mix format, flags, effects, sink port ids). Null in phase 1; wired to the @hide facade later.
  */
 class AudioStateRepository(
     private val context: Context,
@@ -90,14 +90,24 @@ class AudioStateRepository(
         val inputs = audioManager.getDevices(AudioManager.GET_DEVICES_INPUTS)
 
         val activePlaybacks = readActivePlaybackConfigurations()
+        // Pull the per-thread snapshot once: every active output thread, each carrying its own sink
+        // port id(s). Empty when the facade is absent (phase 1) — buildRoutes then degrades to a
+        // usage-based view with null thread info. Reading it once keeps the whole route build against
+        // one stable thread set.
+        val outputThreads = readOutputThreadSnapshot()
 
-        // Enumerate devices first (without active state), resolve routes against them via live
-        // routing queries, then mark the resolved routed devices active. This keeps the ACTIVE
-        // marker consistent with what the chain shows and avoids the stale event-cached device ids.
+        // Enumerate devices first (without active state), then build the chains.
         val baseOutputDevices = outputs.map { it.toAudioDevice(isActive = false) }
-        val routes = buildRoutes(activePlaybacks, baseOutputDevices)
+        val routes = buildRoutes(outputThreads, activePlaybacks, baseOutputDevices)
 
-        val activeOutputDeviceIds = routes.mapNotNull { it.outputDevice?.id }.toSet()
+        // ACTIVE marks a device the system is *currently routing audio to* — a routing truth, NOT
+        // "this device is some standing thread's sink". A device is the sink of an idle PRIMARY/
+        // telephony thread even when nothing plays, so deriving ACTIVE from the rendered chains would
+        // falsely light up an idle speaker. Instead resolve the live route for each active playback
+        // (the same policy query usage labelling uses): no active playback → nothing routed → no
+        // ACTIVE pill.
+        val activeOutputDeviceIds =
+            activePlaybacks.mapNotNull { routedDeviceFor(it.usage, baseOutputDevices)?.id }.toSet()
         val outputDevices =
             baseOutputDevices.map { it.copy(isActive = activeOutputDeviceIds.contains(it.id)) }
         val inputDevices = inputs.map { it.toAudioDevice(isActive = false) }
@@ -204,7 +214,89 @@ class AudioStateRepository(
             .getOrNull()
     }
 
+    /**
+     * Builds the rendered output chains. The unit of iteration is the active output THREAD (each
+     * [OutputThreadInfo] from the facade), not the playback usage: every active thread renders one
+     * complete chain from its own state — its own [OutputThreadInfo.sources], its own AF stage, and
+     * its own sink device(s) matched by port id. Nothing is picked, so there is no path/thread
+     * selection to get wrong (the design's per-thread model).
+     *
+     * A thread's sink device is the enumerated [AudioDevice] whose id is in the thread's
+     * [OutputThreadInfo.sinkPortIds] (`AudioDeviceInfo.getId() == audio_port_handle_t`). A thread
+     * whose sink port id matches no enumerated device — or a DUPLICATING / unpatched thread with no
+     * sink port id at all — renders WITHOUT a resolved device (honest omission), never a guessed one.
+     *
+     * When the facade is absent ([threads] empty) we fall back to the phase-1 usage-based view: one
+     * chain per active playback with null thread info, so the source still renders from the playback
+     * config. Usage labelling is display-only and never selects a thread.
+     */
     private fun buildRoutes(
+        threads: List<OutputThreadInfo>,
+        playbacks: List<ActivePlayback>,
+        outputDevices: List<AudioDevice>,
+    ): List<AudioRoute> {
+        if (threads.isEmpty()) return buildFallbackRoutes(playbacks, outputDevices)
+
+        // Display-only usage attribution: map each enumerated device id to the usage label(s) routed
+        // to it, queried live. This never selects a thread — it only labels a thread that already has
+        // a resolved sink. A device with no routed playback (or an omitted sink) reads "Audio".
+        val usageByDeviceId = usageLabelsByDeviceId(playbacks, outputDevices)
+
+        return threads.map { thread ->
+            // The thread's own sink device(s): every enumerated device whose id the thread's patch
+            // names. Multi-sink is "any" — a thread serving several ports matches several devices; we
+            // render the chain against the first matched enumerated device for the device block while
+            // keeping the match itself port-id-exact. No match → no device (omit identity).
+            val device =
+                outputDevices.firstOrNull { dev -> thread.sinkPortIds.any { it == dev.id } }
+            val usageLabel = device?.let { usageByDeviceId[it.id] } ?: "Audio"
+            // "Any active source resamples" — but only a meaningful boolean when there ARE sources.
+            // With no observed sources, leave it null ("unknown") rather than a vacuous false, so the
+            // renderer omits the Resampling row instead of asserting "No" for a thread with nothing to
+            // resample. Per-source truth is always in [sources].
+            val anyResampling =
+                if (thread.sources.isEmpty()) null else thread.sources.any { it.resampling }
+            // Truth of liveness: a chain is playing only when a stream is actually on the thread. For
+            // a playback thread that is ≥1 active external source (the facade already filtered to
+            // active client tracks); for an MMAP thread it is mmapActive. A standing-but-idle thread
+            // (PRIMARY/telephony mixer patched to the speaker with nothing playing) is alive but NOT
+            // playing — the UI then de-emphasizes it and drops its (non-existent) Source stage.
+            val isPlaying = thread.sources.isNotEmpty() || thread.mmapActive == true
+            AudioRoute(
+                usageLabel = usageLabel,
+                sources = thread.sources,
+                isPlaying = isPlaying,
+                // Single representative source only when the thread has exactly one — otherwise null,
+                // so a renderer drawing one Source stage never implies a picked track. The per-source
+                // truth is always in [sources]. The facade contributed the source, so mark it Hybrid.
+                sourceFormat = thread.sources.singleOrNull()?.format,
+                sourceFromFacade = thread.sources.isNotEmpty(),
+                mixFormat = thread.mixFormat,
+                afInternalFormat = thread.afInternalFormat,
+                hardwareFormat = thread.hardwareFormat,
+                outputFlags = thread.outputFlags,
+                // Route-level "any source resampling"; per-source truth lives in each AudioSource.
+                resampling = anyResampling,
+                effectChain = thread.effectChain,
+                latencyMillis = thread.latencyMillis,
+                pathTypeLabel = thread.pathTypeLabel,
+                hasMixerStage = thread.hasMixerStage,
+                bitPerfect = thread.bitPerfect,
+                activeTrackCount = thread.activeTrackCount,
+                mmapActive = thread.mmapActive,
+                bitPerfectReasons = thread.bitPerfectReasons,
+                outputDevice = device,
+                bluetoothCodec = device?.let { readBluetoothCodec(it) },
+            )
+        }
+    }
+
+    /**
+     * Phase-1 / facade-absent fallback: one chain per active playback, usage-driven, with null
+     * thread info. No thread data is available to attach, so this is the only place usage drives a
+     * chain — and only because there is no thread set to enumerate. Mirrors the original behaviour.
+     */
+    private fun buildFallbackRoutes(
         playbacks: List<ActivePlayback>,
         outputDevices: List<AudioDevice>,
     ): List<AudioRoute> {
@@ -213,16 +305,56 @@ class AudioStateRepository(
             val device = routedDeviceFor(pb.usage, outputDevices)
             AudioRoute(
                 usageLabel = pb.usageLabel,
+                sources = emptyList(),
+                // The fallback builds one chain per ACTIVE playback, so it is playing by construction
+                // (its source rides sourceFormat below, not the per-track sources list).
+                isPlaying = true,
+                // Source comes from the playback config (rate + channels, no bit depth); not from the
+                // facade, so the Source stage stays framework-provenance.
                 sourceFormat = pb.sourceFormat,
-                mixFormat = null, // phase 2
-                outputFlags = null, // phase 2
-                resampling = null, // phase 2
-                effectChain = null, // phase 2
-                latencyMillis = null, // phase 2
+                sourceFromFacade = false,
+                mixFormat = null,
+                afInternalFormat = null,
+                hardwareFormat = null,
+                outputFlags = null,
+                resampling = null,
+                effectChain = null,
+                latencyMillis = null,
+                pathTypeLabel = null,
+                hasMixerStage = null,
+                bitPerfect = null,
+                activeTrackCount = null,
+                mmapActive = null,
+                bitPerfectReasons = null,
                 outputDevice = device,
                 bluetoothCodec = device?.let { readBluetoothCodec(it) },
             )
         }
+    }
+
+    /**
+     * Display-only usage labelling: device id → joined usage label(s) of the playbacks routed there.
+     * Built from the live routing query so it reflects the real route; used purely to label a thread
+     * that already has a resolved sink, never to select one. A device serving several usages joins
+     * them ("Media · Game"); a device with no routed playback is simply absent from the map.
+     */
+    private fun usageLabelsByDeviceId(
+        playbacks: List<ActivePlayback>,
+        outputDevices: List<AudioDevice>,
+    ): Map<Int, String> =
+        playbacks
+            .mapNotNull { pb -> routedDeviceFor(pb.usage, outputDevices)?.let { it.id to pb.usageLabel } }
+            .groupBy({ it.first }, { it.second })
+            .mapValues { (_, labels) -> labels.distinct().joinToString(" · ") }
+
+    /**
+     * Reads the per-thread AudioFlinger snapshot via the injected [outputThreadProvider]. Empty in
+     * phase 1 (no provider) or when the facade is absent, so [buildRoutes] degrades to the
+     * usage-based fallback.
+     */
+    private fun readOutputThreadSnapshot(): List<OutputThreadInfo> {
+        val provider = outputThreadProvider ?: return emptyList()
+        return runCatching { provider.outputThreadSnapshot() }.getOrElse { emptyList() }
     }
 
     /**
@@ -357,20 +489,79 @@ class AudioStateRepository(
 
     /**
      * Optional supplier of AudioFlinger output-thread internals, filled in phase 2 by the @hide
-     * AudioManager accessor. Returns null in phase 1.
+     * audioserver facade. Returns an empty list in phase 1 / when the facade is absent.
+     *
+     * Per-thread, not per-device: the snapshot lists *every* active output thread, each described
+     * from its own state and carrying its own [OutputThreadInfo.sinkPortIds]. The repository renders
+     * one chain per thread and matches an enumerated [AudioDevice] to a thread by port id — there is
+     * no device→thread lookup and no first()/primary selection.
      */
     fun interface OutputThreadInfoProvider {
-        /** Returns (mixFormat, flags, resampling, effects, latencyMs) for the given output device. */
-        fun outputThreadInfoFor(device: AudioDevice): OutputThreadInfo?
+        /** Every active output thread for this snapshot, each tagged with its own sink port id(s). */
+        fun outputThreadSnapshot(): List<OutputThreadInfo>
     }
 
-    /** Phase-2 payload: AudioFlinger output-thread internals for one routed output. */
+    /** Phase-2 payload: AudioFlinger internals for one active output thread (one rendered chain). */
     data class OutputThreadInfo(
+        /**
+         * Every active external client track feeding this thread, each with its real source format
+         * and per-track resampling. The thread's "source" is all of these, never a picked one. Read
+         * inside the facade — the only place the real per-track bit depth is observable. Empty when
+         * the facade found no external track. Order is pointer-address (not signal order); treated
+         * as unordered.
+         */
+        val sources: List<AudioSource>,
+        /**
+         * The AudioFlinger stage's *output* (sink) format leaving the mixer to the HAL — read from
+         * the mix thread's mFormat. Also the rate/channels carrier for the AF stage. The mixer's
+         * internal float accumulation format is carried separately in [afInternalFormat]; the two are
+         * kept distinct so the AF stage can render the input → internal → output bit-depth round-trip
+         * without dropping either end.
+         */
         val mixFormat: AudioFormatSummary?,
+        /**
+         * The mixer's internal accumulation format (mMixerBufferFormat, typically 32-bit PCM float) —
+         * the middle of the AF bit-depth round-trip. Null when the facade reported none
+         * (AUDIO_FORMAT_INVALID / older facade); the UI then omits the round-trip line.
+         */
+        val afInternalFormat: AudioFormatSummary?,
+        /** The actual HAL/DAC-side format the stream leaves through; drives the resample arrow. */
+        val hardwareFormat: AudioFormatSummary?,
         val outputFlags: List<String>,
-        val resampling: Boolean,
         val effectChain: List<AudioEffectSummary>,
         val latencyMillis: Int?,
+        /** Neutral path-type label (e.g. "Mixed", "Direct", "Offload"). */
+        val pathTypeLabel: String?,
+        /** False for bypass paths (direct/offload/mmap) that have no mixer stage. */
+        val hasMixerStage: Boolean,
+        /**
+         * Whether the output is delivering bit-exact samples: a BIT_PERFECT thread with exactly one
+         * active bit-perfect track and all other active tracks muted. Computed in the facade.
+         */
+        val bitPerfect: Boolean,
+        /** Number of active, audible (non-muted) tracks on the path. */
+        val activeTrackCount: Int,
+        /**
+         * Discrete reasons the verdict is No, in signal order (e.g. "Mixed path (float re-mix)",
+         * "Mixing 2 active tracks", "Resampling 48 → 44 kHz"). Empty when [bitPerfect] is true.
+         */
+        val bitPerfectReasons: List<String>,
+        /**
+         * The `audio_port_handle_t` of each of this thread's sinks (== `AudioDeviceInfo.getId()`).
+         * The authoritative device-match key: an enumerated [AudioDevice] belongs to this thread when
+         * its id is in this list. Empty when the thread has no patch yet, its sinks are unresolvable,
+         * or it is a DUPLICATING thread (no single sink) — the chain then renders without a device.
+         */
+        val sinkPortIds: List<Int>,
+        /**
+         * MMAP liveness tri-state. `null` when this is NOT an MMAP thread (a mixer/direct/offload
+         * path — the UI then uses the mixer track-count signal, never the MMAP "active / not"
+         * wording). For an MMAP thread it is the boolean-ish active signal (`true` when the thread
+         * carries a track), since the native MMAP path lacks the playback active-set check and so
+         * cannot report a precise mixer track count. Must NOT be `false` for a non-MMAP path — that
+         * would make the UI render "Not active" on a live mixer chain.
+         */
+        val mmapActive: Boolean?,
     )
 
     private companion object {

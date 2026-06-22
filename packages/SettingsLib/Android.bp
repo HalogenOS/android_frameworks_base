@@ -74,6 +74,10 @@ android_library {
         "aconfig_settingslib_flags_java_lib",
         "wifi_framework_aconfig_flags_lib",
         "device_policy_aconfig_flags_lib",
+        // Compile-only: the audio-information binder stub. Platform-only, so it is NOT bundled into
+        // SettingsLib's apex variants; the platform hosts (SystemUI, Settings) static-link it for
+        // runtime, while apex consumers never call the provider that uses it.
+        "custom.media.audio_information-java",
     ],
     plugins: ["androidx.room_room-compiler-plugin"],
     use_resource_processor: true,

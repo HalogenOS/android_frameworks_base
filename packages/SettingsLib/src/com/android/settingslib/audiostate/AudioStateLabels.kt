@@ -32,6 +32,33 @@ import android.media.MicrophoneInfo
  */
 object AudioStateLabels {
 
+    // Path-type ints, matching the audio-information contract (custom.media.audio_information).
+    private const val PATH_TYPE_MIXED = 0
+    private const val PATH_TYPE_DIRECT = 1
+    private const val PATH_TYPE_OFFLOAD = 2
+    private const val PATH_TYPE_MMAP_EXCLUSIVE = 3
+    private const val PATH_TYPE_BIT_PERFECT = 4
+    private const val PATH_TYPE_SPATIALIZER = 5
+    // 6 = UNKNOWN, handled by the else branch of pathTypeLabel.
+
+    // audio_output_flags_t bits (system/audio-hal-enums.h). Each is a distinct power-of-two flag in
+    // the raw bitmask the facade reads from the output thread.
+    private const val OUTPUT_FLAG_DIRECT = 0x1
+    private const val OUTPUT_FLAG_PRIMARY = 0x2
+    private const val OUTPUT_FLAG_FAST = 0x4
+    private const val OUTPUT_FLAG_DEEP_BUFFER = 0x8
+    private const val OUTPUT_FLAG_COMPRESS_OFFLOAD = 0x10
+    private const val OUTPUT_FLAG_NON_BLOCKING = 0x20
+    private const val OUTPUT_FLAG_HW_AV_SYNC = 0x40
+    private const val OUTPUT_FLAG_RAW = 0x100
+    private const val OUTPUT_FLAG_SYNC = 0x200
+    private const val OUTPUT_FLAG_IEC958_NONAUDIO = 0x400
+    private const val OUTPUT_FLAG_MMAP_NOIRQ = 0x4000
+    private const val OUTPUT_FLAG_VOIP_RX = 0x8000
+    private const val OUTPUT_FLAG_SPATIALIZER = 0x40000
+    private const val OUTPUT_FLAG_ULTRASOUND = 0x80000
+    private const val OUTPUT_FLAG_BIT_PERFECT = 0x100000
+
     /** Neutral label for an [AudioDeviceInfo] type constant. */
     fun deviceTypeLabel(type: Int): String =
         when (type) {
@@ -85,6 +112,41 @@ object AudioStateLabels {
             AudioFormat.ENCODING_PCM_32BIT -> 32
             // Float carries 32 bits per sample but is not an integer "bit depth"; report 32.
             AudioFormat.ENCODING_PCM_FLOAT -> 32
+            else -> null
+        }
+
+    // Native audio_format_t values (system/media/audio audio-base.h). These are a DIFFERENT number
+    // space from AudioFormat.ENCODING_* above — values arriving from the AudioFlinger facade are
+    // raw audio_format_t and must be mapped with these, never with encodingLabel()/bitDepthForEncoding().
+    private const val NATIVE_PCM_16_BIT = 0x1
+    private const val NATIVE_PCM_8_BIT = 0x2
+    private const val NATIVE_PCM_32_BIT = 0x3
+    private const val NATIVE_PCM_8_24_BIT = 0x4
+    private const val NATIVE_PCM_FLOAT = 0x5
+    private const val NATIVE_PCM_24_BIT_PACKED = 0x6
+
+    /** Neutral label for a native audio_format_t value (as delivered by the AudioFlinger facade). */
+    fun nativeFormatLabel(nativeFormat: Int): String =
+        when (nativeFormat) {
+            NATIVE_PCM_16_BIT -> "PCM 16-bit"
+            NATIVE_PCM_8_BIT -> "PCM 8-bit"
+            NATIVE_PCM_32_BIT -> "PCM 32-bit"
+            NATIVE_PCM_8_24_BIT -> "PCM 8.24-bit"
+            NATIVE_PCM_FLOAT -> "PCM float"
+            NATIVE_PCM_24_BIT_PACKED -> "PCM 24-bit"
+            else -> "Format 0x${Integer.toHexString(nativeFormat)}"
+        }
+
+    /** Determinate PCM bit depth for a native audio_format_t value, or null for non-PCM/unclean. */
+    fun bitDepthForNativeFormat(nativeFormat: Int): Int? =
+        when (nativeFormat) {
+            NATIVE_PCM_8_BIT -> 8
+            NATIVE_PCM_16_BIT -> 16
+            NATIVE_PCM_24_BIT_PACKED -> 24
+            NATIVE_PCM_32_BIT -> 32
+            // Float carries 32 bits per sample but is not an integer "bit depth"; report 32.
+            NATIVE_PCM_FLOAT -> 32
+            // 8.24 is a 32-bit container with 24 significant bits — not a clean integer depth.
             else -> null
         }
 
@@ -150,10 +212,57 @@ object AudioStateLabels {
             else -> "Unknown"
         }
 
-    /** Format a rate in Hz as a compact kHz string, e.g. 96000 -> "96 kHz", 44100 -> "44.1 kHz". */
+    /**
+     * Neutral label for a path-type int from the audio-information contract. Describes which
+     * AudioFlinger data path an active stream actually runs on.
+     */
+    fun pathTypeLabel(pathType: Int): String =
+        when (pathType) {
+            PATH_TYPE_MIXED -> "Mixed"
+            PATH_TYPE_DIRECT -> "Direct"
+            PATH_TYPE_OFFLOAD -> "Offload"
+            PATH_TYPE_MMAP_EXCLUSIVE -> "MMAP exclusive"
+            PATH_TYPE_BIT_PERFECT -> "Bit-perfect"
+            PATH_TYPE_SPATIALIZER -> "Spatializer"
+            else -> "Unknown"
+        }
+
+    /**
+     * Decomposes a raw `audio_output_flags_t` bitmask into neutral flag labels, in bit order. Only
+     * the flags worth surfacing on a diagnostic readout are named; unknown bits are dropped rather
+     * than shown as raw numbers. Mirrors the native `flagsAsString()` vocabulary.
+     */
+    fun outputFlagLabels(flags: Int): List<String> =
+        buildList {
+            if (flags and OUTPUT_FLAG_DIRECT != 0) add("DIRECT")
+            if (flags and OUTPUT_FLAG_PRIMARY != 0) add("PRIMARY")
+            if (flags and OUTPUT_FLAG_FAST != 0) add("FAST")
+            if (flags and OUTPUT_FLAG_DEEP_BUFFER != 0) add("DEEP_BUFFER")
+            if (flags and OUTPUT_FLAG_COMPRESS_OFFLOAD != 0) add("OFFLOAD")
+            if (flags and OUTPUT_FLAG_NON_BLOCKING != 0) add("NON_BLOCKING")
+            if (flags and OUTPUT_FLAG_HW_AV_SYNC != 0) add("HW_AV_SYNC")
+            if (flags and OUTPUT_FLAG_RAW != 0) add("RAW")
+            if (flags and OUTPUT_FLAG_SYNC != 0) add("SYNC")
+            if (flags and OUTPUT_FLAG_IEC958_NONAUDIO != 0) add("IEC958_NONAUDIO")
+            if (flags and OUTPUT_FLAG_MMAP_NOIRQ != 0) add("MMAP_NOIRQ")
+            if (flags and OUTPUT_FLAG_VOIP_RX != 0) add("VOIP_RX")
+            if (flags and OUTPUT_FLAG_SPATIALIZER != 0) add("SPATIALIZER")
+            if (flags and OUTPUT_FLAG_ULTRASOUND != 0) add("ULTRASOUND")
+            if (flags and OUTPUT_FLAG_BIT_PERFECT != 0) add("BIT_PERFECT")
+        }
+
+    /**
+     * Format a rate in Hz as an exact kHz string — no rounding, only trailing-zero trimming.
+     * 48000 -> "48 kHz", 44100 -> "44.1 kHz", 11025 -> "11.025 kHz", 22050 -> "22.05 kHz".
+     * Uses integer arithmetic on the Hz value so the kHz fraction is always exact (a rate is an
+     * integer number of Hz, so dividing by 1000 has at most three decimal places).
+     */
     fun formatRateKHz(rateHz: Int): String {
-        val khz = rateHz / 1000.0
-        return if (khz == khz.toLong().toDouble()) "${khz.toLong()} kHz"
-        else "${(Math.round(khz * 10) / 10.0)} kHz"
+        val whole = rateHz / 1000
+        val remainderHz = rateHz % 1000
+        if (remainderHz == 0) return "$whole kHz"
+        // Three-digit fraction (Hz remainder out of 1000), with trailing zeros trimmed.
+        val fraction = "%03d".format(remainderHz).trimEnd('0')
+        return "$whole.$fraction kHz"
     }
 }
