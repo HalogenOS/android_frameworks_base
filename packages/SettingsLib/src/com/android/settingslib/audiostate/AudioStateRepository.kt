@@ -242,13 +242,36 @@ class AudioStateRepository(
         // a resolved sink. A device with no routed playback (or an omitted sink) reads "Audio".
         val usageByDeviceId = usageLabelsByDeviceId(playbacks, outputDevices)
 
+        // The live-routed device(s) for the active playbacks, resolved on EVERY recompute from the
+        // audio policy (getDevicesForAttributes) rather than any event-cached device id. This is the
+        // auto-advance safety net: during a gapless track advance a thread's patch (sinkPortIds) can
+        // go momentarily empty, which would otherwise drop the output device from the chain until the
+        // next play. The live query reflects the real route through that gap. We use it only when it is
+        // UNAMBIGUOUS (all active playbacks route to a single device) so the fallback resolves an exact
+        // device, never a guess; an ambiguous multi-device moment falls through to an honest omission.
+        val liveRoutedFallback =
+            playbacks
+                .mapNotNull { routedDeviceFor(it.usage, outputDevices) }
+                .distinctBy { it.id }
+                .singleOrNull()
+
         return threads.map { thread ->
+            // Truth of liveness: a chain is playing only when a stream is actually on the thread. For
+            // a playback thread that is ≥1 active external source (the facade already filtered to
+            // active client tracks); for an MMAP thread it is mmapActive. A standing-but-idle thread
+            // (PRIMARY/telephony mixer patched to the speaker with nothing playing) is alive but NOT
+            // playing — the UI then de-emphasizes it and drops its (non-existent) Source stage.
+            val isPlaying = thread.sources.isNotEmpty() || thread.mmapActive == true
             // The thread's own sink device(s): every enumerated device whose id the thread's patch
             // names. Multi-sink is "any" — a thread serving several ports matches several devices; we
             // render the chain against the first matched enumerated device for the device block while
-            // keeping the match itself port-id-exact. No match → no device (omit identity).
+            // keeping the match itself port-id-exact. When the patch is momentarily empty (gapless
+            // advance) the port-id match yields nothing — fall back to the live-routed device, but only
+            // for a PLAYING thread, so the chain keeps its sink identity instead of flickering to "Not
+            // resolved". No port-id match and (idle, or no live route) → no device (honest omission).
             val device =
                 outputDevices.firstOrNull { dev -> thread.sinkPortIds.any { it == dev.id } }
+                    ?: liveRoutedFallback?.takeIf { isPlaying }
             val usageLabel = device?.let { usageByDeviceId[it.id] } ?: "Audio"
             // "Any active source resamples" — but only a meaningful boolean when there ARE sources.
             // With no observed sources, leave it null ("unknown") rather than a vacuous false, so the
@@ -256,12 +279,6 @@ class AudioStateRepository(
             // resample. Per-source truth is always in [sources].
             val anyResampling =
                 if (thread.sources.isEmpty()) null else thread.sources.any { it.resampling }
-            // Truth of liveness: a chain is playing only when a stream is actually on the thread. For
-            // a playback thread that is ≥1 active external source (the facade already filtered to
-            // active client tracks); for an MMAP thread it is mmapActive. A standing-but-idle thread
-            // (PRIMARY/telephony mixer patched to the speaker with nothing playing) is alive but NOT
-            // playing — the UI then de-emphasizes it and drops its (non-existent) Source stage.
-            val isPlaying = thread.sources.isNotEmpty() || thread.mmapActive == true
             AudioRoute(
                 usageLabel = usageLabel,
                 sources = thread.sources,
@@ -286,6 +303,10 @@ class AudioStateRepository(
                 mmapActive = thread.mmapActive,
                 bitPerfectReasons = thread.bitPerfectReasons,
                 outputDevice = device,
+                // Whether the thread is patched to ANY sink at all. False = no sink (empty device
+                // types) → the renderer says "No output device" (truthfully none), not "could not be
+                // resolved" (which would falsely imply a device exists).
+                hasSinkPortId = thread.sinkPortIds.isNotEmpty(),
                 bluetoothCodec = device?.let { readBluetoothCodec(it) },
             )
         }
@@ -406,7 +427,10 @@ class AudioStateRepository(
      * rather than read off the playback config's cached device list. The config's device ids are
      * only refreshed on player lifecycle events (STARTED / UPDATE_DEVICE_ID) and go stale during
      * gapless track advance — querying the policy on every recompute reflects the real route. The
-     * result is matched back to an enumerated [AudioDevice] by type + address.
+     * result is an [AudioDeviceAttributes] (type + address only — it carries NO port id / stable
+     * handle, unlike the per-thread sink-port-id used for the patched-device match), so it is matched
+     * back to an enumerated [AudioDevice] by type + address, with a type-only fallback for builtin
+     * devices that report an empty address. This is the only key the policy query exposes here.
      */
     private fun routedDeviceFor(usage: Int, outputDevices: List<AudioDevice>): AudioDevice? =
         runCatching {

@@ -194,6 +194,19 @@ data class AudioRoute(
     /** The device this route is currently routed to (the "Output Device" block). */
     val outputDevice: AudioDevice?,
 
+    /**
+     * Tri-state knowledge of whether this thread has a sink, used to tell the truth when [outputDevice]
+     * is null. The facade reports the thread's sink port ids, so:
+     *  - false → the facade says the thread has ZERO sinks (empty device types / unpatched) → there is
+     *    genuinely NO output device. Render "No output device" — never "could not be resolved" (which
+     *    would falsely assert a device exists).
+     *  - true  → the facade says the thread has ≥1 sink port id, but none matched an enumerated device →
+     *    a device exists but could not be identified. "Unidentified" is honest here.
+     *  - null  → no facade sink info at all (phase-1 fallback) → we genuinely don't know. Render the
+     *    neutral "unknown" wording, asserting neither presence nor absence.
+     */
+    val hasSinkPortId: Boolean? = null,
+
     /** Bluetooth codec in use when [outputDevice] is a Bluetooth sink. */
     val bluetoothCodec: BluetoothCodecSummary?,
 )
@@ -248,6 +261,19 @@ data class AudioFormatSummary(
     val channelCount: Int?,
     /** Neutral encoding label, e.g. "PCM 24-bit", "PCM Float", "AC3". */
     val encodingLabel: String?,
+    /**
+     * Encoding FAMILY without the bit depth, e.g. "PCM" / "PCM float" / "AC3" — so a readout can show
+     * depth and family as separate tokens ("16 bit · … · PCM") instead of the fused [encodingLabel]
+     * ("PCM 16-bit"). Null when not computed (only the Source stage decomposes this way; AF/Device use
+     * [encodingLabel]).
+     */
+    val encodingFamily: String? = null,
+    /**
+     * Whether the samples are floating-point, so the depth token reads "32 bit float" (a
+     * sample-representation specialization), with "PCM" staying as the [encodingFamily]. Read from the
+     * real format constant, never inferred. Default false (integer/unknown).
+     */
+    val isFloat: Boolean = false,
 )
 
 /**
@@ -260,6 +286,14 @@ data class AudioSource(
     val format: AudioFormatSummary,
     /** True when this track's source rate differs from the thread's rate (this track resamples). */
     val resampling: Boolean,
+    /**
+     * The track's NEGOTIATED output flags as neutral labels (e.g. "FAST", "DIRECT") from
+     * `IAfTrack::getOutputFlags()` — how this track is *configured* after AudioFlinger negotiation,
+     * a per-track source-side property distinct from the thread flags. Honest naming only: this is
+     * NOT the raw app request (which is unreadable), so renderers label it "Track: FAST" / "Direct",
+     * never "Requested". Empty when the facade reported no flags.
+     */
+    val outputFlags: List<String> = emptyList(),
 )
 
 /** Bluetooth codec line, e.g. "LDAC 32 bit 96 kHz". */

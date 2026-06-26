@@ -130,8 +130,16 @@ class AudioFlingerInfoProvider : AudioStateRepository.OutputThreadInfoProvider {
                             bitDepth = AudioStateLabels.bitDepthForNativeFormat(src.format),
                             channelCount = channelCount(src.channelMask),
                             encodingLabel = AudioStateLabels.nativeFormatLabel(src.format),
+                            // Family (no depth) so the source line shows "16 bit · … · PCM" with the
+                            // depth as its own token; the fused encodingLabel stays for other readouts.
+                            encodingFamily = AudioStateLabels.nativeFormatFamily(src.format),
+                            // Float-ness rides the depth token ("32 bit float"); read from the format.
+                            isFloat = AudioStateLabels.isFloatNativeFormat(src.format),
                         ),
                     resampling = src.resampling,
+                    // The track's NEGOTIATED output flags (per-track, post-negotiation), labelled as
+                    // how the track is configured — never as the (unreadable) raw request.
+                    outputFlags = AudioStateLabels.outputFlagLabels(src.outputFlags),
                 )
             }
 

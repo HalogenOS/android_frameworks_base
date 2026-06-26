@@ -18,6 +18,7 @@ package com.android.settingslib.audiostate.compose
 
 import android.media.AudioDeviceInfo
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowDownward
 import androidx.compose.material.icons.outlined.BatteryAlert
 import androidx.compose.material.icons.outlined.BatteryFull
@@ -98,7 +100,27 @@ fun AudioStateTree(
             // A faint divider separates one thread's chain from the next so stacked chains read as
             // distinct paths rather than one long flow. The first chain needs no divider.
             if (routeIndex != 0) ChainDivider()
-            val stages = chainStages(route)
+            // chainStages already decides the structure: the summed-source stages (when ≥2 sources)
+            // are split out into [ChainRender.group] and the rest into [ChainRender.stages], so this
+            // render loop does no topology computation — it just lays the pieces out in order.
+            val (groupStages, stages) = chainRender(route)
+            // The faint rounded outline wraps the ≥2 source stages plus their outgoing arrow into the
+            // mixer, so the set reads as one combined signal entering AudioFlinger. The group, when
+            // present, always sits at the head of the chain (the mixer/device follows it), so it is
+            // never the chain's last element and always carries a trailing gap.
+            if (groupStages.isNotEmpty()) {
+                SourceGroup {
+                    groupStages.forEach { stage ->
+                        // The last grouped stage is never the chain's last stage (the mixer/device
+                        // follows), so its outgoing arrow is drawn inside the group and the outline
+                        // encloses it.
+                        ChainStage(stage = stage, isLast = false)
+                    }
+                }
+                // The group owns no external margin (matching every other composable here); the gap
+                // below it before the next stage is supplied here, like the stage-to-stage gaps.
+                Spacer(Modifier.height(8.dp))
+            }
             stages.forEachIndexed { index, stage ->
                 ChainStage(stage = stage, isLast = index == stages.lastIndex)
             }
@@ -115,15 +137,17 @@ fun AudioStateTree(
 /**
  * Assembles one active thread's chain top-to-bottom: Source(s) → AudioFlinger mixer (mixer/bit-
  * perfect paths only) → each active effect as its own ordered stage → Output device. The connector
- * arrow below the Source carries a path pill ("Mixed" / "Direct" / "MMAP · AAudio") showing how the
- * stream leaves. Provenance pills mark each stage's data source (framework vs the audioserver
- * facade). The output device carries its accessory battery as a chip on its title row.
+ * arrow below the AudioFlinger stage carries a path pill ("Mixed" / "Direct" / "MMAP · AAudio")
+ * showing how the stream leaves — the path type is the AF thread's property, so the pill rides the
+ * AF stage's arrow, never the Source's. Provenance pills mark each stage's data source (framework vs
+ * the audioserver facade). The output device carries its accessory battery as a chip on its title row.
  *
- * A thread can mix several client tracks, so the Source stage lists *all* of [AudioRoute.sources]
- * (unordered — the native side reads them in pointer-address order, which is not a signal order; see
- * the design doc's "Track ordering" gap). A thread with no resolved sink device (unmatched port id,
- * unpatched thread, or a DUPLICATING thread whose true sink is not determinable) renders an honest
- * terminal stage with no device identity instead of guessing one.
+ * A thread can mix several client tracks, and each track is its own piece of the path: when there are
+ * ≥2 sources [addSourceStages] emits one Source stage *per source* (not one stage listing them all),
+ * joined by '+' connectors (unordered — the native side reads them in pointer-address order, which is
+ * not a signal order; see the design doc's "Track ordering" gap). A thread with no resolved sink device
+ * (unmatched port id, unpatched thread, or a DUPLICATING thread whose true sink is not determinable)
+ * renders an honest terminal stage with no device identity instead of guessing one.
  */
 private fun chainStages(route: AudioRoute): List<Stage> {
     val stages = buildList { addChainStages(route) }
@@ -137,43 +161,51 @@ private fun chainStages(route: AudioRoute): List<Stage> {
     }
 }
 
+/**
+ * A chain split into its render pieces: the summed-source stages that belong inside the faint outline
+ * ([group], the ≥2 [Stage.grouped] stages — empty when there are 0 or 1 sources) and everything else
+ * ([stages], rendered as plain stages). The grouped stages are always a contiguous run at the head of
+ * the chain (the mixer/device always follows), so the partition fully describes the layout and the
+ * render loop needs no topology computation of its own.
+ */
+private data class ChainRender(val group: List<Stage>, val stages: List<Stage>)
+
+/** Builds [chainStages] and partitions it into the bordered source group and the plain stages, so the
+ *  layout is fully structured before it reaches the [AudioStateTree] composable. */
+private fun chainRender(route: AudioRoute): ChainRender {
+    val (group, rest) = chainStages(route).partition { it.grouped }
+    return ChainRender(group, rest)
+}
+
 private fun MutableList<Stage>.addChainStages(route: AudioRoute) {
-    // The Source stage exists only when a stream is actually flowing. A standing-but-idle thread has
+    // The Source stage(s) exist only when a stream is actually flowing. A standing-but-idle thread has
     // no source, so showing a "Source / Not active" stage would imply a flow that is not happening —
     // we omit it entirely and let the chain begin at the AudioFlinger stage.
     if (route.isPlaying) {
-        add(
-            Stage(
-                icon = Icons.Outlined.MusicNote,
-                title = "Source",
-                subtitle = route.usageLabel,
-                // List every active source feeding this thread's mixer, not a single picked one. When
-                // the facade gave us no per-track source, fall back to the single display format.
-                lines = sourceLines(route),
-                // Rate/channels come from AudioManager; the bit depth/format come from the audioserver
-                // facade when it contributed the source(s) — Hybrid then, framework-only when the facade
-                // gave us no source.
-                provenance =
-                    if (route.sourceFromFacade == true) Provenance.HYBRID
-                    else Provenance.FRAMEWORK,
-                // The path pill rides the arrow leaving the source.
-                pathPill = pathPill(route),
-            )
-        )
+        addSourceStages(route)
     }
     // The AudioFlinger stage renders for mixer-bearing paths and for a bit-perfect path (which has
     // no mixer stage but still carries the verdict, whether Yes or No). A pure bypass path
     // (direct/offload/mmap) with nothing to show skips straight to the device, explained by the path
-    // pill. The subtitle reads "Bit-perfect" when the mixer is bypassed. bitPerfect != null catches
-    // both Yes and failing-No cases for a BIT_PERFECT thread (hasMixerStage=false but verdict known).
-    if ((route.hasMixerStage != false || route.bitPerfect != null) && route.hasOutputInfo()) {
+    // pill. The gate distinguishes a BIT_PERFECT thread (its own path type — hasMixerStage=false but
+    // the verdict is its business) from direct/offload/mmap by the path-type label, NOT by
+    // hasMixerStage alone: every bypass thread carries a (false) bit-perfect verdict, so gating on
+    // `bitPerfect != null` would wrongly pull direct/offload/mmap into this stage and mislabel them
+    // "Bit-perfect". The only hasMixerStage==false path that reaches here is therefore the BIT_PERFECT
+    // thread, so the subtitle below reads "Bit-perfect" exactly for it.
+    val isBitPerfectThread = route.pathTypeLabel == "Bit-perfect"
+    if ((route.hasMixerStage == true || isBitPerfectThread) && route.hasOutputInfo()) {
         add(
             Stage(
                 icon = Icons.Outlined.Tune,
                 title = "AudioFlinger",
-                subtitle = if (route.hasMixerStage == false) "Bit-perfect" else "Mixer",
+                subtitle = if (isBitPerfectThread) "Bit-perfect" else "Mixer",
                 lines = mixerLines(route),
                 provenance = Provenance.AUDIOSERVER,
+                // The path type (Mixed / Direct / Offload / MMAP) is an AudioFlinger-thread property,
+                // so its pill rides the arrow leaving THIS stage — never the source's. This is the
+                // home of the former "[Mixed]" leak's value, on the stage that actually owns it.
+                pathPill = pathPill(route),
             )
         )
     }
@@ -207,19 +239,90 @@ private fun MutableList<Stage>.addChainStages(route: AudioRoute) {
             )
         )
     } else {
-        // No resolved sink device: the thread's sink port id matched no enumerated device, the
-        // thread is unpatched, or it is a DUPLICATING thread whose real sink (the union of its
-        // downstream threads' devices) is not determinable with the current accessors. These three
-        // causes are indistinguishable from the snapshot, so we must NOT claim a specific device or
-        // even claim "Duplicated output" (which would assert duplication we cannot confirm). Render
-        // an honest unresolved terminal instead of guessing.
+        // No [outputDevice] — but the three causes are DIFFERENT truths and must not be conflated.
+        // [hasSinkPortId] tells which: false = the thread has NO sink (we'd be LYING to say "could not
+        // be resolved", which presupposes a device exists); true = a sink exists but matched no
+        // enumerated device (genuinely unidentified); null = no facade info (unknown). Say exactly what
+        // is true, never assert a device that isn't there.
+        val (deviceSubtitle, deviceLine) =
+            when (route.hasSinkPortId) {
+                false -> "No output device" to "This thread is not routed to any output device"
+                true -> "Unidentified" to "Routed to a device that could not be identified"
+                null -> "Unknown" to "Output device unknown"
+            }
         add(
             Stage(
                 icon = Icons.Outlined.Speaker,
                 title = "Output device",
-                subtitle = "Not resolved",
-                lines = listOf(ReadoutLine.Mono("Output device could not be identified")),
+                subtitle = deviceSubtitle,
+                lines = listOf(ReadoutLine.Mono(deviceLine)),
                 provenance = Provenance.AUDIOSERVER,
+            )
+        )
+    }
+}
+
+/**
+ * Emits the Source section of a flowing chain. A mixer thread can sum several active client tracks,
+ * and each track is a distinct piece of the audio path — so when there are ≥2 sources we emit one
+ * Source stage *per source*, each carrying that track's own real format and its own resampling. The
+ * sources are unordered (the native side reads tracks in pointer-address order, not a signal order —
+ * see the design doc's "Track ordering" gap), so the connector *between* two sibling sources is a
+ * commutative '+' (these are summed), never a sequencing arrow or a number. Only the connector after
+ * the last source carries the normal downward arrow (with the path pill) into the mixer, and the whole
+ * source set is wrapped in a faint outline (see [ChainStage] / [AudioStateTree]) so it reads as one
+ * combined signal entering AudioFlinger.
+ *
+ * A lone source (size == 1) renders a single plain Source stage — no '+', no outline, no bullet. When
+ * the facade gave us no per-track sources at all, we fall back to the single representative format on
+ * one plain stage.
+ */
+private fun MutableList<Stage>.addSourceStages(route: AudioRoute) {
+    // Hybrid when the facade contributed the source(s) (bit depth/format), framework-only otherwise.
+    val provenance =
+        if (route.sourceFromFacade == true) Provenance.HYBRID else Provenance.FRAMEWORK
+    // The Source stage is leak-proof BY CONSTRUCTION: it is built ONLY from source/track-owned reads
+    // (this track's own format + its negotiated flags). It never receives the mixer rate, the
+    // hardware format, or the thread path type — the source→mix arrow and the path pill are the AF
+    // stage's business and live there. Nothing here can read a neighbour's value because nothing
+    // here is handed one.
+    if (route.sources.size > 1) {
+        val lastIndex = route.sources.lastIndex
+        route.sources.forEachIndexed { index, source ->
+            add(
+                Stage(
+                    icon = Icons.Outlined.MusicNote,
+                    title = "Source",
+                    subtitle = route.usageLabel,
+                    // This stage shows ONLY its own track's format and negotiated flags — both
+                    // per-track source-owned reads. The mixed-track count / MMAP liveness is an
+                    // AudioFlinger-thread aggregate (it iterates the thread's active tracks), so it
+                    // lives on the AF stage, never here: a Source stage must not render a thread-level
+                    // value. The number of summed sources is already visible structurally as the count
+                    // of these grouped stages.
+                    lines = buildList {
+                        add(ReadoutLine.Mono(sourceLine(source)))
+                        sourceFlagsLine(source)?.let { add(it) }
+                    },
+                    provenance = provenance,
+                    // '+' between siblings (summed, order-neutral); a plain downward arrow (no path
+                    // pill — the path type is the AF stage's value) only after the last source.
+                    connector = if (index == lastIndex) Connector.ARROW else Connector.PLUS,
+                    // The faint outline groups the summed-source set plus its outgoing arrow.
+                    grouped = true,
+                )
+            )
+        }
+    } else {
+        // A lone source (or the no-per-track fallback) is a single plain Source stage.
+        add(
+            Stage(
+                icon = Icons.Outlined.MusicNote,
+                title = "Source",
+                subtitle = route.usageLabel,
+                lines = sourceLines(route),
+                provenance = provenance,
+                // No path pill: the path type is the AF thread's property, rendered on the AF stage.
             )
         )
     }
@@ -235,6 +338,13 @@ private enum class Provenance(val label: String) {
     HYBRID("Hybrid"),
 }
 
+/** The glyph drawn in the connector gap *below* a stage: a downward signal arrow (the default flow
+ *  direction), or a '+' joining unordered sibling sources that are summed together. */
+private enum class Connector {
+    ARROW,
+    PLUS,
+}
+
 /** One stage's data, assembled before rendering so the rail knows which icon is last. */
 private data class Stage(
     val icon: ImageVector,
@@ -246,6 +356,14 @@ private data class Stage(
     /** Label for the path pill drawn on the connector arrow *below* this stage (e.g. "Mixed",
      *  "Direct", "MMAP · AAudio"); null draws a plain arrow. */
     val pathPill: String? = null,
+    /** Glyph drawn in this stage's connector gap. ARROW (default) is the normal downward flow; PLUS
+     *  joins two sibling source stages that are summed (commutative, order-neutral). */
+    val connector: Connector = Connector.ARROW,
+    /** True for the summed-source stages: they are wrapped together (plus their outgoing arrow into
+     *  the mixer) in a faint rounded outline so the set reads as one combined signal. Only set when
+     *  there are ≥2 sources; a lone source is never grouped. [chainRender] partitions on this flag so
+     *  the composable receives the group already split out and computes no topology itself. */
+    val grouped: Boolean = false,
     /** True when this stage belongs to an alive-but-idle chain (a standing thread with no stream
      *  flowing). Idle stages render de-emphasized (grayed) so the chain reads as inactive. */
     val idle: Boolean = false,
@@ -289,8 +407,13 @@ private fun ChainStage(stage: Stage, isLast: Boolean) {
             if (!isLast) {
                 ConnectorSegment(Modifier.weight(1f))
                 Spacer(Modifier.height(2.dp))
+                // The gap glyph: the normal downward flow arrow, or a '+' joining two sibling sources
+                // that are summed together (order-neutral — these are unordered, not a sequence).
                 Icon(
-                    Icons.Outlined.ArrowDownward,
+                    when (stage.connector) {
+                        Connector.ARROW -> Icons.Outlined.ArrowDownward
+                        Connector.PLUS -> Icons.Outlined.Add
+                    },
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.outlineVariant,
                     modifier = Modifier.size(14.dp),
@@ -367,6 +490,30 @@ private fun ChainDivider() {
             .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)),
     )
     Spacer(Modifier.height(16.dp))
+}
+
+/**
+ * Faint rounded outline grouping the summed-source set — the ≥2 Source stages plus their outgoing
+ * arrow into the mixer (drawn inside the last grouped stage's rail). The box visually "outputs" one
+ * combined signal into AudioFlinger, which sits OUTSIDE/below the outline. The outline tone matches
+ * [ChainDivider]'s faint style (low-alpha outline). Drawn only when there are ≥2 sources. Owns no
+ * external margin — the gap to the following stage is supplied by the caller, like every other
+ * stage-to-stage gap in the chain.
+ */
+@Composable
+private fun SourceGroup(content: @Composable () -> Unit) {
+    Column(
+        modifier =
+            Modifier.fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                    shape = RoundedCornerShape(12.dp),
+                )
+                .padding(horizontal = 10.dp, vertical = 10.dp),
+    ) {
+        content()
+    }
 }
 
 /** One vertical line segment of the connector rail. [modifier] supplies the weighted height. */
@@ -661,53 +808,73 @@ private fun AudioRoute.hasOutputInfo(): Boolean =
 
 private fun formatLines(format: AudioFormatSummary?): List<ReadoutLine> {
     if (format == null) return listOf(ReadoutLine.Mono("Format unavailable"))
-    val parts = buildList {
-        format.bitDepth?.let { add("$it bit") }
-        format.sampleRateHz?.let { add(AudioStateLabels.formatRateKHz(it)) }
-        format.channelCount?.let { add(channelLabel(it)) }
-        format.encodingLabel?.let { add(it) }
-    }
-    return if (parts.isEmpty()) listOf(ReadoutLine.Mono("—"))
-    else listOf(ReadoutLine.Mono(parts.joinToString("  ·  ")))
+    return listOf(ReadoutLine.Mono(formatReadout(format)))
 }
 
 /**
- * The Source-stage readout for one thread. A thread can mix several active client tracks, so when
- * the facade contributed per-track sources we list *every* one of them — each as its own format line
- * with its own resampling arrow where it resamples against the thread rate. The list is unordered
- * (the native side reads tracks in pointer-address order, which is not a signal/pipeline order — see
- * the design doc's "Track ordering" gap), so we draw a neutral bullet, never a numbered or arrowed
- * sequence that would imply an order.
- *
- * A liveness header tops the sources: for a mixer (playback) thread it states "Mixing N active
- * tracks" from the real per-thread count; for an MMAP thread [AudioRoute.activeTrackCount] is only a
- * boolean-ish "active / not" (the native MMAP path lacks the playback active-set check — see the
- * doc), so we say "Active" / "Not active" rather than imply an exact mixer count.
- *
- * When the facade gave us no per-track sources (phase-1 fallback / facade absent), we fall back to
- * the single display [AudioRoute.sourceFormat] line.
+ * The Source-stage one-line readout: "rate · depth · channels · family" with the bit depth and the
+ * encoding family as SEPARATE tokens — e.g. "44.1 kHz · 16 bit · Stereo · PCM", never the fused
+ * "PCM 16-bit". The depth comes from [AudioFormatSummary.bitDepth] and the family (depth stripped)
+ * from [AudioFormatSummary.encodingFamily]. When the family was not computed (the phase-1
+ * AudioPlaybackConfiguration fallback sets only the fused label), fall back to the fused
+ * [encodingLabel] so the precision still appears exactly once. Source stage only — the AF and Output
+ * device stages keep their own (labeled-row) readouts.
  */
-private fun sourceLines(route: AudioRoute): List<ReadoutLine> = buildList {
-    // Liveness / track-count header. MMAP first because its count is not a true mixer count.
-    if (route.mmapActive != null) {
-        add(ReadoutLine.Mono(if (route.mmapActive == true) "Active" else "Not active"))
-    } else {
-        route.activeTrackCount?.let { count ->
-            if (count > 1) add(ReadoutLine.Mono("Mixing $count active tracks"))
+private fun formatReadout(format: AudioFormatSummary): String {
+    // Captured into locals because AudioFormatSummary lives in a different module, so its nullable
+    // properties cannot be smart-cast in place.
+    val depth = format.bitDepth
+    val family = format.encodingFamily
+    val encoding = format.encodingLabel
+    val parts = buildList {
+        format.sampleRateHz?.let { add(AudioStateLabels.formatRateKHz(it)) }
+        if (family != null) {
+            // Decomposed: depth as its own token, family without the depth. Float-ness is a
+            // sample-representation specialization of the depth ("32 bit float"), so it rides the depth
+            // token — the family stays "PCM". No (24e): a float source carries float's inherent
+            // significand, not a reduction this path imposed (proven on the direct path).
+            if (depth != null) add(if (format.isFloat) "$depth bit float" else "$depth bit")
+            format.channelCount?.let { add(channelLabel(it)) }
+            add(family)
+        } else {
+            // Phase-1 fallback (no family): keep the fused label, or the bare depth token, once.
+            format.channelCount?.let { add(channelLabel(it)) }
+            when {
+                encoding != null -> add(encoding)
+                depth != null -> add("$depth bit")
+            }
         }
     }
-    if (route.sources.isNotEmpty()) {
-        // Each track resamples independently, so the source→mix arrow is drawn per source from that
-        // track's own rate to the thread's mix rate. The mix rate is the same proven value the AF
-        // stage shows; when it is unknown we draw no arrow rather than invent the target.
-        val mixRate = route.mixFormat?.sampleRateHz
-        // The leading bullet marks each line as one item of an UNORDERED set — meaningful only when
-        // there are several sources (so the list never reads as a sequence). A lone source needs no
-        // bullet; it would just look like a stray dot.
-        val bulleted = route.sources.size > 1
-        route.sources.forEach { source ->
-            add(ReadoutLine.Mono(sourceLine(source, mixRate, bulleted)))
-        }
+    return if (parts.isEmpty()) "—" else parts.joinToString("  ·  ")
+}
+
+/**
+ * The AudioFlinger stage's mixed-track-count line, or null when there is nothing to state. The count
+ * is an AudioFlinger-THREAD aggregate owned by this stage — [AudioRoute.activeTrackCount] is computed
+ * by iterating the thread's active tracks — so it belongs on the AF stage, never on a Source stage (a
+ * per-track source has no thread count). Reports "Mixing N active tracks" from the real per-thread
+ * count, only when N > 1 (a single track needs no line). This is only reached for a mixer-bearing /
+ * bit-perfect thread (the only paths that render an AF stage); a pure MMAP bypass renders no AF stage,
+ * and its liveness is already expressed by the chain being shown at all (an inactive MMAP thread is
+ * idle and carries no Source stage), so there is no "Active / Not active" wording to host here.
+ */
+private fun mixerLivenessLine(route: AudioRoute): String? =
+    route.activeTrackCount?.takeIf { it > 1 }?.let { "Mixing $it active tracks" }
+
+/**
+ * The Source-stage readout for the single-source / fallback path (the ≥2-source case emits one stage
+ * per source via [addSourceStages] and never calls this). Shows either that one track's own format
+ * line (with its own resampling arrow) or, when the facade gave us no per-track source at all, the
+ * single representative [AudioRoute.sourceFormat]. No liveness/track-count header here: that count is
+ * an AudioFlinger-thread aggregate and is rendered on the AF stage, never on the Source.
+ */
+private fun sourceLines(route: AudioRoute): List<ReadoutLine> = buildList {
+    val source = route.sources.singleOrNull()
+    if (source != null) {
+        // ONLY this track's own emitted format — no mix rate, no arrow. The source→mix conversion is
+        // the AF stage's value; the source shows just what it emits (e.g. "44.1 kHz · Stereo · …").
+        add(ReadoutLine.Mono(sourceLine(source)))
+        sourceFlagsLine(source)?.let { add(it) }
     } else {
         // No per-track truth from the facade — show the single representative/display format.
         addAll(formatLines(route.sourceFormat))
@@ -715,34 +882,34 @@ private fun sourceLines(route: AudioRoute): List<ReadoutLine> = buildList {
 }
 
 /**
- * One source track's one-line readout: its real format, with a "→ mix rate" suffix only when that
- * track resamples ([AudioSource.resampling]) and both its own rate and the thread mix rate are known
- * (so the arrow is never invented). A leading bullet is drawn only when [bulleted] (several sources),
- * marking the lines as an unordered set; a lone source is rendered plain.
+ * One source track's one-line readout: ONLY this track's own emitted format — rate · channels ·
+ * encoding. It shows the track's own rate standing alone (e.g. "44.1 kHz"); it never draws a
+ * "→ mix rate" arrow, because the mixer's output rate is the AudioFlinger stage's value, not the
+ * source's (the source→mix conversion lives on the AF stage). The Source object does not even hold
+ * the mix rate, so the leak is impossible here, not merely avoided.
+ *
+ * De-dup (#2): the bit count appears ONCE — carried by the encoding label ("PCM 16-bit"), so the
+ * standalone "N bit" token is dropped. Rendered plain — each source is its own stage (or the lone
+ * source), so no leading bullet is needed.
  */
-private fun sourceLine(source: AudioSource, mixRateHz: Int?, bulleted: Boolean): String {
-    val fmt = source.format
-    val parts = buildList {
-        fmt.bitDepth?.let { add("$it bit") }
-        // When this track resamples and both rates are known, show the source→mix arrow on the rate
-        // itself; otherwise the plain source rate.
-        val srcRate = fmt.sampleRateHz
-        if (srcRate != null) {
-            if (source.resampling && mixRateHz != null && srcRate != mixRateHz) {
-                add("${AudioStateLabels.formatRateKHz(srcRate)} → ${AudioStateLabels.formatRateKHz(mixRateHz)}")
-            } else {
-                add(AudioStateLabels.formatRateKHz(srcRate))
-            }
-        }
-        fmt.channelCount?.let { add(channelLabel(it)) }
-        fmt.encodingLabel?.let { add(it) }
+private fun sourceLine(source: AudioSource): String = formatReadout(source.format)
+
+/**
+ * The Source stage's negotiated-flags line: how this track is *configured* after AudioFlinger
+ * negotiation (e.g. "Track: FAST", "Track: FAST DIRECT"), read per-track from the facade. Labelled
+ * "Track:" honestly — it is the NEGOTIATED/effective per-track flags, NOT the raw app request (which
+ * is unreadable). Null when the facade reported no flags, so the line is simply omitted.
+ */
+private fun sourceFlagsLine(source: AudioSource): ReadoutLine? =
+    source.outputFlags.takeIf { it.isNotEmpty() }?.let {
+        ReadoutLine.Mono("Track: ${it.joinToString(" ")}")
     }
-    val base = if (parts.isEmpty()) "—" else parts.joinToString("  ·  ")
-    return if (bulleted) "· $base" else base
-}
 
 /** Readout for the AudioFlinger mixer stage. Effects are their own chain stages, not listed here. */
 private fun mixerLines(route: AudioRoute): List<ReadoutLine> = buildList {
+    // The thread's liveness / mixed-track count — an AudioFlinger-thread aggregate, so it is rendered
+    // here on the stage that owns it (never on a Source stage, which sees only its own track).
+    mixerLivenessLine(route)?.let { add(ReadoutLine.Mono(it)) }
     // Rate/channels line for the AF stage (e.g. "48 kHz · Stereo"), with the source→mix rate arrow
     // when the mixer resamples. Bit depth is intentionally NOT folded in here — it is shown as the
     // round-trip line below so the mixer's internal precision change is explicit, not conflated.
@@ -759,24 +926,27 @@ private fun mixerLines(route: AudioRoute): List<ReadoutLine> = buildList {
         }
         if (parts.isNotEmpty()) add(ReadoutLine.Mono(parts.joinToString("  ·  ")))
     }
-    // The AudioFlinger bit-depth round-trip: input → internal float → output, each segment from a
-    // real read value (sourceFormat, afInternalFormat, mixFormat) and shown ONLY when that segment is
-    // genuinely known. The internal and output formats are thread-configuration truths — present on a
-    // mixer thread whether or not a stream is flowing — so an idle chain (no active source) still
-    // truthfully shows its "internal → output" precision (e.g. "32 float → 16"); only the input/source
-    // end is dropped because there is no source. A playing chain shows the full three-segment flow.
-    // We render the flow when at least TWO segments are real (a single value is not a transition);
-    // nothing is ever fabricated or partially invented.
+    // The AudioFlinger bit-depth round-trip, segments labelled by ROLE for legibility (#4 clarity):
+    // "in 16 → mix 32 float → out 32". Each segment is a real read (sourceFormat, afInternalFormat,
+    // mixFormat) and shown ONLY when genuinely known. The internal and output formats are thread-
+    // configuration truths — present on a mixer thread whether or not a stream is flowing — so an idle
+    // chain (no active source) still truthfully shows its "mix 32 float → out 16"; only the input end
+    // is dropped because there is no source. We render the flow when at least TWO segments are real
+    // (a single value is not a transition); nothing is fabricated or partially invented.
     val input = route.sourceFormat
     val internal = route.afInternalFormat
     val output = route.mixFormat
-    // Each segment shows its real depth plus a "float" suffix when that segment's own format is float
-    // (from its encoding label, never assumed): a float source reads "32 float → 32 float → 16", an
-    // integer source "16 → 32 float → 16", an idle mixer "32 float → 16".
+    // The (24e) effective-precision cap on the INPUT segment: when the source enters a FLOAT
+    // accumulation buffer, effective precision is min(entered container bits, float significand=24).
+    // We render "(24e)" only on an actual reduction (min < entered container bits) — both inputs are
+    // real reads (the source format's bit depth + the internal format being float), zero inference.
+    // PCM_16 source → plain "16" (16 ≤ 24). A bit-perfect/direct path with no float accumulation
+    // (internal not float / absent) → full depth, no cap.
+    val internalIsFloat = internal?.let { isFloatFormat(it) } == true
     val flow = buildList {
-        input?.takeIf { it.bitDepth != null }?.let { add(depthToken(it)) }
-        internal?.takeIf { it.bitDepth != null }?.let { add(depthToken(it)) }
-        output?.takeIf { it.bitDepth != null }?.let { add(depthToken(it)) }
+        input?.takeIf { it.bitDepth != null }?.let { add("in ${inputDepthToken(it, internalIsFloat)}") }
+        internal?.takeIf { it.bitDepth != null }?.let { add("mix ${depthToken(it)}") }
+        output?.takeIf { it.bitDepth != null }?.let { add("out ${depthToken(it)}") }
     }
     if (flow.size >= 2) {
         add(ReadoutLine.Pair("Bit depth", flow.joinToString(" → ")))
@@ -812,9 +982,10 @@ private fun mixerLines(route: AudioRoute): List<ReadoutLine> = buildList {
 }
 
 /**
- * The path pill shown on the arrow leaving the source: the proven output path type, plus an
- * "· AAudio" suffix only for an MMAP-exclusive path (the one case where AAudio is a safe inference,
- * since an exclusive/MMAP output is effectively always AAudio). Never claims AAudio otherwise.
+ * The path pill shown on the arrow leaving the AudioFlinger stage: the proven output path type
+ * (an AF-thread property), plus an "· AAudio" suffix only for an MMAP-exclusive path (the one case
+ * where AAudio is a safe inference, since an exclusive/MMAP output is effectively always AAudio).
+ * Never claims AAudio otherwise.
  */
 private fun pathPill(route: AudioRoute): String? {
     val label = route.pathTypeLabel ?: return null
@@ -830,19 +1001,23 @@ private fun pathPill(route: AudioRoute): String? {
 private fun outputDeviceLines(device: AudioDevice, route: AudioRoute): List<ReadoutLine> = buildList {
     add(ReadoutLine.Pair("Interface", device.typeLabel))
     device.address?.let { add(ReadoutLine.Pair("Address", it)) }
-    // The actual format leaving through the hardware/DAC, with the device-side resample arrow when
-    // the rate feeding the HAL (mix rate if mixed, else source rate) differs from the hardware rate.
+    // The HAL/DAC-side format the device RECEIVES — read ONLY from this stage's own hardwareFormat
+    // (thread->format()/sampleRate(), the device-facing values). The device stage owns just its
+    // received format: it shows that, and OMITS the emitted codec/wire format (not independently
+    // readable today — never borrowed from the mixer or the source). No feed→hw arrow either: that
+    // would read the AF stage's emitted rate, a cross-stage value the device stage must not touch.
     route.hardwareFormat?.let { hw ->
-        val feedRate = route.mixFormat?.sampleRateHz ?: route.sourceFormat?.sampleRateHz
-        val hwRate = hw.sampleRateHz
-        if (feedRate != null && hwRate != null && feedRate != hwRate) {
-            add(ReadoutLine.Pair("Sample rate",
-                "${AudioStateLabels.formatRateKHz(feedRate)} → ${AudioStateLabels.formatRateKHz(hwRate)}"))
-        } else {
-            hwRate?.let { add(ReadoutLine.Pair("Sample rate", AudioStateLabels.formatRateKHz(it))) }
+        hw.sampleRateHz?.let { add(ReadoutLine.Pair("Sample rate", AudioStateLabels.formatRateKHz(it))) }
+        // De-dup (#2): the encoding label carries the bit depth for PCM, so the standalone "Bit depth"
+        // row is shown only when there is no encoding label — the depth then appears exactly once.
+        // Captured into locals because AudioFormatSummary lives in a different module, so its nullable
+        // properties cannot be smart-cast in place.
+        val encoding = hw.encodingLabel
+        val depth = hw.bitDepth
+        when {
+            encoding != null -> add(ReadoutLine.Pair("Format", encoding))
+            depth != null -> add(ReadoutLine.Pair("Bit depth", "$depth bit"))
         }
-        hw.bitDepth?.let { add(ReadoutLine.Pair("Bit depth", "$it bit")) }
-        hw.encodingLabel?.let { add(ReadoutLine.Pair("Format", it)) }
     }
     route.bluetoothCodec?.let { c ->
         val parts = buildList {
@@ -881,15 +1056,41 @@ private fun batteryIconFor(percent: Int): ImageVector =
 /**
  * One segment of the AF bit-depth round-trip, e.g. "32 float" or "16". The depth is the read bit
  * depth; the "float" suffix is derived from the format's own encoding label (PCM float) rather than
- * assumed, so a non-float format renders as a plain depth. Used for all three segments (input,
- * internal, output) so each reflects its own real precision. Caller guarantees [format].bitDepth
- * is non-null.
+ * assumed, so a non-float format renders as a plain depth. Used for the internal (mix) and output
+ * segments so each reflects its own real precision. Caller guarantees [format].bitDepth is non-null.
  */
 private fun depthToken(format: AudioFormatSummary): String {
     val depth = "${format.bitDepth}"
-    val isFloat = format.encodingLabel?.contains("float", ignoreCase = true) == true
-    return if (isFloat) "$depth float" else depth
+    return if (isFloatFormat(format)) "$depth float" else depth
 }
+
+/**
+ * The INPUT segment of the AF round-trip, with the optional (24e) effective-precision cap. The
+ * container depth is the source format's read bit depth. When [throughFloat] (the accumulation buffer
+ * is genuinely PCM_FLOAT) and that container exceeds the float significand of 24 bits, the effective
+ * precision is capped at 24 and we annotate "(24e)" — an actual reduction, computed from two real
+ * reads (the source bit depth + the internal format being float) plus the definitional 24-bit float
+ * significand, never inferred. A ≤24-bit source (PCM_16/PCM_24) is lossless through the float buffer
+ * and renders plain; a path with no float accumulation renders the full container depth uncapped.
+ * Caller guarantees [format].bitDepth is non-null.
+ */
+private fun inputDepthToken(format: AudioFormatSummary, throughFloat: Boolean): String {
+    val containerBits = format.bitDepth!!
+    val token = depthToken(format)
+    // Float significand is a 24-bit mantissa; effective = min(containerBits, 24). Annotate only on an
+    // actual reduction (the source's own float buffer would not cap itself further than its depth).
+    return if (throughFloat && !isFloatFormat(format) && FLOAT_SIGNIFICAND_BITS < containerBits)
+        "$token ($FLOAT_SIGNIFICAND_BITS" + "e)"
+    else token
+}
+
+/** True when a format's own encoding label says PCM float (read, never assumed). */
+private fun isFloatFormat(format: AudioFormatSummary): Boolean =
+    format.encodingLabel?.contains("float", ignoreCase = true) == true
+
+/** IEEE-754 single-precision significand: 24-bit mantissa. The mixer's float accumulation cannot
+ *  carry more than this many effective bits, so a >24-bit integer source is precision-capped here. */
+private const val FLOAT_SIGNIFICAND_BITS = 24
 
 private fun channelLabel(count: Int): String =
     when (count) {

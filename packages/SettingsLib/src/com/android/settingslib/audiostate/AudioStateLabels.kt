@@ -137,6 +137,32 @@ object AudioStateLabels {
             else -> "Format 0x${Integer.toHexString(nativeFormat)}"
         }
 
+    /**
+     * Encoding FAMILY label for a native audio_format_t — the encoding nature WITHOUT the bit depth,
+     * so a readout can show depth and family as separate tokens ("16 bit · … · PCM" rather than the
+     * fused "PCM 16-bit"). Integer PCM variants all collapse to "PCM" (their depth is carried by
+     * [bitDepthForNativeFormat]); float keeps "PCM float" because float is the encoding's nature, not a
+     * bit count. Unknown formats fall back to the full hex label (no family to strip).
+     */
+    fun nativeFormatFamily(nativeFormat: Int): String =
+        when (nativeFormat) {
+            NATIVE_PCM_8_BIT,
+            NATIVE_PCM_16_BIT,
+            NATIVE_PCM_32_BIT,
+            NATIVE_PCM_8_24_BIT,
+            NATIVE_PCM_24_BIT_PACKED,
+            // Float is PCM too: "PCM" is the family, and float-ness is a sample-representation
+            // specialization carried by the DEPTH token ("32 bit float"), not the family.
+            NATIVE_PCM_FLOAT -> "PCM"
+            else -> "Format 0x${Integer.toHexString(nativeFormat)}"
+        }
+
+    /**
+     * Whether a native audio_format_t encodes samples as floating point (the "float" specialization of
+     * the depth token, e.g. "32 bit float"). Read from the format constant, never inferred.
+     */
+    fun isFloatNativeFormat(nativeFormat: Int): Boolean = nativeFormat == NATIVE_PCM_FLOAT
+
     /** Determinate PCM bit depth for a native audio_format_t value, or null for non-PCM/unclean. */
     fun bitDepthForNativeFormat(nativeFormat: Int): Int? =
         when (nativeFormat) {
