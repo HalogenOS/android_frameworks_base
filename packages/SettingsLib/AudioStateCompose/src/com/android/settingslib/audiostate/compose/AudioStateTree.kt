@@ -19,6 +19,7 @@ package com.android.settingslib.audiostate.compose
 import android.media.AudioDeviceInfo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -39,6 +41,8 @@ import androidx.compose.material.icons.outlined.BatteryAlert
 import androidx.compose.material.icons.outlined.BatteryFull
 import androidx.compose.material.icons.outlined.BatteryStd
 import androidx.compose.material.icons.outlined.Bluetooth
+import androidx.compose.material.icons.outlined.ExpandLess
+import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.GraphicEq
 import androidx.compose.material.icons.outlined.Headset
 import androidx.compose.material.icons.outlined.Mic
@@ -50,12 +54,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.settingslib.audiostate.AudioDevice
@@ -64,6 +75,7 @@ import com.android.settingslib.audiostate.AudioRoute
 import com.android.settingslib.audiostate.AudioSource
 import com.android.settingslib.audiostate.AudioStateLabels
 import com.android.settingslib.audiostate.AudioStateSnapshot
+import com.android.settingslib.audiostate.isHostEndpoint
 
 /**
  * Stateless rendering of an [AudioStateSnapshot] as a vertical signal-flow chain (Source → Output →
@@ -92,37 +104,67 @@ fun AudioStateTree(
         // never render only routes.first().
         val routes = snapshot.routes
 
-        if (routes.isEmpty()) {
+        // (1) ACTIVE-FIRST STABLE PARTITION. A stream that is actually flowing should always read at
+        // the top, with standing-but-idle threads below it. partition() keyed on isPlaying gives
+        // exactly playing-before-idle while PRESERVING each group's original enumeration order — it is
+        // not a full sort, because there is no proven secondary signal/priority order among the
+        // playing chains (nor among the idle ones), and inventing one would violate the truth-only bar.
+        val (playing, idle) = routes.partition { it.isPlaying }
+
+        // (2) DIALOG vs SETTINGS DIVERGENCE — the first place the two surfaces differ. The compact QS
+        // dialog shows ONLY what is actually playing (idle chains are not rendered at all); the full
+        // Settings page shows ALL chains, playing first then idle. This is the single visible-route
+        // list both the empty-state guard and the render loop key off — so a dialog whose chains were
+        // all filtered out still falls back to EmptyState() rather than rendering blank, and Settings
+        // keeps showing idle chains (collapsed, see (3)).
+        val visibleRoutes = if (full) playing + idle else playing
+
+        // The empty-state guard keys off the VISIBLE list, not raw routes: in the dialog, "nothing is
+        // playing" is empty even when idle threads exist (they are filtered out above). Settings is
+        // never "empty" the way the dialog is — its DeviceSection/MicrophoneSection blocks below always
+        // render — so the EmptyState row is the dialog's nothing-playing case ONLY, gated on !full so
+        // Settings never stacks an empty row above its always-present device sections.
+        if (visibleRoutes.isEmpty() && !full) {
             EmptyState()
         }
 
-        routes.forEachIndexed { routeIndex, route ->
-            // A faint divider separates one thread's chain from the next so stacked chains read as
-            // distinct paths rather than one long flow. The first chain needs no divider.
-            if (routeIndex != 0) ChainDivider()
-            // chainStages already decides the structure: the summed-source stages (when ≥2 sources)
-            // are split out into [ChainRender.group] and the rest into [ChainRender.stages], so this
-            // render loop does no topology computation — it just lays the pieces out in order.
-            val (groupStages, stages) = chainRender(route)
-            // The faint rounded outline wraps the ≥2 source stages plus their outgoing arrow into the
-            // mixer, so the set reads as one combined signal entering AudioFlinger. The group, when
-            // present, always sits at the head of the chain (the mixer/device follows it), so it is
-            // never the chain's last element and always carries a trailing gap.
-            if (groupStages.isNotEmpty()) {
-                SourceGroup {
-                    groupStages.forEach { stage ->
-                        // The last grouped stage is never the chain's last stage (the mixer/device
-                        // follows), so its outgoing arrow is drawn inside the group and the outline
-                        // encloses it.
-                        ChainStage(stage = stage, isLast = false)
-                    }
+        visibleRoutes.forEachIndexed { routeIndex, route ->
+            // Each iteration is wrapped in key(routeIndex) so Compose scopes the iteration's slot-table
+            // state to a STABLE identity rather than to call-site position alone. This matters for (3):
+            // an idle chain owns a remembered collapsed/expanded flag, and Compose tracks remembered
+            // state by slot position. When the playing/idle composition of visibleRoutes shifts (a
+            // chain starts/stops playing), the dispatch at a given position can switch between IdleChain
+            // and FullChain; without a key the slot would be reused for a different chain and could
+            // briefly carry the wrong chain's expanded state. key(routeIndex) gives each position a
+            // discrete identity so state stays attached to its own iteration. AudioRoute carries no
+            // stable thread id (verified against the model — no id/key/threadId field), so the visible-
+            // list index is the only stable identity available; if the set is reordered the flag resets
+            // to collapsed, the one place a true thread id would improve continuity.
+            key(routeIndex) {
+                // A collapsed idle chain renders as a self-contained rounded CARD (see [IdleChain]); its
+                // card edge + the gap below is its own separator. Playing/expanded chains instead read as
+                // one continuous stacked flow and are separated by a faint divider. So the divider is drawn
+                // only BETWEEN two non-card chains: skip it for the first chain, and skip it whenever this
+                // chain OR the previous one is a collapsed-idle card (a card never wants a rule jammed
+                // against its edge). A card supplies its own top gap below.
+                val isCard = full && !route.isPlaying
+                val prevIsCard = routeIndex != 0 && full && !visibleRoutes[routeIndex - 1].isPlaying
+                if (routeIndex != 0) {
+                    if (isCard || prevIsCard) Spacer(Modifier.height(8.dp)) else ChainDivider()
                 }
-                // The group owns no external margin (matching every other composable here); the gap
-                // below it before the next stage is supplied here, like the stage-to-stage gaps.
-                Spacer(Modifier.height(8.dp))
-            }
-            stages.forEachIndexed { index, stage ->
-                ChainStage(stage = stage, isLast = index == stages.lastIndex)
+                // (3) IDLE-CHAIN COLLAPSE, SETTINGS ONLY. An idle chain in Settings renders collapsed by
+                // default — a single truthful summary row with its "Idle" chip and an expand affordance —
+                // and expands into the exact same stacked stages a playing chain shows. Playing chains are
+                // never collapsed. The dialog never reaches here for an idle chain (filtered out in (2)),
+                // so collapse/expand is guarded behind `full` AND `!route.isPlaying`; everything else takes
+                // the unchanged full-chain path. The collapsed summary is sourced from this chain's OWN
+                // stages (chainRender), never from a neighbour — including the 3b case of an idle thread
+                // with no sink, which is still rendered collapsed (no device-presence filtering).
+                if (full && !route.isPlaying) {
+                    IdleChain(route)
+                } else {
+                    FullChain(route)
+                }
             }
         }
 
@@ -133,6 +175,421 @@ fun AudioStateTree(
         }
     }
 }
+
+/**
+ * Renders one chain's full stacked layout: the bordered ≥2-source group (when present) followed by the
+ * plain stages, top-to-bottom. This is the unchanged 2.1 chain render, extracted verbatim so a playing
+ * chain and an EXPANDED idle chain reach the identical stages — an expanded idle chain is exactly the
+ * full chain a playing one would show, sourced from the same [chainRender] partition (no topology
+ * computed here; the group is already split out).
+ */
+@Composable
+private fun FullChain(route: AudioRoute) {
+    // chainStages already decides the structure: the summed-source stages (when ≥2 sources) are split
+    // out into [ChainRender.group] and the rest into [ChainRender.stages], so this render does no
+    // topology computation — it just lays the pieces out in order.
+    val (groupStages, stages) = chainRender(route)
+    // The faint rounded outline wraps the ≥2 source stages plus their outgoing arrow into the mixer, so
+    // the set reads as one combined signal entering AudioFlinger. The group, when present, always sits
+    // at the head of the chain (the mixer/device follows it), so it is never the chain's last element
+    // and always carries a trailing gap.
+    if (groupStages.isNotEmpty()) {
+        SourceGroup {
+            groupStages.forEach { stage ->
+                // The last grouped stage is never the chain's last stage (the mixer/device follows), so
+                // its outgoing arrow is drawn inside the group and the outline encloses it.
+                ChainStage(stage = stage, isLast = false)
+            }
+        }
+        // The group owns no external margin (matching every other composable here); the gap below it
+        // before the next stage is supplied here, like the stage-to-stage gaps.
+        Spacer(Modifier.height(8.dp))
+    }
+    stages.forEachIndexed { index, stage ->
+        ChainStage(stage = stage, isLast = index == stages.lastIndex)
+    }
+}
+
+/**
+ * An idle chain in Settings: collapsed by default to a single truthful summary row (the idle chain's
+ * essential identity + its "Idle" chip + an expand affordance), expanding into its full stacked chain
+ * via [FullChain]. Settings-only — the dialog filters idle chains out entirely, so the caller only
+ * reaches here when `full && !route.isPlaying`. Per 3b, an idle chain with no sink is still rendered
+ * collapsed like any other (no device-presence suppression); its summary honestly reads "No output
+ * device".
+ */
+@Composable
+private fun IdleChain(route: AudioRoute) {
+    // Per-idle-chain collapsed/expanded UI state. The caller wraps each chain in key(routeIndex), so
+    // this remembered flag is already scoped to the chain's stable identity (the visible-list index —
+    // AudioRoute carries no thread id; see the caller). A plain remember therefore suffices: the
+    // key{} wrapper, not a remember(key) argument, is what keeps the flag attached to its own chain
+    // across recomposition. If the route set is reordered the identity changes and the flag resets to
+    // collapsed — acceptable absent a stable id, the one place a true thread id would improve continuity.
+    var expanded by remember { mutableStateOf(false) }
+    // ONE persistent card for this chain in BOTH states: collapsed shows the summary row; expanded keeps
+    // the SAME card and reveals the full chain inside it (the card is never removed/replaced on expand,
+    // so the rounded edge + breakout geometry stay put — no jump). The card edge (a faint outline +
+    // distinct fill, reusing [SourceGroup]'s rounded vocabulary) is what separates one idle chain from the
+    // next, so the caller draws no divider line around a card — just a small gap. The card owns the inner
+    // padding, the breakout, AND the tap/toggle: the WHOLE card is the clickable surface (see the modifier
+    // order below) so the press/hover state layer covers the entire painted card, not just the header band.
+    Box(
+        modifier =
+            Modifier.fillMaxWidth()
+                // BREAK OUT of the panel's global horizontal gutter. Everything AudioStateTree emits sits
+                // inside the Settings caller's Column(padding(horizontal = 24.dp)) — the "Output devices"
+                // headline, the device rows, and these cards all share that 24dp inset. Padding the card
+                // would only ADD to that 24dp (pushing it further from the edge, narrower). Instead this
+                // modifier widens the card past the gutter and shifts it left so it lands ~8dp from the
+                // TRUE screen edge — wider than the text block, less side space than before. See
+                // [breakoutHorizontal] for the edge math.
+                .breakoutHorizontal(gutter = PANEL_GUTTER, inset = CARD_EDGE_INSET)
+                .clip(RoundedCornerShape(12.dp))
+                // MODIFIER ORDER IS LOAD-BEARING for the press/hover highlight. clickable is placed AFTER
+                // breakoutHorizontal (so its interaction bounds are the WIDENED, broken-out card box, not
+                // the narrower pre-breakout gutter width) and AFTER clip (so the ripple/state layer is
+                // clipped to the 12dp rounded card shape). The previous layout put the click on the inner
+                // header Row, inset 12dp from each card edge and header-height only, so the highlight read
+                // as a middle band; now the indication bounds equal the painted card bounds exactly. It
+                // sits BEFORE background/border/padding so the state layer also covers the inner padding
+                // region — the whole card lights up. Tapping anywhere on the card toggles expand.
+                .clickable { expanded = !expanded }
+                // Card fill (HEADER / card base tone): a translucent neutral surfaceVariant tint that
+                // separates the card as its own quiet panel against the page background above it, reusing
+                // the same surfaceVariant vocabulary the chips and pills in this file already lean on. This
+                // is the card's BASE tone — the header band always shows it, and a collapsed card shows ONLY
+                // it (single tone). The expanded content below paints a DARKER recess over this base (see the
+                // recessed-background Column further down), so the header must stay at this lighter base —
+                // never darker. The 0.4f alpha keeps it a soft tint rather than a hard opaque slab.
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                    shape = RoundedCornerShape(12.dp),
+                )
+                // NO inner padding on the OUTER card box — neither horizontal NOR vertical. Both axes are
+                // handled on the inner nodes for the SAME reason:
+                //  - HORIZONTAL: the expanded content's recessed background must span the FULL card width
+                //    (edge to edge inside the rounded area); a horizontal pad here would inset that background
+                //    and leave a header-color band on the left/right (the original band bug).
+                //  - VERTICAL: the recessed background must ALSO reach the BOTTOM edge of the content region;
+                //    a vertical pad here would leave a header-color band below the darker fill (the bottom
+                //    band bug). The recess is the LAST child of the inner Column, so with no outer vertical
+                //    pad it reaches the card's bottom edge; its breathing room lives INSIDE the darker fill.
+                // The single shared header block re-applies the card's compact symmetric vertical = 4.dp
+                // (the same in both states); its own bottom half of that pad is the (header-toned) separation
+                // between the header content and the recess appended below — the recess then owns all of its
+                // own breathing room INSIDE the darker fill, so the gap around the stages is the darker recess
+                // color on every side, never the header tone.
+    ) {
+        // ONE invariant header, BOTH states. The card stacks its children vertically: the header block
+        // always, then — only when expanded — the recess appended BELOW it. The header is built by the
+        // EXACT SAME construction regardless of expanded: same wrapper Box, same padding(horizontal = 12.dp,
+        // vertical = 4.dp), same insideCard = true. Expanding the card is literally "the collapsed card, plus
+        // content added beneath it" — never a separately-laid-out header with expanded-specific geometry.
+        // A bare Column (no wrapping padding) keeps the header block and the recess as direct, FLUSH siblings:
+        // no lighter-toned spacer/pad WRAPS the recess (any such space would sit OUTSIDE the darker fill and
+        // re-introduce a header-color band; the recess owns all of its own breathing room internally).
+        Column {
+            // HEADER BLOCK — rendered IDENTICALLY in both states (this is THE invariant). It re-applies the
+            // card's 12dp horizontal inset (the outer box supplies none) AND the compact symmetric
+            // vertical = 4.dp, with insideCard = true so the Row takes NO vertical pad of its own. Because
+            // this construction is the SAME whether collapsed or expanded, the icon, title, pills, "Idle"
+            // chip and chevron sit at the identical vertical offset in both states — no between-state drift.
+            //
+            // The header's OWN bottom pad (the lower half of vertical = 4.dp) is what separates it from the
+            // recess appended below: it is NOT a special gap, it is the collapsed header's natural symmetric
+            // spacing. The recess is simply appended beneath this already-correctly-padded header — no
+            // expanded-specific top padding, no removed bottom pad, no invented separator. The only state
+            // difference is the chevron direction, carried by the `expanded` flag (ExpandLess vs ExpandMore).
+            Box(modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)) {
+                IdleChainHeader(route = route, expanded = expanded, insideCard = true)
+            }
+            if (expanded) {
+                // RECESSED CONTENT BACKGROUND (expanded only): the revealed chain body sits on a background
+                // that is CLEARLY DARKER than the card's surfaceVariant@0.4f header base, so the content
+                // reads as a recess carved into the card. This is a TINT, NOT a nested card: no rounded
+                // clip, no border — purely a darker fill behind the body.
+                //
+                // WHY A SCRIM (BLACK) OVERLAY, A CLEAR ONE STEP: the recess must read DARKER than the header
+                // in the dark-theme primary case. The scrim role is black in BOTH the light and dark schemes,
+                // so painting it over the card fill is a genuine DARKENING in both themes — never an
+                // inversion. 0.18f is a visibly-clear step (not the rejected faint 0.05f, and not an
+                // onSurface overlay, which would LIGHTEN in dark theme — the exact wrong direction), while
+                // staying short of a hard second panel. It is a colorScheme role, so it tracks the theme.
+                //
+                // EDGE-TO-EDGE BACKGROUND, INSET CONTENT: this Column carries ONLY fillMaxWidth + background
+                // and NO padding of its own, so the darker fill spans the full card WIDTH (left/right edges)
+                // AND — as the LAST child reaching the card's bottom edge — the bottom edge too. The stages
+                // stay inset via the INNER Column's uniform padding(12.dp), so the breathing room around the
+                // stages is the darker recess color on every side — the gap is the recess, never the header
+                // tone. The recess sits directly below the header block, whose own bottom pad provides the
+                // (header-toned) separation between the header content and the top of the darker fill.
+                //
+                // WHY A Column, NOT a Box (for BOTH levels): FullChain emits a FLAT LIST of siblings (the
+                // source group, a spacer, and the per-stage rows) with NO container of its own — it relies
+                // on its parent to stack them vertically, exactly as the top-level Column and a playing
+                // chain do. A Box would z-stack those siblings at a common origin, painting each stage on
+                // top of the last (the prior overlap bug). A Column reproduces the playing-chain stacking.
+                Column(
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.18f))
+                ) {
+                    // Uniform inner inset (12.dp on ALL sides) keeps the stages inset while the background
+                    // reaches every edge. Because this padding is INSIDE the darker Column, the inset region
+                    // is painted with the recess color — so the gap above the first stage and below the last
+                    // stage (and left/right) is the darker tone, giving consistent recess-colored breathing
+                    // room all around. Column (NOT Box) so FullChain's flat sibling stages stack vertically.
+                    Column(modifier = Modifier.padding(12.dp)) { FullChain(route) }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Cancels the panel's global horizontal [gutter] and re-applies a smaller [inset] so the element lands
+ * [inset] from the TRUE screen edge instead of [gutter] from it — used to let an idle card "break out" of
+ * the Settings page's Column(padding(horizontal = gutter)) and sit closer to the edge (wider) than the
+ * gutter-bound text around it.
+ *
+ * Why a layout modifier and not padding/offset:
+ *  - `Modifier.padding(horizontal = -x)` is illegal (Compose rejects negative dp).
+ *  - `Modifier.offset(x = -x)` only TRANSLATES — it would move the left edge in but leave the right edge
+ *    short by the same amount (asymmetric), because it does not widen the measured width.
+ * This modifier WIDENS the measured width by `2 * (gutter - inset)` and PLACES the content at
+ * `x = -(gutter - inset)`, so both edges move outward symmetrically by the same breakout. With the live
+ * 24dp gutter and an 8dp inset the breakout is 16dp per side: left edge 24 - 16 = 8dp from the screen,
+ * right edge (gutter) + 16 = 8dp from the screen. Net side space drops 24dp → 8dp (the opposite of the
+ * prior "added 8dp" regression).
+ *
+ * It reports the ORIGINAL (un-widened) width back to the parent Column so the card's overflow does not
+ * stretch the Column or push the gutter-bound siblings (device sections) — only the card visually spills
+ * past the gutter; everything else stays at [gutter].
+ */
+private fun Modifier.breakoutHorizontal(gutter: Dp, inset: Dp): Modifier = layout { measurable, constraints ->
+    val breakoutPx = (gutter - inset).roundToPx()
+    val extra = breakoutPx * 2
+    // Widen the available width by the breakout on both sides. The card uses fillMaxWidth(), so this
+    // larger max is what it fills to — giving it the wider, closer-to-edge box.
+    val widened =
+        constraints.copy(
+            maxWidth = constraints.maxWidth + extra,
+            // Preserve a fixed-width request (fillMaxWidth pins minWidth == maxWidth) so the card still
+            // fills the widened box rather than shrink-wrapping its content.
+            minWidth =
+                if (constraints.hasFixedWidth) constraints.minWidth + extra else constraints.minWidth,
+        )
+    val placeable = measurable.measure(widened)
+    // Report the ORIGINAL (un-widened) max width to the parent — not placeable.width, which is the wider
+    // box. This is what keeps the card from stretching the parent Column or pushing the gutter-bound
+    // siblings (device sections): the card occupies its normal cell in layout, and only its painted
+    // content (placed shifted left below) spills symmetrically past the gutter to land [inset] from each
+    // screen edge. The card always fillMaxWidth()s into the widened box, so placeable.width is always
+    // larger than this; reporting the original width is the whole point of the breakout, not a clamp.
+    layout(constraints.maxWidth, placeable.height) { placeable.place(-breakoutPx, 0) }
+}
+
+/**
+ * The collapsed/expanded summary row for an idle chain: an icon, the chain's truthful one-line identity
+ * (its output INTERFACE TYPE — see [idleChainSummary]), the AF-exit format pills (rate + exit bit depth,
+ * read from this thread's own mixFormat — see [idleExitPills]), its "Idle" chip, and an expand/collapse
+ * chevron. The row is DISPLAY-ONLY: the enclosing [IdleChain] card owns the tap/toggle affordance so the
+ * press/hover state layer spans the whole card, not just this row; the chevron here is purely a visual
+ * cue of the current state. Every value shown is a real read from THIS chain's own model — never
+ * fabricated, never borrowed from another chain. The device MODEL string ([AudioDevice.name], e.g.
+ * "Custom Android SDK built for x86_64") is deliberately NOT shown: it is a product name, identical
+ * across threads, and useless as an audio-path label — the neutral TYPE label ([AudioDevice.typeLabel])
+ * is the distinguishing identity instead.
+ */
+@Composable
+private fun IdleChainHeader(
+    route: AudioRoute,
+    expanded: Boolean,
+    // When true, THIS row takes NO vertical pad of its own — the enclosing Box owns the row's vertical
+    // offset, so the header geometry is fixed by that one wrapper (see the call-site comment where the
+    // symmetric vertical = 4.dp is set for the WHY). REQUIRED, no default: passing false produces the wrong
+    // header geometry (the row would add its own top pad and drift down), which is exactly the bug this
+    // header avoids — so the choice must be made explicitly at the call site rather than defaulted. The
+    // single live IdleChain call site passes true; the false branch below is a documented standalone-use
+    // fallback, not currently reached. Named insideCard (not "inset") so it does not read as the
+    // CARD_EDGE_INSET dp distance — a different concept.
+    insideCard: Boolean,
+) {
+    Row(
+        // insideCard (the live path): no vertical pad of our own — the enclosing Box owns the row's vertical
+        // offset (symmetric 4dp), identical across states because it is ONE shared wrapper. The false branch
+        // is the not-currently-reached standalone fallback (adds its own top pad for a caller that does not
+        // wrap the row).
+        modifier =
+            if (insideCard) Modifier.fillMaxWidth() else Modifier.fillMaxWidth().padding(top = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            // The output-device glyph when this idle thread is patched to a known device, else the
+            // generic speaker glyph — the SAME selection the device stage uses (routeDeviceIcon), so
+            // the collapsed header and the expanded device stage cannot drift to different icons.
+            imageVector = routeDeviceIcon(route),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(24.dp),
+        )
+        Spacer(Modifier.width(14.dp))
+        Text(
+            text = idleChainSummary(route),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            // Idle → grayed, consistent with the de-emphasis applied to an idle chain's stages.
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        // The AF-exit format pills (rate, exit bit depth), each shown ONLY when its value is a real read
+        // from this thread's own mixFormat (omit-don't-fake — see [idleExitPills]). They STACK vertically
+        // in one narrow column rather than running side-by-side: a wrapping title (e.g. "Disconnected mixer
+        // thread") already makes the row tall, so stacking the pills consumes that existing height instead
+        // of stealing horizontal width from the title — keeping the row's height unchanged while letting the
+        // title wrap less. Reuses the SAME StatusChip primitive as the "Idle" chip for one visual treatment.
+        // When idleExitPills is empty (non-mixer/bypass idle thread, no mixFormat) the column has no children
+        // and occupies no space — the row then shows just the title and the "Idle" chip.
+        //
+        // SIZING — why the chip background actually PAINTS here (the prior attempt rendered the pills as
+        // bare text with no fill): a StatusChip is a Box whose paint order is clip(rounded) → background →
+        // padding → Text, so its fill spans the Box's measured size. The fill only vanishes if the Box is
+        // measured to zero width. To guarantee a NONZERO box, every chip is measured with minWidth = 0 so
+        // it shrink-wraps its text + 8dp side padding (a real, nonzero width the fill paints into):
+        //  - The "Idle" chip is a bare Row child, so the Row already hands it minWidth = 0 → it wraps.
+        //  - The pills sit one level deeper, inside this stacking Column. wrapContentWidth(End) on each
+        //    pill forces the SAME minWidth = 0 / shrink-wrap that the bare "Idle" chip gets, so the nested
+        //    chip cannot be stretched (or pinned to a degenerate width) by any min constraint the Column
+        //    might propagate — its fill box is the chip's own content width, exactly like the bare path.
+        //  - wrapContentWidth(End) on the Column itself sizes the column to its widest pill and right-aligns
+        //    it, so the column never forces a child wide and the pills stay flush to the row's right edge.
+        // As a NON-weighted Row child a plain Column would already receive minWidth = 0, so this is partly
+        // belt-and-suspenders — but it makes the pills' sizing path provably identical to the proven-
+        // painting bare "Idle" chip, removing the structural divergence the prior non-painting attempt had.
+        val pills = idleExitPills(route)
+        if (pills.isNotEmpty()) {
+            Spacer(Modifier.width(8.dp))
+            Column(
+                modifier = Modifier.wrapContentWidth(Alignment.End),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                pills.forEach { StatusChip(it, modifier = Modifier.wrapContentWidth(Alignment.End)) }
+            }
+        }
+        Spacer(Modifier.width(8.dp))
+        StatusChip("Idle")
+        Spacer(Modifier.width(8.dp))
+        Icon(
+            imageVector = if (expanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(24.dp),
+        )
+    }
+}
+
+/**
+ * The collapsed idle-chain TITLE: this chain's truthful one-line identity, sourced ONLY from this chain's
+ * own model.
+ *
+ *  - When the chain HAS an output device, the title is the device's neutral INTERFACE TYPE label
+ *    ([AudioDevice.typeLabel]: "Remote submix", "Speaker", "Telephony", "USB", "Bluetooth A2DP", …).
+ *    NOT [AudioDevice.name] — that is the product/model string ("Custom Android SDK built for x86_64")
+ *    which repeats identically across threads and does not name the audio path; the type label is the
+ *    distinguishing, audio-meaningful identity.
+ *  - When the chain has NO output device but IS a mixer thread (hasMixerStage == true), the title is the
+ *    literal "Disconnected mixer thread" — an honest description of a standing mixer thread that is not
+ *    currently patched to any sink.
+ *  - When there is no device AND it is not a mixer thread (hasMixerStage != true), calling it a "mixer
+ *    thread" would be a lie, so fall back to the existing honest hasSinkPortId-driven sink phrasing
+ *    ([sinkSubtitle]: "No output device" / "Unidentified output device" / "Output device unknown"),
+ *    which never asserts "mixer".
+ *
+ * The "Idle" word-label and the format pills are NOT folded into this string — they are carried by the
+ * chips on the same row (see [IdleChainHeader]) — so nothing here is duplicated.
+ */
+private fun idleChainSummary(route: AudioRoute): String =
+    route.outputDevice?.typeLabel
+        ?: if (route.hasMixerStage == true) "Disconnected mixer thread" else sinkSubtitle(route)
+
+/**
+ * The AF-exit format pills for the collapsed idle row, in render order: [rate, exit-depth]. BOTH read
+ * from [AudioRoute.mixFormat] — the AF mixer's OUTPUT/sink format (mFormat), i.e. what EXITS AudioFlinger
+ * to the HAL — NOT [AudioRoute.afInternalFormat] (the internal float accumulation). This mirrors the "out"
+ * (sink) side of the expanded view's AF round-trip ("mix 32 float → out 16"), so the SAME idle thread
+ * reads [32 float] when its sink format is float and [16 bit] when it is integer.
+ *
+ * OMIT-DON'T-FAKE (the truth-only bar): every pill is a real read or it is not shown — never a placeholder.
+ *  - mixFormat == null (a non-mixer/bypass idle thread, or facade absent): there is no "exits
+ *    AudioFlinger" format at all → emit NO pills (the row shows the title + "Idle" chip alone).
+ *  - mixFormat.sampleRateHz == null → omit the rate pill specifically.
+ *  - exit depth pill: float-ness comes from mixFormat.isFloat (read from the real format constant). When
+ *    isFloat is true the depth token reads "<bitDepth> float"; otherwise "<bitDepth> bit". Either way the
+ *    pill needs a real bitDepth — when mixFormat.bitDepth == null the depth pill is omitted. The pills are
+ *    independent, so a known rate with an unknown depth still shows the rate pill, and vice versa.
+ *
+ * The bit-depth decomposition (isFloat → "float" suffix, else "bit") is analogous to — NOT identical to —
+ * the AF round-trip's [depthToken]. Two deliberate differences:
+ *  1. Suffix: this standalone chip reads "16 bit" on the integer branch (self-contained), whereas
+ *     [depthToken] emits a bare "16" because it is joined into the "in → mix → out" flow. So [depthToken]
+ *     cannot be reused verbatim here.
+ *  2. Float source: float-ness here is read from [AudioFormatSummary.isFloat] (the real format constant,
+ *     never inferred — see the model doc), the SAME source [formatReadout] uses for its "$depth bit float"
+ *     token. [depthToken] instead probes [AudioFormatSummary.encodingLabel] for the substring "float"
+ *     ([isFloatFormat]), which is an inference from the label string. This pill intentionally uses the
+ *     authoritative boolean rather than the label probe: per the truth-only bar a shown value must be a
+ *     real read, never inferred. For well-formed data the two agree; where they could disagree, the
+ *     never-inferred [isFloat] is the truthful one, so the pill is anchored to it. Do NOT "reconcile" this
+ *     by switching the pill to [isFloatFormat] — that would trade a real read for an inference. (The
+ *     expanded "out" token's own use of [isFloatFormat] is in the EXPANDED chain and is out of scope here.)
+ */
+private fun idleExitPills(route: AudioRoute): List<String> {
+    // Captured into a local because AudioFormatSummary lives in a different module, so its nullable
+    // properties cannot be smart-cast through the route reference in place.
+    val mix = route.mixFormat ?: return emptyList()
+    return buildList {
+        // Pill 1 (rate): "<kHz> kHz" — only when the real sink sample rate is known.
+        mix.sampleRateHz?.let { add(AudioStateLabels.formatRateKHz(it)) }
+        // Pill 2 (exit bit depth): the depth that EXITS AudioFlinger — "<depth> float" when the sink
+        // format is float, else "<depth> bit". Only when the real exit bit depth is known. Float-ness is
+        // read from mixFormat.isFloat (the real format constant, never inferred — same source as
+        // formatReadout), NOT from the encodingLabel "float" substring probe (isFloatFormat) that the
+        // expanded round-trip's depthToken uses: the truth-only bar wants the real read, not an inference.
+        mix.bitDepth?.let { depth -> add(if (mix.isFloat) "$depth float" else "$depth bit") }
+    }
+}
+
+/**
+ * The output-device glyph for a chain: the device-typed icon when this chain is patched to a known
+ * device, else the generic speaker glyph — the SINGLE source of the chain's device icon, shared by the
+ * collapsed idle header and the device stage's no-device fallback so the two cannot drift to different
+ * glyphs. (The device stage's WITH-device branch already calls [iconForDevice] on its own dev.type;
+ * this helper expresses the same selection plus the no-device fallback in one place.)
+ */
+private fun routeDeviceIcon(route: AudioRoute): ImageVector =
+    route.outputDevice?.let { iconForDevice(it.type) } ?: Icons.Outlined.Speaker
+
+/**
+ * The standalone one-line device identity for a chain, used by the collapsed idle summary: the resolved
+ * device name when present, otherwise the hasSinkPortId-driven phrasing ("No output device" when the
+ * thread genuinely has no sink, per 3b; "Unidentified output device" when a sink exists but matched no
+ * enumerated device; "Output device unknown" when the facade gave no sink info). Reads the same two
+ * fields the device stage reads (outputDevice / hasSinkPortId), so the collapsed summary and the
+ * expanded device stage always agree on WHICH case holds — they differ only in phrasing length (the
+ * stage pairs a terse subtitle with a descriptive line; this is the standalone form). Never asserts a
+ * device the chain does not carry.
+ */
+private fun sinkSubtitle(route: AudioRoute): String =
+    route.outputDevice?.name
+        ?: when (route.hasSinkPortId) {
+            false -> "No output device"
+            true -> "Unidentified output device"
+            null -> "Output device unknown"
+        }
 
 /**
  * Assembles one active thread's chain top-to-bottom: Source(s) → AudioFlinger mixer (mixer/bit-
@@ -227,7 +684,11 @@ private fun MutableList<Stage>.addChainStages(route: AudioRoute) {
             Stage(
                 icon = iconForDevice(dev.type),
                 title = "Output device",
-                subtitle = dev.name,
+                // Host endpoints (built-in speaker, telephony, etc.) all carry the host's own product
+                // name, which is noise; show "This device" instead, by structural type — never a name
+                // comparison. The flag tells [ChainStage] to render it in accent even when idle.
+                subtitle = if (dev.isHostEndpoint) HOST_LABEL else dev.name,
+                hostLabel = dev.isHostEndpoint,
                 lines = outputDeviceLines(dev, route),
                 // Device identity/capabilities come from AudioManager; the hardware (DAC) format
                 // comes from the audioserver facade — Hybrid when both are present, framework-only
@@ -243,7 +704,10 @@ private fun MutableList<Stage>.addChainStages(route: AudioRoute) {
         // [hasSinkPortId] tells which: false = the thread has NO sink (we'd be LYING to say "could not
         // be resolved", which presupposes a device exists); true = a sink exists but matched no
         // enumerated device (genuinely unidentified); null = no facade info (unknown). Say exactly what
-        // is true, never assert a device that isn't there.
+        // is true, never assert a device that isn't there. The subtitle here is the terse stage label
+        // paired with a descriptive line; the collapsed idle summary phrases the SAME hasSinkPortId
+        // truth standalone via [sinkSubtitle] — both read the same field, so they cannot disagree about
+        // which of the three cases holds, only about presentation length.
         val (deviceSubtitle, deviceLine) =
             when (route.hasSinkPortId) {
                 false -> "No output device" to "This thread is not routed to any output device"
@@ -370,6 +834,11 @@ private data class Stage(
     /** When set, a small neutral chip rendered on the stage's title row (e.g. "Idle") — used to
      *  label an idle chain's first stage in words, not color alone. */
     val statusChip: String? = null,
+    /** True when this stage's [subtitle] is the "This device" host label (an on-device endpoint, by
+     *  structural type — see [isHostEndpoint]). [ChainStage] then renders the subtitle in the accent
+     *  color even on an idle chain, so a host endpoint always reads as "This device" in accent.
+     *  Additive (default false): every existing stage renders unchanged. */
+    val hostLabel: Boolean = false,
 )
 
 // -------------------------------------------------------------------------------------------------
@@ -458,9 +927,15 @@ private fun ChainStage(stage: Stage, isLast: Boolean) {
                         text = it,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.SemiBold,
-                        // Idle chain → grayed subtitle, matching the rest of the de-emphasized stage.
+                        // Accent is the default subtitle color; the ONLY exception is an idle,
+                        // non-host subtitle, which grays out to read as inactive. A host label
+                        // ("This device") identifies the host rather than a flow, so it stays accent
+                        // even on an idle chain — hence the `&& !stage.hostLabel` carve-out. (Folded
+                        // from the equivalent three-branch form whose host and flowing arms both
+                        // resolved to accent, which read as a tautology.)
                         color =
-                            if (stage.idle) MaterialTheme.colorScheme.onSurfaceVariant
+                            if (stage.idle && !stage.hostLabel)
+                                MaterialTheme.colorScheme.onSurfaceVariant
                             else MaterialTheme.colorScheme.primary,
                         modifier = Modifier.weight(1f, fill = false),
                     )
@@ -617,10 +1092,16 @@ private fun DeviceCard(device: AudioDevice) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = device.name,
+                    // Host endpoints all repeat the host's product name; show "This device" in accent
+                    // instead. Structural type test (see [isHostEndpoint]) — never a name comparison.
+                    // This composable serves both the Output and Input sections, so the input host
+                    // rows (built-in mic, telephony, remote submix) are covered here too.
+                    text = if (device.isHostEndpoint) HOST_LABEL else device.name,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color =
+                        if (device.isHostEndpoint) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f, fill = false),
                 )
                 if (device.isActive) {
@@ -725,11 +1206,22 @@ private fun ProvenancePill(provenance: Provenance) {
 /** Neutral state chip on a stage title (e.g. "Idle") — labels an inactive chain in words so the
  *  de-emphasized color is not the only signal. Muted on purpose; never the accent ACTIVE color. */
 @Composable
-private fun StatusChip(label: String) {
+private fun StatusChip(label: String, modifier: Modifier = Modifier) {
     Box(
+        // [modifier] is applied OUTSIDE clip/background so a caller can pin the chip's sizing (e.g.
+        // wrapContentWidth from inside the stacked pills column) without disturbing the rounded fill.
         modifier =
-            Modifier.clip(RoundedCornerShape(50))
-                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            modifier
+                .clip(RoundedCornerShape(50))
+                // FULLY OPAQUE surfaceVariant so the pill SHAPE reads at a glance. History: 0.5f sat as a
+                // faint tint over the card's own surfaceVariant@0.4f fill and barely registered; 0.9f helped
+                // but the chip still washed out — over the expanded recess (the darker scrim) a 0.9f
+                // surfaceVariant lets the dark recess bleed through and mute it. Dropping the alpha entirely
+                // (plain surfaceVariant, alpha = 1.0) gives a solid, clearly-visible neutral chip that no
+                // longer takes on the surface beneath it, while staying a quiet surfaceVariant (not the loud
+                // secondaryContainer PathPill uses) — full contrast against both the header base and the
+                // recess, never disappearing into either.
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .padding(horizontal = 8.dp, vertical = 2.dp),
     ) {
         Text(
@@ -1113,5 +1605,23 @@ private fun iconForDevice(type: Int): ImageVector =
         else -> Icons.Outlined.Speaker
     }
 
+/** The label shown in place of the host's product name for the host's own endpoints. This is pure
+ *  *output* text — it is never compared against anything (host detection is the structural
+ *  [isHostEndpoint] type test), so it does not constitute a name comparison. Hoisted here so all
+ *  sites use one literal and cannot drift. */
+private const val HOST_LABEL = "This device"
+
 /** Width of the icon/connector rail; the connector line is centered within it. */
 private val RAIL_WIDTH = 24.dp
+
+/**
+ * The panel's global horizontal gutter — the per-side inset every piece of content inherits from the
+ * Settings page's surrounding Column(padding(horizontal = ...)). It is NOT applied in this file; this
+ * constant must MIRROR the caller's value so [breakoutHorizontal] can cancel it exactly. If the Settings
+ * page changes its horizontal padding, this must change with it or the idle cards will land at the wrong
+ * distance from the screen edge.
+ */
+private val PANEL_GUTTER = 24.dp
+
+/** How far an idle card should sit from the TRUE screen edge after breaking out of [PANEL_GUTTER]. */
+private val CARD_EDGE_INSET = 8.dp

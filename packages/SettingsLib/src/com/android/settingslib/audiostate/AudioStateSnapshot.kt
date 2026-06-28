@@ -16,6 +16,51 @@
 
 package com.android.settingslib.audiostate
 
+import android.media.AudioDeviceInfo
+
+/**
+ * The on-device endpoint TYPE set: the AudioDeviceInfo type constants that denote an endpoint
+ * physically part of the host (this phone/tablet), never a removable/external accessory. This is a
+ * set of *integer* type enums, so [isHostEndpoint] is a pure Int-in-Set membership test — it never
+ * reads or compares a name, label, or any human-readable string. The product name is identical
+ * across every host endpoint (it is the host's own model), so it is not a useful per-endpoint label;
+ * the structural truth is the device's type, which is what we test.
+ *
+ * Membership rationale (each is a fixed, non-removable endpoint of the host):
+ *  - BUILTIN_EARPIECE / BUILTIN_SPEAKER / BUILTIN_SPEAKER_SAFE — the on-device transducers
+ *    (SPEAKER_SAFE is the same physical speaker driven at a limited level).
+ *  - BUILTIN_MIC — the on-device microphone.
+ *  - TELEPHONY — the modem/telephony endpoint, on-device (both a sink and a source).
+ *  - REMOTE_SUBMIX — the on-device virtual loopback.
+ *  - FM_TUNER / TV_TUNER — the on-device radio/TV tuner inputs (distinct from TYPE_FM, the FM
+ *    *output* path, which is deliberately NOT a host endpoint). Both are non-removable on-device
+ *    tuners in the platform's @AudioDeviceTypeIn set, so they belong here together.
+ *  - ECHO_REFERENCE — the on-device echo-reference loopback.
+ * Every removable type (wired/USB/Bluetooth/BLE/HDMI/dock/line/aux/hearing-aid/IP/bus) is excluded
+ * and keeps its real device name.
+ */
+private val HOST_ENDPOINT_TYPES =
+    setOf(
+        AudioDeviceInfo.TYPE_BUILTIN_EARPIECE,
+        AudioDeviceInfo.TYPE_BUILTIN_SPEAKER,
+        AudioDeviceInfo.TYPE_BUILTIN_SPEAKER_SAFE,
+        AudioDeviceInfo.TYPE_BUILTIN_MIC,
+        AudioDeviceInfo.TYPE_TELEPHONY,
+        AudioDeviceInfo.TYPE_REMOTE_SUBMIX,
+        AudioDeviceInfo.TYPE_FM_TUNER,
+        AudioDeviceInfo.TYPE_TV_TUNER,
+        AudioDeviceInfo.TYPE_ECHO_REFERENCE,
+    )
+
+/**
+ * True when this device is one of the host's own (built-in / on-device) endpoints rather than an
+ * external accessory. Structural test — membership of the device's [AudioDevice.type] enum in
+ * [HOST_ENDPOINT_TYPES]; never a name/string comparison. Renderers use this to label host endpoints
+ * "This device" in the accent color instead of repeating the host's product name.
+ */
+val AudioDevice.isHostEndpoint: Boolean
+    get() = type in HOST_ENDPOINT_TYPES
+
 /**
  * Immutable, fully recomputable description of the device's current audio state.
  *
