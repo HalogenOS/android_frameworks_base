@@ -26,6 +26,7 @@ import android.media.AudioDeviceInfo
 import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioPlaybackConfiguration
+import android.media.AudioRecordingConfiguration
 import android.media.MicrophoneInfo
 import android.os.Handler
 import android.util.Log
@@ -55,15 +56,12 @@ import kotlinx.coroutines.flow.onStart
  * @param context a long-lived context (application context recommended).
  * @param handler handler on which framework callbacks are delivered. The emitting flow is cold;
  *   the handler thread only posts change *triggers*, the heavy mapping runs on the collector.
- * @param codecProvider optional hook supplying the active Bluetooth codec; injected so the data
- *   layer does not hard-depend on the Bluetooth stack and remains unit-testable. May return null.
  * @param outputThreadProvider optional hook supplying the per-thread AudioFlinger snapshot (sources,
  *   mix format, flags, effects, sink port ids). Null in phase 1; wired to the @hide facade later.
  */
 class AudioStateRepository(
     private val context: Context,
     private val handler: Handler,
-    private val codecProvider: BluetoothCodecProvider? = null,
     private val deviceBatteryProvider: DeviceBatteryProvider? = null,
     private val outputThreadProvider: OutputThreadInfoProvider? = null,
 ) {
@@ -103,18 +101,31 @@ class AudioStateRepository(
         // ACTIVE marks a device the system is *currently routing audio to* — a routing truth, NOT
         // "this device is some standing thread's sink". A device is the sink of an idle PRIMARY/
         // telephony thread even when nothing plays, so deriving ACTIVE from the rendered chains would
-        // falsely light up an idle speaker. Instead resolve the live route for each active playback
+        // falsely light up an idle speaker. Instead resolve the live route(s) for each active playback
         // (the same policy query usage labelling uses): no active playback → nothing routed → no
-        // ACTIVE pill.
+        // ACTIVE pill. A usage that resolves to a duplicated path lights up ALL of its devices.
         val activeOutputDeviceIds =
-            activePlaybacks.mapNotNull { routedDeviceFor(it.usage, baseOutputDevices)?.id }.toSet()
+            activePlaybacks.flatMap { routedDevicesFor(it.usage, baseOutputDevices) }
+                .map { it.id }
+                .toSet()
         val outputDevices =
             baseOutputDevices.map { it.copy(isActive = activeOutputDeviceIds.contains(it.id)) }
-        val inputDevices = inputs.map { it.toAudioDevice(isActive = false) }
+
+        // Capture side: read the live recording configs (public API), so an input device is ACTIVE
+        // only when it is actually backing an in-progress recording — never hard-coded false.
+        val recordingConfigs = readActiveRecordingConfigurations()
+        val baseInputDevices = inputs.map { it.toAudioDevice(isActive = false) }
+        val activeInputDeviceIds =
+            recordingConfigs.mapNotNull { it.deviceId }.toSet()
+        val inputDevices =
+            baseInputDevices.map { it.copy(isActive = activeInputDeviceIds.contains(it.id)) }
 
         return AudioStateSnapshot(
             routes = routes,
-            inputRoute = null, // populated alongside record-config support
+            // The capture/input route, if anything is recording. Built entirely from the public
+            // recording-config API (device + device recording format + capture source) — the
+            // AudioFlinger facade excludes capture, so nothing here comes from it.
+            inputRoute = buildInputRoute(recordingConfigs, baseInputDevices),
             outputDevices = outputDevices,
             inputDevices = inputDevices,
             microphones = readMicrophones(),
@@ -152,6 +163,17 @@ class AudioStateRepository(
                     }
                 }
 
+            // Capture-side trigger: a recording starting/stopping/re-routing must recompute the
+            // snapshot so the input route and input-device ACTIVE state stay live.
+            val recordingCallback =
+                object : AudioManager.AudioRecordingCallback() {
+                    override fun onRecordingConfigChanged(
+                        configs: MutableList<AudioRecordingConfiguration>?
+                    ) {
+                        trySend(Unit)
+                    }
+                }
+
             val batteryReceiver =
                 object : BroadcastReceiver() {
                     override fun onReceive(c: Context?, intent: Intent?) {
@@ -161,6 +183,7 @@ class AudioStateRepository(
 
             audioManager.registerAudioDeviceCallback(deviceCallback, handler)
             audioManager.registerAudioPlaybackCallback(playbackCallback, handler)
+            audioManager.registerAudioRecordingCallback(recordingCallback, handler)
             context.registerReceiver(
                 batteryReceiver,
                 IntentFilter(Intent.ACTION_BATTERY_CHANGED),
@@ -169,6 +192,7 @@ class AudioStateRepository(
             awaitClose {
                 audioManager.unregisterAudioDeviceCallback(deviceCallback)
                 audioManager.unregisterAudioPlaybackCallback(playbackCallback)
+                audioManager.unregisterAudioRecordingCallback(recordingCallback)
                 runCatching { context.unregisterReceiver(batteryReceiver) }
             }
         }
@@ -204,12 +228,9 @@ class AudioStateRepository(
      */
     private fun readAccessoryBattery(type: Int, address: String?): Int? {
         val provider = deviceBatteryProvider ?: return null
-        val isBtSink =
-            type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP ||
-                type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO ||
-                type == AudioDeviceInfo.TYPE_BLE_HEADSET ||
-                type == AudioDeviceInfo.TYPE_BLE_SPEAKER
-        if (!isBtSink || address == null) return null
+        // Battery membership includes SCO: a classic headset connected over SCO still reports a
+        // battery level even though it carries no A2DP codec.
+        if (type !in BATTERY_BT_SINK_TYPES || address == null) return null
         return runCatching { provider.batteryPercentFor(address)?.takeIf { it in 0..100 } }
             .getOrNull()
     }
@@ -249,9 +270,12 @@ class AudioStateRepository(
         // next play. The live query reflects the real route through that gap. We use it only when it is
         // UNAMBIGUOUS (all active playbacks route to a single device) so the fallback resolves an exact
         // device, never a guess; an ambiguous multi-device moment falls through to an honest omission.
+        // singleOrNull() here is the wrong-device-bleed guard (verified safe): the fallback is non-null
+        // ONLY when every active playback resolves to exactly ONE device — two devices make it null
+        // (an honest omission), so it can never assign a playing thread to the wrong sink.
         val liveRoutedFallback =
             playbacks
-                .mapNotNull { routedDeviceFor(it.usage, outputDevices) }
+                .flatMap { routedDevicesFor(it.usage, outputDevices) }
                 .distinctBy { it.id }
                 .singleOrNull()
 
@@ -262,17 +286,22 @@ class AudioStateRepository(
             // (PRIMARY/telephony mixer patched to the speaker with nothing playing) is alive but NOT
             // playing — the UI then de-emphasizes it and drops its (non-existent) Source stage.
             val isPlaying = thread.sources.isNotEmpty() || thread.mmapActive == true
-            // The thread's own sink device(s): every enumerated device whose id the thread's patch
-            // names. Multi-sink is "any" — a thread serving several ports matches several devices; we
-            // render the chain against the first matched enumerated device for the device block while
-            // keeping the match itself port-id-exact. When the patch is momentarily empty (gapless
-            // advance) the port-id match yields nothing — fall back to the live-routed device, but only
-            // for a PLAYING thread, so the chain keeps its sink identity instead of flickering to "Not
-            // resolved". No port-id match and (idle, or no live route) → no device (honest omission).
-            val device =
-                outputDevices.firstOrNull { dev -> thread.sinkPortIds.any { it == dev.id } }
-                    ?: liveRoutedFallback?.takeIf { isPlaying }
-            val usageLabel = device?.let { usageByDeviceId[it.id] } ?: "Audio"
+            // The thread's own sink device(s): EVERY enumerated device whose id the thread's patch
+            // names. A non-duplicating thread can carry a multi-sink HAL patch (mPatch.num_sinks > 1),
+            // so the truth is the whole matched set — we never first()/pick one. When the patch is
+            // momentarily empty (gapless advance) the port-id match yields nothing — fall back to the
+            // single live-routed device, but only for a PLAYING thread, so the chain keeps its sink
+            // identity instead of flickering to "Not resolved". No port-id match and (idle, or no live
+            // route) → no device (honest omission, empty list).
+            val matchedDevices =
+                outputDevices.filter { dev -> thread.sinkPortIds.any { it == dev.id } }
+            val devices =
+                matchedDevices.ifEmpty {
+                    liveRoutedFallback?.takeIf { isPlaying }?.let { listOf(it) }.orEmpty()
+                }
+            // Usage label is display-only; key it off the first matched device (the usage map is keyed
+            // by device id and every sink of a duplicated path carries the same routed usage).
+            val usageLabel = devices.firstOrNull()?.let { usageByDeviceId[it.id] } ?: "Audio"
             // "Any active source resamples" — but only a meaningful boolean when there ARE sources.
             // With no observed sources, leave it null ("unknown") rather than a vacuous false, so the
             // renderer omits the Resampling row instead of asserting "No" for a thread with nothing to
@@ -294,20 +323,28 @@ class AudioStateRepository(
                 outputFlags = thread.outputFlags,
                 // Route-level "any source resampling"; per-source truth lives in each AudioSource.
                 resampling = anyResampling,
+                // The DISTINCT source rates feeding the AF stage, gathered from every source (not a
+                // picked one). Keeps the AF-stage rate readout truthful for a multi-source thread,
+                // where sourceFormat is intentionally null. Preserves order of first appearance.
+                sourceSampleRatesHz =
+                    thread.sources.mapNotNull { it.format.sampleRateHz }.distinct(),
                 effectChain = thread.effectChain,
                 latencyMillis = thread.latencyMillis,
+                // Structural path-type int (renderer branches on this); label is display-only.
+                pathType = thread.pathType,
                 pathTypeLabel = thread.pathTypeLabel,
                 hasMixerStage = thread.hasMixerStage,
                 bitPerfect = thread.bitPerfect,
                 activeTrackCount = thread.activeTrackCount,
                 mmapActive = thread.mmapActive,
                 bitPerfectReasons = thread.bitPerfectReasons,
-                outputDevice = device,
+                // The whole matched sink set (one Output-device stage per entry); outputDevice
+                // derives its single-device convenience from the head of this list.
+                outputDevices = devices,
                 // Whether the thread is patched to ANY sink at all. False = no sink (empty device
                 // types) → the renderer says "No output device" (truthfully none), not "could not be
                 // resolved" (which would falsely imply a device exists).
                 hasSinkPortId = thread.sinkPortIds.isNotEmpty(),
-                bluetoothCodec = device?.let { readBluetoothCodec(it) },
             )
         }
     }
@@ -323,7 +360,8 @@ class AudioStateRepository(
     ): List<AudioRoute> {
         if (playbacks.isEmpty()) return emptyList()
         return playbacks.map { pb ->
-            val device = routedDeviceFor(pb.usage, outputDevices)
+            // The live route can be a duplicated path (≥2 devices); carry the whole set, not a pick.
+            val devices = routedDevicesFor(pb.usage, outputDevices)
             AudioRoute(
                 usageLabel = pb.usageLabel,
                 sources = emptyList(),
@@ -341,14 +379,14 @@ class AudioStateRepository(
                 resampling = null,
                 effectChain = null,
                 latencyMillis = null,
+                pathType = null,
                 pathTypeLabel = null,
                 hasMixerStage = null,
                 bitPerfect = null,
                 activeTrackCount = null,
                 mmapActive = null,
                 bitPerfectReasons = null,
-                outputDevice = device,
-                bluetoothCodec = device?.let { readBluetoothCodec(it) },
+                outputDevices = devices,
             )
         }
     }
@@ -364,7 +402,9 @@ class AudioStateRepository(
         outputDevices: List<AudioDevice>,
     ): Map<Int, String> =
         playbacks
-            .mapNotNull { pb -> routedDeviceFor(pb.usage, outputDevices)?.let { it.id to pb.usageLabel } }
+            // A playback routed to a duplicated path contributes its label to EVERY device it routes
+            // to (flatMap over the full device list), not just the first.
+            .flatMap { pb -> routedDevicesFor(pb.usage, outputDevices).map { it.id to pb.usageLabel } }
             .groupBy({ it.first }, { it.second })
             .mapValues { (_, labels) -> labels.distinct().joinToString(" · ") }
 
@@ -432,20 +472,23 @@ class AudioStateRepository(
      * back to an enumerated [AudioDevice] by type + address, with a type-only fallback for builtin
      * devices that report an empty address. This is the only key the policy query exposes here.
      */
-    private fun routedDeviceFor(usage: Int, outputDevices: List<AudioDevice>): AudioDevice? =
+    private fun routedDevicesFor(usage: Int, outputDevices: List<AudioDevice>): List<AudioDevice> =
         runCatching {
             val attributes = AudioAttributes.Builder().setUsage(usage).build()
-            val routed = audioManager.getDevicesForAttributes(attributes).firstOrNull()
-                ?: return null
-            val routedAddress = routed.address.takeIf { it.isNotBlank() }
-            outputDevices.firstOrNull { dev ->
-                dev.type == routed.type && dev.address == routedAddress
-            }
-                // Builtin devices report an empty address; fall back to type-only match.
-                ?: outputDevices.firstOrNull { it.type == routed.type }
+            // getDevicesForAttributes() returns EVERY device the usage is routed to — more than one
+            // for a duplicated path. Resolve each to an enumerated device (never first()-pick), so a
+            // duplicated route lights up / labels all of its devices truthfully.
+            audioManager.getDevicesForAttributes(attributes).mapNotNull { routed ->
+                val routedAddress = routed.address.takeIf { it.isNotBlank() }
+                outputDevices.firstOrNull { dev ->
+                    dev.type == routed.type && dev.address == routedAddress
+                }
+                    // Builtin devices report an empty address; fall back to type-only match.
+                    ?: outputDevices.firstOrNull { it.type == routed.type }
+            }.distinctBy { it.id }
         }.getOrElse {
             Log.w(TAG, "getDevicesForAttributes failed for usage $usage", it)
-            null
+            emptyList()
         }
 
     private fun readMicrophones(): List<MicrophoneInfoSummary> =
@@ -464,14 +507,71 @@ class AudioStateRepository(
             directionalityLabel = AudioStateLabels.micDirectionalityLabel(directionality),
         )
 
-    private fun readBluetoothCodec(device: AudioDevice): BluetoothCodecSummary? {
-        val provider = codecProvider ?: return null
-        val isBtSink =
-            device.type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP ||
-                device.type == AudioDeviceInfo.TYPE_BLE_HEADSET ||
-                device.type == AudioDeviceInfo.TYPE_BLE_SPEAKER
-        if (!isBtSink) return null
-        return runCatching { provider.activeCodecFor(device) }.getOrNull()
+    /**
+     * Reads the live recording configurations (public [AudioManager.getActiveRecordingConfigurations]).
+     * Each is mapped to an [ActiveRecording] carrying the real capture device, the DEVICE recording
+     * format, and the capture source — all real reads, none from the AudioFlinger facade (which
+     * excludes capture). Empty (and a degrade to "nothing recording") on any failure.
+     */
+    private fun readActiveRecordingConfigurations(): List<ActiveRecording> =
+        runCatching {
+            audioManager.activeRecordingConfigurations.map { it.toActiveRecording() }
+        }.getOrElse {
+            Log.w(TAG, "getActiveRecordingConfigurations failed", it)
+            emptyList()
+        }
+
+    private fun AudioRecordingConfiguration.toActiveRecording(): ActiveRecording =
+        ActiveRecording(
+            // getClientAudioSource() is the MediaRecorder.AudioSource being captured — a real read.
+            sourceLabel = AudioStateLabels.captureSourceLabel(clientAudioSource),
+            // getFormat() is the DEVICE recording format (the format audio is actually captured at on
+            // this device). Its encoding is the Java AudioFormat.ENCODING_* space, so it is mapped with
+            // encodingLabel()/bitDepthForEncoding(), NOT the native audio_format_t mappers.
+            captureFormat = format.toCaptureFormatSummary(),
+            // getAudioDevice() is the real input device, or null when not retrievable. Matched to an
+            // enumerated input AudioDevice by stable id so we reuse its full capability matrix.
+            deviceId = runCatching { audioDevice?.id }.getOrNull(),
+        )
+
+    /** Maps a capture [AudioFormat] (Java ENCODING_* space) to a summary, or null when it carries no
+     *  usable rate/depth/channels. */
+    private fun AudioFormat.toCaptureFormatSummary(): AudioFormatSummary? {
+        val rate = sampleRate.takeIf { it > 0 }
+        val channels = channelCount.takeIf { it > 0 }
+        val enc = encoding
+        val depth = AudioStateLabels.bitDepthForEncoding(enc)
+        val label = AudioStateLabels.encodingLabel(enc)
+        if (rate == null && channels == null && depth == null) return null
+        return AudioFormatSummary(
+            sampleRateHz = rate,
+            bitDepth = depth,
+            channelCount = channels,
+            encodingLabel = label,
+            // Float-ness read from the real Java ENCODING_* constant (same invariant as the output-side
+            // summaries), so a PCM_FLOAT capture format carries a truthful isFloat, not a defaulted false.
+            isFloat = AudioStateLabels.isFloatEncoding(enc),
+        )
+    }
+
+    /**
+     * Builds the single active [AudioInputRoute] from the live recording configs, or null when nothing
+     * is recording. When several recordings are in progress the route is honestly the FIRST config's
+     * device/format/source (the model carries one input route; the input-device section already marks
+     * EVERY actively-recording device ACTIVE, so no device is hidden). Nothing is fabricated: a config
+     * with no resolvable device renders the route with a null device, never a guessed one.
+     */
+    private fun buildInputRoute(
+        recordings: List<ActiveRecording>,
+        inputDevices: List<AudioDevice>,
+    ): AudioInputRoute? {
+        val recording = recordings.firstOrNull() ?: return null
+        val device = recording.deviceId?.let { id -> inputDevices.firstOrNull { it.id == id } }
+        return AudioInputRoute(
+            usageLabel = recording.sourceLabel,
+            captureFormat = recording.captureFormat,
+            inputDevice = device,
+        )
     }
 
     private fun usageLabel(usage: Int): String =
@@ -493,14 +593,12 @@ class AudioStateRepository(
         val sourceFormat: AudioFormatSummary?,
     )
 
-    /**
-     * Optional supplier of the active Bluetooth codec for a sink. Implemented by the host using its
-     * Bluetooth stack (e.g. LocalBluetoothManager + BluetoothA2dp.getCodecStatus) so this library
-     * keeps no hard Bluetooth dependency.
-     */
-    fun interface BluetoothCodecProvider {
-        fun activeCodecFor(device: AudioDevice): BluetoothCodecSummary?
-    }
+    /** Internal carrier for a mapped active recording before input-route assembly. */
+    private data class ActiveRecording(
+        val sourceLabel: String,
+        val captureFormat: AudioFormatSummary?,
+        val deviceId: Int?,
+    )
 
     /**
      * Optional supplier of an accessory's battery level (0–100) for a Bluetooth device address,
@@ -554,7 +652,10 @@ class AudioStateRepository(
         val outputFlags: List<String>,
         val effectChain: List<AudioEffectSummary>,
         val latencyMillis: Int?,
-        /** Neutral path-type label (e.g. "Mixed", "Direct", "Offload"). */
+        /** Raw structural path-type int (AudioPathInfo.pathType); the renderer branches on this. Null
+         *  when unknown. The label below is the display rendering of the same int. */
+        val pathType: Int?,
+        /** Neutral path-type label (e.g. "Mixed", "Direct", "Offload"). Display only. */
         val pathTypeLabel: String?,
         /** False for bypass paths (direct/offload/mmap) that have no mixer stage. */
         val hasMixerStage: Boolean,
@@ -590,5 +691,19 @@ class AudioStateRepository(
 
     private companion object {
         const val TAG = "AudioStateRepository"
+
+        /**
+         * Bluetooth SINK device types that can back an accessory BATTERY reading. Includes SCO because
+         * a classic headset on SCO still reports a battery level. This is the battery membership set;
+         * it deliberately differs from a (now-removed) A2DP/BLE-only codec set — the SCO inclusion is
+         * the explicit difference, kept as ONE shared predicate so the two cannot silently drift.
+         */
+        val BATTERY_BT_SINK_TYPES =
+            setOf(
+                AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
+                AudioDeviceInfo.TYPE_BLUETOOTH_SCO,
+                AudioDeviceInfo.TYPE_BLE_HEADSET,
+                AudioDeviceInfo.TYPE_BLE_SPEAKER,
+            )
     }
 }

@@ -71,10 +71,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.settingslib.audiostate.AudioDevice
 import com.android.settingslib.audiostate.AudioFormatSummary
+import com.android.settingslib.audiostate.AudioInputRoute
 import com.android.settingslib.audiostate.AudioRoute
 import com.android.settingslib.audiostate.AudioSource
 import com.android.settingslib.audiostate.AudioStateLabels
 import com.android.settingslib.audiostate.AudioStateSnapshot
+import com.android.settingslib.audiostate.MicrophoneInfoSummary
 import com.android.settingslib.audiostate.isHostEndpoint
 
 /**
@@ -90,12 +92,18 @@ import com.android.settingslib.audiostate.isHostEndpoint
  *   capability matrix beneath the active chain. When false (the compact dialog), render just the
  *   active output chain, or a "no active streams" state (the dialog hosts the "More details"
  *   button that opens this same page in full).
+ * @param panelGutter the per-side horizontal gutter the HOST wraps this component in (its surrounding
+ *   Column padding). The idle cards break out of this gutter to sit closer to the screen edge, so the
+ *   value MUST match the host's actual padding. Passed in (not a baked library constant) so the two
+ *   cannot drift across the module boundary; defaults to [DEFAULT_PANEL_GUTTER] for callers (the
+ *   dialog) that render no broken-out cards.
  */
 @Composable
 fun AudioStateTree(
     snapshot: AudioStateSnapshot,
     modifier: Modifier = Modifier,
     full: Boolean = false,
+    panelGutter: Dp = DEFAULT_PANEL_GUTTER,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         // snapshot.routes is per-active-thread, not per app/usage: each entry is a complete,
@@ -161,7 +169,7 @@ fun AudioStateTree(
                 // stages (chainRender), never from a neighbour — including the 3b case of an idle thread
                 // with no sink, which is still rendered collapsed (no device-presence filtering).
                 if (full && !route.isPlaying) {
-                    IdleChain(route)
+                    IdleChain(route, panelGutter)
                 } else {
                     FullChain(route)
                 }
@@ -169,10 +177,59 @@ fun AudioStateTree(
         }
 
         if (full) {
+            snapshot.inputRoute?.let { InputRouteSection(it) }
             DeviceSection("Output devices", snapshot.outputDevices)
             DeviceSection("Input devices", snapshot.inputDevices)
-            MicrophoneSection(snapshot)
+            MicrophoneSection(snapshot.microphones)
         }
+    }
+}
+
+/**
+ * The active capture/input route (Settings page only), shown when something is recording. Every value
+ * is a real read from one [android.media.AudioRecordingConfiguration]: the capture source, the device
+ * recording format, and the input device — nothing is borrowed or fabricated. Rendered as a compact
+ * Source → Input-device pair, mirroring the output chain's vocabulary. Omitted entirely when nothing
+ * is recording (the caller guards on a non-null inputRoute).
+ */
+@Composable
+private fun InputRouteSection(input: AudioInputRoute) {
+    SectionHeader("Capture")
+    val stages = buildList {
+        add(
+            Stage(
+                icon = Icons.Outlined.Mic,
+                title = "Source",
+                subtitle = input.usageLabel,
+                lines = formatLines(input.captureFormat),
+                provenance = Provenance.FRAMEWORK,
+            )
+        )
+        val dev = input.inputDevice
+        add(
+            Stage(
+                // The input glyph is the mic — iconForDevice() only knows OUTPUT device glyphs (it
+                // maps a built-in mic to the speaker glyph), so use Mic for every capture device; the
+                // precise interface is named in the Interface line / subtitle below.
+                icon = Icons.Outlined.Mic,
+                title = "Input device",
+                // Host endpoints (built-in mic, telephony) carry the host's product name; show
+                // "This device" by structural type. A null device honestly reads "Unknown input
+                // device" — never a guessed identity.
+                subtitle =
+                    when {
+                        dev == null -> "Unknown input device"
+                        dev.isHostEndpoint -> HOST_LABEL
+                        else -> dev.name
+                    },
+                hostLabel = dev?.isHostEndpoint == true,
+                lines = dev?.let { listOf(ReadoutLine.Pair("Interface", it.typeLabel)) }.orEmpty(),
+                provenance = Provenance.FRAMEWORK,
+            )
+        )
+    }
+    stages.forEachIndexed { index, stage ->
+        ChainStage(stage = stage, isLast = index == stages.lastIndex)
     }
 }
 
@@ -188,14 +245,14 @@ private fun FullChain(route: AudioRoute) {
     // chainStages already decides the structure: the summed-source stages (when ≥2 sources) are split
     // out into [ChainRender.group] and the rest into [ChainRender.stages], so this render does no
     // topology computation — it just lays the pieces out in order.
-    val (groupStages, stages) = chainRender(route)
+    val (group, stages) = chainRender(route)
     // The faint rounded outline wraps the ≥2 source stages plus their outgoing arrow into the mixer, so
     // the set reads as one combined signal entering AudioFlinger. The group, when present, always sits
     // at the head of the chain (the mixer/device follows it), so it is never the chain's last element
     // and always carries a trailing gap.
-    if (groupStages.isNotEmpty()) {
+    if (group.isNotEmpty()) {
         SourceGroup {
-            groupStages.forEach { stage ->
+            group.forEach { stage ->
                 // The last grouped stage is never the chain's last stage (the mixer/device follows), so
                 // its outgoing arrow is drawn inside the group and the outline encloses it.
                 ChainStage(stage = stage, isLast = false)
@@ -219,7 +276,7 @@ private fun FullChain(route: AudioRoute) {
  * device".
  */
 @Composable
-private fun IdleChain(route: AudioRoute) {
+private fun IdleChain(route: AudioRoute, panelGutter: Dp) {
     // Per-idle-chain collapsed/expanded UI state. The caller wraps each chain in key(routeIndex), so
     // this remembered flag is already scoped to the chain's stable identity (the visible-list index —
     // AudioRoute carries no thread id; see the caller). A plain remember therefore suffices: the
@@ -244,7 +301,7 @@ private fun IdleChain(route: AudioRoute) {
                 // modifier widens the card past the gutter and shifts it left so it lands ~8dp from the
                 // TRUE screen edge — wider than the text block, less side space than before. See
                 // [breakoutHorizontal] for the edge math.
-                .breakoutHorizontal(gutter = PANEL_GUTTER, inset = CARD_EDGE_INSET)
+                .breakoutHorizontal(gutter = panelGutter, inset = CARD_EDGE_INSET)
                 .clip(RoundedCornerShape(12.dp))
                 // MODIFIER ORDER IS LOAD-BEARING for the press/hover highlight. clickable is placed AFTER
                 // breakoutHorizontal (so its interaction bounds are the WIDENED, broken-out card box, not
@@ -286,7 +343,7 @@ private fun IdleChain(route: AudioRoute) {
         // ONE invariant header, BOTH states. The card stacks its children vertically: the header block
         // always, then — only when expanded — the recess appended BELOW it. The header is built by the
         // EXACT SAME construction regardless of expanded: same wrapper Box, same padding(horizontal = 12.dp,
-        // vertical = 4.dp), same insideCard = true. Expanding the card is literally "the collapsed card, plus
+        // vertical = 4.dp). Expanding the card is literally "the collapsed card, plus
         // content added beneath it" — never a separately-laid-out header with expanded-specific geometry.
         // A bare Column (no wrapping padding) keeps the header block and the recess as direct, FLUSH siblings:
         // no lighter-toned spacer/pad WRAPS the recess (any such space would sit OUTSIDE the darker fill and
@@ -294,7 +351,7 @@ private fun IdleChain(route: AudioRoute) {
         Column {
             // HEADER BLOCK — rendered IDENTICALLY in both states (this is THE invariant). It re-applies the
             // card's 12dp horizontal inset (the outer box supplies none) AND the compact symmetric
-            // vertical = 4.dp, with insideCard = true so the Row takes NO vertical pad of its own. Because
+            // vertical = 4.dp; the Row takes NO vertical pad of its own (the wrapper Box owns it). Because
             // this construction is the SAME whether collapsed or expanded, the icon, title, pills, "Idle"
             // chip and chevron sit at the identical vertical offset in both states — no between-state drift.
             //
@@ -304,7 +361,7 @@ private fun IdleChain(route: AudioRoute) {
             // expanded-specific top padding, no removed bottom pad, no invented separator. The only state
             // difference is the chevron direction, carried by the `expanded` flag (ExpandLess vs ExpandMore).
             Box(modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)) {
-                IdleChainHeader(route = route, expanded = expanded, insideCard = true)
+                IdleChainHeader(route = route, expanded = expanded)
             }
             if (expanded) {
                 // RECESSED CONTENT BACKGROUND (expanded only): the revealed chain body sits on a background
@@ -408,23 +465,13 @@ private fun Modifier.breakoutHorizontal(gutter: Dp, inset: Dp): Modifier = layou
 private fun IdleChainHeader(
     route: AudioRoute,
     expanded: Boolean,
-    // When true, THIS row takes NO vertical pad of its own — the enclosing Box owns the row's vertical
-    // offset, so the header geometry is fixed by that one wrapper (see the call-site comment where the
-    // symmetric vertical = 4.dp is set for the WHY). REQUIRED, no default: passing false produces the wrong
-    // header geometry (the row would add its own top pad and drift down), which is exactly the bug this
-    // header avoids — so the choice must be made explicitly at the call site rather than defaulted. The
-    // single live IdleChain call site passes true; the false branch below is a documented standalone-use
-    // fallback, not currently reached. Named insideCard (not "inset") so it does not read as the
-    // CARD_EDGE_INSET dp distance — a different concept.
-    insideCard: Boolean,
 ) {
     Row(
-        // insideCard (the live path): no vertical pad of our own — the enclosing Box owns the row's vertical
-        // offset (symmetric 4dp), identical across states because it is ONE shared wrapper. The false branch
-        // is the not-currently-reached standalone fallback (adds its own top pad for a caller that does not
-        // wrap the row).
-        modifier =
-            if (insideCard) Modifier.fillMaxWidth() else Modifier.fillMaxWidth().padding(top = 8.dp),
+        // The row takes NO vertical pad of its own — the enclosing Box (the sole caller) owns the row's
+        // vertical offset (symmetric 4dp), identical across states because it is ONE shared wrapper. (A
+        // former insideCard=false standalone-fallback branch was dead — the only call site is inside the
+        // card — so it has been removed; this header is always card-hosted.)
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
@@ -532,20 +579,13 @@ private fun idleChainSummary(route: AudioRoute): String =
  *    pill needs a real bitDepth — when mixFormat.bitDepth == null the depth pill is omitted. The pills are
  *    independent, so a known rate with an unknown depth still shows the rate pill, and vice versa.
  *
- * The bit-depth decomposition (isFloat → "float" suffix, else "bit") is analogous to — NOT identical to —
- * the AF round-trip's [depthToken]. Two deliberate differences:
- *  1. Suffix: this standalone chip reads "16 bit" on the integer branch (self-contained), whereas
- *     [depthToken] emits a bare "16" because it is joined into the "in → mix → out" flow. So [depthToken]
- *     cannot be reused verbatim here.
- *  2. Float source: float-ness here is read from [AudioFormatSummary.isFloat] (the real format constant,
- *     never inferred — see the model doc), the SAME source [formatReadout] uses for its "$depth bit float"
- *     token. [depthToken] instead probes [AudioFormatSummary.encodingLabel] for the substring "float"
- *     ([isFloatFormat]), which is an inference from the label string. This pill intentionally uses the
- *     authoritative boolean rather than the label probe: per the truth-only bar a shown value must be a
- *     real read, never inferred. For well-formed data the two agree; where they could disagree, the
- *     never-inferred [isFloat] is the truthful one, so the pill is anchored to it. Do NOT "reconcile" this
- *     by switching the pill to [isFloatFormat] — that would trade a real read for an inference. (The
- *     expanded "out" token's own use of [isFloatFormat] is in the EXPANDED chain and is out of scope here.)
+ * The bit-depth decomposition (isFloat → "float" suffix, else "bit") differs from the AF round-trip's
+ * [depthToken] in ONE way: this standalone chip reads "16 bit" on the integer branch (self-contained),
+ * whereas [depthToken] emits a bare "16" because it is joined into the "in → mix → out" flow — so
+ * [depthToken] cannot be reused verbatim. Float-ness is identical at the source: BOTH read the real
+ * [AudioFormatSummary.isFloat] field now (the provider sets it on every summary), so the pill and the
+ * expanded round-trip can no longer disagree. (The earlier divergence — this pill on the field, the
+ * round-trip on an encoding-label substring probe — is resolved; the label probe has been removed.)
  */
 private fun idleExitPills(route: AudioRoute): List<String> {
     // Captured into a local because AudioFormatSummary lives in a different module, so its nullable
@@ -556,9 +596,8 @@ private fun idleExitPills(route: AudioRoute): List<String> {
         mix.sampleRateHz?.let { add(AudioStateLabels.formatRateKHz(it)) }
         // Pill 2 (exit bit depth): the depth that EXITS AudioFlinger — "<depth> float" when the sink
         // format is float, else "<depth> bit". Only when the real exit bit depth is known. Float-ness is
-        // read from mixFormat.isFloat (the real format constant, never inferred — same source as
-        // formatReadout), NOT from the encodingLabel "float" substring probe (isFloatFormat) that the
-        // expanded round-trip's depthToken uses: the truth-only bar wants the real read, not an inference.
+        // read from mixFormat.isFloat (the real format constant, never inferred) — the SAME field the
+        // expanded round-trip's depthToken now reads, so the two can no longer disagree.
         mix.bitDepth?.let { depth -> add(if (mix.isFloat) "$depth float" else "$depth bit") }
     }
 }
@@ -574,22 +613,21 @@ private fun routeDeviceIcon(route: AudioRoute): ImageVector =
     route.outputDevice?.let { iconForDevice(it.type) } ?: Icons.Outlined.Speaker
 
 /**
- * The standalone one-line device identity for a chain, used by the collapsed idle summary: the resolved
- * device name when present, otherwise the hasSinkPortId-driven phrasing ("No output device" when the
- * thread genuinely has no sink, per 3b; "Unidentified output device" when a sink exists but matched no
- * enumerated device; "Output device unknown" when the facade gave no sink info). Reads the same two
- * fields the device stage reads (outputDevice / hasSinkPortId), so the collapsed summary and the
- * expanded device stage always agree on WHICH case holds — they differ only in phrasing length (the
- * stage pairs a terse subtitle with a descriptive line; this is the standalone form). Never asserts a
- * device the chain does not carry.
+ * The standalone NO-DEVICE phrasing for a chain, used by the collapsed idle summary when the chain
+ * has no resolved output device: the hasSinkPortId-driven wording ("No output device" when the thread
+ * genuinely has no sink, per 3b; "Unidentified output device" when a sink exists but matched no
+ * enumerated device; "Output device unknown" when the facade gave no sink info). This is reached ONLY
+ * from [idleChainSummary]'s no-device fallback (its elvis already handled the with-device case via the
+ * device's TYPE label), so it never needs — and never shows — the device's product name (which would
+ * resurface the deliberately-hidden host model string). Reads the same hasSinkPortId field the device
+ * stage reads, so the collapsed summary and the expanded device stage always agree on WHICH case holds.
  */
 private fun sinkSubtitle(route: AudioRoute): String =
-    route.outputDevice?.name
-        ?: when (route.hasSinkPortId) {
-            false -> "No output device"
-            true -> "Unidentified output device"
-            null -> "Output device unknown"
-        }
+    when (route.hasSinkPortId) {
+        false -> "No output device"
+        true -> "Unidentified output device"
+        null -> "Output device unknown"
+    }
 
 /**
  * Assembles one active thread's chain top-to-bottom: Source(s) → AudioFlinger mixer (mixer/bit-
@@ -649,8 +687,9 @@ private fun MutableList<Stage>.addChainStages(route: AudioRoute) {
     // hasMixerStage alone: every bypass thread carries a (false) bit-perfect verdict, so gating on
     // `bitPerfect != null` would wrongly pull direct/offload/mmap into this stage and mislabel them
     // "Bit-perfect". The only hasMixerStage==false path that reaches here is therefore the BIT_PERFECT
-    // thread, so the subtitle below reads "Bit-perfect" exactly for it.
-    val isBitPerfectThread = route.pathTypeLabel == "Bit-perfect"
+    // thread, so the subtitle below reads "Bit-perfect" exactly for it. STRUCTURAL test on the raw
+    // pathType int (AudioStateLabels.isBitPerfectPathType), never a display-string compare.
+    val isBitPerfectThread = route.pathType?.let { AudioStateLabels.isBitPerfectPathType(it) } == true
     if ((route.hasMixerStage == true || isBitPerfectThread) && route.hasOutputInfo()) {
         add(
             Stage(
@@ -678,27 +717,33 @@ private fun MutableList<Stage>.addChainStages(route: AudioRoute) {
             )
         )
     }
-    val dev = route.outputDevice
-    if (dev != null) {
-        add(
-            Stage(
-                icon = iconForDevice(dev.type),
-                title = "Output device",
-                // Host endpoints (built-in speaker, telephony, etc.) all carry the host's own product
-                // name, which is noise; show "This device" instead, by structural type — never a name
-                // comparison. The flag tells [ChainStage] to render it in accent even when idle.
-                subtitle = if (dev.isHostEndpoint) HOST_LABEL else dev.name,
-                hostLabel = dev.isHostEndpoint,
-                lines = outputDeviceLines(dev, route),
-                // Device identity/capabilities come from AudioManager; the hardware (DAC) format
-                // comes from the audioserver facade — Hybrid when both are present, framework-only
-                // when the facade gave us no hardware format.
-                provenance =
-                    if (route.hardwareFormat != null) Provenance.HYBRID
-                    else Provenance.FRAMEWORK,
-                batteryPercent = dev.batteryPercent,
+    val devices = route.outputDevices
+    if (devices.isNotEmpty()) {
+        // One Output-device stage PER matched sink. A non-duplicating thread with a multi-sink HAL
+        // patch routes to several devices at once; we render every one truthfully instead of dropping
+        // all but the first. Each stage reads only its OWN device's fields — nothing is borrowed.
+        devices.forEach { dev ->
+            add(
+                Stage(
+                    icon = iconForDevice(dev.type),
+                    title = "Output device",
+                    // Host endpoints (built-in speaker, telephony, etc.) all carry the host's own
+                    // product name, which is noise; show "This device" instead, by structural type —
+                    // never a name comparison. The flag tells [ChainStage] to render it in accent even
+                    // when idle.
+                    subtitle = if (dev.isHostEndpoint) HOST_LABEL else dev.name,
+                    hostLabel = dev.isHostEndpoint,
+                    lines = outputDeviceLines(dev, route),
+                    // Device identity/capabilities come from AudioManager; the hardware (DAC) format
+                    // comes from the audioserver facade — Hybrid when both are present, framework-only
+                    // when the facade gave us no hardware format.
+                    provenance =
+                        if (route.hardwareFormat != null) Provenance.HYBRID
+                        else Provenance.FRAMEWORK,
+                    batteryPercent = dev.batteryPercent,
+                )
             )
-        )
+        }
     } else {
         // No [outputDevice] — but the three causes are DIFFERENT truths and must not be conflated.
         // [hasSinkPortId] tells which: false = the thread has NO sink (we'd be LYING to say "could not
@@ -744,7 +789,7 @@ private fun MutableList<Stage>.addChainStages(route: AudioRoute) {
 private fun MutableList<Stage>.addSourceStages(route: AudioRoute) {
     // Hybrid when the facade contributed the source(s) (bit depth/format), framework-only otherwise.
     val provenance =
-        if (route.sourceFromFacade == true) Provenance.HYBRID else Provenance.FRAMEWORK
+        if (route.sourceFromFacade) Provenance.HYBRID else Provenance.FRAMEWORK
     // The Source stage is leak-proof BY CONSTRUCTION: it is built ONLY from source/track-owned reads
     // (this track's own format + its negotiated flags). It never receives the mixer rate, the
     // hardware format, or the thread path type — the source→mix arrow and the path pill are the AF
@@ -1120,10 +1165,10 @@ private fun DeviceCard(device: AudioDevice) {
 }
 
 @Composable
-private fun MicrophoneSection(snapshot: AudioStateSnapshot) {
-    if (snapshot.microphones.isEmpty()) return
+private fun MicrophoneSection(microphones: List<MicrophoneInfoSummary>) {
+    if (microphones.isEmpty()) return
     SectionHeader("Microphones")
-    snapshot.microphones.forEachIndexed { index, mic ->
+    microphones.forEachIndexed { index, mic ->
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
             Icon(
                 Icons.Outlined.Mic,
@@ -1146,7 +1191,7 @@ private fun MicrophoneSection(snapshot: AudioStateSnapshot) {
                 }.forEach { ReadoutRow(it) }
             }
         }
-        if (index != snapshot.microphones.lastIndex) Spacer(Modifier.height(6.dp))
+        if (index != microphones.lastIndex) Spacer(Modifier.height(6.dp))
     }
 }
 
@@ -1294,6 +1339,7 @@ private fun AudioRoute.hasOutputInfo(): Boolean =
         outputFlags != null ||
         effectChain != null ||
         latencyMillis != null ||
+        pathType != null ||
         pathTypeLabel != null ||
         hasMixerStage != null ||
         bitPerfect != null
@@ -1397,6 +1443,21 @@ private fun sourceFlagsLine(source: AudioSource): ReadoutLine? =
         ReadoutLine.Mono("Track: ${it.joinToString(" ")}")
     }
 
+/**
+ * The DISTINCT source sample rates feeding the AF stage, for the rate-conversion readouts. Prefers
+ * the per-source set ([AudioRoute.sourceSampleRatesHz], every track's real rate — the multi-source
+ * truth); falls back to the single representative [AudioRoute.sourceFormat] rate for the facade-absent
+ * fallback route (which carries no per-track sources but does carry one playback-config rate). Never
+ * fabricates a rate: empty when none is known.
+ */
+private fun afFeedingRates(route: AudioRoute): List<Int> =
+    route.sourceSampleRatesHz.ifEmpty { listOfNotNull(route.sourceFormat?.sampleRateHz) }
+
+/** Joins several feeding rates as "44.1 / 48 kHz" (each exact, no rounding); a single rate renders
+ *  as the plain "48 kHz". Used so a multi-source thread shows every real feeding rate, none picked. */
+private fun formatRateList(ratesHz: List<Int>): String =
+    ratesHz.joinToString(" / ") { AudioStateLabels.formatRateKHz(it) }
+
 /** Readout for the AudioFlinger mixer stage. Effects are their own chain stages, not listed here. */
 private fun mixerLines(route: AudioRoute): List<ReadoutLine> = buildList {
     // The thread's liveness / mixed-track count — an AudioFlinger-thread aggregate, so it is rendered
@@ -1406,11 +1467,18 @@ private fun mixerLines(route: AudioRoute): List<ReadoutLine> = buildList {
     // when the mixer resamples. Bit depth is intentionally NOT folded in here — it is shown as the
     // round-trip line below so the mixer's internal precision change is explicit, not conflated.
     route.mixFormat?.let { mix ->
-        val src = route.sourceFormat?.sampleRateHz
         val mixRate = mix.sampleRateHz
+        // The feeding (source) rate(s) → mix arrow. Uses the DISTINCT source rates of ALL tracks
+        // (route.sourceSampleRatesHz), not a single picked source — so a multi-source thread keeps its
+        // rate context instead of dropping the arrow. The arrow is drawn only when the feeding rate(s)
+        // genuinely differ from the mix rate (a real conversion); rates equal to the mix rate are not
+        // shown as a transition.
+        val feedingRates = afFeedingRates(route)
+        val convertingRates =
+            if (mixRate != null) feedingRates.filter { it != mixRate } else emptyList()
         val rate =
-            if (src != null && mixRate != null && src != mixRate)
-                "${AudioStateLabels.formatRateKHz(src)} → ${AudioStateLabels.formatRateKHz(mixRate)}"
+            if (convertingRates.isNotEmpty() && mixRate != null)
+                "${formatRateList(convertingRates)} → ${AudioStateLabels.formatRateKHz(mixRate)}"
             else mixRate?.let { AudioStateLabels.formatRateKHz(it) }
         val parts = buildList {
             rate?.let { add(it) }
@@ -1434,7 +1502,7 @@ private fun mixerLines(route: AudioRoute): List<ReadoutLine> = buildList {
     // real reads (the source format's bit depth + the internal format being float), zero inference.
     // PCM_16 source → plain "16" (16 ≤ 24). A bit-perfect/direct path with no float accumulation
     // (internal not float / absent) → full depth, no cap.
-    val internalIsFloat = internal?.let { isFloatFormat(it) } == true
+    val internalIsFloat = internal?.isFloat == true
     val flow = buildList {
         input?.takeIf { it.bitDepth != null }?.let { add("in ${inputDepthToken(it, internalIsFloat)}") }
         internal?.takeIf { it.bitDepth != null }?.let { add("mix ${depthToken(it)}") }
@@ -1444,14 +1512,17 @@ private fun mixerLines(route: AudioRoute): List<ReadoutLine> = buildList {
         add(ReadoutLine.Pair("Bit depth", flow.joinToString(" → ")))
     }
     route.resampling?.let { resampling ->
-        // When resampling, show the rate conversion (source → mix) the mixer performs; otherwise
-        // a plain "No". The source/mix rates come from the same proven track-vs-device comparison
-        // that set the boolean, so the arrow and the flag never disagree.
-        val srcRate = route.sourceFormat?.sampleRateHz
+        // When resampling, show the rate conversion the mixer performs — the feeding rate(s) → mix
+        // rate. Uses ALL distinct source rates (afFeedingRates), not a single picked source, so a
+        // multi-source thread shows "Yes (44.1 / 48 → 48 kHz)" instead of a contextless bare "Yes".
+        // Only the rates that actually convert (differ from the mix rate) are listed. When no rate
+        // context is available at all (rates unknown) it degrades honestly to "Yes".
         val mixRate = route.mixFormat?.sampleRateHz
+        val convertingRates =
+            if (mixRate != null) afFeedingRates(route).filter { it != mixRate } else emptyList()
         val value =
-            if (resampling && srcRate != null && mixRate != null)
-                "Yes (${AudioStateLabels.formatRateKHz(srcRate)} → ${AudioStateLabels.formatRateKHz(mixRate)})"
+            if (resampling && convertingRates.isNotEmpty() && mixRate != null)
+                "Yes (${formatRateList(convertingRates)} → ${AudioStateLabels.formatRateKHz(mixRate)})"
             else if (resampling) "Yes"
             else "No"
         add(ReadoutLine.Pair("Resampling", value))
@@ -1481,13 +1552,11 @@ private fun mixerLines(route: AudioRoute): List<ReadoutLine> = buildList {
  */
 private fun pathPill(route: AudioRoute): String? {
     val label = route.pathTypeLabel ?: return null
-    return if (label.equals("MMAP", ignoreCase = true) ||
-        label.contains("MMAP", ignoreCase = true)
-    ) {
-        "$label · AAudio"
-    } else {
-        label
-    }
+    // STRUCTURAL gate: the "· AAudio" suffix rides an MMAP-exclusive path, decided from the raw
+    // pathType int (AudioStateLabels.isMmapPathType), never a substring of the display label. When the
+    // structural int is absent (phase-1 fallback) we cannot assert MMAP, so we show the plain label.
+    val isMmap = route.pathType?.let { AudioStateLabels.isMmapPathType(it) } == true
+    return if (isMmap) "$label · AAudio" else label
 }
 
 private fun outputDeviceLines(device: AudioDevice, route: AudioRoute): List<ReadoutLine> = buildList {
@@ -1511,14 +1580,8 @@ private fun outputDeviceLines(device: AudioDevice, route: AudioRoute): List<Read
             depth != null -> add(ReadoutLine.Pair("Bit depth", "$depth bit"))
         }
     }
-    route.bluetoothCodec?.let { c ->
-        val parts = buildList {
-            add(c.codecName)
-            c.bitDepth?.let { add("$it bit") }
-            c.sampleRateHz?.let { add(AudioStateLabels.formatRateKHz(it)) }
-        }
-        add(ReadoutLine.Pair("Codec", parts.joinToString(" ")))
-    }
+    // No Bluetooth-codec row: there is no truthful source for the active codec (the AIDL carries no
+    // codec field and no host wires one), so the panel does not advertise data it cannot show.
 }
 
 private fun deviceLines(device: AudioDevice): List<ReadoutLine> = buildList {
@@ -1547,13 +1610,14 @@ private fun batteryIconFor(percent: Int): ImageVector =
 
 /**
  * One segment of the AF bit-depth round-trip, e.g. "32 float" or "16". The depth is the read bit
- * depth; the "float" suffix is derived from the format's own encoding label (PCM float) rather than
- * assumed, so a non-float format renders as a plain depth. Used for the internal (mix) and output
- * segments so each reflects its own real precision. Caller guarantees [format].bitDepth is non-null.
+ * depth; the "float" suffix is read from [AudioFormatSummary.isFloat] — the real format constant
+ * (the provider now sets it on every summary), never an encoding-label substring probe — so a
+ * non-float format renders as a plain depth. Used for the internal (mix) and output segments so each
+ * reflects its own real precision. Caller guarantees [format].bitDepth is non-null.
  */
 private fun depthToken(format: AudioFormatSummary): String {
     val depth = "${format.bitDepth}"
-    return if (isFloatFormat(format)) "$depth float" else depth
+    return if (format.isFloat) "$depth float" else depth
 }
 
 /**
@@ -1567,18 +1631,17 @@ private fun depthToken(format: AudioFormatSummary): String {
  * Caller guarantees [format].bitDepth is non-null.
  */
 private fun inputDepthToken(format: AudioFormatSummary, throughFloat: Boolean): String {
-    val containerBits = format.bitDepth!!
+    // Guarded read instead of !!: every current caller already gates on bitDepth != null, but a safe
+    // default keeps a future caller from crashing — the token degrades to "—" rather than throwing.
+    val containerBits = format.bitDepth ?: return "—"
     val token = depthToken(format)
     // Float significand is a 24-bit mantissa; effective = min(containerBits, 24). Annotate only on an
     // actual reduction (the source's own float buffer would not cap itself further than its depth).
-    return if (throughFloat && !isFloatFormat(format) && FLOAT_SIGNIFICAND_BITS < containerBits)
-        "$token ($FLOAT_SIGNIFICAND_BITS" + "e)"
+    // float-ness read from the real isFloat field (same source as depthToken), never a label probe.
+    return if (throughFloat && !format.isFloat && FLOAT_SIGNIFICAND_BITS < containerBits)
+        "$token (${FLOAT_SIGNIFICAND_BITS}e)"
     else token
 }
-
-/** True when a format's own encoding label says PCM float (read, never assumed). */
-private fun isFloatFormat(format: AudioFormatSummary): Boolean =
-    format.encodingLabel?.contains("float", ignoreCase = true) == true
 
 /** IEEE-754 single-precision significand: 24-bit mantissa. The mixer's float accumulation cannot
  *  carry more than this many effective bits, so a >24-bit integer source is precision-capped here. */
@@ -1611,17 +1674,19 @@ private fun iconForDevice(type: Int): ImageVector =
  *  sites use one literal and cannot drift. */
 private const val HOST_LABEL = "This device"
 
-/** Width of the icon/connector rail; the connector line is centered within it. */
+/** Width of the icon/connector rail; the connector line is centered within it. NOTE: this happens to
+ *  equal [DEFAULT_PANEL_GUTTER] (both 24.dp) but is an UNRELATED quantity — the rail width, not a
+ *  page gutter. The two must not be merged; their equal value is coincidental. */
 private val RAIL_WIDTH = 24.dp
 
 /**
- * The panel's global horizontal gutter — the per-side inset every piece of content inherits from the
- * Settings page's surrounding Column(padding(horizontal = ...)). It is NOT applied in this file; this
- * constant must MIRROR the caller's value so [breakoutHorizontal] can cancel it exactly. If the Settings
- * page changes its horizontal padding, this must change with it or the idle cards will land at the wrong
- * distance from the screen edge.
+ * Default for the [AudioStateTree] `panelGutter` parameter — the per-side horizontal gutter the host
+ * wraps the component in. The Settings page passes its REAL gutter explicitly (see
+ * AudioInformationPageProvider); this default exists only for callers that render no broken-out idle
+ * cards (the QS dialog passes full=false and never reaches an idle card), so the value is never the
+ * load-bearing one for them. Coincidentally equals [RAIL_WIDTH] (both 24.dp) but is unrelated to it.
  */
-private val PANEL_GUTTER = 24.dp
+private val DEFAULT_PANEL_GUTTER = 24.dp
 
-/** How far an idle card should sit from the TRUE screen edge after breaking out of [PANEL_GUTTER]. */
+/** How far an idle card should sit from the TRUE screen edge after breaking out of the panel gutter. */
 private val CARD_EDGE_INSET = 8.dp

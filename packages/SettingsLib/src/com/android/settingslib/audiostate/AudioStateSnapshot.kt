@@ -91,7 +91,12 @@ data class AudioStateSnapshot(
      */
     val routes: List<AudioRoute>,
 
-    /** Active capture/input route, if any recording is in progress. */
+    /**
+     * Active capture/input route, if any recording is in progress. Populated from the public
+     * [android.media.AudioManager.getActiveRecordingConfigurations] API (device + device recording
+     * format + capture source) — NOT from the AudioFlinger facade, whose `listActiveAudioPaths`
+     * deliberately excludes capture threads. Null when nothing is recording.
+     */
     val inputRoute: AudioInputRoute?,
 
     /** Every enumerated output device (sinks) with full capability matrices. */
@@ -152,10 +157,11 @@ data class AudioRoute(
     /**
      * True when [sourceFormat] / [sources] were contributed by the audioserver facade (real
      * per-track bit depth) rather than the AudioPlaybackConfiguration fallback. Drives the Source
-     * stage's Hybrid provenance. Null/false when the facade was absent and the source came from
-     * AudioManager only.
+     * stage's Hybrid provenance. False when the facade was absent and the source came from
+     * AudioManager only. Plain (non-null) Boolean: every construction site sets it explicitly, so
+     * there is no "unknown" tri-state to model — false IS the framework-provenance answer.
      */
-    val sourceFromFacade: Boolean? = null,
+    val sourceFromFacade: Boolean = false,
 
     // --- Phase 2: AudioFlinger output-thread internals (null until @hide accessors land) ---
 
@@ -188,13 +194,34 @@ data class AudioRoute(
      */
     val resampling: Boolean?,
 
+    /**
+     * The DISTINCT source sample rates (Hz) feeding this thread's AF stage, gathered from every
+     * [AudioSource.format] (not a single picked source). Lets the AF-stage rate readout stay
+     * truthful for a MULTI-source thread, where [sourceFormat] is intentionally null (no single
+     * representative): a one-element list is the "src → mix" arrow's source rate; a multi-element
+     * list is shown honestly as several feeding rates ("44.1 / 48 kHz → mix"), never collapsed to a
+     * fabricated single rate. Empty when no source rate is known. Distinct from [sourceFormat],
+     * which is a one-source display convenience.
+     */
+    val sourceSampleRatesHz: List<Int> = emptyList(),
+
     /** Active effects applied on this output, in chain order (e.g. equalizer, loudness). */
     val effectChain: List<AudioEffectSummary>?,
 
     /** Reported output latency in milliseconds, if available. */
     val latencyMillis: Int?,
 
-    /** Neutral label for the data path this route runs on, e.g. "Mixed", "Direct", "Offload". */
+    /**
+     * The raw path-type int from the audio-information contract (AudioPathInfo.pathType): the
+     * STRUCTURAL signal for which AudioFlinger data path this route runs on. This is the truth the
+     * renderer branches on (via [AudioStateLabels.isBitPerfectPathType] / [isMmapPathType]); it is
+     * NEVER a display-string compare. Null = unknown (phase 1 / facade absent). [pathTypeLabel] is
+     * the human-readable rendering of this same int and is for DISPLAY only.
+     */
+    val pathType: Int? = null,
+
+    /** Neutral label for the data path this route runs on, e.g. "Mixed", "Direct", "Offload".
+     *  DISPLAY only — structural decisions branch on [pathType], never on this string. */
     val pathTypeLabel: String? = null,
 
     /**
@@ -236,8 +263,22 @@ data class AudioRoute(
 
     // --- The physical interface the stream leaves through ---
 
-    /** The device this route is currently routed to (the "Output Device" block). */
-    val outputDevice: AudioDevice?,
+    /**
+     * EVERY enumerated sink device this route is patched to. A non-duplicating thread can carry a
+     * HAL patch with several sinks (mPatch.num_sinks > 1), so the truth is the whole matched set —
+     * never a first()/picked one. The renderer emits one Output-device stage per entry. Empty when
+     * the thread has no resolved sink (unpatched / unmatched port id); [hasSinkPortId] then tells
+     * which honest "no device" wording to show.
+     */
+    val outputDevices: List<AudioDevice> = emptyList(),
+
+    /**
+     * Convenience single-device accessor: the first matched sink in [outputDevices], or null when
+     * none matched. Retained for the single-device readouts (collapsed idle summary, header icon,
+     * Bluetooth-codec lookup) that draw ONE device; the full multi-sink truth is in [outputDevices].
+     * This is NOT a "primary" — it is the head of the matched set for one-device displays only.
+     */
+    val outputDevice: AudioDevice? = outputDevices.firstOrNull(),
 
     /**
      * Tri-state knowledge of whether this thread has a sink, used to tell the truth when [outputDevice]
@@ -251,15 +292,21 @@ data class AudioRoute(
      *    neutral "unknown" wording, asserting neither presence nor absence.
      */
     val hasSinkPortId: Boolean? = null,
-
-    /** Bluetooth codec in use when [outputDevice] is a Bluetooth sink. */
-    val bluetoothCodec: BluetoothCodecSummary?,
 )
 
-/** Active capture route counterpart to [AudioRoute]. */
+/**
+ * Active capture route counterpart to [AudioRoute]. Every field is a real read from a single
+ * [android.media.AudioRecordingConfiguration] (public API): nothing is the AudioFlinger facade's
+ * (which excludes capture) and nothing is borrowed across configs.
+ */
 data class AudioInputRoute(
+    /** Neutral label for the capture SOURCE (MediaRecorder.AudioSource), e.g. "Microphone",
+     *  "Voice recognition", "Camcorder" — read from getClientAudioSource(). */
     val usageLabel: String,
+    /** The DEVICE recording format (getFormat()) — the format audio is actually captured at on this
+     *  device. Null when the config exposed no usable format. */
     val captureFormat: AudioFormatSummary?,
+    /** The input device used for this recording (getAudioDevice()), or null when not retrievable. */
     val inputDevice: AudioDevice?,
 )
 
@@ -339,14 +386,6 @@ data class AudioSource(
      * never "Requested". Empty when the facade reported no flags.
      */
     val outputFlags: List<String> = emptyList(),
-)
-
-/** Bluetooth codec line, e.g. "LDAC 32 bit 96 kHz". */
-data class BluetoothCodecSummary(
-    val codecName: String,
-    val sampleRateHz: Int?,
-    val bitDepth: Int?,
-    val channelLabel: String?,
 )
 
 /** One effect in an output's active chain. */

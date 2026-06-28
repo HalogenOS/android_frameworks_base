@@ -85,6 +85,10 @@ class AudioFlingerInfoProvider : AudioStateRepository.OutputThreadInfoProvider {
                     bitDepth = AudioStateLabels.bitDepthForNativeFormat(mixFormat),
                     channelCount = channelCount(mixChannelMask),
                     encodingLabel = AudioStateLabels.nativeFormatLabel(mixFormat),
+                    // Float-ness read from the real native format constant (same source the source
+                    // tracks use), so the idle-exit pill and the AF round-trip read the true value —
+                    // a PCM_FLOAT mix output reads "32 float", never a defaulted "32 bit".
+                    isFloat = AudioStateLabels.isFloatNativeFormat(mixFormat),
                 )
             else null
 
@@ -100,6 +104,9 @@ class AudioFlingerInfoProvider : AudioStateRepository.OutputThreadInfoProvider {
                     bitDepth = AudioStateLabels.bitDepthForNativeFormat(mixInternalFormat),
                     channelCount = channelCount(mixChannelMask),
                     encodingLabel = AudioStateLabels.nativeFormatLabel(mixInternalFormat),
+                    // The internal accumulation buffer is typically PCM_FLOAT; read the real flag so
+                    // the round-trip's "mix 32 float" segment comes from the field, not a label probe.
+                    isFloat = AudioStateLabels.isFloatNativeFormat(mixInternalFormat),
                 )
             else null
 
@@ -111,6 +118,8 @@ class AudioFlingerInfoProvider : AudioStateRepository.OutputThreadInfoProvider {
                     bitDepth = AudioStateLabels.bitDepthForNativeFormat(hardwareFormat),
                     channelCount = channelCount(hardwareChannelMask),
                     encodingLabel = AudioStateLabels.nativeFormatLabel(hardwareFormat),
+                    // Float-ness of the HAL/DAC-side format, read from the real native constant.
+                    isFloat = AudioStateLabels.isFloatNativeFormat(hardwareFormat),
                 )
             else null
 
@@ -153,6 +162,9 @@ class AudioFlingerInfoProvider : AudioStateRepository.OutputThreadInfoProvider {
             // derived in the repository, not collapsed here.
             effectChain = effects.orEmpty().map { it.toSummary() },
             latencyMillis = latencyMs.takeIf { it > 0 },
+            // Forward the STRUCTURAL path-type int (the renderer branches on this); the label is the
+            // display rendering of the same int.
+            pathType = pathType,
             pathTypeLabel = AudioStateLabels.pathTypeLabel(pathType),
             hasMixerStage = hasMixerStage,
             // Bit-perfect verdict computed in the facade under the AF + thread mutex; the reasons
@@ -170,7 +182,7 @@ class AudioFlingerInfoProvider : AudioStateRepository.OutputThreadInfoProvider {
             // so the UI uses the mixer track-count signal instead of printing "Not active" on a live
             // mixer chain.
             mmapActive =
-                if (pathType == PATH_TYPE_MMAP_EXCLUSIVE) activeTrackCount > 0 else null,
+                if (AudioStateLabels.isMmapPathType(pathType)) activeTrackCount > 0 else null,
         )
     }
 
@@ -200,8 +212,5 @@ class AudioFlingerInfoProvider : AudioStateRepository.OutputThreadInfoProvider {
     private companion object {
         const val TAG = "AudioFlingerInfo"
         const val SERVICE_NAME = "custom.media.audio_information"
-
-        /** Mirrors the path-type ints frozen in the AIDL contract (3 = MMAP exclusive). */
-        const val PATH_TYPE_MMAP_EXCLUSIVE = 3
     }
 }

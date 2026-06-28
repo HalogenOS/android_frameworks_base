@@ -16,9 +16,9 @@
 
 package com.android.settingslib.audiostate
 
-import android.bluetooth.BluetoothCodecConfig
 import android.media.AudioDeviceInfo
 import android.media.AudioFormat
+import android.media.MediaRecorder
 import android.media.MicrophoneInfo
 
 /**
@@ -32,14 +32,19 @@ import android.media.MicrophoneInfo
  */
 object AudioStateLabels {
 
-    // Path-type ints, matching the audio-information contract (custom.media.audio_information).
-    private const val PATH_TYPE_MIXED = 0
-    private const val PATH_TYPE_DIRECT = 1
-    private const val PATH_TYPE_OFFLOAD = 2
-    private const val PATH_TYPE_MMAP_EXCLUSIVE = 3
-    private const val PATH_TYPE_BIT_PERFECT = 4
-    private const val PATH_TYPE_SPATIALIZER = 5
-    // 6 = UNKNOWN, handled by the else branch of pathTypeLabel.
+    // Path-type ints, matching the audio-information contract (custom.media.audio_information,
+    // AudioPathInfo.pathType). THE single Kotlin source of these values — the provider and renderer
+    // must branch through the predicates below (e.g. [isBitPerfectPathType], [isMmapPathType]) rather
+    // than re-declaring the ints or comparing display strings. The native facade keeps its own
+    // mirrored copy (kPathType* in AudioInformationService.cpp) because the AIDL declares no named
+    // constants; these are the Kotlin-side mirror.
+    const val PATH_TYPE_MIXED = 0
+    const val PATH_TYPE_DIRECT = 1
+    const val PATH_TYPE_OFFLOAD = 2
+    const val PATH_TYPE_MMAP_EXCLUSIVE = 3
+    const val PATH_TYPE_BIT_PERFECT = 4
+    const val PATH_TYPE_SPATIALIZER = 5
+    const val PATH_TYPE_UNKNOWN = 6
 
     // audio_output_flags_t bits (system/audio-hal-enums.h). Each is a distinct power-of-two flag in
     // the raw bitmask the facade reads from the output thread.
@@ -75,13 +80,19 @@ object AudioStateLabels {
             AudioDeviceInfo.TYPE_BLE_HEADSET -> "Bluetooth LE headset"
             AudioDeviceInfo.TYPE_BLE_SPEAKER -> "Bluetooth LE speaker"
             AudioDeviceInfo.TYPE_HDMI -> "HDMI"
+            AudioDeviceInfo.TYPE_HDMI_ARC -> "HDMI ARC"
+            AudioDeviceInfo.TYPE_HDMI_EARC -> "HDMI eARC"
             AudioDeviceInfo.TYPE_DOCK -> "Dock"
+            AudioDeviceInfo.TYPE_DOCK_ANALOG -> "Dock (analog)"
             AudioDeviceInfo.TYPE_TELEPHONY -> "Telephony"
             AudioDeviceInfo.TYPE_FM -> "FM"
             AudioDeviceInfo.TYPE_AUX_LINE -> "AUX line"
             AudioDeviceInfo.TYPE_LINE_ANALOG -> "Line (analog)"
             AudioDeviceInfo.TYPE_LINE_DIGITAL -> "Line (digital)"
             AudioDeviceInfo.TYPE_REMOTE_SUBMIX -> "Remote submix"
+            AudioDeviceInfo.TYPE_HEARING_AID -> "Hearing aid"
+            AudioDeviceInfo.TYPE_ECHO_REFERENCE -> "Echo reference"
+            AudioDeviceInfo.TYPE_BLE_BROADCAST -> "Bluetooth LE broadcast"
             else -> "Unknown ($type)"
         }
 
@@ -102,6 +113,14 @@ object AudioStateLabels {
             AudioFormat.ENCODING_INVALID -> "Invalid"
             else -> "Encoding $encoding"
         }
+
+    /**
+     * Whether a Java [AudioFormat] ENCODING_* value encodes samples as floating point — the Java-space
+     * counterpart to [isFloatNativeFormat] (native audio_format_t). Used so a capture
+     * [AudioFormatSummary] carries the same truthful float flag as the output-side summaries; read from
+     * the encoding constant, never inferred. Only ENCODING_PCM_FLOAT is float.
+     */
+    fun isFloatEncoding(encoding: Int): Boolean = encoding == AudioFormat.ENCODING_PCM_FLOAT
 
     /** Determinate PCM bit depth for an encoding, or null for compressed/float/unknown. */
     fun bitDepthForEncoding(encoding: Int): Int? =
@@ -125,56 +144,62 @@ object AudioStateLabels {
     private const val NATIVE_PCM_FLOAT = 0x5
     private const val NATIVE_PCM_24_BIT_PACKED = 0x6
 
+    /**
+     * One row of native-format truth, so the label/family/depth/float facets cannot drift: a single
+     * keyed table is the source for all four accessors below. Adding a 7th native format means adding
+     * ONE entry here instead of editing four parallel `when`s.
+     *
+     * @property label fused neutral label ("PCM 16-bit").
+     * @property depth determinate integer PCM bit depth, or null for non-integer/unclean depths
+     *   (8.24 is a 32-bit container with 24 significant bits — not a clean integer depth).
+     * @property isFloat true only for the float sample representation.
+     */
+    private data class NativeFormatDescriptor(
+        val label: String,
+        val depth: Int?,
+        val isFloat: Boolean,
+    )
+
+    // Family is uniform across every KNOWN native format (all are PCM; float-ness rides the depth
+    // token, not the family), so it is a single constant rather than a per-row field.
+    private const val NATIVE_PCM_FAMILY = "PCM"
+
+    private val NATIVE_FORMATS: Map<Int, NativeFormatDescriptor> =
+        mapOf(
+            NATIVE_PCM_8_BIT to NativeFormatDescriptor("PCM 8-bit", 8, isFloat = false),
+            NATIVE_PCM_16_BIT to NativeFormatDescriptor("PCM 16-bit", 16, isFloat = false),
+            NATIVE_PCM_24_BIT_PACKED to NativeFormatDescriptor("PCM 24-bit", 24, isFloat = false),
+            NATIVE_PCM_32_BIT to NativeFormatDescriptor("PCM 32-bit", 32, isFloat = false),
+            // Float carries 32 bits per sample but is not an integer "bit depth"; report 32.
+            NATIVE_PCM_FLOAT to NativeFormatDescriptor("PCM float", 32, isFloat = true),
+            // 8.24 is a 32-bit container with 24 significant bits — not a clean integer depth (null).
+            NATIVE_PCM_8_24_BIT to NativeFormatDescriptor("PCM 8.24-bit", null, isFloat = false),
+        )
+
     /** Neutral label for a native audio_format_t value (as delivered by the AudioFlinger facade). */
     fun nativeFormatLabel(nativeFormat: Int): String =
-        when (nativeFormat) {
-            NATIVE_PCM_16_BIT -> "PCM 16-bit"
-            NATIVE_PCM_8_BIT -> "PCM 8-bit"
-            NATIVE_PCM_32_BIT -> "PCM 32-bit"
-            NATIVE_PCM_8_24_BIT -> "PCM 8.24-bit"
-            NATIVE_PCM_FLOAT -> "PCM float"
-            NATIVE_PCM_24_BIT_PACKED -> "PCM 24-bit"
-            else -> "Format 0x${Integer.toHexString(nativeFormat)}"
-        }
+        NATIVE_FORMATS[nativeFormat]?.label ?: "Format 0x${Integer.toHexString(nativeFormat)}"
 
     /**
      * Encoding FAMILY label for a native audio_format_t — the encoding nature WITHOUT the bit depth,
      * so a readout can show depth and family as separate tokens ("16 bit · … · PCM" rather than the
-     * fused "PCM 16-bit"). Integer PCM variants all collapse to "PCM" (their depth is carried by
-     * [bitDepthForNativeFormat]); float keeps "PCM float" because float is the encoding's nature, not a
-     * bit count. Unknown formats fall back to the full hex label (no family to strip).
+     * fused "PCM 16-bit"). Every known native format is PCM, so it collapses to "PCM" (depth carried
+     * by [bitDepthForNativeFormat]; float-ness by the DEPTH token, not the family). Unknown formats
+     * fall back to the full hex label (no family to strip).
      */
     fun nativeFormatFamily(nativeFormat: Int): String =
-        when (nativeFormat) {
-            NATIVE_PCM_8_BIT,
-            NATIVE_PCM_16_BIT,
-            NATIVE_PCM_32_BIT,
-            NATIVE_PCM_8_24_BIT,
-            NATIVE_PCM_24_BIT_PACKED,
-            // Float is PCM too: "PCM" is the family, and float-ness is a sample-representation
-            // specialization carried by the DEPTH token ("32 bit float"), not the family.
-            NATIVE_PCM_FLOAT -> "PCM"
-            else -> "Format 0x${Integer.toHexString(nativeFormat)}"
-        }
+        if (NATIVE_FORMATS.containsKey(nativeFormat)) NATIVE_PCM_FAMILY
+        else "Format 0x${Integer.toHexString(nativeFormat)}"
 
     /**
      * Whether a native audio_format_t encodes samples as floating point (the "float" specialization of
      * the depth token, e.g. "32 bit float"). Read from the format constant, never inferred.
      */
-    fun isFloatNativeFormat(nativeFormat: Int): Boolean = nativeFormat == NATIVE_PCM_FLOAT
+    fun isFloatNativeFormat(nativeFormat: Int): Boolean =
+        NATIVE_FORMATS[nativeFormat]?.isFloat == true
 
     /** Determinate PCM bit depth for a native audio_format_t value, or null for non-PCM/unclean. */
-    fun bitDepthForNativeFormat(nativeFormat: Int): Int? =
-        when (nativeFormat) {
-            NATIVE_PCM_8_BIT -> 8
-            NATIVE_PCM_16_BIT -> 16
-            NATIVE_PCM_24_BIT_PACKED -> 24
-            NATIVE_PCM_32_BIT -> 32
-            // Float carries 32 bits per sample but is not an integer "bit depth"; report 32.
-            NATIVE_PCM_FLOAT -> 32
-            // 8.24 is a 32-bit container with 24 significant bits — not a clean integer depth.
-            else -> null
-        }
+    fun bitDepthForNativeFormat(nativeFormat: Int): Int? = NATIVE_FORMATS[nativeFormat]?.depth
 
     /** Neutral microphone location label. */
     fun micLocationLabel(location: Int): String =
@@ -196,46 +221,24 @@ object AudioStateLabels {
             else -> "Unknown"
         }
 
-    /** Neutral Bluetooth A2DP codec name from a [BluetoothCodecConfig] codec type. */
-    fun bluetoothCodecName(codecType: Int): String =
-        when (codecType) {
-            BluetoothCodecConfig.SOURCE_CODEC_TYPE_SBC -> "SBC"
-            BluetoothCodecConfig.SOURCE_CODEC_TYPE_AAC -> "AAC"
-            BluetoothCodecConfig.SOURCE_CODEC_TYPE_APTX -> "aptX"
-            BluetoothCodecConfig.SOURCE_CODEC_TYPE_APTX_HD -> "aptX HD"
-            BluetoothCodecConfig.SOURCE_CODEC_TYPE_LDAC -> "LDAC"
-            BluetoothCodecConfig.SOURCE_CODEC_TYPE_LC3 -> "LC3"
-            BluetoothCodecConfig.SOURCE_CODEC_TYPE_OPUS -> "Opus"
-            else -> "Unknown"
-        }
-
-    /** Bluetooth codec sample rate in Hz from the [BluetoothCodecConfig] SAMPLE_RATE_* bitmask. */
-    fun bluetoothSampleRateHz(sampleRate: Int): Int? =
-        when (sampleRate) {
-            BluetoothCodecConfig.SAMPLE_RATE_44100 -> 44100
-            BluetoothCodecConfig.SAMPLE_RATE_48000 -> 48000
-            BluetoothCodecConfig.SAMPLE_RATE_88200 -> 88200
-            BluetoothCodecConfig.SAMPLE_RATE_96000 -> 96000
-            BluetoothCodecConfig.SAMPLE_RATE_176400 -> 176400
-            BluetoothCodecConfig.SAMPLE_RATE_192000 -> 192000
-            else -> null
-        }
-
-    /** Bluetooth codec bit depth from the [BluetoothCodecConfig] BITS_PER_SAMPLE_* bitmask. */
-    fun bluetoothBitDepth(bitsPerSample: Int): Int? =
-        when (bitsPerSample) {
-            BluetoothCodecConfig.BITS_PER_SAMPLE_16 -> 16
-            BluetoothCodecConfig.BITS_PER_SAMPLE_24 -> 24
-            BluetoothCodecConfig.BITS_PER_SAMPLE_32 -> 32
-            else -> null
-        }
-
-    /** Bluetooth channel-mode label. */
-    fun bluetoothChannelLabel(channelMode: Int): String =
-        when (channelMode) {
-            BluetoothCodecConfig.CHANNEL_MODE_MONO -> "Mono"
-            BluetoothCodecConfig.CHANNEL_MODE_STEREO -> "Stereo"
-            else -> "Unknown"
+    /**
+     * Neutral label for a capture source constant ([MediaRecorder.AudioSource], as returned by
+     * [android.media.AudioRecordingConfiguration.getClientAudioSource]). Names what is being
+     * recorded — the input-side counterpart to the playback usage label.
+     */
+    fun captureSourceLabel(source: Int): String =
+        when (source) {
+            MediaRecorder.AudioSource.MIC -> "Microphone"
+            MediaRecorder.AudioSource.VOICE_RECOGNITION -> "Voice recognition"
+            MediaRecorder.AudioSource.VOICE_COMMUNICATION -> "Voice call"
+            MediaRecorder.AudioSource.CAMCORDER -> "Camcorder"
+            MediaRecorder.AudioSource.UNPROCESSED -> "Unprocessed"
+            MediaRecorder.AudioSource.VOICE_UPLINK -> "Voice uplink"
+            MediaRecorder.AudioSource.VOICE_DOWNLINK -> "Voice downlink"
+            MediaRecorder.AudioSource.VOICE_CALL -> "Voice call (up + down)"
+            MediaRecorder.AudioSource.VOICE_PERFORMANCE -> "Voice performance"
+            MediaRecorder.AudioSource.REMOTE_SUBMIX -> "Remote submix"
+            else -> "Audio"
         }
 
     /**
@@ -252,6 +255,20 @@ object AudioStateLabels {
             PATH_TYPE_SPATIALIZER -> "Spatializer"
             else -> "Unknown"
         }
+
+    /**
+     * STRUCTURAL bit-perfect-path test for a raw path-type int — the truthful replacement for the
+     * renderer's old `pathTypeLabel == "Bit-perfect"` string compare. Branches on the int constant,
+     * so a relabel of the display string can never change structure.
+     */
+    fun isBitPerfectPathType(pathType: Int): Boolean = pathType == PATH_TYPE_BIT_PERFECT
+
+    /**
+     * STRUCTURAL MMAP-exclusive-path test for a raw path-type int — the truthful replacement for the
+     * renderer's old `contains("MMAP")` label probe. The only MMAP path type the contract defines is
+     * MMAP exclusive, so this is an exact-int test, never a substring match.
+     */
+    fun isMmapPathType(pathType: Int): Boolean = pathType == PATH_TYPE_MMAP_EXCLUSIVE
 
     /**
      * Decomposes a raw `audio_output_flags_t` bitmask into neutral flag labels, in bit order. Only
