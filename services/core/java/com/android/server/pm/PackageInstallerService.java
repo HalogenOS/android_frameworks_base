@@ -2157,6 +2157,10 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
     @Override
     public void addDeveloperVerificationExperiment(String packageName, int verificationPolicy,
             int[] results) {
+        if (!PackageManagerServiceUtils.isSystemOrRootOrShell(Binder.getCallingUid())) {
+            throw new SecurityException(
+                    "Caller not allowed to add developer verification experiments");
+        }
         List<Integer> resultsList = new ArrayList<>(results.length);
         for (int i = 0; i < results.length; i++) {
             resultsList.add(results[i]);
@@ -2166,6 +2170,10 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
 
     @Override
     public void clearDeveloperVerificationExperiment(String packageName) {
+        if (!PackageManagerServiceUtils.isSystemOrRootOrShell(Binder.getCallingUid())) {
+            throw new SecurityException(
+                    "Caller not allowed to clear developer verification experiments");
+        }
         mDeveloperVerifierController.clearExperiment(packageName);
     }
 
