@@ -14,8 +14,6 @@ import android.system.keystore2.KeyMetadata;
 import android.security.KeyStoreSecurityLevel;
 import android.util.Log;
 
-import com.android.internal.util.SimplePropImitation;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -73,12 +71,21 @@ public final class AttestationRetryHooks {
             return null;
         }
 
-        // Only fire when the spoofing path is active (any verified-boot state
-        // other than green). On a real OEM-verified (green) boot the caller
-        // would otherwise lose legitimate device-ID attestation by falling
-        // into the strip path — leave the original failure to surface so
-        // normal Android security flow takes over.
-        if (!SimplePropImitation.shouldSpoof()) {
+        // Gate on keybox presence, NOT on shouldSpoof(): on an RKP-only device
+        // the remote-provisioned attestation key cannot attest ANY device IDs
+        // (device-ID attestation needs the factory key that RKP replaced), so
+        // real KeyMint returns CANNOT_ATTEST_IDS for real OR spoofed IDs alike.
+        //
+        //   - No keybox  -> salvage the real, Google-rooted RKP attestation by
+        //     dropping the ID tags and keeping the challenge. This is what
+        //     yields MEETS_BASIC_INTEGRITY on an unlocked RKP device (the real
+        //     RootOfTrust is attested; provided the spoof layer isn't forcing a
+        //     contradicting boot state, the verdict is consistent).
+        //   - Keybox present -> do NOT salvage here. Returning null lets
+        //     generation fall through to the no-attestation path, where
+        //     KeyboxImitationHooks forges the full chain (verified/locked +
+        //     spoofed device IDs) — the MEETS_DEVICE_INTEGRITY path.
+        if (KeyProviderManager.isKeyboxAvailable()) {
             return null;
         }
 
@@ -96,8 +103,10 @@ public final class AttestationRetryHooks {
                 || p.tag == Tag.ATTESTATION_ID_MEID);
 
         try {
-            return iSecurityLevel.generateKey(descriptor, attestKeyDescriptor,
-                    stripped, flags, additionalEntropy);
+            KeyMetadata metadata = iSecurityLevel.generateKey(descriptor,
+                    attestKeyDescriptor, stripped, flags, additionalEntropy);
+            Log.i(TAG, "ID-stripped RKP attestation succeeded (BASIC path)");
+            return metadata;
         } catch (KeyStoreException retryErr) {
             Log.w(TAG, "ID-stripped retry failed: " + retryErr.getErrorCode());
             return null;
