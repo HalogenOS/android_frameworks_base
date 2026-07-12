@@ -1023,6 +1023,10 @@ public class ComputerEngine implements Computer {
         packageName = resolveInternalPackageName(packageName,
                 PackageManager.VERSION_CODE_HIGHEST);
 
+        if (shouldHideFromCallerEnumeration(packageName, filterCallingUid)) {
+            return null;
+        }
+
         AndroidPackage p = mPackages.get(packageName);
         if (DEBUG_PACKAGE_INFO) {
             Log.v(
@@ -1059,6 +1063,50 @@ public class ComputerEngine implements Computer {
                     flags, filterCallingUid, userId);
         }
         return null;
+    }
+
+    /**
+     * Package-name prefix of aftermarket-identity apps that are hidden from unprivileged
+     * third-party apps during package enumeration and by-name lookups. This is an
+     * enumeration-only, app-compatibility filter; it never affects intent resolution and never
+     * applies to system, root, shell or other privileged callers.
+     */
+    private static final String HIDDEN_ENUMERATION_PACKAGE_PREFIX = "org.lineageos.";
+
+    /**
+     * Returns true when the given package should be hidden from the calling app during package
+     * enumeration or by-name lookup. Only unprivileged, non-system app callers are affected;
+     * system, root and shell callers always see the full package set. This must never be applied
+     * on intent-resolution paths.
+     */
+    private boolean shouldHideFromCallerEnumeration(@Nullable String targetPackageName,
+            int callingUid) {
+        if (targetPackageName == null
+                || !targetPackageName.startsWith(HIDDEN_ENUMERATION_PACKAGE_PREFIX)) {
+            return false;
+        }
+        final int callingAppId = UserHandle.getAppId(callingUid);
+        if (callingAppId < Process.FIRST_APPLICATION_UID) {
+            // System, root and shell callers see everything.
+            return false;
+        }
+        // System apps (including updated system apps) that run with an app UID must also be able
+        // to enumerate these packages; only unprivileged third-party callers are filtered.
+        final Object obj = mSettings.getSettingBase(callingAppId);
+        if (obj instanceof SharedUserSetting) {
+            final ArraySet<PackageStateInternal> packageStates =
+                    (ArraySet<PackageStateInternal>) ((SharedUserSetting) obj).getPackageStates();
+            for (int i = packageStates.size() - 1; i >= 0; i--) {
+                if (packageStates.valueAt(i).isSystem()) {
+                    return false;
+                }
+            }
+        } else if (obj instanceof PackageStateInternal) {
+            if (((PackageStateInternal) obj).isSystem()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -1681,6 +1729,10 @@ public class ComputerEngine implements Computer {
         // Normalize package name to handle renamed packages and static libs
         packageName = resolveInternalPackageName(packageName, versionCode);
 
+        if (shouldHideFromCallerEnumeration(packageName, filterCallingUid)) {
+            return null;
+        }
+
         final boolean matchFactoryOnly = (flags & MATCH_FACTORY_ONLY) != 0;
         final boolean matchApex = (flags & MATCH_APEX) != 0;
         if (matchFactoryOnly) {
@@ -1817,6 +1869,9 @@ public class ComputerEngine implements Computer {
                 if (shouldFilterApplication(ps, callingUid, userId)) {
                     continue;
                 }
+                if (shouldHideFromCallerEnumeration(ps.getPackageName(), callingUid)) {
+                    continue;
+                }
                 final PackageInfo pi = generatePackageInfo(ps, flags, userId);
                 if (pi != null) {
                     list.add(pi);
@@ -1843,6 +1898,9 @@ public class ComputerEngine implements Computer {
                     continue;
                 }
                 if (shouldFilterApplication(ps, callingUid, userId)) {
+                    continue;
+                }
+                if (shouldHideFromCallerEnumeration(ps.getPackageName(), callingUid)) {
                     continue;
                 }
                 final PackageInfo pi = generatePackageInfo(ps, flags, userId);
@@ -2787,6 +2845,9 @@ public class ComputerEngine implements Computer {
 
     public int getPackageUidInternal(String packageName,
             @PackageManager.PackageInfoFlagsBits long flags, int userId, int callingUid) {
+        if (shouldHideFromCallerEnumeration(packageName, callingUid)) {
+            return INVALID_UID;
+        }
         // reader
         var packageState = mSettings.getPackage(packageName);
         final AndroidPackage p = mPackages.get(packageName);
@@ -3777,6 +3838,9 @@ public class ComputerEngine implements Computer {
             @PackageManager.PackageInfoFlagsBits long flags, @UserIdInt int userId) {
         if (!mUserManager.exists(userId)) return null;
         final int callingUid = Binder.getCallingUid();
+        if (shouldHideFromCallerEnumeration(packageName, callingUid)) {
+            return null;
+        }
         flags = updateFlagsForPackage(flags, userId);
         enforceCrossUserPermission(callingUid, userId, false /*requireFullPermission*/,
                 false /*checkShell*/, "getPackageGids");
@@ -3806,6 +3870,9 @@ public class ComputerEngine implements Computer {
 
     @Override
     public int getTargetSdkVersion(@NonNull String packageName)  {
+        if (shouldHideFromCallerEnumeration(packageName, Binder.getCallingUid())) {
+            return -1;
+        }
         final PackageStateInternal ps = getPackageStateInternal(packageName);
         if (ps == null || ps.getPkg() == null) {
             return -1;
@@ -4264,6 +4331,10 @@ public class ComputerEngine implements Computer {
     @Override
     public int checkSignatures(@NonNull String pkg1, @NonNull String pkg2, int userId) {
         final int callingUid = Binder.getCallingUid();
+        if (shouldHideFromCallerEnumeration(pkg1, callingUid)
+                || shouldHideFromCallerEnumeration(pkg2, callingUid)) {
+            return PackageManager.SIGNATURE_UNKNOWN_PACKAGE;
+        }
         enforceCrossUserPermission(callingUid, userId, false /* requireFullPermission */,
                 false /* checkShell */, "checkSignatures");
 
@@ -4763,6 +4834,9 @@ public class ComputerEngine implements Computer {
                     if (shouldFilterApplication(ps, callingUid, userId)) {
                         continue;
                     }
+                    if (shouldHideFromCallerEnumeration(ps.getPackageName(), callingUid)) {
+                        continue;
+                    }
                     ai = PackageInfoUtils.generateApplicationInfo(ps.getPkg(), effectiveFlags,
                             ps.getUserStateOrDefault(userId), userId, ps);
                     if (ai != null) {
@@ -4792,6 +4866,9 @@ public class ComputerEngine implements Computer {
                     continue;
                 }
                 if (shouldFilterApplication(packageState, callingUid, userId)) {
+                    continue;
+                }
+                if (shouldHideFromCallerEnumeration(packageState.getPackageName(), callingUid)) {
                     continue;
                 }
                 ApplicationInfo ai = PackageInfoUtils.generateApplicationInfo(pkg, flags,
@@ -5187,6 +5264,9 @@ public class ComputerEngine implements Computer {
     @Nullable
     private InstallSource getInstallSource(@NonNull String packageName, int callingUid,
             int userId) {
+        if (shouldHideFromCallerEnumeration(packageName, callingUid)) {
+            return null;
+        }
         final PackageStateInternal ps = mSettings.getPackage(packageName);
 
         // Installer info for Apex is not stored in PackageManager
