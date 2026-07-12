@@ -21,15 +21,13 @@ import android.app.Application;
 import android.app.TaskStackListener;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Process;
 import android.os.SystemProperties;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
-
-import com.android.internal.R;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -176,7 +174,7 @@ public class SimplePropImitation {
      * Special handling for GMS processes - checks for Add Account activity
      */
     private static void setCertifiedPropsForGms(Context context) {
-        loadCertifiedPropsFromResources(context);
+        loadCertifiedProps(context);
 
         final boolean wasAddAccountOnTop = isGmsAddAccountActivityOnTop();
 
@@ -212,30 +210,30 @@ public class SimplePropImitation {
      * Load and set certified props without checking for Add Account activity
      */
     private static void loadAndSetCertifiedProps(Context context) {
-        loadCertifiedPropsFromResources(context);
+        loadCertifiedProps(context);
         applyCertifiedProps();
     }
 
     /**
-     * Load certified properties from resources
+     * Load certified properties from the caller-gated CorporateControlSatisfier
+     * provider. The props no longer live in the framework-res resource table;
+     * they are handed out synchronously through a ContentResolver.call() by the
+     * priv-app that owns them.
      */
-    private static void loadCertifiedPropsFromResources(Context context) {
+    private static void loadCertifiedProps(Context context) {
         if (sCertifiedProps != null) {
             return;
         }
 
-        final Resources res = context.getResources();
-        if (res == null) {
-            Log.e(TAG, "Null resources");
-            return;
-        }
-
         try {
-            sCertifiedProps = Arrays.asList(
-                    res.getStringArray(R.array.config_certifiedBuildProperties));
-            dlog("Loaded " + sCertifiedProps.size() + " certified properties from resources");
+            Bundle result = context.getContentResolver().call(
+                    "custom.corporatecontrolsatisfier",
+                    "obtainControlConformanceAttributes", null, null);
+            String[] props = (result != null) ? result.getStringArray("attributes") : null;
+            sCertifiedProps = (props != null) ? Arrays.asList(props) : Arrays.asList();
+            dlog("Loaded " + sCertifiedProps.size() + " certified properties");
         } catch (Exception e) {
-            Log.e(TAG, "Failed to load certified properties from resources", e);
+            Log.e(TAG, "Failed to load certified properties", e);
             sCertifiedProps = Arrays.asList();
         }
     }
