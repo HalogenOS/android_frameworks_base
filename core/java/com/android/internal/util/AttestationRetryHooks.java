@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-package com.android.internal.util.clover;
+package com.android.internal.util;
 
 import android.hardware.security.keymint.KeyParameter;
 import android.hardware.security.keymint.Tag;
@@ -28,7 +28,7 @@ import java.util.List;
  * builds where:
  *
  *   - The bootloader is unlocked and OEM-provisioned attestation keys are gated
- *     (which is what Pong does);
+ *     (the RKP-only case — no factory batch keys to fall back on);
  *   - Remote Key Provisioning (RKP) is enabled and can still mint hardware-backed
  *     attestation keys;
  *   - The caller (e.g. sandboxed GMS / Finsky on GmsCompat) lacks the
@@ -39,9 +39,8 @@ import java.util.List;
  * dropped only the ID tags and kept the challenge. This helper attempts that
  * intermediate retry before the SPI gives up and falls back to no-attestation.
  *
- * Without this fallback the Play Integrity BASIC verdict cannot pass on Pong
- * unlocked, because the cert chain sent to Google's PI server has no attestation
- * extension at all.
+ * Without this fallback the BASIC integrity verdict cannot pass on such devices,
+ * because the cert chain sent for evaluation has no attestation extension at all.
  *
  * @hide
  */
@@ -71,24 +70,22 @@ public final class AttestationRetryHooks {
             return null;
         }
 
-        // Gate on keybox presence, NOT on shouldSpoof(): on an RKP-only device
-        // the remote-provisioned attestation key cannot attest ANY device IDs
-        // (device-ID attestation needs the factory key that RKP replaced), so
-        // real KeyMint returns CANNOT_ATTEST_IDS for real OR spoofed IDs alike.
+        // Always salvage a real, Google-rooted RKP attestation on
+        // CANNOT_ATTEST_IDS by dropping the ID tags and keeping the challenge.
+        // On an RKP-only device the remote-provisioned key cannot attest ANY
+        // device IDs (real or spoofed), so without this the key loses its
+        // attestation extension entirely and falls back to no-attestation.
         //
-        //   - No keybox  -> salvage the real, Google-rooted RKP attestation by
-        //     dropping the ID tags and keeping the challenge. This is what
-        //     yields MEETS_BASIC_INTEGRITY on an unlocked RKP device (the real
-        //     RootOfTrust is attested; provided the spoof layer isn't forcing a
-        //     contradicting boot state, the verdict is consistent).
-        //   - Keybox present -> do NOT salvage here. Returning null lets
-        //     generation fall through to the no-attestation path, where
-        //     KeyboxImitationHooks forges the full chain (verified/locked +
-        //     spoofed device IDs) — the MEETS_DEVICE_INTEGRITY path.
-        if (KeyProviderManager.isKeyboxAvailable()) {
-            return null;
-        }
-
+        // Keeping a real attestation here is what BOTH downstream paths need:
+        //   - No keybox  -> KeyboxImitationHooks passes the salvaged attestation
+        //     through untouched; its real RootOfTrust yields
+        //     MEETS_BASIC_INTEGRITY on an unlocked device.
+        //   - Keybox present -> KeyboxImitationHooks.onGetKeyEntry *patches*
+        //     this real attestation (swaps RootOfTrust to verified/locked and
+        //     the device IDs, re-signs with the keybox) — the modify path,
+        //     which preserves the fields Google's verifier expects. Falling
+        //     back to no-attestation would instead build a minimal cert from
+        //     scratch, which the verifier rejects.
         Log.w(TAG, "Attestation IDs not permitted, retrying without IDs");
         List<KeyParameter> stripped = new ArrayList<>(originalArgs);
         stripped.removeIf(p ->

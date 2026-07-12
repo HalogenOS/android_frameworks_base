@@ -55,7 +55,7 @@ import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
 
-import com.android.internal.util.clover.AttestationRetryHooks;
+import com.android.internal.util.AttestationRetryHooks;
 import com.android.internal.util.clover.KeyboxImitationHooks;
 import com.android.internal.util.clover.KeyProviderManager;
 
@@ -854,55 +854,70 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
                 }
             }
             for (final Integer idType : idTypesSet) {
-                switch (idType) {
-                    case AttestationUtils.ID_TYPE_SERIAL:
-                        params.add(KeyStore2ParameterUtils.makeBytes(
-                                KeymasterDefs.KM_TAG_ATTESTATION_ID_SERIAL,
-                                Build.getSerial().getBytes(StandardCharsets.UTF_8)
-                        ));
-                        break;
-                    case AttestationUtils.ID_TYPE_IMEI: {
-                        final String imei = telephonyService.getImei(0);
-                        if (imei == null) {
-                            throw new DeviceIdAttestationException("Unable to retrieve IMEI");
-                        }
-                        params.add(KeyStore2ParameterUtils.makeBytes(
-                                KeymasterDefs.KM_TAG_ATTESTATION_ID_IMEI,
-                                imei.getBytes(StandardCharsets.UTF_8)
-                        ));
-                        final String secondImei = telephonyService.getImei(1);
-                        if (!TextUtils.isEmpty(secondImei)) {
+                // Reading device identifiers (serial / IMEI / MEID) requires
+                // privileged permissions the caller may not hold — e.g.
+                // sandboxed GMS, which lacks READ_PRIVILEGED_PHONE_STATE. On an
+                // RKP-only device these identifiers cannot be attested anyway
+                // (the remote-provisioned key has no factory-burned IDs), so a
+                // SecurityException here must not abort the whole key
+                // generation: skip the identifier we cannot read and let
+                // attestation proceed with the challenge (and RootOfTrust)
+                // intact. DeviceIdAttestationException / IllegalArgumentException
+                // still surface as before.
+                try {
+                    switch (idType) {
+                        case AttestationUtils.ID_TYPE_SERIAL:
                             params.add(KeyStore2ParameterUtils.makeBytes(
-                                    KeymasterDefs.KM_TAG_ATTESTATION_ID_SECOND_IMEI,
-                                    secondImei.getBytes(StandardCharsets.UTF_8)
+                                    KeymasterDefs.KM_TAG_ATTESTATION_ID_SERIAL,
+                                    Build.getSerial().getBytes(StandardCharsets.UTF_8)
                             ));
+                            break;
+                        case AttestationUtils.ID_TYPE_IMEI: {
+                            final String imei = telephonyService.getImei(0);
+                            if (imei == null) {
+                                throw new DeviceIdAttestationException("Unable to retrieve IMEI");
+                            }
+                            params.add(KeyStore2ParameterUtils.makeBytes(
+                                    KeymasterDefs.KM_TAG_ATTESTATION_ID_IMEI,
+                                    imei.getBytes(StandardCharsets.UTF_8)
+                            ));
+                            final String secondImei = telephonyService.getImei(1);
+                            if (!TextUtils.isEmpty(secondImei)) {
+                                params.add(KeyStore2ParameterUtils.makeBytes(
+                                        KeymasterDefs.KM_TAG_ATTESTATION_ID_SECOND_IMEI,
+                                        secondImei.getBytes(StandardCharsets.UTF_8)
+                                ));
+                            }
+                            break;
                         }
-                        break;
-                    }
-                    case AttestationUtils.ID_TYPE_MEID: {
-                        String meid;
-                        try {
-                            meid = telephonyService.getMeid(0);
-                        } catch (UnsupportedOperationException e) {
-                            Log.e(TAG, "Unable to retrieve MEID", e);
-                            meid = null;
+                        case AttestationUtils.ID_TYPE_MEID: {
+                            String meid;
+                            try {
+                                meid = telephonyService.getMeid(0);
+                            } catch (UnsupportedOperationException e) {
+                                Log.e(TAG, "Unable to retrieve MEID", e);
+                                meid = null;
+                            }
+                            if (meid == null) {
+                                throw new DeviceIdAttestationException("Unable to retrieve MEID");
+                            }
+                            params.add(KeyStore2ParameterUtils.makeBytes(
+                                    KeymasterDefs.KM_TAG_ATTESTATION_ID_MEID,
+                                    meid.getBytes(StandardCharsets.UTF_8)
+                            ));
+                            break;
                         }
-                        if (meid == null) {
-                            throw new DeviceIdAttestationException("Unable to retrieve MEID");
+                        case AttestationUtils.USE_INDIVIDUAL_ATTESTATION: {
+                            params.add(KeyStore2ParameterUtils.makeBool(
+                                    KeymasterDefs.KM_TAG_DEVICE_UNIQUE_ATTESTATION));
+                            break;
                         }
-                        params.add(KeyStore2ParameterUtils.makeBytes(
-                                KeymasterDefs.KM_TAG_ATTESTATION_ID_MEID,
-                                meid.getBytes(StandardCharsets.UTF_8)
-                        ));
-                        break;
+                        default:
+                            throw new IllegalArgumentException("Unknown device ID type " + idType);
                     }
-                    case AttestationUtils.USE_INDIVIDUAL_ATTESTATION: {
-                        params.add(KeyStore2ParameterUtils.makeBool(
-                                KeymasterDefs.KM_TAG_DEVICE_UNIQUE_ATTESTATION));
-                        break;
-                    }
-                    default:
-                        throw new IllegalArgumentException("Unknown device ID type " + idType);
+                } catch (SecurityException e) {
+                    Log.w(TAG, "Skipping attestation for device ID type " + idType
+                            + "; caller lacks permission to read it", e);
                 }
             }
         }
