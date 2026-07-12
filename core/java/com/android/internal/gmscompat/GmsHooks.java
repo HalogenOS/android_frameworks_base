@@ -62,6 +62,7 @@ import com.android.internal.gmscompat.flags.GmsFlag;
 import com.android.internal.gmscompat.flags.GmsFlagOverrides;
 import com.android.internal.gmscompat.gcarriersettings.GCarrierSettingsApp;
 import com.android.internal.gmscompat.gcarriersettings.TestCarrierConfigService;
+import com.android.internal.util.SyntheticDeviceId;
 import com.android.internal.gmscompat.sysservice.GmcPackageManager;
 
 import java.util.ArrayList;
@@ -228,6 +229,13 @@ public final class GmsHooks {
         String serial = ssaid.toUpperCase();
         Log.d(TAG, "Generating serial number from SSAID: " + serial);
         return serial;
+    }
+
+    // TelephonyManager#getImei(int)
+    // Return a synthetic, SSAID-derived IMEI so device-identifier reads never
+    // throw or leak the real IMEI to sandboxed GMS. Mirrors getSerial() above.
+    public static String getImei(int slot) {
+        return SyntheticDeviceId.synthesizeImei(slot);
     }
 
     static class RecentBinderPid implements Comparable<RecentBinderPid> {
