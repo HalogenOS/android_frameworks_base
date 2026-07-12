@@ -1510,6 +1510,12 @@ public class SettingsProvider extends ContentProvider {
             Slog.v(LOG_TAG, "getAllGlobalSettings()");
         }
 
+        // Decide whether to mask before taking mLock: isMaskGlobalSettingCaller() does a
+        // permission IPC, which must not run while the provider-wide lock is held. This covers the
+        // enumerate-all paths (query() with a null name and call(LIST_GLOBAL)), which do not route
+        // through getGlobalSetting() and would otherwise leak the real developer-mode/adb values.
+        final boolean maskCaller = isMaskGlobalSettingCaller();
+
         synchronized (mLock) {
             // Get the settings.
             // Note that global settings are applicable only for the default device, hence pass
@@ -1535,7 +1541,9 @@ public class SettingsProvider extends ContentProvider {
                     // Caller doesn't have permission to read this setting
                     continue;
                 }
-                Setting setting = settingsState.getSettingLocked(name);
+                Setting setting = (maskCaller && isMaskedGlobalSettingName(name))
+                        ? settingsState.makeSyntheticSetting(name, "0")
+                        : settingsState.getSettingLocked(name);
                 appendSettingToCursor(result, setting);
             }
 
@@ -1551,13 +1559,51 @@ public class SettingsProvider extends ContentProvider {
         // Ensure the caller can access the setting.
         enforceSettingReadable(name, SETTINGS_TYPE_GLOBAL, UserHandle.getCallingUserId());
 
+        // Decide whether to mask before taking mLock: shouldMaskGlobalSettingForCaller() does a
+        // permission IPC, which must not run while the provider-wide lock is held.
+        final boolean mask = shouldMaskGlobalSettingForCaller(name);
+
         // Get the value.
         synchronized (mLock) {
             // Global settings are applicable only for the default device, hence pass
             // Context.DEVICE_ID_DEFAULT as the deviceId.
+            if (mask) {
+                SettingsState settingsState = mSettingsRegistry.getSettingsLocked(
+                        SETTINGS_TYPE_GLOBAL, UserHandle.USER_SYSTEM, Context.DEVICE_ID_DEFAULT);
+                if (settingsState != null) {
+                    return settingsState.makeSyntheticSetting(name, "0");
+                }
+            }
             return mSettingsRegistry.getSettingLocked(SETTINGS_TYPE_GLOBAL,
                     UserHandle.USER_SYSTEM, Context.DEVICE_ID_DEFAULT, name);
         }
+    }
+
+    // Only developer-mode and adb-enabled Global settings are masked from unprivileged apps.
+    private static boolean isMaskedGlobalSettingName(String name) {
+        return Global.DEVELOPMENT_SETTINGS_ENABLED.equals(name)
+                || Global.ADB_ENABLED.equals(name);
+    }
+
+    // True when the current caller must be shown a masked value for the sensitive Global settings.
+    // Hide developer-mode / adb state from unprivileged third-party apps: detectors and some
+    // banking apps probe these settings to decide the device is "tampered" when developer options
+    // or adb are enabled, and reporting a constant "0" (off) removes that signal. System, root,
+    // shell (appId below the first application uid) and callers holding WRITE_SECURE_SETTINGS keep
+    // reading the real value, so on-device behavior is unchanged.
+    private boolean isMaskGlobalSettingCaller() {
+        if (UserHandle.getAppId(Binder.getCallingUid()) < Process.FIRST_APPLICATION_UID) {
+            // system, root, shell and other platform uids: unchanged behavior.
+            return false;
+        }
+        // Privileged/system components that can toggle these settings see the real value.
+        return getContext().checkCallingOrSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS)
+                != PackageManager.PERMISSION_GRANTED;
+    }
+
+    // Returns true when the given Global setting should be reported as "0" (off) to the caller.
+    private boolean shouldMaskGlobalSettingForCaller(String name) {
+        return isMaskedGlobalSettingName(name) && isMaskGlobalSettingCaller();
     }
 
     private boolean updateGlobalSetting(String name, String value, String tag,

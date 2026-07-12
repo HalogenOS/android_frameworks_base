@@ -558,6 +558,16 @@ public class SettingsState {
         return mNullSetting;
     }
 
+    /**
+     * Builds an in-memory {@link Setting} that is never stored, used to report a synthetic value
+     * to a caller without exposing the persisted one. Uses the side-effect-free constructor so no
+     * package-manager lookup (see {@code isSystemPackage}) is performed while a lock is held.
+     */
+    public Setting makeSyntheticSetting(String name, String value) {
+        return new Setting(name, value, /* defaultValue */ null, /* packageName */ null,
+                /* tag */ null, /* fromSystem */ false, /* id */ 0);
+    }
+
     // The settings provider must hold its lock when calling here.
     @GuardedBy("mLock")
     public void setVersionLocked(int version) {
