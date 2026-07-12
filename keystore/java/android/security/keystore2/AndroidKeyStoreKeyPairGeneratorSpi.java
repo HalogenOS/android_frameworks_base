@@ -56,6 +56,7 @@ import android.util.ArraySet;
 import android.util.Log;
 
 import com.android.internal.util.AttestationRetryHooks;
+import com.android.internal.util.SyntheticDeviceId;
 import com.android.internal.util.clover.KeyboxImitationHooks;
 import com.android.internal.util.clover.KeyProviderManager;
 
@@ -873,7 +874,12 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
                             ));
                             break;
                         case AttestationUtils.ID_TYPE_IMEI: {
-                            final String imei = telephonyService.getImei(0);
+                            // Use a synthetic, SSAID-derived IMEI when the caller
+                            // cannot read the real one (sandboxed GMS), so the
+                            // read never throws a SecurityException inside the
+                            // caller's key generation.
+                            final String imei =
+                                    SyntheticDeviceId.imeiForAttestation(telephonyService, 0);
                             if (imei == null) {
                                 throw new DeviceIdAttestationException("Unable to retrieve IMEI");
                             }
@@ -881,7 +887,8 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
                                     KeymasterDefs.KM_TAG_ATTESTATION_ID_IMEI,
                                     imei.getBytes(StandardCharsets.UTF_8)
                             ));
-                            final String secondImei = telephonyService.getImei(1);
+                            final String secondImei =
+                                    SyntheticDeviceId.imeiForAttestation(telephonyService, 1);
                             if (!TextUtils.isEmpty(secondImei)) {
                                 params.add(KeyStore2ParameterUtils.makeBytes(
                                         KeymasterDefs.KM_TAG_ATTESTATION_ID_SECOND_IMEI,
