@@ -6,14 +6,10 @@
  */
 package com.android.internal.util.clover;
 
-import android.app.ActivityThread;
-import android.content.Context;
 import android.os.Build;
-import android.provider.Settings;
 import android.security.KeyChain;
 import android.security.keystore.KeyProperties;
 import android.system.keystore2.KeyEntryResponse;
-import android.util.Base64;
 import android.util.Log;
 
 import com.android.internal.org.bouncycastle.asn1.ASN1Boolean;
@@ -259,21 +255,24 @@ public class KeyboxImitationHooks {
 
     private static void addBootAndPatchInfo(ASN1EncodableVector teeEnforcedVector)
             throws Exception {
-        Context context = ActivityThread.currentApplication();
-        if (context == null) {
-            throw new IllegalStateException("Context is null");
-        }
-        SecureRandom secureRandom = new SecureRandom();
-
-        byte[] verifiedBootKey = getOrInitSecureRandomBytes(context, secureRandom,
-                Settings.Secure.VBOOT_KEY);
-        byte[] verifiedBootHash = getOrInitSecureRandomBytes(context, secureRandom,
-                Settings.Secure.VBOOT_HASH);
+        // Fill the RootOfTrust with the REAL verified-boot values of the
+        // claimed device, sourced from its factory image and delivered through
+        // the certified-props overlay (SimplePropImitation). verifiedBootHash is
+        // the same value published as ro.boot.vbmeta.digest, and verifiedBootKey
+        // is the SHA-256 of the device's AVB signing key — so the forged
+        // attestation agrees with the spoofed props and with what Google knows
+        // for that fingerprint. A stock locked device reports exactly these;
+        // the previous ephemeral-random values (from an unpersisted
+        // Settings.Secure read) were internally incoherent.
+        byte[] verifiedBootKey = decodeHexOrRandom(
+                com.android.internal.util.SimplePropImitation.getVerifiedBootKey());
+        byte[] verifiedBootHash = decodeHexOrRandom(
+                com.android.internal.util.SimplePropImitation.getVerifiedBootHash());
 
         ASN1Encodable[] rootOfTrustEncodables = {
                 new DEROctetString(verifiedBootKey),
-                ASN1Boolean.TRUE,
-                new ASN1Enumerated(0),
+                ASN1Boolean.TRUE,        // deviceLocked
+                new ASN1Enumerated(0),   // verifiedBootState: Verified (green)
                 new DEROctetString(verifiedBootHash)
         };
 
@@ -301,34 +300,40 @@ public class KeyboxImitationHooks {
     }
 
     /**
-     * Read a 32-byte random value from Settings.Secure, populating it on first
-     * access. The persisted value is what gives Play Integrity a stable
-     * "verified boot key" / "verified boot hash" across reboots.
-     *
-     * <p>Writing to Settings.Secure requires {@code WRITE_SECURE_SETTINGS},
-     * which an arbitrary 3rd-party app does not hold. If the write fails the
-     * caller still gets a usable random value for the current attestation; a
-     * later call from a privileged process (Play Store, sandboxed GMS) will
-     * succeed and seed the persistent cache, after which every subsequent
-     * caller agrees on the same bytes.
+     * Decode a hex string into bytes; on null/blank/malformed input fall back
+     * to 32 random bytes so a corner case (e.g. attestation issued before the
+     * certified props are applied in this process) still yields a well-formed
+     * certificate rather than throwing. A spoofed Play Integrity attestation
+     * always has the real overlay values by the time it runs.
      */
-    private static byte[] getOrInitSecureRandomBytes(Context context,
-            SecureRandom secureRandom, String settingName) {
-        String existing = Settings.Secure.getString(
-                context.getContentResolver(), settingName);
-        if (existing != null) {
-            return Base64.decode(existing, Base64.NO_WRAP);
+    private static byte[] decodeHexOrRandom(String hex) {
+        if (hex != null && !hex.isEmpty()) {
+            try {
+                return hexToBytes(hex);
+            } catch (RuntimeException e) {
+                Log.w(TAG, "Malformed verified-boot hex; using random fallback");
+            }
         }
-        byte[] randomBytes = new byte[32];
-        secureRandom.nextBytes(randomBytes);
-        try {
-            Settings.Secure.putString(context.getContentResolver(), settingName,
-                    Base64.encodeToString(randomBytes, Base64.NO_WRAP));
-        } catch (SecurityException e) {
-            Log.w(TAG, "Unable to persist " + settingName
-                    + " (caller lacks WRITE_SECURE_SETTINGS); using ephemeral value");
+        byte[] fallback = new byte[32];
+        new SecureRandom().nextBytes(fallback);
+        return fallback;
+    }
+
+    private static byte[] hexToBytes(String hex) {
+        final int len = hex.length();
+        if ((len & 1) != 0) {
+            throw new IllegalArgumentException("odd-length hex");
         }
-        return randomBytes;
+        final byte[] out = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            final int hi = Character.digit(hex.charAt(i), 16);
+            final int lo = Character.digit(hex.charAt(i + 1), 16);
+            if (hi < 0 || lo < 0) {
+                throw new IllegalArgumentException("non-hex char");
+            }
+            out[i / 2] = (byte) ((hi << 4) | lo);
+        }
+        return out;
     }
 
     private static int getOsVersion() {
