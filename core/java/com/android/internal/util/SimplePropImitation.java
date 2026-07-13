@@ -312,9 +312,16 @@ public class SimplePropImitation {
             nativeSpoofSysProp(base + ".check_at_most_once", "");
         }
 
-        // Spoof properties that DroidGuard checks for device integrity
+        // Spoof the properties the integrity probe reads.
+        // ro.product.first_api_level is already spoofed via FIELD_TO_SYSPROP, but
+        // ro.board.first_api_level / ro.board.api_level / ro.vendor.api_level are
+        // read too. Force them all to the SAME value, otherwise the board/vendor
+        // props leak the real device's launch API alongside the spoofed product
+        // first_api_level — an internal inconsistency a stock device never has.
         if (firstApiLevel != null) {
             nativeSpoofSysProp("ro.vendor.api_level", firstApiLevel);
+            nativeSpoofSysProp("ro.board.first_api_level", firstApiLevel);
+            nativeSpoofSysProp("ro.board.api_level", firstApiLevel);
         }
         nativeSpoofSysProp("ro.revision", "");
         nativeSpoofSysProp("init.svc.adbd", "stopped");
