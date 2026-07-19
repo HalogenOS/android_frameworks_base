@@ -27,6 +27,7 @@ import com.android.internal.org.bouncycastle.asn1.DERSequence;
 import com.android.internal.org.bouncycastle.asn1.DERSet;
 import com.android.internal.org.bouncycastle.asn1.DERTaggedObject;
 import com.android.internal.org.bouncycastle.asn1.x509.Extension;
+import com.android.internal.org.bouncycastle.asn1.x509.KeyUsage;
 import com.android.internal.org.bouncycastle.cert.X509CertificateHolder;
 import com.android.internal.org.bouncycastle.cert.X509v3CertificateBuilder;
 import com.android.internal.org.bouncycastle.operator.ContentSigner;
@@ -35,6 +36,7 @@ import com.android.internal.org.bouncycastle.operator.jcajce.JcaContentSignerBui
 import java.security.PrivateKey;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.Map;
 
 /**
  * @hide
@@ -47,8 +49,26 @@ public class KeyboxImitationHooks {
     private static final ASN1ObjectIdentifier KEY_ATTESTATION_OID = new ASN1ObjectIdentifier(
             "1.3.6.1.4.1.11129.2.1.17");
 
+    // KeyMint version constants for the claimed device. KeyMint 4.0
+    // attestations on Android 16 carry attestationVersion/keymasterVersion =
+    // 400; on Android 15 the value is 300. Our claim (akita on 16) must match
+    // the Android-16 value or the version itself is incoherent.
+    private static final int ATTESTATION_VERSION = 400;
+    private static final int KEYMASTER_VERSION = 400;
+
     private static volatile byte[] sPendingChallenge;
     private static volatile byte[] sPendingApplicationId;
+    // The exact ATTESTATION_ID_* set keystore was asked to attest, keyed by its
+    // ASN.1 attestation tag number (710..717, 723). Captured by
+    // AndroidKeyStoreKeyPairGeneratorSpi before it strips the ids for the
+    // no-attestation fallback, so the forge can reproduce the attestation keystore
+    // would have emitted rather than a hand-picked subset.
+    private static volatile Map<Integer, byte[]> sPendingAttestIds;
+    // Cached per-process attestationApplicationId (DER), built once — see
+    // buildAttestationApplicationId(). Stock KeyMint always computes and embeds
+    // the caller's AAID in teeEnforced; a forged attestation without it is
+    // structurally incomplete.
+    private static volatile byte[] sAttestationApplicationId;
 
     public static void setAttestationChallenge(byte[] challenge) {
         sPendingChallenge = challenge;
@@ -58,16 +78,20 @@ public class KeyboxImitationHooks {
         sPendingApplicationId = applicationId;
     }
 
+    public static void setAttestationIds(Map<Integer, byte[]> ids) {
+        sPendingAttestIds = ids;
+    }
+
     public static KeyEntryResponse onGetKeyEntry(KeyEntryResponse response) {
-        // Spoof key attestation whenever the bootloader isn't OEM-verified
-        // (green). On orange (no AVB) and yellow (AVB with our custom test
-        // key — not trusted by Google) the native attestation chain chains
-        // to a key Google does not recognise, so PI would reject it; we have
-        // to substitute our keybox chain in both cases. The value is cached
-        // by SimplePropImitation before any sysprop spoofing, so reading it
-        // here is safe.
-        if (!com.android.internal.util.SimplePropImitation.shouldSpoof()) {
-            dlog("Bootloader OEM-verified (green) — skipping key attestation spoofing");
+        // Forge key attestation ONLY for the packages we deliberately spoof for
+        // Play Integrity (GMS/Finsky) on a non-green bootloader. Every other
+        // caller — and every process on a green, OEM-verified device — keeps its
+        // real attestation, so an unrelated app doing its own key attestation
+        // sees the device's true state rather than a Pixel it plainly isn't.
+        // isSpoofTarget is cached by SimplePropImitation at process start, before
+        // any sysprop spoofing, so reading it here is safe.
+        if (!com.android.internal.util.SimplePropImitation.isSpoofTarget()) {
+            dlog("Not a spoof-target process — skipping key attestation spoofing");
             return response;
         }
 
@@ -173,22 +197,23 @@ public class KeyboxImitationHooks {
 
         addBootAndPatchInfo(teeEnforcedVector);
 
-        // Build softwareEnforced with AAID and creationDateTime (matching 16.0 format)
+        // softwareEnforced: creationDateTime then attestationApplicationId — both
+        // present on stock KeyMint attestations, in this order, in THIS list
+        // (not teeEnforced).
         ASN1EncodableVector softwareEnforcedVector = new ASN1EncodableVector();
         softwareEnforcedVector.add(new DERTaggedObject(true, 701,
                 new ASN1Integer(System.currentTimeMillis())));
-        byte[] applicationId = sPendingApplicationId;
-        if (applicationId != null) {
-            sPendingApplicationId = null;
+        byte[] aaid = getAttestationApplicationId();
+        if (aaid != null) {
             softwareEnforcedVector.add(new DERTaggedObject(true, 709,
-                    new DEROctetString(applicationId)));
+                    new DEROctetString(aaid)));
         }
 
         // KeyDescription sequence
         ASN1EncodableVector keyDescription = new ASN1EncodableVector();
-        keyDescription.add(new ASN1Integer(100)); // attestationVersion (KeyMint 1.0)
+        keyDescription.add(new ASN1Integer(ATTESTATION_VERSION));
         keyDescription.add(new ASN1Enumerated(1)); // attestationSecurityLevel: TEE
-        keyDescription.add(new ASN1Integer(100)); // keymasterVersion (KeyMint 1.0)
+        keyDescription.add(new ASN1Integer(KEYMASTER_VERSION));
         keyDescription.add(new ASN1Enumerated(1)); // keymasterSecurityLevel: TEE
         keyDescription.add(new DEROctetString(challenge)); // attestationChallenge
         keyDescription.add(new DEROctetString(new byte[0])); // uniqueId
@@ -228,6 +253,18 @@ public class KeyboxImitationHooks {
         ContentSigner contentSigner = new JcaContentSignerBuilder(sigAlg)
                 .build(privateKey);
 
+        if (!copyOriginalExtensions) {
+            // A real KeyMint attestation leaf carries a critical KeyUsage
+            // (digitalSignature) — and it comes BEFORE the attestation
+            // extension in the extension set. The
+            // from-scratch path builds on a plain, unattested key certificate
+            // and would otherwise emit ONLY the attestation extension, so add
+            // KeyUsage explicitly first. The modify path (copyOriginalExtensions
+            // == true) already carries the real leaf's extensions over below.
+            certificateBuilder.addExtension(Extension.keyUsage, true,
+                    new KeyUsage(KeyUsage.digitalSignature));
+        }
+
         certificateBuilder.addExtension(attestationExtension);
 
         if (certificateHolder.getExtensions() != null) {
@@ -250,6 +287,17 @@ public class KeyboxImitationHooks {
         Log.i(TAG, "Built leaf cert (" + encoded.length + " bytes), sigAlg="
                 + sigAlg + " (orig=" + leafCertificate.getSigAlgName() + ")"
                 + ", copyExt=" + copyOriginalExtensions);
+        if (DEBUG) {
+            // Offline-parse dumps for the from-scratch fidelity diff: the plain
+            // keystore2 leaf we started from and the forged leaf we emit. Single
+            // line each (~1-2KB b64, under the logger payload cap). Enable with:
+            // setprop log.tag.KeyboxImitationHooks DEBUG (+ force-stop the app
+            // so its next process re-evaluates isLoggable).
+            Log.i(TAG, "LEAF-ORIG-B64:" + android.util.Base64.encodeToString(
+                    leafCertificate.getEncoded(), android.util.Base64.NO_WRAP));
+            Log.i(TAG, "LEAF-BUILT-B64:" + android.util.Base64.encodeToString(
+                    encoded, android.util.Base64.NO_WRAP));
+        }
         return encoded;
     }
 
@@ -279,24 +327,89 @@ public class KeyboxImitationHooks {
         teeEnforcedVector.add(new DERTaggedObject(true, 704, new DERSequence(rootOfTrustEncodables)));
         teeEnforcedVector.add(new DERTaggedObject(true, 705, new ASN1Integer(getOsVersion())));
         teeEnforcedVector.add(new DERTaggedObject(true, 706, new ASN1Integer(getPatchLevel())));
-        // ATTESTATION_ID_* tags (710-717). Build.<X>_FOR_ATTESTATION is the
-        // canonical source used by AndroidKeyStore attestation; we already
-        // overwrite those fields via SimplePropImitation reflection. The 16.0
-        // KeyboxChainGenerator included these in teeEnforced and it worked;
-        // 16.2 createLeafCertificate omitted them, which leaves the cert
-        // without device identity and Google's PI server can't verify.
-        teeEnforcedVector.add(new DERTaggedObject(true, 710,
-                new DEROctetString(Build.BRAND_FOR_ATTESTATION.getBytes())));
-        teeEnforcedVector.add(new DERTaggedObject(true, 711,
-                new DEROctetString(Build.DEVICE_FOR_ATTESTATION.getBytes())));
-        teeEnforcedVector.add(new DERTaggedObject(true, 712,
-                new DEROctetString(Build.PRODUCT_FOR_ATTESTATION.getBytes())));
-        teeEnforcedVector.add(new DERTaggedObject(true, 716,
-                new DEROctetString(Build.MANUFACTURER_FOR_ATTESTATION.getBytes())));
-        teeEnforcedVector.add(new DERTaggedObject(true, 717,
-                new DEROctetString(Build.MODEL_FOR_ATTESTATION.getBytes())));
+        // ATTESTATION_ID_* tags. Reproduce EXACTLY the set keystore was asked to
+        // attest — captured by the SPI before its no-attestation fallback strips
+        // them — so the forged cert is a protocol-faithful copy of what a stock
+        // KeyMint attestation would carry for this (spoofed) device, INCLUDING the
+        // synthetic serial/IMEI/MEID (713/714/715). Tags 710..717 sit between
+        // osPatchLevel (706) and vendorPatchLevel (718); emit ascending to keep
+        // the DER SEQUENCE sorted. Fall back to the Build.*_FOR_ATTESTATION subset
+        // when no captured set is present (e.g. the modify path or a non-keygen
+        // retrieval), which is what the previous implementation always did.
+        final Map<Integer, byte[]> attestIds = sPendingAttestIds;
+        sPendingAttestIds = null;
+        if (attestIds != null && !attestIds.isEmpty()) {
+            for (int tag = 710; tag <= 717; tag++) {
+                byte[] value = attestIds.get(tag);
+                if (value != null) {
+                    teeEnforcedVector.add(new DERTaggedObject(true, tag,
+                            new DEROctetString(value)));
+                }
+            }
+        } else {
+            teeEnforcedVector.add(new DERTaggedObject(true, 710,
+                    new DEROctetString(Build.BRAND_FOR_ATTESTATION.getBytes())));
+            teeEnforcedVector.add(new DERTaggedObject(true, 711,
+                    new DEROctetString(Build.DEVICE_FOR_ATTESTATION.getBytes())));
+            teeEnforcedVector.add(new DERTaggedObject(true, 712,
+                    new DEROctetString(Build.PRODUCT_FOR_ATTESTATION.getBytes())));
+            teeEnforcedVector.add(new DERTaggedObject(true, 716,
+                    new DEROctetString(Build.MANUFACTURER_FOR_ATTESTATION.getBytes())));
+            teeEnforcedVector.add(new DERTaggedObject(true, 717,
+                    new DEROctetString(Build.MODEL_FOR_ATTESTATION.getBytes())));
+        }
         teeEnforcedVector.add(new DERTaggedObject(true, 718, new ASN1Integer(getPatchLevelLong())));
         teeEnforcedVector.add(new DERTaggedObject(true, 719, new ASN1Integer(getPatchLevelLong())));
+        // attestationIdSecondImei [723] comes after bootPatchLevel [719].
+        if (attestIds != null) {
+            byte[] secondImei = attestIds.get(723);
+            if (secondImei != null) {
+                teeEnforcedVector.add(new DERTaggedObject(true, 723,
+                        new DEROctetString(secondImei)));
+            }
+        }
+    }
+
+    /**
+     * Build this process's attestationApplicationId (DER) exactly as KeyMint
+     * emits it:
+     *   SEQUENCE {
+     *     SET OF PackageInfo { OCTET STRING packageName, INTEGER versionCode },
+     *     SET OF OCTET STRING signatureDigests (SHA-256 of signing certs)
+     *   }
+     * Note the encoding: packageName is an OCTET STRING (not
+     * UTF8String) and the digests form a top-level second SET, they are NOT
+     * nested inside the PackageInfo. Cached — constant per process.
+     */
+    private static byte[] getAttestationApplicationId() {
+        if (sAttestationApplicationId != null) return sAttestationApplicationId;
+        try {
+            android.content.Context ctx = android.app.ActivityThread.currentApplication();
+            if (ctx == null) return null;
+            String pkg = ctx.getPackageName();
+            android.content.pm.PackageInfo pi = ctx.getPackageManager().getPackageInfo(pkg,
+                    android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES);
+
+            ASN1EncodableVector pkgInfo = new ASN1EncodableVector();
+            pkgInfo.add(new DEROctetString(pkg.getBytes("UTF-8")));
+            pkgInfo.add(new ASN1Integer(pi.getLongVersionCode()));
+            ASN1EncodableVector pkgInfos = new ASN1EncodableVector();
+            pkgInfos.add(new DERSequence(pkgInfo));
+
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            ASN1EncodableVector sigs = new ASN1EncodableVector();
+            for (android.content.pm.Signature s : pi.signingInfo.getApkContentsSigners()) {
+                sigs.add(new DEROctetString(md.digest(s.toByteArray())));
+            }
+
+            ASN1EncodableVector aaid = new ASN1EncodableVector();
+            aaid.add(new DERSet(pkgInfos));
+            aaid.add(new DERSet(sigs));
+            sAttestationApplicationId = new DERSequence(aaid).getEncoded();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to build attestationApplicationId", e);
+        }
+        return sAttestationApplicationId;
     }
 
     /**
