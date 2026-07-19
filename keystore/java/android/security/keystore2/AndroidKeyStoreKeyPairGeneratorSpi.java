@@ -701,56 +701,46 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
         try {
             KeyStoreSecurityLevel iSecurityLevel = mKeyStore.getSecurityLevel(securityLevel);
             KeyMetadata metadata;
-            try {
-                metadata = iSecurityLevel.generateKey(descriptor, mAttestKeyDescriptor,
-                        constructKeyGenerationArguments(), flags, additionalEntropy);
-            } catch (KeyStoreException e) {
-                if (mSpec.getAttestationChallenge() != null) {
-                    // XOS: try one intermediate retry without device-ID tags but
-                    // keeping the challenge, so RKP-attested key generation can
-                    // still succeed when the caller (e.g. sandboxed GMS) lacks
-                    // READ_PRIVILEGED_PHONE_STATE for ATTESTATION_ID_* validation.
-                    metadata = AttestationRetryHooks.maybeRetryWithoutIds(
-                            e, iSecurityLevel, descriptor, mAttestKeyDescriptor,
+            // On a non-green bootloader with a keybox loaded, KeyMint cannot
+            // produce a hardware attestation (RKP is bypassed on non-green) and the
+            // keybox forge substitutes the whole attestation anyway. Detect that up
+            // front and go STRAIGHT to a no-attestation key + forge, so the doomed
+            // attested generateKey calls — which only emit CANNOT_ATTEST_IDS /
+            // ATTESTATION_KEYS_NOT_PROVISIONED — are never issued.
+            final boolean forgeKeyboxAttestation =
+                    mSpec.getAttestationChallenge() != null
+                    && KeyProviderManager.isKeyboxAvailable()
+                    && com.android.internal.util.SimplePropImitation.isSpoofTarget();
+            if (forgeKeyboxAttestation) {
+                metadata = generateForgedAttestationKey(
+                        iSecurityLevel, descriptor, flags, additionalEntropy);
+            } else {
+                try {
+                    metadata = iSecurityLevel.generateKey(descriptor, mAttestKeyDescriptor,
                             constructKeyGenerationArguments(), flags, additionalEntropy);
-                    if (metadata != null) {
-                        AndroidKeyStorePublicKey publicKey = AndroidKeyStoreProvider
-                                .makeAndroidKeyStorePublicKeyFromKeyEntryResponse(
-                                        descriptor, metadata, iSecurityLevel,
-                                        mKeymasterAlgorithm);
-                        success = true;
-                        return new KeyPair(publicKey, publicKey.getPrivateKey());
-                    }
-                    Log.w(TAG, "Attestation failed, retrying without attestation");
-                    List<KeyParameter> args = new ArrayList<>(
-                            constructKeyGenerationArguments());
-                    if (KeyProviderManager.isKeyboxAvailable()) {
-                        // Save AAID for inclusion in the fake attestation cert
-                        for (KeyParameter p : args) {
-                            if (p.tag == Tag.ATTESTATION_APPLICATION_ID) {
-                                KeyboxImitationHooks.setAttestationApplicationId(
-                                        p.value.getBlob());
-                                break;
-                            }
+                } catch (KeyStoreException e) {
+                    if (mSpec.getAttestationChallenge() != null) {
+                        // XOS: try one intermediate retry without device-ID tags but
+                        // keeping the challenge, so RKP-attested key generation can
+                        // still succeed when the caller (e.g. sandboxed GMS) lacks
+                        // READ_PRIVILEGED_PHONE_STATE for ATTESTATION_ID_* validation.
+                        metadata = AttestationRetryHooks.maybeRetryWithoutIds(
+                                e, iSecurityLevel, descriptor, mAttestKeyDescriptor,
+                                constructKeyGenerationArguments(), flags, additionalEntropy);
+                        if (metadata != null) {
+                            AndroidKeyStorePublicKey publicKey = AndroidKeyStoreProvider
+                                    .makeAndroidKeyStorePublicKeyFromKeyEntryResponse(
+                                            descriptor, metadata, iSecurityLevel,
+                                            mKeymasterAlgorithm);
+                            success = true;
+                            return new KeyPair(publicKey, publicKey.getPrivateKey());
                         }
-                        KeyboxImitationHooks.setAttestationChallenge(
-                                mSpec.getAttestationChallenge());
+                        Log.w(TAG, "Attestation failed, generating without attestation");
+                        metadata = generateForgedAttestationKey(
+                                iSecurityLevel, descriptor, flags, additionalEntropy);
+                    } else {
+                        throw e;
                     }
-                    args.removeIf(p -> p.tag == Tag.ATTESTATION_CHALLENGE
-                            || p.tag == Tag.ATTESTATION_APPLICATION_ID
-                            || p.tag == Tag.ATTESTATION_ID_BRAND
-                            || p.tag == Tag.ATTESTATION_ID_DEVICE
-                            || p.tag == Tag.ATTESTATION_ID_PRODUCT
-                            || p.tag == Tag.ATTESTATION_ID_MANUFACTURER
-                            || p.tag == Tag.ATTESTATION_ID_MODEL
-                            || p.tag == Tag.ATTESTATION_ID_SERIAL
-                            || p.tag == Tag.ATTESTATION_ID_IMEI
-                            || p.tag == Tag.ATTESTATION_ID_SECOND_IMEI
-                            || p.tag == Tag.ATTESTATION_ID_MEID);
-                    metadata = iSecurityLevel.generateKey(descriptor, null,
-                            args, flags, additionalEntropy);
-                } else {
-                    throw e;
                 }
             }
             AndroidKeyStorePublicKey publicKey =
@@ -785,6 +775,72 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
                 }
             }
         }
+    }
+
+    /**
+     * Generate a plain (un-attested) key. When the current process is a spoof
+     * target (GMS/Finsky) with a keybox loaded, the full attestation request —
+     * challenge, AAID and every ATTESTATION_ID_* tag, including the synthetic
+     * serial/IMEI/MEID — is captured first so KeyboxImitationHooks can reproduce
+     * the attestation keystore would have emitted. For any other caller nothing
+     * is captured, so the forge never runs and the app gets the stock
+     * no-attestation key. The attestation params are stripped either way so
+     * KeyMint generates an ordinary key (no CANNOT_ATTEST_IDS /
+     * ATTESTATION_KEYS_NOT_PROVISIONED attempt is made at all).
+     */
+    private KeyMetadata generateForgedAttestationKey(
+            KeyStoreSecurityLevel iSecurityLevel, KeyDescriptor descriptor,
+            int flags, byte[] additionalEntropy)
+            throws KeyStoreException, DeviceIdAttestationException,
+            IllegalArgumentException, InvalidAlgorithmParameterException {
+        List<KeyParameter> args = new ArrayList<>(constructKeyGenerationArguments());
+        if (KeyProviderManager.isKeyboxAvailable()
+                && com.android.internal.util.SimplePropImitation.isSpoofTarget()) {
+            final java.util.HashMap<Integer, byte[]> attestIds = new java.util.HashMap<>();
+            for (KeyParameter p : args) {
+                switch (p.tag) {
+                    case Tag.ATTESTATION_APPLICATION_ID:
+                        KeyboxImitationHooks.setAttestationApplicationId(p.value.getBlob());
+                        break;
+                    case Tag.ATTESTATION_ID_BRAND:
+                    case Tag.ATTESTATION_ID_DEVICE:
+                    case Tag.ATTESTATION_ID_PRODUCT:
+                    case Tag.ATTESTATION_ID_SERIAL:
+                    case Tag.ATTESTATION_ID_IMEI:
+                    case Tag.ATTESTATION_ID_MEID:
+                    case Tag.ATTESTATION_ID_MANUFACTURER:
+                    case Tag.ATTESTATION_ID_MODEL:
+                    case Tag.ATTESTATION_ID_SECOND_IMEI:
+                        // KeyMint Tag encodes the type in its high bits; the low
+                        // bits are the ASN.1 attestation tag number (710..717, 723).
+                        attestIds.put(p.tag & 0x0FFFFFFF, p.value.getBlob());
+                        break;
+                    default:
+                        break;
+                }
+            }
+            KeyboxImitationHooks.setAttestationIds(attestIds);
+            KeyboxImitationHooks.setAttestationChallenge(mSpec.getAttestationChallenge());
+        }
+        args.removeIf(p -> p.tag == Tag.ATTESTATION_CHALLENGE
+                || p.tag == Tag.ATTESTATION_APPLICATION_ID
+                || p.tag == Tag.ATTESTATION_ID_BRAND
+                || p.tag == Tag.ATTESTATION_ID_DEVICE
+                || p.tag == Tag.ATTESTATION_ID_PRODUCT
+                || p.tag == Tag.ATTESTATION_ID_MANUFACTURER
+                || p.tag == Tag.ATTESTATION_ID_MODEL
+                || p.tag == Tag.ATTESTATION_ID_SERIAL
+                || p.tag == Tag.ATTESTATION_ID_IMEI
+                || p.tag == Tag.ATTESTATION_ID_SECOND_IMEI
+                || p.tag == Tag.ATTESTATION_ID_MEID
+                // Unique-ID / individual attestation needs the GEN_UNIQUE_ID
+                // permission that sandboxed GMS lacks — keystore would return
+                // PERMISSION_DENIED and fail the keygen. We forge the attestation
+                // with an empty uniqueId (as the real device reports), so drop
+                // these too and generate an ordinary key.
+                || p.tag == KeymasterDefs.KM_TAG_INCLUDE_UNIQUE_ID
+                || p.tag == KeymasterDefs.KM_TAG_DEVICE_UNIQUE_ATTESTATION);
+        return iSecurityLevel.generateKey(descriptor, null, args, flags, additionalEntropy);
     }
 
     @RequiresPermission(value = android.Manifest.permission.READ_PRIVILEGED_PHONE_STATE,

@@ -69,6 +69,20 @@ public class SimplePropImitation {
             Map.entry("VERSION.DEVICE_INITIAL_SDK_INT", "ro.product.first_api_level")
     );
 
+    // Hardware-identity system properties whose android.os.Build.* Java static
+    // must ALSO be reflected. These props are supplied as raw SYSPROP.* overlay
+    // items (real akita values from the factory image) and spoofed at the native
+    // level, but their Build statics were frozen at class-load from the real
+    // device props. The integrity probe can read Build.HARDWARE/BOARD/SOC_MODEL/
+    // SOC_MANUFACTURER via Java/reflection, which the native spoof does not
+    // cover — so mirror the spoofed value into the Java field too.
+    private static final Map<String, String> SYSPROP_TO_BUILD_FIELD = Map.ofEntries(
+            Map.entry("ro.hardware", "HARDWARE"),
+            Map.entry("ro.product.board", "BOARD"),
+            Map.entry("ro.soc.model", "SOC_MODEL"),
+            Map.entry("ro.soc.manufacturer", "SOC_MANUFACTURER")
+    );
+
     // Product property suffix for fields that have partition variants
     private static final Map<String, String> PRODUCT_PROP_SUFFIX = Map.of(
             "PRODUCT", "name",
@@ -113,6 +127,10 @@ public class SimplePropImitation {
     // treatment. Only green (Spacewar-style, real OEM-trusted key) bypasses it.
     private static volatile boolean sShouldSpoof = false;
     private static volatile boolean sBootStateChecked = false;
+    // True only in the processes we deliberately spoof for Play Integrity — GMS
+    // and Finsky (the Play Store). The keybox attestation forge is gated on this
+    // (via isSpoofTarget) so every OTHER app gets its normal keystore behaviour.
+    private static volatile boolean sSpoofTarget = false;
 
     private static native void nativeSpoofSysProp(String name, String value);
     private static native void nativeEnableSysPropSpoof();
@@ -169,6 +187,9 @@ public class SimplePropImitation {
             nativeEnableSysPropSpoof();
             return;
         }
+
+        // Only GMS and Finsky are spoof targets; the keybox forge keys off this.
+        sSpoofTarget = PACKAGE_GMS.equals(packageName) || PACKAGE_FINSKY.equals(packageName);
 
         if (PACKAGE_GMS.equals(packageName)) {
             Log.i(TAG, "Spoofing props for " + processName);
@@ -279,6 +300,12 @@ public class SimplePropImitation {
             if (parts[0].startsWith(RAW_SYSPROP_PREFIX)) {
                 final String propName = parts[0].substring(RAW_SYSPROP_PREFIX.length());
                 nativeSpoofSysProp(propName, parts[1]);
+                // Mirror hardware-identity props into their android.os.Build Java
+                // static, which the native spoof cannot reach (see map comment).
+                final String buildField = SYSPROP_TO_BUILD_FIELD.get(propName);
+                if (buildField != null) {
+                    setPropValue(buildField, parts[1]);
+                }
                 // The vbmeta digest doubles as the attestation verifiedBootHash:
                 // remember it so the forged cert and the prop agree.
                 if (PROP_VBMETA_DIGEST.equals(propName)) {
@@ -339,14 +366,18 @@ public class SimplePropImitation {
 
         // Spoof the properties the integrity probe reads.
         // ro.product.first_api_level is already spoofed via FIELD_TO_SYSPROP, but
-        // ro.board.first_api_level / ro.board.api_level / ro.vendor.api_level are
-        // read too. Force them all to the SAME value, otherwise the board/vendor
-        // props leak the real device's launch API alongside the spoofed product
-        // first_api_level — an internal inconsistency a stock device never has.
+        // ro.board.first_api_level / ro.vendor.api_level are read too. Force them
+        // to the claimed device's launch API, otherwise the board/vendor props
+        // leak the real device's launch API alongside the spoofed product
+        // first_api_level — an internal inconsistency a stock device never has. NOTE: ro.board.api_level is deliberately NOT forced
+        // here — it is NOT a launch API but the vendor image's API level (a YYYYMM
+        // value, e.g. 202504 for akita), supplied with its real per-device value
+        // by the certified-props overlay (SYSPROP.ro.board.api_level extracted
+        // from the factory image). Forcing it to the launch API here would both
+        // be wrong and shadow the overlay's correct value.
         if (firstApiLevel != null) {
             nativeSpoofSysProp("ro.vendor.api_level", firstApiLevel);
             nativeSpoofSysProp("ro.board.first_api_level", firstApiLevel);
-            nativeSpoofSysProp("ro.board.api_level", firstApiLevel);
         }
         nativeSpoofSysProp("ro.revision", "");
         nativeSpoofSysProp("init.svc.adbd", "stopped");
@@ -361,6 +392,35 @@ public class SimplePropImitation {
                 nativeSpoofSysProp("ro." + partition + ".build.fingerprint", fp);
             }
         }
+
+        // Hide custom-ROM identity props. The probe reads system properties
+        // directly, and these announce the ROM (and the maintainer) outright —
+        // e.g. ro.custom.version = "halogenOS_<device>-...-UNOFFICIAL". Empty
+        // them so a native read reveals nothing.
+        for (String p : new String[]{
+                "ro.custom.version",
+                "ro.custom.build.version",
+                "ro.custom.build.version.sp",
+                "ro.custom.build_type",
+                "ro.custom.display.version",
+                "ro.custom.build.device.maintainer"}) {
+            nativeSpoofSysProp(p, "");
+        }
+
+        // Stock build-identity props that otherwise still carry the REAL device
+        // (aosp_<device>-user / qssi-user ... <real BUILD_ID>) instead of the
+        // claimed Pixel, contradicting the spoofed fingerprint. Rebuild them from
+        // the already-spoofed Build fields so a native read stays consistent.
+        // ro.build.user is forced to the AOSP release-build value ("android-build")
+        // since the real one leaks the build environment.
+        nativeSpoofSysProp("ro.build.flavor", Build.PRODUCT + "-" + Build.TYPE);
+        nativeSpoofSysProp("ro.build.description",
+                Build.PRODUCT + "-" + Build.TYPE + " " + Build.VERSION.RELEASE
+                + " " + Build.ID + " " + Build.VERSION.INCREMENTAL + " " + Build.TAGS);
+        nativeSpoofSysProp("ro.build.user", "android-build");
+
+        // Diagnostic dump. Visible to us via adb/root; the spoofed process is
+        // untrusted_app and cannot read logcat, so the inspected app never sees it.
         Log.i(TAG, "Build.FINGERPRINT = " + Build.FINGERPRINT);
         Log.i(TAG, "Build.PRODUCT = " + Build.PRODUCT);
         Log.i(TAG, "Build.DEVICE = " + Build.DEVICE);
@@ -375,6 +435,10 @@ public class SimplePropImitation {
         Log.i(TAG, "Build.VERSION.SECURITY_PATCH = " + Build.VERSION.SECURITY_PATCH);
         Log.i(TAG, "Build.VERSION.DEVICE_INITIAL_SDK_INT = "
                 + Build.VERSION.DEVICE_INITIAL_SDK_INT);
+        Log.i(TAG, "Build.HARDWARE = " + Build.HARDWARE);
+        Log.i(TAG, "Build.BOARD = " + Build.BOARD);
+        Log.i(TAG, "Build.SOC_MODEL = " + Build.SOC_MODEL);
+        Log.i(TAG, "Build.SOC_MANUFACTURER = " + Build.SOC_MANUFACTURER);
     }
 
     /**
@@ -441,6 +505,18 @@ public class SimplePropImitation {
      */
     public static boolean shouldSpoof() {
         return sShouldSpoof;
+    }
+
+    /**
+     * True only when the current process is a package we deliberately spoof for
+     * Play Integrity — GMS or Finsky (Play Store) — and spoofing is active
+     * (non-green bootloader, user-enabled). The keybox attestation forge runs
+     * ONLY for these targets; every other app keeps its normal keystore
+     * behaviour, so an unrelated app doing its own key attestation still sees the
+     * device's true state rather than a Pixel it plainly isn't.
+     */
+    public static boolean isSpoofTarget() {
+        return sShouldSpoof && sSpoofTarget;
     }
 
     /**
