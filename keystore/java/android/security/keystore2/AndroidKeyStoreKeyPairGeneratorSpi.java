@@ -701,16 +701,19 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
         try {
             KeyStoreSecurityLevel iSecurityLevel = mKeyStore.getSecurityLevel(securityLevel);
             KeyMetadata metadata;
-            // On a non-green bootloader with a keybox loaded, KeyMint cannot
-            // produce a hardware attestation (RKP is bypassed on non-green) and the
-            // keybox forge substitutes the whole attestation anyway. Detect that up
-            // front and go STRAIGHT to a no-attestation key + forge, so the doomed
-            // attested generateKey calls — which only emit CANNOT_ATTEST_IDS /
-            // ATTESTATION_KEYS_NOT_PROVISIONED — are never issued.
+            // On a non-green bootloader with a keybox loaded AND RKP bypassed,
+            // KeyMint cannot produce a hardware attestation and the keybox forge
+            // substitutes the whole attestation anyway — detect that up front and
+            // go STRAIGHT to a no-attestation key + forge, so the doomed attested
+            // generateKey calls are never issued. When RKP IS available (green
+            // bootloader, or the root-only test override re-enabled it), fall
+            // through to real attested generation; the forge's modify path then
+            // substitutes the RKP-attested leaf instead of building from scratch.
             final boolean forgeKeyboxAttestation =
                     mSpec.getAttestationChallenge() != null
                     && KeyProviderManager.isKeyboxAvailable()
-                    && com.android.internal.util.SimplePropImitation.isSpoofTarget();
+                    && com.android.internal.util.SimplePropImitation.isSpoofTarget()
+                    && !isRkpAvailable();
             if (forgeKeyboxAttestation) {
                 metadata = generateForgedAttestationKey(
                         iSecurityLevel, descriptor, flags, additionalEntropy);
@@ -774,6 +777,24 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Mirrors keystore2's RKP-gate logic (remote_provisioning.rs): RKP is
+     * reachable when the bootloader is green, or when the root-only marker
+     * file re-enables it on a non-green bootloader (test override). The file
+     * check is invisible to the sandboxed caller (it's in keystore2's own
+     * 0700 data dir, not a property).
+     */
+    private static boolean isRkpAvailable() {
+        if ("green".equals(android.os.SystemProperties.get("ro.boot.verifiedbootstate"))) {
+            return true;
+        }
+        try {
+            return new java.io.File("/data/misc/keystore/rkp_force_enable").exists();
+        } catch (SecurityException e) {
+            return false;
         }
     }
 

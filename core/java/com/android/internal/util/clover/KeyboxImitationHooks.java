@@ -377,9 +377,10 @@ public class KeyboxImitationHooks {
      *     SET OF PackageInfo { OCTET STRING packageName, INTEGER versionCode },
      *     SET OF OCTET STRING signatureDigests (SHA-256 of signing certs)
      *   }
-     * Note the encoding: packageName is an OCTET STRING (not
-     * UTF8String) and the digests form a top-level second SET, they are NOT
-     * nested inside the PackageInfo. Cached — constant per process.
+     * Computed in-process from PackageManager — same inputs keystore2 uses
+     * server-side (caller package, versionCode, signing certs), so the bytes
+     * match a stock attested generateKey for this caller. Cached — constant
+     * per process.
      */
     private static byte[] getAttestationApplicationId() {
         if (sAttestationApplicationId != null) return sAttestationApplicationId;
