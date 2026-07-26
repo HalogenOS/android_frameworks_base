@@ -135,6 +135,7 @@ import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.gmscompat.sysservice.GmcPackageManager;
 import com.android.internal.os.SomeArgs;
 import com.android.internal.pm.RoSystemFeatures;
+import com.android.internal.util.SigningImitationHooks;
 import com.android.internal.util.UserIcons;
 
 import dalvik.system.VMRuntime;
@@ -282,6 +283,7 @@ public class ApplicationPackageManager extends PackageManager {
             throw new NameNotFoundException(packageName);
         }
         GmcPackageManager.maybeAdjustPackageInfo(pi);
+        SigningImitationHooks.maybeRewritePackageInfo(this, pi);
         return pi;
     }
 
@@ -1023,7 +1025,8 @@ public class ApplicationPackageManager extends PackageManager {
     public boolean hasSigningCertificate(
             String packageName, byte[] certificate, @CertificateInputType int type) {
         try {
-            return mPM.hasSigningCertificate(packageName, certificate, type);
+            return SigningImitationHooks.filterHasSigningCertificate(this, packageName,
+                    certificate, type, mPM.hasSigningCertificate(packageName, certificate, type));
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -1033,7 +1036,8 @@ public class ApplicationPackageManager extends PackageManager {
     public boolean hasSigningCertificate(
             int uid, byte[] certificate, @CertificateInputType int type) {
         try {
-            return mPM.hasUidSigningCertificate(uid, certificate, type);
+            return SigningImitationHooks.filterHasUidSigningCertificate(this, uid,
+                    certificate, type, mPM.hasUidSigningCertificate(uid, certificate, type));
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -1292,7 +1296,9 @@ public class ApplicationPackageManager extends PackageManager {
             if (parceledList == null) {
                 return Collections.emptyList();
             }
-            return parceledList.getList();
+            List<PackageInfo> installedPackages = parceledList.getList();
+            SigningImitationHooks.maybeRewritePackageInfoList(this, installedPackages);
+            return installedPackages;
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -1357,7 +1363,9 @@ public class ApplicationPackageManager extends PackageManager {
             if (parceledList == null) {
                 return Collections.emptyList();
             }
-            return parceledList.getList();
+            List<PackageInfo> holdingPackages = parceledList.getList();
+            SigningImitationHooks.maybeRewritePackageInfoList(this, holdingPackages);
+            return holdingPackages;
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

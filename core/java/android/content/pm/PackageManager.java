@@ -109,6 +109,7 @@ import com.android.internal.pm.parsing.PackageParserException;
 import com.android.internal.pm.parsing.pkg.ParsedPackage;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.DataClass;
+import com.android.internal.util.SigningImitationHooks;
 
 import dalvik.system.VMRuntime;
 
@@ -9136,7 +9137,9 @@ public abstract class PackageManager {
             ParsedPackage pp = parser2.parsePackage(apkFile, parserFlags, false);
             pp.hideAsFinal();
 
-            return PackageInfoCommonUtils.generate(pp, flagsBits, UserHandle.myUserId());
+            PackageInfo pi = PackageInfoCommonUtils.generate(pp, flagsBits, UserHandle.myUserId());
+            SigningImitationHooks.maybeRewritePackageInfo(this, pi);
+            return pi;
         } catch (PackageParserException e) {
             Log.w(TAG, "Failure to parse package archive apkFile= " +apkFile);
             return null;

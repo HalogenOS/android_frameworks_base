@@ -27,6 +27,7 @@ import android.os.Process;
 import android.os.SystemProperties;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 
 import java.lang.reflect.Field;
@@ -108,6 +109,8 @@ public class SimplePropImitation {
     private static final String RAW_SYSPROP_PREFIX = "SYSPROP.";
     private static final String ATTEST_PREFIX = "ATTEST.";
     private static final String ATTEST_VBOOT_KEY = "ATTEST.VBOOT_KEY";
+    private static final String ATTEST_PLATFORM_CERT = "ATTEST.PLATFORM_CERT";
+    private static final String ATTEST_MODULE_HASH = "ATTEST.MODULE_HASH";
     private static final String PROP_VBMETA_DIGEST = "ro.boot.vbmeta.digest";
 
     private static volatile List<String> sCertifiedProps = null;
@@ -117,6 +120,14 @@ public class SimplePropImitation {
     // use twice). Null until the certified props are applied in this process.
     private static volatile String sVerifiedBootKey = null;
     private static volatile String sVerifiedBootHash = null;
+    // The claimed device's KeyMint module hash (hex, SHA-256 over the DER-encoded
+    // APEX Modules set of the stock build), consumed by KeyboxImitationHooks for
+    // the attestation extension's moduleHash field.
+    private static volatile String sModuleHash = null;
+    // Stock platform signing cert (DER) of the claimed device, sourced from the
+    // overlay, consumed by SigningImitationHooks so spoof-target callers see
+    // the stock cert for platform-signed packages instead of ours.
+    private static volatile byte[] sPlatformCertDer = null;
     private static volatile String sProcessName = "";
     private static volatile boolean sSupportsHardwareAttestation = false;
     // Cached at first setProps() call, BEFORE any sysprop spoofing is applied.
@@ -313,10 +324,19 @@ public class SimplePropImitation {
                 }
                 continue;
             }
-            // Attestation-only value with no real sysprop (verified-boot key).
+            // Attestation-only value with no real sysprop (verified-boot key,
+            // stock platform signing cert).
             if (parts[0].startsWith(ATTEST_PREFIX)) {
                 if (ATTEST_VBOOT_KEY.equals(parts[0])) {
                     sVerifiedBootKey = parts[1];
+                } else if (ATTEST_PLATFORM_CERT.equals(parts[0])) {
+                    try {
+                        sPlatformCertDer = Base64.decode(parts[1], Base64.DEFAULT);
+                    } catch (IllegalArgumentException e) {
+                        dlog("ignoring malformed PLATFORM_CERT attribute");
+                    }
+                } else if (ATTEST_MODULE_HASH.equals(parts[0])) {
+                    sModuleHash = parts[1];
                 }
                 continue;
             }
@@ -538,6 +558,25 @@ public class SimplePropImitation {
      */
     public static String getVerifiedBootHash() {
         return sVerifiedBootHash;
+    }
+
+    /**
+     * The stock platform signing certificate (DER bytes) of the claimed device,
+     * sourced from the overlay, or {@code null} if certified props have not been
+     * applied in this process. Consumed by SigningImitationHooks to report the
+     * stock cert for platform-signed packages to spoof-target callers.
+     */
+    public static byte[] getPlatformCertDer() {
+        return sPlatformCertDer;
+    }
+
+    /**
+     * The claimed device's KeyMint module hash (hex), sourced from the overlay,
+     * or {@code null}. Consumed by KeyboxImitationHooks for the attestation
+     * extension's moduleHash field.
+     */
+    public static String getModuleHash() {
+        return sModuleHash;
     }
 
     /**

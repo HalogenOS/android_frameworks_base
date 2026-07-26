@@ -485,7 +485,9 @@ public abstract class IPackageManagerBase extends IPackageManager.Stub {
     @Deprecated
     public final ParceledListSlice<PackageInfo> getInstalledPackages(
             @PackageManager.PackageInfoFlagsBits long flags, int userId) {
-        return snapshot().getInstalledPackages(flags, userId);
+        final Computer snapshot = snapshot();
+        return SigningImitationServerHooks.onPackageInfoList(snapshot, mContext,
+                snapshot.getInstalledPackages(flags, userId));
     }
 
     @Nullable
@@ -583,15 +585,20 @@ public abstract class IPackageManagerBase extends IPackageManager.Stub {
     @Deprecated
     public final PackageInfo getPackageInfo(String packageName,
             @PackageManager.PackageInfoFlagsBits long flags, int userId) {
-        return snapshot().getPackageInfo(packageName, flags, userId);
+        final Computer snapshot = snapshot();
+        return SigningImitationServerHooks.onPackageInfo(snapshot, mContext,
+                snapshot.getPackageInfo(packageName, flags, userId));
     }
 
     @Override
     @Deprecated
     public final PackageInfo getPackageInfoVersioned(VersionedPackage versionedPackage,
             @PackageManager.PackageInfoFlagsBits long flags, int userId) {
-        return snapshot().getPackageInfoInternal(versionedPackage.getPackageName(),
-                versionedPackage.getLongVersionCode(), flags, Binder.getCallingUid(), userId);
+        final Computer snapshot = snapshot();
+        return SigningImitationServerHooks.onPackageInfo(snapshot, mContext,
+                snapshot.getPackageInfoInternal(versionedPackage.getPackageName(),
+                        versionedPackage.getLongVersionCode(), flags, Binder.getCallingUid(),
+                        userId));
     }
 
     @Override
@@ -656,7 +663,9 @@ public abstract class IPackageManagerBase extends IPackageManager.Stub {
     public final ParceledListSlice<PackageInfo> getPackagesHoldingPermissions(
             @NonNull String[] permissions, @PackageManager.PackageInfoFlagsBits long flags,
             @UserIdInt int userId) {
-        return snapshot().getPackagesHoldingPermissions(permissions, flags, userId);
+        final Computer snapshot = snapshot();
+        return SigningImitationServerHooks.onPackageInfoList(snapshot, mContext,
+                snapshot.getPackagesHoldingPermissions(permissions, flags, userId));
     }
 
     // NOTE: Can't remove due to unsupported app usage
@@ -875,7 +884,10 @@ public abstract class IPackageManagerBase extends IPackageManager.Stub {
     public final boolean hasSigningCertificate(@NonNull String packageName,
             @NonNull byte[] certificate,
             @PackageManager.CertificateInputType int type) {
-        return snapshot().hasSigningCertificate(packageName, certificate, type);
+        final Computer snapshot = snapshot();
+        return SigningImitationServerHooks.onHasSigningCertificate(snapshot, mContext,
+                packageName, certificate, type,
+                snapshot.hasSigningCertificate(packageName, certificate, type));
     }
 
     @Override
@@ -895,7 +907,10 @@ public abstract class IPackageManagerBase extends IPackageManager.Stub {
     @Deprecated
     public final boolean hasUidSigningCertificate(int uid, @NonNull byte[] certificate,
             @PackageManager.CertificateInputType int type) {
-        return snapshot().hasUidSigningCertificate(uid, certificate, type);
+        final Computer snapshot = snapshot();
+        return SigningImitationServerHooks.onHasUidSigningCertificate(snapshot, mContext,
+                uid, certificate, type,
+                snapshot.hasUidSigningCertificate(uid, certificate, type));
     }
 
     @Override
