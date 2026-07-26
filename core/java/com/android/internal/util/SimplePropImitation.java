@@ -190,7 +190,7 @@ public class SimplePropImitation {
                     + " (shouldSpoof=" + sShouldSpoof + ")");
         }
 
-        // Skip spoofing only when the bootloader is genuinely OEM-verified
+        // Skip spoofing only when the bootloader is actually OEM-verified
         // (green). On orange and yellow the chain Google sees still doesn't
         // chain to a key it trusts, so we run the full spoof path.
         if (!sShouldSpoof) {

@@ -809,6 +809,45 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
      * KeyMint generates an ordinary key (no CANNOT_ATTEST_IDS /
      * ATTESTATION_KEYS_NOT_PROVISIONED attempt is made at all).
      */
+    /**
+     * Map KeyProperties.DIGEST_* names to KeyMint Digest enum values so the
+     * forged attestation carries the caller's requested digest set exactly as
+     * keystore2 would emit it.
+     */
+    private static int[] mapDigests(String[] names) {
+        if (names == null || names.length == 0) {
+            return null;
+        }
+        int[] out = new int[names.length];
+        for (int i = 0; i < names.length; i++) {
+            switch (names[i]) {
+                case android.security.keystore.KeyProperties.DIGEST_NONE:
+                    out[i] = 0;
+                    break;
+                case android.security.keystore.KeyProperties.DIGEST_MD5:
+                    out[i] = 1;
+                    break;
+                case android.security.keystore.KeyProperties.DIGEST_SHA1:
+                    out[i] = 2;
+                    break;
+                case android.security.keystore.KeyProperties.DIGEST_SHA224:
+                    out[i] = 3;
+                    break;
+                case android.security.keystore.KeyProperties.DIGEST_SHA384:
+                    out[i] = 5;
+                    break;
+                case android.security.keystore.KeyProperties.DIGEST_SHA512:
+                    out[i] = 6;
+                    break;
+                case android.security.keystore.KeyProperties.DIGEST_SHA256:
+                default:
+                    out[i] = 4;
+                    break;
+            }
+        }
+        return out;
+    }
+
     private KeyMetadata generateForgedAttestationKey(
             KeyStoreSecurityLevel iSecurityLevel, KeyDescriptor descriptor,
             int flags, byte[] additionalEntropy)
@@ -842,6 +881,7 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
             }
             KeyboxImitationHooks.setAttestationIds(attestIds);
             KeyboxImitationHooks.setAttestationChallenge(mSpec.getAttestationChallenge());
+            KeyboxImitationHooks.setAttestationDigests(mapDigests(mSpec.getDigests()));
         }
         args.removeIf(p -> p.tag == Tag.ATTESTATION_CHALLENGE
                 || p.tag == Tag.ATTESTATION_APPLICATION_ID

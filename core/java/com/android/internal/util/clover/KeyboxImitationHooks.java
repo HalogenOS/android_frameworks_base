@@ -49,12 +49,12 @@ public class KeyboxImitationHooks {
     private static final ASN1ObjectIdentifier KEY_ATTESTATION_OID = new ASN1ObjectIdentifier(
             "1.3.6.1.4.1.11129.2.1.17");
 
-    // KeyMint version constants for the claimed device. KeyMint 4.0
-    // attestations on Android 16 carry attestationVersion/keymasterVersion =
-    // 400; on Android 15 the value is 300. Our claim (akita on 16) must match
-    // the Android-16 value or the version itself is incoherent.
-    private static final int ATTESTATION_VERSION = 400;
-    private static final int KEYMASTER_VERSION = 400;
+    // KeyMint version constants for the forged leaf. The leaf-modify path
+    // copies the substrate leaf's version (100 for RKP-era attestation keys),
+    // and the from-scratch path must emit the same shape: the accepted
+    // attestation shape for these chains is the v100 layout.
+    private static final int ATTESTATION_VERSION = 100;
+    private static final int KEYMASTER_VERSION = 100;
 
     private static volatile byte[] sPendingChallenge;
     private static volatile byte[] sPendingApplicationId;
@@ -64,6 +64,11 @@ public class KeyboxImitationHooks {
     // no-attestation fallback, so the forge can reproduce the attestation keystore
     // would have emitted rather than a hand-picked subset.
     private static volatile Map<Integer, byte[]> sPendingAttestIds;
+    // The KeyMint digest values from the caller's KeyGenParameterSpec, captured
+    // alongside the IDs. Stock attestations carry the REQUESTED digest set
+    // (e.g. GMS asks SHA-512=6); a fixed digest would diverge from what
+    // keystore2 emits for the same request.
+    private static volatile int[] sPendingDigests;
     // Cached per-process attestationApplicationId (DER), built once — see
     // buildAttestationApplicationId(). Stock KeyMint always computes and embeds
     // the caller's AAID in teeEnforced; a forged attestation without it is
@@ -80,6 +85,10 @@ public class KeyboxImitationHooks {
 
     public static void setAttestationIds(Map<Integer, byte[]> ids) {
         sPendingAttestIds = ids;
+    }
+
+    public static void setAttestationDigests(int[] digests) {
+        sPendingDigests = digests;
     }
 
     public static KeyEntryResponse onGetKeyEntry(KeyEntryResponse response) {
@@ -182,9 +191,17 @@ public class KeyboxImitationHooks {
         // Tag 3: keySize
         int keySize = KeyProperties.KEY_ALGORITHM_EC.equals(keyAlgorithm) ? 256 : 2048;
         teeEnforcedVector.add(new DERTaggedObject(true, 3, new ASN1Integer(keySize)));
-        // Tag 5: digest SET (SHA-256=4)
+        // Tag 5: digest SET — the caller's requested digests, exactly as
+        // keystore2 would emit them (fallback SHA-256=4 when nothing captured).
+        int[] digests = sPendingDigests;
+        sPendingDigests = null;
+        if (digests == null || digests.length == 0) {
+            digests = new int[] { 4 };
+        }
         ASN1EncodableVector digestSet = new ASN1EncodableVector();
-        digestSet.add(new ASN1Integer(4));
+        for (int digest : digests) {
+            digestSet.add(new ASN1Integer(digest));
+        }
         teeEnforcedVector.add(new DERTaggedObject(true, 5, new DERSet(digestSet)));
         // Tag 10: ecCurve (P-256=1) for EC keys
         if (KeyProperties.KEY_ALGORITHM_EC.equals(keyAlgorithm)) {
@@ -208,18 +225,8 @@ public class KeyboxImitationHooks {
             softwareEnforcedVector.add(new DERTaggedObject(true, 709,
                     new DEROctetString(aaid)));
         }
-        // moduleHash [724]: SHA-256 over the DER-encoded APEX Modules set of the
-        // claimed device (KeyMint 4.0 attestations carry it; leaves missing it
-        // stand out on v400 devices).
-        String moduleHashHex =
-                com.android.internal.util.SimplePropImitation.getModuleHash();
-        if (moduleHashHex != null) {
-            byte[] moduleHash = decodeHexOrRandom(moduleHashHex);
-            if (moduleHash != null && moduleHash.length == 32) {
-                softwareEnforcedVector.add(new DERTaggedObject(true, 724,
-                        new DEROctetString(moduleHash)));
-            }
-        }
+        // No moduleHash [724]: stock leaves do not carry it.
+
 
         // KeyDescription sequence
         ASN1EncodableVector keyDescription = new ASN1EncodableVector();
@@ -339,19 +346,17 @@ public class KeyboxImitationHooks {
         teeEnforcedVector.add(new DERTaggedObject(true, 704, new DERSequence(rootOfTrustEncodables)));
         teeEnforcedVector.add(new DERTaggedObject(true, 705, new ASN1Integer(getOsVersion())));
         teeEnforcedVector.add(new DERTaggedObject(true, 706, new ASN1Integer(getPatchLevel())));
-        // ATTESTATION_ID_* tags. Reproduce EXACTLY the set keystore was asked to
-        // attest — captured by the SPI before its no-attestation fallback strips
-        // them — so the forged cert is a protocol-faithful copy of what a stock
-        // KeyMint attestation would carry for this (spoofed) device, INCLUDING the
-        // synthetic serial/IMEI/MEID (713/714/715). Tags 710..717 sit between
-        // osPatchLevel (706) and vendorPatchLevel (718); emit ascending to keep
-        // the DER SEQUENCE sorted. Fall back to the Build.*_FOR_ATTESTATION subset
+        // ATTESTATION_ID_* tags. The attestation request in these flows is
+        // always ID-stripped, and the accepted leaf shape carries only the
+        // non-unique set {brand, device, product, manufacturer, model} — a leaf
+        // answering an ID-stripped request must NOT carry serial/IMEI/MEID
+        // (713/714/715/723). Fall back to the Build.*_FOR_ATTESTATION subset
         // when no captured set is present (e.g. the modify path or a non-keygen
-        // retrieval), which is what the previous implementation always did.
+        // retrieval).
         final Map<Integer, byte[]> attestIds = sPendingAttestIds;
         sPendingAttestIds = null;
         if (attestIds != null && !attestIds.isEmpty()) {
-            for (int tag = 710; tag <= 717; tag++) {
+            for (int tag : new int[] { 710, 711, 712, 716, 717 }) {
                 byte[] value = attestIds.get(tag);
                 if (value != null) {
                     teeEnforcedVector.add(new DERTaggedObject(true, tag,
@@ -372,14 +377,7 @@ public class KeyboxImitationHooks {
         }
         teeEnforcedVector.add(new DERTaggedObject(true, 718, new ASN1Integer(getPatchLevelLong())));
         teeEnforcedVector.add(new DERTaggedObject(true, 719, new ASN1Integer(getPatchLevelLong())));
-        // attestationIdSecondImei [723] comes after bootPatchLevel [719].
-        if (attestIds != null) {
-            byte[] secondImei = attestIds.get(723);
-            if (secondImei != null) {
-                teeEnforcedVector.add(new DERTaggedObject(true, 723,
-                        new DEROctetString(secondImei)));
-            }
-        }
+        // attestationIdSecondImei [723] intentionally omitted — see above.
     }
 
     /**
@@ -410,9 +408,18 @@ public class KeyboxImitationHooks {
             pkgInfos.add(new DERSequence(pkgInfo));
 
             java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            // keystore2 sources the AAID signatures from PackageInfo.signatures
+            // (KeyAttestationApplicationIdProviderService), which for a v3
+            // signing lineage is the OLDEST-first history array — so a stock
+            // attestation names the lineage ROOT, not the current signer.
+            android.content.pm.Signature[] signers =
+                    pi.signingInfo.getSigningCertificateHistory();
+            if (signers == null || signers.length == 0) {
+                signers = pi.signingInfo.getApkContentsSigners();
+            }
             ASN1EncodableVector sigs = new ASN1EncodableVector();
-            for (android.content.pm.Signature s : pi.signingInfo.getApkContentsSigners()) {
-                sigs.add(new DEROctetString(md.digest(s.toByteArray())));
+            if (signers != null && signers.length > 0) {
+                sigs.add(new DEROctetString(md.digest(signers[0].toByteArray())));
             }
 
             ASN1EncodableVector aaid = new ASN1EncodableVector();
