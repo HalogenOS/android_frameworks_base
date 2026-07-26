@@ -208,6 +208,18 @@ public class KeyboxImitationHooks {
             softwareEnforcedVector.add(new DERTaggedObject(true, 709,
                     new DEROctetString(aaid)));
         }
+        // moduleHash [724]: SHA-256 over the DER-encoded APEX Modules set of the
+        // claimed device (KeyMint 4.0 attestations carry it; leaves missing it
+        // stand out on v400 devices).
+        String moduleHashHex =
+                com.android.internal.util.SimplePropImitation.getModuleHash();
+        if (moduleHashHex != null) {
+            byte[] moduleHash = decodeHexOrRandom(moduleHashHex);
+            if (moduleHash != null && moduleHash.length == 32) {
+                softwareEnforcedVector.add(new DERTaggedObject(true, 724,
+                        new DEROctetString(moduleHash)));
+            }
+        }
 
         // KeyDescription sequence
         ASN1EncodableVector keyDescription = new ASN1EncodableVector();
