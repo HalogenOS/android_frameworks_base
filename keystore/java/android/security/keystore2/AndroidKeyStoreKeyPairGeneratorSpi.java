@@ -781,21 +781,11 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
     }
 
     /**
-     * Mirrors keystore2's RKP-gate logic (remote_provisioning.rs): RKP is
-     * reachable when the bootloader is green, or when the root-only marker
-     * file re-enables it on a non-green bootloader (test override). The file
-     * check is invisible to the sandboxed caller (it's in keystore2's own
-     * 0700 data dir, not a property).
+     * RKP is reachable only on a green (OEM-verified) bootloader. Everywhere
+     * else the attestation is built by the forge instead.
      */
     private static boolean isRkpAvailable() {
-        if ("green".equals(android.os.SystemProperties.get("ro.boot.verifiedbootstate"))) {
-            return true;
-        }
-        try {
-            return new java.io.File("/data/misc/keystore/rkp_force_enable").exists();
-        } catch (SecurityException e) {
-            return false;
-        }
+        return "green".equals(android.os.SystemProperties.get("ro.boot.verifiedbootstate"));
     }
 
     /**
