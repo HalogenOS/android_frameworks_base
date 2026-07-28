@@ -1090,6 +1090,13 @@ public class ComputerEngine implements Computer {
             // System, root and shell callers see everything.
             return false;
         }
+        if (Process.isIsolated(callingUid)) {
+            // Isolated processes (e.g. WebView sandboxed renderers) load their host app's
+            // package info during startup; hiding it breaks WebView for any hidden app.
+            // No third-party app code runs in these processes, so this cannot be abused
+            // to bypass the filter.
+            return false;
+        }
         // System apps (including updated system apps) that run with an app UID must also be able
         // to enumerate these packages; only unprivileged third-party callers are filtered.
         final Object obj = mSettings.getSettingBase(callingAppId);
@@ -1097,12 +1104,22 @@ public class ComputerEngine implements Computer {
             final ArraySet<PackageStateInternal> packageStates =
                     (ArraySet<PackageStateInternal>) ((SharedUserSetting) obj).getPackageStates();
             for (int i = packageStates.size() - 1; i >= 0; i--) {
-                if (packageStates.valueAt(i).isSystem()) {
+                final PackageStateInternal ps = packageStates.valueAt(i);
+                if (ps.isSystem()) {
+                    return false;
+                }
+                // An app querying its own package must always succeed.
+                if (targetPackageName.equals(ps.getPackageName())) {
                     return false;
                 }
             }
         } else if (obj instanceof PackageStateInternal) {
-            if (((PackageStateInternal) obj).isSystem()) {
+            final PackageStateInternal ps = (PackageStateInternal) obj;
+            if (ps.isSystem()) {
+                return false;
+            }
+            // An app querying its own package must always succeed.
+            if (targetPackageName.equals(ps.getPackageName())) {
                 return false;
             }
         }
