@@ -2331,6 +2331,8 @@ public class SubscriptionManager {
                 result = iSub.getActiveSubInfoCount(mContext.getOpPackageName(),
                         mContext.getAttributionTag(), mIsForAllUserProfiles);
             }
+        } catch (SecurityException se) {
+            GmsCompat.catchOrRethrow(se);
         } catch (RemoteException ex) {
             // ignore it
         }
