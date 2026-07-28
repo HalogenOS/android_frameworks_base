@@ -35,6 +35,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
+
 /**
  * SimplePropImitation - Simplified property imitation for GMS
  * @hide
@@ -201,6 +203,11 @@ public class SimplePropImitation {
 
         // Only GMS and Finsky are spoof targets; the keybox forge keys off this.
         sSpoofTarget = PACKAGE_GMS.equals(packageName) || PACKAGE_FINSKY.equals(packageName);
+        boolean userTarget = false;
+        if (!sSpoofTarget) {
+            userTarget = isUserSpoofTarget(context, packageName);
+            sSpoofTarget = userTarget;
+        }
 
         if (PACKAGE_GMS.equals(packageName)) {
             Log.i(TAG, "Spoofing props for " + processName);
@@ -211,13 +218,36 @@ public class SimplePropImitation {
             } else if (processName.startsWith(PACKAGE_GMS)) {
                 loadAndSetCertifiedProps(context);
             }
-        } else if (PACKAGE_FINSKY.equals(packageName)) {
+        } else if (PACKAGE_FINSKY.equals(packageName) || userTarget) {
             Log.i(TAG, "Spoofing props for " + processName);
             loadAndSetCertifiedProps(context);
         }
 
         // Lock the native spoof table for all processes
         nativeEnableSysPropSpoof();
+    }
+
+    /**
+     * Whether the user opted this package into the spoof layer through the
+     * Settings UI (Settings.Secure.ATTESTATION_SPOOF_PACKAGES, JSON array).
+     */
+    private static boolean isUserSpoofTarget(Context context, String packageName) {
+        try {
+            String json = Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.ATTESTATION_SPOOF_PACKAGES);
+            if (TextUtils.isEmpty(json)) {
+                return false;
+            }
+            JSONArray arr = new JSONArray(json);
+            for (int i = 0; i < arr.length(); i++) {
+                if (packageName.equals(arr.optString(i))) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            dlog("failed to parse " + Settings.Secure.ATTESTATION_SPOOF_PACKAGES + ": " + e);
+        }
+        return false;
     }
 
     /**

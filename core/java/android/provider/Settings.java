@@ -13435,6 +13435,24 @@ public final class Settings {
                 "attestation_spoof_enabled";
 
         /**
+         * JSON array of package names that opt into the spoof layer in
+         * addition to the built-in targets (GMS, Play Store). Read by
+         * SimplePropImitation at first {@code setProps()} call; the value is
+         * then cached for the lifetime of the calling process, so changes
+         * take effect for newly started apps only.
+         *
+         * <p>Has no effect when the master switch
+         * {@link #ATTESTATION_SPOOF_ENABLED} is off, or when
+         * {@code ro.boot.verifiedbootstate} is {@code green}.
+         *
+         * <p>Example value: {@code ["com.example.app","org.example.other"]}
+         * @hide
+         */
+        @Readable
+        public static final String ATTESTATION_SPOOF_PACKAGES =
+                "attestation_spoof_packages";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
