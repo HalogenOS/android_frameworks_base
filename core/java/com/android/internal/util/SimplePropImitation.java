@@ -218,9 +218,17 @@ public class SimplePropImitation {
             } else if (processName.startsWith(PACKAGE_GMS)) {
                 loadAndSetCertifiedProps(context);
             }
-        } else if (PACKAGE_FINSKY.equals(packageName) || userTarget) {
+        } else if (PACKAGE_FINSKY.equals(packageName)) {
             Log.i(TAG, "Spoofing props for " + processName);
             loadAndSetCertifiedProps(context);
+        } else if (userTarget) {
+            // User-opted apps get the device's own stock identity ("native"
+            // attribute set) rather than the certified Pixel identity: a
+            // banking-grade probe cross-checks the claimed device against
+            // hardware evidence (SoC, GPU, sensors) that only agrees with
+            // the real device.
+            Log.i(TAG, "Spoofing props (native identity) for " + processName);
+            loadAndSetCertifiedProps(context, "native");
         }
 
         // Lock the native spoof table for all processes
@@ -254,7 +262,7 @@ public class SimplePropImitation {
      * Special handling for GMS processes - checks for Add Account activity
      */
     private static void setCertifiedPropsForGms(Context context) {
-        loadCertifiedProps(context);
+        loadCertifiedProps(context, null);
 
         final boolean wasAddAccountOnTop = isGmsAddAccountActivityOnTop();
 
@@ -290,7 +298,15 @@ public class SimplePropImitation {
      * Load and set certified props without checking for Add Account activity
      */
     private static void loadAndSetCertifiedProps(Context context) {
-        loadCertifiedProps(context);
+        loadAndSetCertifiedProps(context, null);
+    }
+
+    /**
+     * Load and set certified props from the named attribute set
+     * ({@code null} selects the provider's default set).
+     */
+    private static void loadAndSetCertifiedProps(Context context, String attributeSet) {
+        loadCertifiedProps(context, attributeSet);
         applyCertifiedProps();
     }
 
@@ -300,7 +316,7 @@ public class SimplePropImitation {
      * they are handed out synchronously through a ContentResolver.call() by the
      * priv-app that owns them.
      */
-    private static void loadCertifiedProps(Context context) {
+    private static void loadCertifiedProps(Context context, String attributeSet) {
         if (sCertifiedProps != null) {
             return;
         }
@@ -308,7 +324,7 @@ public class SimplePropImitation {
         try {
             Bundle result = context.getContentResolver().call(
                     "custom.corporatecontrolsatisfier",
-                    "obtainControlConformanceAttributes", null, null);
+                    "obtainControlConformanceAttributes", attributeSet, null);
             String[] props = (result != null) ? result.getStringArray("attributes") : null;
             sCertifiedProps = (props != null) ? Arrays.asList(props) : Arrays.asList();
             dlog("Loaded " + sCertifiedProps.size() + " certified properties");
