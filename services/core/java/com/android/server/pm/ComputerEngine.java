@@ -1066,12 +1066,38 @@ public class ComputerEngine implements Computer {
     }
 
     /**
-     * Package-name prefix of aftermarket-identity apps that are hidden from unprivileged
+     * Package-name prefixes of aftermarket-identity apps that are hidden from unprivileged
      * third-party apps during package enumeration and by-name lookups. This is an
      * enumeration-only, app-compatibility filter; it never affects intent resolution and never
      * applies to system, root, shell or other privileged callers.
      */
-    private static final String HIDDEN_ENUMERATION_PACKAGE_PREFIX = "org.lineageos.";
+    private static final String[] HIDDEN_ENUMERATION_PACKAGE_PREFIXES = {
+            "org.lineageos.",
+            "custom.",
+    };
+
+    /**
+     * Package that must stay visible to the Google services callers it works
+     * together with, but not to arbitrary third-party apps.
+     */
+    private static final String GMSCOMPAT_PACKAGE = "com.google.android.gms.compat";
+    private static final String PACKAGE_GMS = "com.google.android.gms";
+    private static final String PACKAGE_VENDING = "com.android.vending";
+
+    private static boolean isHiddenEnumerationPackage(@Nullable String targetPackageName) {
+        if (targetPackageName == null) {
+            return false;
+        }
+        if (GMSCOMPAT_PACKAGE.equals(targetPackageName)) {
+            return true;
+        }
+        for (String prefix : HIDDEN_ENUMERATION_PACKAGE_PREFIXES) {
+            if (targetPackageName.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Returns true when the given package should be hidden from the calling app during package
@@ -1081,8 +1107,7 @@ public class ComputerEngine implements Computer {
      */
     private boolean shouldHideFromCallerEnumeration(@Nullable String targetPackageName,
             int callingUid) {
-        if (targetPackageName == null
-                || !targetPackageName.startsWith(HIDDEN_ENUMERATION_PACKAGE_PREFIX)) {
+        if (!isHiddenEnumerationPackage(targetPackageName)) {
             return false;
         }
         final int callingAppId = UserHandle.getAppId(callingUid);
@@ -1108,8 +1133,15 @@ public class ComputerEngine implements Computer {
                 if (ps.isSystem()) {
                     return false;
                 }
+                final String pkgName = ps.getPackageName();
                 // An app querying its own package must always succeed.
-                if (targetPackageName.equals(ps.getPackageName())) {
+                if (targetPackageName.equals(pkgName)) {
+                    return false;
+                }
+                // The Google services callers must keep seeing the package
+                // they work together with.
+                if (GMSCOMPAT_PACKAGE.equals(targetPackageName)
+                        && (PACKAGE_GMS.equals(pkgName) || PACKAGE_VENDING.equals(pkgName))) {
                     return false;
                 }
             }
@@ -1118,8 +1150,15 @@ public class ComputerEngine implements Computer {
             if (ps.isSystem()) {
                 return false;
             }
+            final String pkgName = ps.getPackageName();
             // An app querying its own package must always succeed.
-            if (targetPackageName.equals(ps.getPackageName())) {
+            if (targetPackageName.equals(pkgName)) {
+                return false;
+            }
+            // The Google services callers must keep seeing the package they
+            // work together with.
+            if (GMSCOMPAT_PACKAGE.equals(targetPackageName)
+                    && (PACKAGE_GMS.equals(pkgName) || PACKAGE_VENDING.equals(pkgName))) {
                 return false;
             }
         }
