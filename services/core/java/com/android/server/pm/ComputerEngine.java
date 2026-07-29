@@ -1074,6 +1074,9 @@ public class ComputerEngine implements Computer {
     private static final String[] HIDDEN_ENUMERATION_PACKAGE_PREFIXES = {
             "org.lineageos.",
             "custom.",
+            "app.grapheneos.",
+            "co.aospa.",
+            "com.stevesoltys.seedvault",
     };
 
     /**
@@ -1084,6 +1087,25 @@ public class ComputerEngine implements Computer {
     private static final String PACKAGE_GMS = "com.google.android.gms";
     private static final String PACKAGE_VENDING = "com.android.vending";
 
+    /**
+     * Packages inside a hidden prefix that must stay visible to the Google
+     * services callers they interoperate with.
+     */
+    private static final String[] GMS_VENDING_VISIBLE_PACKAGES = {
+            GMSCOMPAT_PACKAGE,
+            "app.grapheneos.gmscompat",
+            "app.grapheneos.gmscompat.config",
+    };
+
+    /**
+     * Packages that must stay visible to apps that use the Google services
+     * client library: those apps load the compatibility library into their
+     * own process at startup, and hiding it crashes them. (A stock device
+     * has no such package, but its absence cannot be faked without breaking
+     * those apps.)
+     */
+    private static final String GMS_CLIENT_LIB_PACKAGE = "app.grapheneos.gmscompat.lib";
+
     private static boolean isHiddenEnumerationPackage(@Nullable String targetPackageName) {
         if (targetPackageName == null) {
             return false;
@@ -1091,8 +1113,20 @@ public class ComputerEngine implements Computer {
         if (GMSCOMPAT_PACKAGE.equals(targetPackageName)) {
             return true;
         }
+        if (GMS_CLIENT_LIB_PACKAGE.equals(targetPackageName)) {
+            return false;
+        }
         for (String prefix : HIDDEN_ENUMERATION_PACKAGE_PREFIXES) {
             if (targetPackageName.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isGmsVendingVisiblePackage(String targetPackageName) {
+        for (String pkg : GMS_VENDING_VISIBLE_PACKAGES) {
+            if (pkg.equals(targetPackageName)) {
                 return true;
             }
         }
@@ -1140,7 +1174,7 @@ public class ComputerEngine implements Computer {
                 }
                 // The Google services callers must keep seeing the package
                 // they work together with.
-                if (GMSCOMPAT_PACKAGE.equals(targetPackageName)
+                if (isGmsVendingVisiblePackage(targetPackageName)
                         && (PACKAGE_GMS.equals(pkgName) || PACKAGE_VENDING.equals(pkgName))) {
                     return false;
                 }
@@ -1157,7 +1191,7 @@ public class ComputerEngine implements Computer {
             }
             // The Google services callers must keep seeing the package they
             // work together with.
-            if (GMSCOMPAT_PACKAGE.equals(targetPackageName)
+            if (isGmsVendingVisiblePackage(targetPackageName)
                     && (PACKAGE_GMS.equals(pkgName) || PACKAGE_VENDING.equals(pkgName))) {
                 return false;
             }
