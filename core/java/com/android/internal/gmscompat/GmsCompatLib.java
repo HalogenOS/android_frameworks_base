@@ -20,14 +20,14 @@ public class GmsCompatLib {
             int flags = Context.CONTEXT_INCLUDE_CODE
                     // GmsCompatLib is part of system image
                     | Context.CONTEXT_IGNORE_SECURITY;
-            libCtx = appContext.createPackageContext("app.grapheneos.gmscompat.lib", flags);
+            libCtx = appContext.createPackageContext("com.google.android.compat.lib", flags);
         } catch (PackageManager.NameNotFoundException e) {
             throw new IllegalStateException(e);
         }
 
         IGmsCompatLib lib;
         try {
-            Class cls = libCtx.getClassLoader().loadClass("app.grapheneos.gmscompat.lib.GmsCompatLibImpl");
+            Class cls = libCtx.getClassLoader().loadClass("com.google.android.compat.lib.GmsCompatLibImpl");
             lib = (IGmsCompatLib) cls.getDeclaredConstructor().newInstance();
         } catch (ReflectiveOperationException e) {
             throw new IllegalStateException(e);

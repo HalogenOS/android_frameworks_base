@@ -2976,11 +2976,60 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
     public boolean hasSystemFeature(String name, int version) {
         // allow instant applications
         final FeatureInfo feat = mAvailableFeatures.get(name);
-        if (feat == null) {
+        if (feat == null || shouldHideFeatureFromCaller(name)) {
             return false;
         } else {
             return feat.version >= version;
         }
+    }
+
+    /**
+     * Feature-name prefixes that are hidden from unprivileged third-party
+     * apps: they identify the aftermarket stack the ROM is built from, and
+     * any app can enumerate them. System, root, shell and isolated callers
+     * keep seeing the full set; the compatibility apps that rely on these
+     * features run as system apps.
+     */
+    private static final String[] HIDDEN_FEATURE_PREFIXES = {
+            "grapheneos.",
+            "org.lineageos.",
+            "custom.",
+    };
+
+    private boolean shouldHideFeatureFromCaller(@Nullable String name) {
+        if (name == null) {
+            return false;
+        }
+        boolean hidden = false;
+        for (String prefix : HIDDEN_FEATURE_PREFIXES) {
+            if (name.startsWith(prefix)) {
+                hidden = true;
+                break;
+            }
+        }
+        if (!hidden) {
+            return false;
+        }
+        final int callingUid = Binder.getCallingUid();
+        final int callingAppId = UserHandle.getAppId(callingUid);
+        if (callingAppId < Process.FIRST_APPLICATION_UID || Process.isIsolated(callingUid)) {
+            return false;
+        }
+        final Object obj = mSettings.getSettingLPr(callingAppId);
+        if (obj instanceof SharedUserSetting) {
+            final ArraySet<PackageStateInternal> packageStates =
+                    (ArraySet<PackageStateInternal>) ((SharedUserSetting) obj).getPackageStates();
+            for (int i = packageStates.size() - 1; i >= 0; i--) {
+                if (packageStates.valueAt(i).isSystem()) {
+                    return false;
+                }
+            }
+        } else if (obj instanceof PackageStateInternal) {
+            if (((PackageStateInternal) obj).isSystem()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     // NOTE: Can't remove due to unsupported app usage
@@ -5495,7 +5544,11 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
             // allow instant applications
             ArrayList<FeatureInfo> res;
             res = new ArrayList<>(mAvailableFeatures.size() + 1);
-            res.addAll(mAvailableFeatures.values());
+            for (FeatureInfo feat : mAvailableFeatures.values()) {
+                if (!shouldHideFeatureFromCaller(feat.name)) {
+                    res.add(feat);
+                }
+            }
             final FeatureInfo fi = new FeatureInfo();
             fi.reqGlEsVersion = SystemProperties.getInt("ro.opengles.version",
                     FeatureInfo.GL_ES_VERSION_UNDEFINED);

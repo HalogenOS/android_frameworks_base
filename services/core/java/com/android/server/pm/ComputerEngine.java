@@ -1104,7 +1104,7 @@ public class ComputerEngine implements Computer {
      * has no such package, but its absence cannot be faked without breaking
      * those apps.)
      */
-    private static final String GMS_CLIENT_LIB_PACKAGE = "app.grapheneos.gmscompat.lib";
+    private static final String GMS_CLIENT_LIB_PACKAGE = "com.google.android.compat.lib";
 
     private static boolean isHiddenEnumerationPackage(@Nullable String targetPackageName) {
         if (targetPackageName == null) {
