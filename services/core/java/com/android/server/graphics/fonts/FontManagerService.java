@@ -239,7 +239,7 @@ public final class FontManagerService extends IFontManager.Stub {
     }
 
     private static final String CUSTOM_FONT_OVERLAY_PACKAGE = "android";
-    private static final String CUSTOM_FONT_OVERLAY_NAME_PREFIX = "custom_font_family_u";
+    private static final String CUSTOM_FONT_OVERLAY_NAME_PREFIX = "font_family_u";
     private static final String[] CUSTOM_FONT_OVERLAY_RESOURCES = {
             // Legacy config_* entries — styles reference these directly via
             // @*android:string/config_... rather than passing a hardcoded name
