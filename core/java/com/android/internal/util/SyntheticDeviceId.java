@@ -72,7 +72,20 @@ public final class SyntheticDeviceId {
         return deriveImei(AppGlobals.getInitialApplication(), slot);
     }
 
+    /**
+     * A stable synthetic IMSI for the current process, derived from the SSAID.
+     * Same shape and determinism as the synthetic IMEI, but a distinct value,
+     * so subscriber-id reads get a consistent non-real identifier.
+     */
+    public static String synthesizeImsi(int subId) {
+        return deriveImei(AppGlobals.getInitialApplication(), ":imsi:", subId);
+    }
+
     private static String deriveImei(Context ctx, int slot) {
+        return deriveImei(ctx, ":imei:", slot);
+    }
+
+    private static String deriveImei(Context ctx, String purpose, int slot) {
         String seed = null;
         if (ctx != null) {
             seed = Settings.Secure.getString(
@@ -84,7 +97,7 @@ public final class SyntheticDeviceId {
         final byte[] digest;
         try {
             digest = MessageDigest.getInstance("SHA-256")
-                    .digest((seed + ":imei:" + slot).getBytes(StandardCharsets.UTF_8));
+                    .digest((seed + purpose + slot).getBytes(StandardCharsets.UTF_8));
         } catch (NoSuchAlgorithmException e) {
             Log.e(TAG, "SHA-256 unavailable, cannot derive IMEI", e);
             return null;

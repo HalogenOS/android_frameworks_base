@@ -37,6 +37,15 @@ class GmsCoreHooks extends PackageHooks {
 
         int flag = 0;
         switch (permission) {
+            case Manifest.permission.READ_PHONE_STATE:
+            case Manifest.permission.READ_PHONE_NUMBERS:
+                // Sandboxed GmsCore is unprivileged, but stock Play services
+                // holds the phone permission group, and several of its
+                // features self-check for it and disable themselves when it
+                // is missing (wallet provisioning among them). Grant it so
+                // those checks pass; data returned through the granted APIs
+                // is sanitized at the TelephonyManager layer for GMS callers.
+                return PERMISSION_OVERRIDE_GRANT;
             case Manifest.permission.USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER:
                 flag = GmsCorePackageFlag.GRANT_PERMS_FOR_ICC_AUTHENTICATION;
                 break;

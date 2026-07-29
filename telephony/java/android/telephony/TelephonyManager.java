@@ -119,6 +119,7 @@ import android.util.Pair;
 import com.android.internal.annotations.GuardedBy;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.gmscompat.GmsHooks;
+import com.android.internal.util.SyntheticDeviceId;
 import com.android.internal.gmscompat.gcarriersettings.GCarrierSettingsApp;
 import com.android.internal.os.BackgroundThread;
 import com.android.internal.telephony.CellNetworkScanResult;
@@ -2370,6 +2371,9 @@ public class TelephonyManager {
     @SuppressAutoDoc // No support for device / profile owner or carrier privileges (b/72967236).
     @RequiresPermission(android.Manifest.permission.READ_PRIVILEGED_PHONE_STATE)
     public String getDeviceId(int slotIndex) {
+        if (GmsCompat.isEnabled()) {
+            return GmsHooks.getImei(slotIndex);
+        }
         // FIXME this assumes phoneId == slotIndex
         try {
             IPhoneSubInfo info = getSubscriberInfoService();
@@ -4217,6 +4221,9 @@ public class TelephonyManager {
     @RequiresPermission(android.Manifest.permission.READ_PRIVILEGED_PHONE_STATE)
     @UnsupportedAppUsage
     public String getSimSerialNumber(int subId) {
+        if (GmsCompat.isEnabled()) {
+            return null;
+        }
         try {
             IPhoneSubInfo info = getSubscriberInfoService();
             if (info == null)
@@ -4664,6 +4671,9 @@ public class TelephonyManager {
     @RequiresPermission(android.Manifest.permission.READ_PRIVILEGED_PHONE_STATE)
     @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P)
     public String getSubscriberId(int subId) {
+        if (GmsCompat.isEnabled()) {
+            return SyntheticDeviceId.synthesizeImsi(subId);
+        }
         try {
             IPhoneSubInfo info = getSubscriberInfoService();
             if (info == null)
@@ -5324,6 +5334,9 @@ public class TelephonyManager {
     })
     @UnsupportedAppUsage
     public String getLine1Number(int subId) {
+        if (GmsCompat.isEnabled()) {
+            return null;
+        }
         String number = null;
         try {
             ITelephony telephony = getITelephony();
@@ -5594,6 +5607,9 @@ public class TelephonyManager {
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     @UnsupportedAppUsage
     public String getVoiceMailNumber(int subId) {
+        if (GmsCompat.isEnabled()) {
+            return null;
+        }
         try {
             IPhoneSubInfo info = getSubscriberInfoService();
             if (info == null)
