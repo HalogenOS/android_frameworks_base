@@ -1034,7 +1034,19 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
                                 meid = null;
                             }
                             if (meid == null) {
-                                throw new DeviceIdAttestationException("Unable to retrieve MEID");
+                                // MEID is retired on this platform — getMeid
+                                // returns null unconditionally, so a null here
+                                // means "cannot read it", exactly like the
+                                // SecurityException case below: skip the
+                                // identifier instead of aborting the whole key
+                                // generation. (This matters for sandboxed GMS
+                                // holding READ_PRIVILEGED_PHONE_STATE: the
+                                // privileged read no longer throws, it returns
+                                // null, and a throw here would kill every
+                                // attested keygen that requests MEID.)
+                                Log.w(TAG, "Skipping attestation for device ID type "
+                                        + idType + "; MEID is not available");
+                                break;
                             }
                             params.add(KeyStore2ParameterUtils.makeBytes(
                                     KeymasterDefs.KM_TAG_ATTESTATION_ID_MEID,
