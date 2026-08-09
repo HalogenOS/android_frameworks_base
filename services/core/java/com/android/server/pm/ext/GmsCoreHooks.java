@@ -46,6 +46,15 @@ class GmsCoreHooks extends PackageHooks {
                 // those checks pass; data returned through the granted APIs
                 // is sanitized at the TelephonyManager layer for GMS callers.
                 return PERMISSION_OVERRIDE_GRANT;
+            case Manifest.permission.READ_PRIVILEGED_PHONE_STATE:
+                // Stock Play services is privileged and holds this; sandboxed
+                // GmsCore does not. keystore2 gates device-ID attestation on it,
+                // so without the grant every attested GMS keygen dies with
+                // CANNOT_ATTEST_IDS before the attestation request can even be
+                // formed. The attested values themselves stay synthetic — they
+                // are sourced in the caller's process from the same sanitized
+                // TelephonyManager/Build stubs as the phone-permission data.
+                return PERMISSION_OVERRIDE_GRANT;
             case Manifest.permission.USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER:
                 flag = GmsCorePackageFlag.GRANT_PERMS_FOR_ICC_AUTHENTICATION;
                 break;
@@ -107,6 +116,7 @@ class GmsCoreHooks extends PackageHooks {
             var l = createUsesPerms(
                     Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
                     Manifest.permission.READ_PHONE_NUMBERS,
+                    Manifest.permission.READ_PRIVILEGED_PHONE_STATE,
                     Manifest.permission.USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER
             );
             res.addAll(l);

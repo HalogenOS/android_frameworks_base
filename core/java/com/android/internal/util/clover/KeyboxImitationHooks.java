@@ -10,6 +10,7 @@ import android.os.Build;
 import android.security.KeyChain;
 import android.security.keystore.KeyProperties;
 import android.system.keystore2.KeyEntryResponse;
+import android.system.keystore2.KeyMetadata;
 import android.util.Log;
 
 import com.android.internal.org.bouncycastle.asn1.ASN1Boolean;
@@ -37,6 +38,7 @@ import java.security.PrivateKey;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @hide
@@ -56,39 +58,88 @@ public class KeyboxImitationHooks {
     private static final int ATTESTATION_VERSION = 100;
     private static final int KEYMASTER_VERSION = 100;
 
-    private static volatile byte[] sPendingChallenge;
-    private static volatile byte[] sPendingApplicationId;
-    // The exact ATTESTATION_ID_* set keystore was asked to attest, keyed by its
-    // ASN.1 attestation tag number (710..717, 723). Captured by
-    // AndroidKeyStoreKeyPairGeneratorSpi before it strips the ids for the
-    // no-attestation fallback, so the forge can reproduce the attestation keystore
-    // would have emitted rather than a hand-picked subset.
-    private static volatile Map<Integer, byte[]> sPendingAttestIds;
-    // The KeyMint digest values from the caller's KeyGenParameterSpec, captured
-    // alongside the IDs. Stock attestations carry the REQUESTED digest set
-    // (e.g. GMS asks SHA-512=6); a fixed digest would diverge from what
-    // keystore2 emits for the same request.
-    private static volatile int[] sPendingDigests;
+    // Upper bound on retained per-alias forge state. GMS creates a handful of
+    // attested keys per process lifetime; the cap only guards against a
+    // pathological caller leaking aliases.
+    private static final int MAX_PENDING_KEYS = 64;
+
+    /**
+     * The exact attestation request a caller asked for when generating a key,
+     * captured by AndroidKeyStoreKeyPairGeneratorSpi before it strips the
+     * attestation tags for the no-attestation fallback. Keyed by key alias so
+     * interleaved keygen/read sequences (keygen A, read key B, read key A)
+     * always forge the right key with the right challenge — the previous
+     * one-shot statics could attach A's challenge to B's certificate.
+     */
+    private static final class PendingAttestation {
+        final byte[] challenge;
+        // AAID (DER) explicitly present in the caller's keygen args, if any.
+        // Usually null — keystore2 computes the AAID itself, so the forge
+        // reproduces it via getAttestationApplicationId().
+        final byte[] applicationId;
+        // The exact ATTESTATION_ID_* set keystore was asked to attest, keyed by
+        // its ASN.1 attestation tag number (710..717, 723), so the forge can
+        // reproduce the attestation keystore would have emitted rather than a
+        // hand-picked subset.
+        final Map<Integer, byte[]> attestIds;
+        // The KeyMint digest values from the caller's KeyGenParameterSpec.
+        // Stock attestations carry the REQUESTED digest set (e.g. GMS asks
+        // SHA-512=6); a fixed digest would diverge from what keystore2 emits
+        // for the same request.
+        final int[] digests;
+
+        PendingAttestation(byte[] challenge, byte[] applicationId,
+                Map<Integer, byte[]> attestIds, int[] digests) {
+            this.challenge = challenge;
+            this.applicationId = applicationId;
+            this.attestIds = attestIds;
+            this.digests = digests;
+        }
+    }
+
+    private static final ConcurrentHashMap<String, PendingAttestation> sPendingByAlias =
+            new ConcurrentHashMap<>();
+    // The most recently registered entry, for lookups that can't match by
+    // alias (keystore2 does not guarantee the keygen-side descriptor alias
+    // and the retrieval-side KeyMetadata alias are the same string). This
+    // preserves the earlier behavior where the latest captured attestation
+    // request applied to the next retrieval.
+    private static volatile PendingAttestation sLastPending;
+
     // Cached per-process attestationApplicationId (DER), built once — see
     // buildAttestationApplicationId(). Stock KeyMint always computes and embeds
     // the caller's AAID in teeEnforced; a forged attestation without it is
     // structurally incomplete.
     private static volatile byte[] sAttestationApplicationId;
 
-    public static void setAttestationChallenge(byte[] challenge) {
-        sPendingChallenge = challenge;
-    }
-
-    public static void setAttestationApplicationId(byte[] applicationId) {
-        sPendingApplicationId = applicationId;
-    }
-
-    public static void setAttestationIds(Map<Integer, byte[]> ids) {
-        sPendingAttestIds = ids;
-    }
-
-    public static void setAttestationDigests(int[] digests) {
-        sPendingDigests = digests;
+    /**
+     * Record the attestation request for a freshly generated key and forge its
+     * attestation immediately, in the keygen RESPONSE metadata. Callers that
+     * use the returned KeyPair's certificate chain directly and never re-read
+     * the key must see the forged chain just like callers that retrieve the
+     * key later
+     * through KeyStore2.getKeyEntry. No-op when there is no substrate
+     * certificate to rebuild (e.g. symmetric keys) — the retrieval path gets
+     * another chance via the recorded pending state.
+     */
+    public static KeyMetadata forgeAttestationForNewKey(String alias, byte[] challenge,
+            byte[] applicationId, Map<Integer, byte[]> attestIds, int[] digests,
+            KeyMetadata metadata) {
+        if (alias == null || challenge == null) {
+            return metadata;
+        }
+        if (sPendingByAlias.size() >= MAX_PENDING_KEYS) {
+            // Drop an arbitrary eldest entry rather than growing unbounded.
+            sPendingByAlias.remove(sPendingByAlias.keySet().iterator().next());
+        }
+        PendingAttestation pending =
+                new PendingAttestation(challenge, applicationId, attestIds, digests);
+        sPendingByAlias.put(alias, pending);
+        sLastPending = pending;
+        // Forge into the keygen response too: callers that consume the
+        // returned KeyPair's chain directly never re-read the key through
+        // KeyStore2.getKeyEntry, where the retrieval forge lives.
+        return forgeMetadata(alias, metadata);
     }
 
     public static KeyEntryResponse onGetKeyEntry(KeyEntryResponse response) {
@@ -111,37 +162,59 @@ public class KeyboxImitationHooks {
 
         if (response == null || response.metadata == null) return response;
 
+        String alias = response.metadata.key != null ? response.metadata.key.alias : null;
+        response.metadata = forgeMetadata(alias, response.metadata);
+        return response;
+    }
+
+    /**
+     * Rebuild the certificate in {@code metadata} so it carries a keybox-signed
+     * attestation. A certificate that already has the attestation extension
+     * (real RKP-attested leaf) goes through the modify path; a plain
+     * self-signed keystore certificate gets a from-scratch attestation when
+     * pending forge state exists for the alias. Certificates with neither
+     * extension nor pending state (and certificate-less entries, e.g.
+     * symmetric keys) pass through untouched.
+     */
+    private static KeyMetadata forgeMetadata(String alias, KeyMetadata metadata) {
+        if (metadata == null) return null;
+
         try {
-            if (response.metadata.certificate == null) {
-                Log.e(TAG, "Certificate is null, skipping modification");
-                return response;
+            if (metadata.certificate == null) {
+                // Symmetric keys and plain entries without a certificate land
+                // here constantly (GMS enumerates its whole keystore) — this is
+                // normal, not an error condition worth log spam at E level.
+                dlog("Certificate is null, skipping modification");
+                return metadata;
             }
 
-            X509Certificate certificate = KeyChain.toCertificate(response.metadata.certificate);
+            X509Certificate certificate = KeyChain.toCertificate(metadata.certificate);
             String keyAlgorithm = certificate.getPublicKey().getAlgorithm();
 
             if (certificate.getExtensionValue(KEY_ATTESTATION_OID.getId()) != null) {
                 dlog("Modifying existing attestation extension");
-                response.metadata.certificate = modifyLeafCertificate(
-                        certificate, keyAlgorithm);
+                metadata.certificate = modifyLeafCertificate(certificate, keyAlgorithm);
             } else {
-                byte[] challenge = sPendingChallenge;
-                if (challenge != null) {
-                    sPendingChallenge = null;
-                    dlog("Creating attestation extension from scratch"
-                            + " (hardware attestation was unavailable)");
-                    response.metadata.certificate = createLeafCertificate(
-                            certificate, keyAlgorithm, challenge);
-                } else {
-                    return response;
+                PendingAttestation pending = alias == null ? null : sPendingByAlias.get(alias);
+                if (pending == null) {
+                    // keystore2 does not guarantee alias equality between the
+                    // keygen-side descriptor and the retrieval-side metadata,
+                    // so fall back to the most recently registered request.
+                    pending = sLastPending;
                 }
+                if (pending == null) {
+                    return metadata;
+                }
+                dlog("Creating attestation extension from scratch"
+                        + " (hardware attestation was unavailable)");
+                metadata.certificate = createLeafCertificate(certificate, keyAlgorithm, pending);
             }
-            response.metadata.certificateChain = KeyboxUtils.getCertificateChain(keyAlgorithm);
+            metadata.certificateChain = KeyboxUtils.getCertificateChain(keyAlgorithm);
         } catch (Exception e) {
             Log.e(TAG, "Error in onGetKeyEntry", e);
         }
 
-        return response;
+        return metadata;
     }
 
     private static byte[] modifyLeafCertificate(X509Certificate leafCertificate,
@@ -164,7 +237,7 @@ public class KeyboxImitationHooks {
             teeEnforcedVector.add(teeEnforcedEncodable);
         }
 
-        addBootAndPatchInfo(teeEnforcedVector);
+        addBootAndPatchInfo(teeEnforcedVector, null);
 
         keyAttestationEncodables[7] = new DERSequence(teeEnforcedVector);
         ASN1Sequence newKeyAttestationSequence = new DERSequence(keyAttestationEncodables);
@@ -175,7 +248,7 @@ public class KeyboxImitationHooks {
     }
 
     private static byte[] createLeafCertificate(X509Certificate leafCertificate,
-            String keyAlgorithm, byte[] challenge) throws Exception {
+            String keyAlgorithm, PendingAttestation pending) throws Exception {
         X509CertificateHolder certificateHolder = new X509CertificateHolder(
                 leafCertificate.getEncoded());
 
@@ -193,8 +266,7 @@ public class KeyboxImitationHooks {
         teeEnforcedVector.add(new DERTaggedObject(true, 3, new ASN1Integer(keySize)));
         // Tag 5: digest SET — the caller's requested digests, exactly as
         // keystore2 would emit them (fallback SHA-256=4 when nothing captured).
-        int[] digests = sPendingDigests;
-        sPendingDigests = null;
+        int[] digests = pending.digests;
         if (digests == null || digests.length == 0) {
             digests = new int[] { 4 };
         }
@@ -212,7 +284,7 @@ public class KeyboxImitationHooks {
         // Tag 702: origin (GENERATED=0)
         teeEnforcedVector.add(new DERTaggedObject(true, 702, new ASN1Integer(0)));
 
-        addBootAndPatchInfo(teeEnforcedVector);
+        addBootAndPatchInfo(teeEnforcedVector, pending.attestIds);
 
         // softwareEnforced: creationDateTime then attestationApplicationId — both
         // present on stock KeyMint attestations, in this order, in THIS list
@@ -220,7 +292,8 @@ public class KeyboxImitationHooks {
         ASN1EncodableVector softwareEnforcedVector = new ASN1EncodableVector();
         softwareEnforcedVector.add(new DERTaggedObject(true, 701,
                 new ASN1Integer(System.currentTimeMillis())));
-        byte[] aaid = getAttestationApplicationId();
+        byte[] aaid = pending.applicationId != null
+                ? pending.applicationId : getAttestationApplicationId();
         if (aaid != null) {
             softwareEnforcedVector.add(new DERTaggedObject(true, 709,
                     new DEROctetString(aaid)));
@@ -234,7 +307,7 @@ public class KeyboxImitationHooks {
         keyDescription.add(new ASN1Enumerated(1)); // attestationSecurityLevel: TEE
         keyDescription.add(new ASN1Integer(KEYMASTER_VERSION));
         keyDescription.add(new ASN1Enumerated(1)); // keymasterSecurityLevel: TEE
-        keyDescription.add(new DEROctetString(challenge)); // attestationChallenge
+        keyDescription.add(new DEROctetString(pending.challenge)); // attestationChallenge
         keyDescription.add(new DEROctetString(new byte[0])); // uniqueId
         keyDescription.add(new DERSequence(softwareEnforcedVector)); // softwareEnforced
         keyDescription.add(new DERSequence(teeEnforcedVector)); // teeEnforced
@@ -320,8 +393,8 @@ public class KeyboxImitationHooks {
         return encoded;
     }
 
-    private static void addBootAndPatchInfo(ASN1EncodableVector teeEnforcedVector)
-            throws Exception {
+    private static void addBootAndPatchInfo(ASN1EncodableVector teeEnforcedVector,
+            Map<Integer, byte[]> attestIds) throws Exception {
         // Fill the RootOfTrust with the REAL verified-boot values of the
         // claimed device, sourced from its factory image and delivered through
         // the certified-props overlay (SimplePropImitation). verifiedBootHash is
@@ -346,15 +419,14 @@ public class KeyboxImitationHooks {
         teeEnforcedVector.add(new DERTaggedObject(true, 704, new DERSequence(rootOfTrustEncodables)));
         teeEnforcedVector.add(new DERTaggedObject(true, 705, new ASN1Integer(getOsVersion())));
         teeEnforcedVector.add(new DERTaggedObject(true, 706, new ASN1Integer(getPatchLevel())));
-        // ATTESTATION_ID_* tags. The attestation request in these flows is
-        // always ID-stripped, and the accepted leaf shape carries only the
-        // non-unique set {brand, device, product, manufacturer, model} — a leaf
-        // answering an ID-stripped request must NOT carry serial/IMEI/MEID
-        // (713/714/715/723). Fall back to the Build.*_FOR_ATTESTATION subset
-        // when no captured set is present (e.g. the modify path or a non-keygen
-        // retrieval).
-        final Map<Integer, byte[]> attestIds = sPendingAttestIds;
-        sPendingAttestIds = null;
+        // ATTESTATION_ID_* tags. Only the non-unique set {brand, device,
+        // product, manufacturer, model} is ever emitted — NEVER serial/IMEI/
+        // MEID/secondImei (713/714/715/723), even when the caller's request
+        // carried them: remote-provisioned attestation keys cannot attest
+        // device identifiers, so an ID-bearing leaf is a shape the claimed
+        // device can never genuinely produce. The captured non-unique
+        // values are used when present; otherwise the Build.*_FOR_ATTESTATION
+        // fallback set applies (modify path / non-keygen retrieval).
         if (attestIds != null && !attestIds.isEmpty()) {
             for (int tag : new int[] { 710, 711, 712, 716, 717 }) {
                 byte[] value = attestIds.get(tag);
@@ -377,7 +449,6 @@ public class KeyboxImitationHooks {
         }
         teeEnforcedVector.add(new DERTaggedObject(true, 718, new ASN1Integer(getPatchLevelLong())));
         teeEnforcedVector.add(new DERTaggedObject(true, 719, new ASN1Integer(getPatchLevelLong())));
-        // attestationIdSecondImei [723] intentionally omitted — see above.
     }
 
     /**
@@ -464,7 +535,7 @@ public class KeyboxImitationHooks {
             if (hi < 0 || lo < 0) {
                 throw new IllegalArgumentException("non-hex char");
             }
-            out[i / 2] = (byte) ((hi << 4) | lo);
+            out[i / 2] = (byte) (hi * 16 + lo);
         }
         return out;
     }

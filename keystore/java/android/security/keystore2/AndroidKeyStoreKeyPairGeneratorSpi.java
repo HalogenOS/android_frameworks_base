@@ -782,22 +782,32 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
 
     /**
      * RKP is reachable only on a green (OEM-verified) bootloader. Everywhere
-     * else the attestation is built by the forge instead.
+     * else the attestation is built by the forge instead. This must read the
+     * REAL boot state cached by SimplePropImitation before it spoofed
+     * ro.boot.verifiedbootstate to "green" — a plain SystemProperties.get here
+     * returns the spoofed value in spoof-target processes and misroutes the
+     * keygen into doomed real attestation attempts (CANNOT_ATTEST_IDS /
+     * ATTESTATION_KEYS_NOT_PROVISIONED round-trips through the daemon).
      */
     private static boolean isRkpAvailable() {
-        return "green".equals(android.os.SystemProperties.get("ro.boot.verifiedbootstate"));
+        return com.android.internal.util.SimplePropImitation.supportsHardwareAttestation();
     }
 
     /**
      * Generate a plain (un-attested) key. When the current process is a spoof
      * target (GMS/Finsky) with a keybox loaded, the full attestation request —
      * challenge, AAID and every ATTESTATION_ID_* tag, including the synthetic
-     * serial/IMEI/MEID — is captured first so KeyboxImitationHooks can reproduce
-     * the attestation keystore would have emitted. For any other caller nothing
-     * is captured, so the forge never runs and the app gets the stock
-     * no-attestation key. The attestation params are stripped either way so
-     * KeyMint generates an ordinary key (no CANNOT_ATTEST_IDS /
-     * ATTESTATION_KEYS_NOT_PROVISIONED attempt is made at all).
+     * serial/IMEI/MEID — is captured first so KeyboxImitationHooks can forge
+     * the attestation keystore would have emitted, keyed by alias. The forged
+     * leaf + keybox chain is then applied to the keygen RESPONSE metadata
+     * itself: callers that consume the returned KeyPair's certificate chain
+     * directly never go through KeyStore2.getKeyEntry, where the forge used
+     * to live exclusively.
+     * For any other caller nothing is captured and nothing is forged, so the
+     * app gets the stock no-attestation key. The attestation params are
+     * stripped either way so KeyMint generates an ordinary key (no
+     * CANNOT_ATTEST_IDS / ATTESTATION_KEYS_NOT_PROVISIONED attempt is made at
+     * all).
      */
     /**
      * Map KeyProperties.DIGEST_* names to KeyMint Digest enum values so the
@@ -844,13 +854,16 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
             throws KeyStoreException, DeviceIdAttestationException,
             IllegalArgumentException, InvalidAlgorithmParameterException {
         List<KeyParameter> args = new ArrayList<>(constructKeyGenerationArguments());
-        if (KeyProviderManager.isKeyboxAvailable()
-                && com.android.internal.util.SimplePropImitation.isSpoofTarget()) {
-            final java.util.HashMap<Integer, byte[]> attestIds = new java.util.HashMap<>();
+        final boolean shouldForge = KeyProviderManager.isKeyboxAvailable()
+                && com.android.internal.util.SimplePropImitation.isSpoofTarget();
+        byte[] attestationApplicationId = null;
+        java.util.HashMap<Integer, byte[]> attestIds = null;
+        if (shouldForge) {
+            attestIds = new java.util.HashMap<>();
             for (KeyParameter p : args) {
                 switch (p.tag) {
                     case Tag.ATTESTATION_APPLICATION_ID:
-                        KeyboxImitationHooks.setAttestationApplicationId(p.value.getBlob());
+                        attestationApplicationId = p.value.getBlob();
                         break;
                     case Tag.ATTESTATION_ID_BRAND:
                     case Tag.ATTESTATION_ID_DEVICE:
@@ -869,9 +882,6 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
                         break;
                 }
             }
-            KeyboxImitationHooks.setAttestationIds(attestIds);
-            KeyboxImitationHooks.setAttestationChallenge(mSpec.getAttestationChallenge());
-            KeyboxImitationHooks.setAttestationDigests(mapDigests(mSpec.getDigests()));
         }
         args.removeIf(p -> p.tag == Tag.ATTESTATION_CHALLENGE
                 || p.tag == Tag.ATTESTATION_APPLICATION_ID
@@ -891,7 +901,18 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
                 // these too and generate an ordinary key.
                 || p.tag == KeymasterDefs.KM_TAG_INCLUDE_UNIQUE_ID
                 || p.tag == KeymasterDefs.KM_TAG_DEVICE_UNIQUE_ATTESTATION);
-        return iSecurityLevel.generateKey(descriptor, null, args, flags, additionalEntropy);
+        KeyMetadata metadata =
+                iSecurityLevel.generateKey(descriptor, null, args, flags, additionalEntropy);
+        if (shouldForge) {
+            // Forge the attestation into the keygen response itself and record
+            // the request by alias, so later getKeyEntry retrievals of this key
+            // re-forge it with the same challenge/IDs/digests.
+            metadata = KeyboxImitationHooks.forgeAttestationForNewKey(
+                    descriptor.alias, mSpec.getAttestationChallenge(),
+                    attestationApplicationId, attestIds, mapDigests(mSpec.getDigests()),
+                    metadata);
+        }
+        return metadata;
     }
 
     @RequiresPermission(value = android.Manifest.permission.READ_PRIVILEGED_PHONE_STATE,
