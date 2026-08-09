@@ -20,6 +20,7 @@
 // Defined in bionic/libc/bionic/system_property_api.cpp
 extern "C" void __system_property_spoof_add(const char* name, const char* value);
 extern "C" void __system_property_spoof_enable();
+extern "C" void __system_property_spoof_hide(const char* name);
 
 static void nativeSpoofSysProp(JNIEnv* env, jclass, jstring jname, jstring jvalue) {
     const char* name = env->GetStringUTFChars(jname, nullptr);
@@ -29,6 +30,12 @@ static void nativeSpoofSysProp(JNIEnv* env, jclass, jstring jname, jstring jvalu
     env->ReleaseStringUTFChars(jvalue, value);
 }
 
+static void nativeHideSysProp(JNIEnv* env, jclass, jstring jname) {
+    const char* name = env->GetStringUTFChars(jname, nullptr);
+    __system_property_spoof_hide(name);
+    env->ReleaseStringUTFChars(jname, name);
+}
+
 static void nativeEnableSysPropSpoof(JNIEnv*, jclass) {
     __system_property_spoof_enable();
 }
@@ -36,6 +43,8 @@ static void nativeEnableSysPropSpoof(JNIEnv*, jclass) {
 static const JNINativeMethod gMethods[] = {
     {"nativeSpoofSysProp", "(Ljava/lang/String;Ljava/lang/String;)V",
      reinterpret_cast<void*>(nativeSpoofSysProp)},
+    {"nativeHideSysProp", "(Ljava/lang/String;)V",
+     reinterpret_cast<void*>(nativeHideSysProp)},
     {"nativeEnableSysPropSpoof", "()V",
      reinterpret_cast<void*>(nativeEnableSysPropSpoof)},
 };

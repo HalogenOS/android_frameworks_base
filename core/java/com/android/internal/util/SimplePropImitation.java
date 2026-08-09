@@ -110,6 +110,11 @@ public class SimplePropImitation {
     //                             sysprop, stashed for KeyboxImitationHooks
     private static final String RAW_SYSPROP_PREFIX = "SYSPROP.";
     private static final String ATTEST_PREFIX = "ATTEST.";
+    // Marks a system property the claimed device does not have at all (e.g.
+    // per-partition product props of partitions that are empty on stock):
+    // the native spoof layer answers "no such property" for it. Carried in
+    // the device overlay array (control_conformance_attributes_device).
+    private static final String HIDE_SYSPROP_PREFIX = "SYSPROP_HIDE.";
     private static final String ATTEST_VBOOT_KEY = "ATTEST.VBOOT_KEY";
     private static final String ATTEST_PLATFORM_CERT = "ATTEST.PLATFORM_CERT";
     private static final String ATTEST_MODULE_HASH = "ATTEST.MODULE_HASH";
@@ -146,6 +151,7 @@ public class SimplePropImitation {
     private static volatile boolean sSpoofTarget = false;
 
     private static native void nativeSpoofSysProp(String name, String value);
+    private static native void nativeHideSysProp(String name);
     private static native void nativeEnableSysPropSpoof();
 
     private SimplePropImitation() {
@@ -346,6 +352,12 @@ public class SimplePropImitation {
         Log.i(TAG, "Applying " + sCertifiedProps.size() + " certified props");
         String firstApiLevel = null;
         for (String entry : sCertifiedProps) {
+            // Property the claimed device does not have: hide it at native
+            // level so lookups answer "no such property" (stock behavior).
+            if (entry.startsWith(HIDE_SYSPROP_PREFIX)) {
+                nativeHideSysProp(entry.substring(HIDE_SYSPROP_PREFIX.length()));
+                continue;
+            }
             final String[] parts = entry.split(":", 2);
             if (parts.length != 2) {
                 Log.e(TAG, "Invalid entry in certified props: " + entry);
