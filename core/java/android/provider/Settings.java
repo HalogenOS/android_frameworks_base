@@ -13453,6 +13453,41 @@ public final class Settings {
                 "attestation_spoof_packages";
 
         /**
+         * Override for the GMS checkin androidId, as a decimal-string long
+         * (the same format GMS stores in its gservices provider under
+         * "android_id"). When set and non-empty, GMS's gservices reads of
+         * "android_id" return this value instead of the stored one, so every
+         * Google-facing flow presents it as the device identity — without
+         * the device identity — without touching GMS's private store. Used by
+         * the device-identity rotation dev control; clearing it restores the
+         * stored ID. Also mixed into the SSAID-derived synthetic serial/IMEI
+         * so the whole Google-visible identity shifts together.
+         *
+         * @hide
+         */
+        @Readable
+        public static final String ATTESTATION_ANDROID_ID_OVERRIDE =
+                "attestation_android_id_override";
+
+        /**
+         * One-shot token that requests a server-side reassignment of the GMS
+         * checkin androidId. When set, GMS zeroes its stored androidId (both
+         * the authoritative Checkin shared-preference and the gservices
+         * mirror) exactly once per token value and records the token in its
+         * own preferences as the consumption marker. The next checkin then
+         * registers the device fresh and Google assigns a new, properly
+         * registered ID. The token also seeds the SSAID-derived synthetic
+         * serial/IMEI so the whole Google-visible identity shifts together,
+         * and it stays set until the next rotation so those identifiers
+         * remain stable in between.
+         *
+         * @hide
+         */
+        @Readable
+        public static final String ATTESTATION_ANDROID_ID_REASSIGN =
+                "attestation_android_id_reassign";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *

@@ -97,6 +97,7 @@ public final class GmsHooks {
 
         if (GmsCompat.isGmsCore()) {
             inPersistentGmsCoreProcess = processName.equals(PERSISTENT_GmsCore_PROCESS);
+            maybeReassignAndroidId(ctx);
         }
 
         GmsCompatLib.init(ctx, processName);
@@ -226,9 +227,52 @@ public final class GmsHooks {
     public static String getSerial() {
         String ssaid = Settings.Secure.getString(GmsCompat.appContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
-        String serial = ssaid.toUpperCase();
+        String serial;
+        String rotation = rotationSeed();
+        if (rotation != null) {
+            // Identity rotation is active: derive a fresh-looking serial that
+            // shifts together with the rotated checkin ID (and with the
+            // synthetic IMEI, which mixes the same seed in SyntheticDeviceId),
+            // so the whole Google-visible identity changes as one unit. Same
+            // shape as the SSAID serial (16 upper hex).
+            serial = sha256Hex(ssaid + ":serial:" + rotation).substring(0, 16).toUpperCase();
+        } else {
+            serial = ssaid.toUpperCase();
+        }
         Log.d(TAG, "Generating serial number from SSAID: " + serial);
         return serial;
+    }
+
+    /**
+     * The active identity-rotation seed: the server-reassign token when set,
+     * otherwise the (legacy) read-override value. Null when no rotation is
+     * active, in which case the plain SSAID-derived identifiers are used.
+     */
+    static String rotationSeed() {
+        android.content.ContentResolver cr = GmsCompat.appContext().getContentResolver();
+        String token = Settings.Secure.getString(cr,
+                Settings.Secure.ATTESTATION_ANDROID_ID_REASSIGN);
+        if (token != null && !token.isEmpty()) {
+            return token;
+        }
+        String override = Settings.Secure.getString(cr,
+                Settings.Secure.ATTESTATION_ANDROID_ID_OVERRIDE);
+        return (override == null || override.isEmpty()) ? null : override;
+    }
+
+    private static String sha256Hex(String input) {
+        try {
+            byte[] digest = java.security.MessageDigest.getInstance("SHA-256")
+                    .digest(input.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder(digest.length * 2);
+            for (byte b : digest) {
+                sb.append(Character.forDigit((b >> 4) & 0xf, 16));
+                sb.append(Character.forDigit(b & 0xf, 16));
+            }
+            return sb.toString();
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     // TelephonyManager#getImei(int)
@@ -391,13 +435,156 @@ public final class GmsHooks {
                     map.putAll(filteredMap);
                 }
             };
+
+            if (mutator != null) {
+                return modifyKvCursor(origCursor, projection, mutator);
+            }
+
+            return null;
         }
 
-        if (mutator != null) {
-            return modifyKvCursor(origCursor, projection, mutator);
+        if (uriString.startsWith(GSERVICES_URI_PREFIX)) {
+            return maybeOverrideGservicesAndroidId(origCursor);
         }
 
         return null;
+    }
+
+    private static final String GSERVICES_URI_PREFIX = "content://com.google.android.gsf.gservices";
+    private static final String GSERVICES_ANDROID_ID_KEY = "android_id";
+    private static final android.net.Uri GSERVICES_URI =
+            android.net.Uri.parse(GSERVICES_URI_PREFIX);
+    private static final String CHECKIN_PREFS = "Checkin";
+    private static final String REASSIGN_MARKER = "reassign_token";
+
+    /**
+     * Server-side androidId reassignment, requested by the device-identity
+     * rotation control through Settings.Secure.ATTESTATION_ANDROID_ID_REASSIGN.
+     * Zeroes GMS's stored checkin androidId once per token — both the
+     * authoritative "Checkin" shared preference and the gservices mirror (the
+     * split GoogleSettingsUtils itself maintains), which makes the next
+     * checkin register the device fresh and receive a server-assigned ID. A
+     * client-chosen ID is NOT viable: the integrity endpoints reject
+     * unregistered androidIds outright (HTTP 400). Runs inside the GMS
+     * process, so both stores are writable directly; the token is recorded in
+     * the Checkin prefs as the consumption marker so later process starts
+     * don't re-zero the freshly assigned ID.
+     */
+    private static void maybeReassignAndroidId(Context ctx) {
+        String token;
+        try {
+            token = android.provider.Settings.Secure.getString(ctx.getContentResolver(),
+                    android.provider.Settings.Secure.ATTESTATION_ANDROID_ID_REASSIGN);
+        } catch (Throwable t) {
+            return;
+        }
+        if (token == null || token.isEmpty()) {
+            return;
+        }
+
+        android.content.SharedPreferences prefs =
+                ctx.getSharedPreferences(CHECKIN_PREFS, Context.MODE_PRIVATE);
+        if (token.equals(prefs.getString(REASSIGN_MARKER, null))) {
+            return; // this token's zeroing already happened
+        }
+
+        android.content.ContentValues values = new android.content.ContentValues();
+        values.put(GSERVICES_ANDROID_ID_KEY, "0");
+        try {
+            ctx.getContentResolver().update(GSERVICES_URI, values, null, null);
+        } catch (Throwable t) {
+            Log.e(TAG, "failed to zero gservices android_id", t);
+        }
+        prefs.edit()
+                .putString(GSERVICES_ANDROID_ID_KEY, "0")
+                .putString(REASSIGN_MARKER, token)
+                // synchronous: the checkin handshake may run in another GMS
+                // process and must see the zeroed state on first read
+                .commit();
+        Log.i(TAG, "checkin androidId zeroed for server reassignment");
+
+        // Trigger the registration handshake immediately (same broadcast
+        // GMS's CheckinServiceImposeReceiver listens for) — without it the
+        // fresh ID is only assigned whenever the next natural checkin
+        // happens, which can be hours later.
+        try {
+            ctx.sendBroadcast(new android.content.Intent("android.server.checkin.CHECKIN_NOW"));
+        } catch (Throwable t) {
+            Log.e(TAG, "failed to trigger checkin after reassignment", t);
+        }
+    }
+
+    /**
+     * Substitute the GMS checkin androidId (gservices "android_id") with the
+     * value from Settings.Secure.ATTESTATION_ANDROID_ID_OVERRIDE when set.
+     * Used by the device-identity rotation control: GMS keeps its stored ID
+     * untouched, but every read it makes presents the override — so checkin
+     * and everything derived from it see the rotated identity.
+     *
+     * The gservices provider answers single-key lookups with a one-row
+     * ("key", value) cursor; the row is rewritten generically so provider
+     * column-name variations don't break the override.
+     */
+    private static Cursor maybeOverrideGservicesAndroidId(@Nullable Cursor origCursor) {
+        String override = android.provider.Settings.Secure.getString(
+                GmsCompat.appContext().getContentResolver(),
+                android.provider.Settings.Secure.ATTESTATION_ANDROID_ID_OVERRIDE);
+        if (override == null || override.isEmpty()) {
+            return null;
+        }
+
+        if (origCursor == null) {
+            return null;
+        }
+
+        final String[] columns = origCursor.getColumnNames();
+        if (columns.length < 2) {
+            // Single-column shape: one row whose only cell is the value.
+            if (columns.length == 1 && origCursor.getCount() == 1
+                    && GSERVICES_ANDROID_ID_KEY.equals(columns[0])) {
+                MatrixCursor result = new MatrixCursor(columns, 1);
+                result.addRow(new Object[] { override });
+                // We replace the original — release it. (Only ever close the
+                // caller's cursor when returning a replacement; returning null
+                // hands the SAME cursor back to the caller.)
+                origCursor.close();
+                Log.d(TAG, "gservices android_id overridden (single-column)");
+                return result;
+            }
+            return null;
+        }
+
+        // ("key", value) shape: one row per setting; rewrite the android_id row.
+        boolean touched = false;
+        ArrayList<Object[]> rows = new ArrayList<>(origCursor.getCount());
+        Cursor orig = origCursor;
+        while (orig.moveToNext()) {
+            Object[] row = new Object[columns.length];
+            for (int i = 0; i < columns.length; ++i) {
+                row[i] = orig.getString(i);
+            }
+            if (GSERVICES_ANDROID_ID_KEY.equals(row[0])) {
+                row[1] = override;
+                touched = true;
+            }
+            rows.add(row);
+        }
+
+        if (!touched) {
+            // Not our row — hand the ORIGINAL cursor back to the caller
+            // untouched. Closing it here would surface downstream as
+            // StaleDataException in the app (ContentResolver returns the same
+            // wrapper when this hook returns null).
+            return null;
+        }
+
+        orig.close();
+        MatrixCursor result = new MatrixCursor(columns, rows.size());
+        for (Object[] row : rows) {
+            result.addRow(row);
+        }
+        Log.d(TAG, "gservices android_id overridden");
+        return result;
     }
 
     private static Cursor modifyKvCursor(@Nullable Cursor origCursor, @Nullable String[] projection,

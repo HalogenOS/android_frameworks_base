@@ -90,6 +90,24 @@ public final class SyntheticDeviceId {
         if (ctx != null) {
             seed = Settings.Secure.getString(
                     ctx.getContentResolver(), Settings.Secure.ANDROID_ID);
+            // GMS-only: when identity rotation is active, mix its seed into
+            // the derivation so the synthetic IMEI/IMSI shift together with
+            // the rotated checkin androidId — a rotated identity must not
+            // keep the old record's identifiers. Non-GMS callers (user-opted
+            // apps on the native identity) keep their stable values.
+            if (android.app.compat.gms.GmsCompat.isEnabled()) {
+                String rotation = Settings.Secure.getString(
+                        ctx.getContentResolver(),
+                        Settings.Secure.ATTESTATION_ANDROID_ID_REASSIGN);
+                if (rotation == null || rotation.isEmpty()) {
+                    rotation = Settings.Secure.getString(
+                            ctx.getContentResolver(),
+                            Settings.Secure.ATTESTATION_ANDROID_ID_OVERRIDE);
+                }
+                if (rotation != null && !rotation.isEmpty()) {
+                    seed = seed + ":rotate:" + rotation;
+                }
+            }
         }
         if (seed == null || seed.isEmpty()) {
             seed = Build.FINGERPRINT;
