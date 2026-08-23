@@ -165,6 +165,7 @@ import com.android.server.utils.WatchedSparseIntArray;
 import com.android.server.wm.ActivityTaskManagerInternal;
 
 import libcore.util.EmptyArray;
+import libcore.util.HexEncoding;
 
 import java.io.BufferedOutputStream;
 import java.io.FileDescriptor;
@@ -1106,6 +1107,27 @@ public class ComputerEngine implements Computer {
      */
     private static final String GMS_CLIENT_LIB_PACKAGE = "com.google.android.compat.lib";
 
+    /**
+     * The app repository client installs and updates most of the hidden packages, and resolves
+     * the static dependencies its repository metadata declares against them. It is a regular
+     * unprivileged app, so the filter would otherwise make the packages it manages invisible to
+     * it: already-installed apps are offered as missing and never receive updates, and repository
+     * entries that depend on a hidden package silently disappear from its listing.
+     *
+     * <p>The exemption is pinned to the release signing certificate rather than the package name
+     * alone: package names are first-come-first-served, so a name-only check could be claimed by
+     * any sideloaded app, while the certificate cannot be reproduced without the release key.
+     */
+    private static final String APP_REPO_CLIENT_PACKAGE = "app.grapheneos.apps";
+    private static final byte[] APP_REPO_CLIENT_CERT_SHA256 = HexEncoding.decode(
+            "3384c31fce4a7c008a8f7b2652bc48cc4321f1d2c877b18e30a4ed619af12f6b");
+
+    private static boolean isExemptAppRepoClient(PackageStateInternal callerState) {
+        return APP_REPO_CLIENT_PACKAGE.equals(callerState.getPackageName())
+                && callerState.getSigningDetails()
+                        .hasSha256Certificate(APP_REPO_CLIENT_CERT_SHA256);
+    }
+
     private static boolean isHiddenEnumerationPackage(@Nullable String targetPackageName) {
         if (targetPackageName == null) {
             return false;
@@ -1167,6 +1189,10 @@ public class ComputerEngine implements Computer {
                 if (ps.isSystem()) {
                     return false;
                 }
+                // The app repository client manages the hidden packages and must see all of them.
+                if (isExemptAppRepoClient(ps)) {
+                    return false;
+                }
                 final String pkgName = ps.getPackageName();
                 // An app querying its own package must always succeed.
                 if (targetPackageName.equals(pkgName)) {
@@ -1182,6 +1208,10 @@ public class ComputerEngine implements Computer {
         } else if (obj instanceof PackageStateInternal) {
             final PackageStateInternal ps = (PackageStateInternal) obj;
             if (ps.isSystem()) {
+                return false;
+            }
+            // The app repository client manages the hidden packages and must see all of them.
+            if (isExemptAppRepoClient(ps)) {
                 return false;
             }
             final String pkgName = ps.getPackageName();
